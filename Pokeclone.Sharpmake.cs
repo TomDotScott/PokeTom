@@ -62,8 +62,8 @@ public class PokeClone : Project
 
         conf.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
 
+        // SFML Paths
         conf.IncludePaths.Add(Path.Combine(Constants.PROJECT_ROOT, "SFML", "include"));
-
         conf.LibraryPaths.Add(Path.Combine(Constants.PROJECT_ROOT, "SFML", "lib"));
 
         // This sucks. Maybe a better data structure would work but I am fed up with Sharpmake
@@ -86,6 +86,12 @@ public class PokeClone : Project
                 AddSfmlDependency(dependency, conf, target);
             }
         }
+
+        // ZLib Paths
+        // TODO: Move the libraries from the src folder!
+        conf.IncludePaths.Add((Path.Combine(Constants.PROJECT_ROOT, "src", "Libs", "ZLib", "include")));
+        conf.LibraryPaths.Add((Path.Combine(Constants.PROJECT_ROOT, "src", "Libs", "ZLib", "lib")));
+        conf.LibraryFiles.Add("zlib.lib");
 
         if (target.Optimization == Optimization.Debug)
         {
