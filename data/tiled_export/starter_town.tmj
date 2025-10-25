@@ -1,98 +1,101 @@
-{ "compressionlevel":-1,
- "height":36,
- "infinite":false,
- "layers":[
-        {
-         "compression":"zlib",
-         "data":"eJztmFtuwjAQRe180bKe0peQ2E6hQEPZToEkIMSC6Gs1vRGxakW2MQE8mSgfJ7KisXwcPzK2FELIQLyACIwCttn60\/s\/g+0R+pa6d6BXkBL5Tz1iYou3cs55AAuwZOA\/KTlTeF\/C\/5XIufVv\/a\/l32PsPwMDFOaM\/DOwLtgw9NfJ\/0sJ2Gl9Uv3i4K9ymJX4zwtMpI64+xr4nwNl\/vkBHivy5PBX+RLl2PiOncmfw9mgKf4rYV7vQyb+Qwtcvr9+JlC41nZdaMr8zx1vULgt6Eb0\/j77t+6Y4EVXHMgkvb9P+03yj1H4lAfeazB\/9L09sZA6Yqjuhsr+XHO7PK8r7+lVoLoj4sQYjx8wqcBUhnctO\/yCjqhGFtB\/fKariXkUZgx83d8QExuYOep+X3keneL+ZfHYH+nD+kL+fxTBg3Q=",
-         "encoding":"base64",
-         "height":36,
-         "id":3,
-         "name":"GrassAndPaths",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "compression":"zlib",
-         "data":"eJztl11Kw0AUhechWLKAWlBrHzT2xZ8XV+GjoD6pEP\/AX1BX0LomF+UqPEECh2lmcsPMZKbqgUOnhQ5fck\/m3pQrSl3B1\/A9\/AA\/wqmpJM7SwPwKv8HvCfIzp4mZrys1MaeJ+TfnZ5grtWrwKA\/P75qfsYVx0gO\/a35i87vmJzb\/f37Mey97fqYt\/CfY7xQ+s5zL+vmmn2mu+SnyRc5ZptRn9vNp0zn2u4AvLfx8fz6yxZqG6F81+1cL\/w32u4XvhPyVdP6Y888T9nuGXzruO6f74mP+2e7hOW1SVWMf+dmNxF\/JR34OA\/Gb6jrznJ9Q0ut61HA9Kc\/Pel2P6Xtdg7\/+\/sVZ5F7Zl3zmxzZLsCRzg1Q+8yPll8wNUvk8f6T8krlBKp\/5KYT557nBtXeHOn+qGWWeNf\/G56Br7w7Vv2z8LNfeHap\/rYFrHd4IfJaG7F9bS\/D+7lPDAZ59eDSQ\/yel+WcM7k140oE\/pfmnAPcOPO1Qh5TyswfeffiA6sCZMq1TyU8trgNnyrROJT+1uA58LaZ1W35iiq\/FtG7KzzfhBOM+",
-         "encoding":"base64",
-         "height":36,
-         "id":5,
-         "name":"TreesAndDecor",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "compression":"zlib",
-         "data":"eJzt1McNwlAQRdFvmiHHdsixHZKJ7WDANqEZchS3ADZmY42YK53928wYo2maJqODZcwRJ5xxscJeFKxoxJgY4kggGQl7UbCK7C2hjAqqwvZ32dtDHwMMhe1fsNfBEiushe3Xvqd\/Ldz0r4Wb\/rXf6vEn+hhgCBsjjIX8D4edS6ywhgsPvpD9V3becMcDT7zwFrI\/xZ2lkUEWOeRREHJ\/NXbW0UATLbTREbLfZucIY0wwxQxzIftddnrwscEWO+yF7Nc0TdM07f\/6AOFBOtE=",
-         "encoding":"base64",
-         "height":36,
-         "id":4,
-         "name":"Houses",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "compression":"zlib",
-         "data":"eJztlDEKg0AURH+leAgbtYpWSU6RMrGK3v8cTudiFBQizsA8mGbZYpZ5bMTMO4v4IH0WMqSdv8iAjIT9054qnVPSnlud7c952B9OVLawP5yobGF\/OFHZwv5worKFkj+v4vfM\/lyLkj9r2J9rsT\/HWfsH\/43KFvaHE5Ut7A8nKlsw+lPm++\/u8YeZCm+tkebAm5m4oXeLdKL97+j9QJ6L\/hMjt2J1",
-         "encoding":"base64",
-         "height":36,
-         "id":6,
-         "name":"TopLayer",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "compression":"zlib",
-         "data":"eJztztEJABAUQFFboExjEbsZxWSG8Ap1zv+tmxK8qZfbBxBn5tsHAADwp9HO+lVjPgAA+MsGzVMCag==",
-         "encoding":"base64",
-         "height":36,
-         "id":8,
-         "name":"NPC Spawns",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
-        }],
- "nextlayerid":9,
- "nextobjectid":9,
- "orientation":"orthogonal",
- "renderorder":"right-down",
- "tiledversion":"1.11.2",
- "tileheight":32,
- "tilesets":[
-        {
-         "firstgid":1,
-         "source":"..\/..\/Tiled Projects\/overworld.tsx"
-        }, 
-        {
-         "firstgid":1301,
-         "source":"..\/..\/Tiled Projects\/hgss.tsx"
-        }, 
-        {
-         "firstgid":6013,
-         "source":"..\/..\/Tiled Projects\/Characters.tsx"
-        }],
- "tilewidth":32,
- "type":"map",
- "version":"1.10",
- "width":48
+{
+  "compressionlevel": -1,
+  "height": 36,
+  "infinite": false,
+  "layers": [
+    {
+      "compression": "zlib",
+      "data": "eJztmFtuwjAQRe180bKe0peQ2E6hQEPZToEkIMSC6Gs1vRGxakW2MQE8mSgfJ7KisXwcPzK2FELIQLyACIwCttn60\/s\/g+0R+pa6d6BXkBL5Tz1iYou3cs55AAuwZOA\/KTlTeF\/C\/5XIufVv\/a\/l32PsPwMDFOaM\/DOwLtgw9NfJ\/0sJ2Gl9Uv3i4K9ymJX4zwtMpI64+xr4nwNl\/vkBHivy5PBX+RLl2PiOncmfw9mgKf4rYV7vQyb+Qwtcvr9+JlC41nZdaMr8zx1vULgt6Eb0\/j77t+6Y4EVXHMgkvb9P+03yj1H4lAfeazB\/9L09sZA6Yqjuhsr+XHO7PK8r7+lVoLoj4sQYjx8wqcBUhnctO\/yCjqhGFtB\/fKariXkUZgx83d8QExuYOep+X3keneL+ZfHYH+nD+kL+fxTBg3Q=",
+      "encoding": "base64",
+      "height": 36,
+      "id": 3,
+      "name": "GrassAndPaths",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 48,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "compression": "zlib",
+      "data": "eJztl11Kw0AUhechWLKAWlBrHzT2xZ8XV+GjoD6pEP\/AX1BX0LomF+UqPEECh2lmcsPMZKbqgUOnhQ5fck\/m3pQrSl3B1\/A9\/AA\/wqmpJM7SwPwKv8HvCfIzp4mZrys1MaeJ+TfnZ5grtWrwKA\/P75qfsYVx0gO\/a35i87vmJzb\/f37Mey97fqYt\/CfY7xQ+s5zL+vmmn2mu+SnyRc5ZptRn9vNp0zn2u4AvLfx8fz6yxZqG6F81+1cL\/w32u4XvhPyVdP6Y888T9nuGXzruO6f74mP+2e7hOW1SVWMf+dmNxF\/JR34OA\/Gb6jrznJ9Q0ut61HA9Kc\/Pel2P6Xtdg7\/+\/sVZ5F7Zl3zmxzZLsCRzg1Q+8yPll8wNUvk8f6T8krlBKp\/5KYT557nBtXeHOn+qGWWeNf\/G56Br7w7Vv2z8LNfeHap\/rYFrHd4IfJaG7F9bS\/D+7lPDAZ59eDSQ\/yel+WcM7k140oE\/pfmnAPcOPO1Qh5TyswfeffiA6sCZMq1TyU8trgNnyrROJT+1uA58LaZ1W35iiq\/FtG7KzzfhBOM+",
+      "encoding": "base64",
+      "height": 36,
+      "id": 5,
+      "name": "TreesAndDecor",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 48,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "compression": "zlib",
+      "data": "eJzt1McNwlAQRdFvmiHHdsixHZKJ7WDANqEZchS3ADZmY42YK53928wYo2maJqODZcwRJ5xxscJeFKxoxJgY4kggGQl7UbCK7C2hjAqqwvZ32dtDHwMMhe1fsNfBEiushe3Xvqd\/Ldz0r4Wb\/rXf6vEn+hhgCBsjjIX8D4edS6ywhgsPvpD9V3becMcDT7zwFrI\/xZ2lkUEWOeRREHJ\/NXbW0UATLbTREbLfZucIY0wwxQxzIftddnrwscEWO+yF7Nc0TdM07f\/6AOFBOtE=",
+      "encoding": "base64",
+      "height": 36,
+      "id": 4,
+      "name": "Houses",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 48,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "compression": "zlib",
+      "data": "eJztlDEKg0AURH+leAgbtYpWSU6RMrGK3v8cTudiFBQizsA8mGbZYpZ5bMTMO4v4IH0WMqSdv8iAjIT9054qnVPSnlud7c952B9OVLawP5yobGF\/OFHZwv5worKFkj+v4vfM\/lyLkj9r2J9rsT\/HWfsH\/43KFvaHE5Ut7A8nKlsw+lPm++\/u8YeZCm+tkebAm5m4oXeLdKL97+j9QJ6L\/hMjt2J1",
+      "encoding": "base64",
+      "height": 36,
+      "id": 6,
+      "name": "TopLayer",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 48,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "compression": "zlib",
+      "data": "eJztztEJABAUQFFboExjEbsZxWSG8Ap1zv+tmxK8qZfbBxBn5tsHAADwp9HO+lVjPgAA+MsGzVMCag==",
+      "encoding": "base64",
+      "height": 36,
+      "id": 8,
+      "name": "NPC Spawns",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 48,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "nextlayerid": 9,
+  "nextobjectid": 9,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.11.2",
+  "tileheight": 32,
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "tiled_export\/overworld.tsx"
+    },
+    {
+      "firstgid": 1301,
+      "source": "tiled_export\/hgss.tsx"
+    },
+    {
+      "firstgid": 6013,
+      "source": "tiled_export\/Characters.tsx"
+    }
+  ],
+  "tilewidth": 32,
+  "type": "map",
+  "version": "1.10",
+  "width": 48
 }

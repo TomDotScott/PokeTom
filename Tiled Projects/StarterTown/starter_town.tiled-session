@@ -1,71 +1,43 @@
 {
-    "Map/SizeTest": {
-        "height": 4300,
-        "width": 2
-    },
     "activeFile": "starter_town.tmx",
     "expandedProjectPaths": [
     ],
-    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/Characters.tsx": {
-            "scaleInDock": 3,
-            "scaleInEditor": 3
-        },
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/hgss.tsx": {
-            "scaleInDock": 1,
-            "scaleInEditor": 0.33
-        },
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/overworld.tsx": {
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/Characters.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
-        "indoor_1.tsx": {
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/hgss.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 1.5
+            "scaleInEditor": 1
         },
-        "overworld.tsx": {
-            "scaleInDock": 3,
-            "scaleInEditor": 1.5
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/overworld.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 0.75
         },
         "starter_town.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 4,
+            "scale": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 838,
-                "y": 575
+                "x": 821.5,
+                "y": 493
             }
         }
     },
     "last.exportedFilePath": "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export",
     "last.imagePath": "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/sprites/characters",
-    "map.fixedSize": true,
-    "map.height": 18,
-    "map.lastUsedExportFilter": "Tiled map files (*.tmx *.xml)",
-    "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
-    "map.width": 24,
+    "map.lastUsedExportFilter": "All Files (*)",
     "openFiles": [
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/overworld.tsx",
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/hgss.tsx",
         "starter_town.tmx",
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/Characters.tsx"
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/overworld.tsx",
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/hgss.tsx"
     ],
     "project": "starter_town.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/overworld.tsx",
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/hgss.tsx",
-        "C:/Users/tomsc/Documents/Github/SFML-Poketom/Tiled Projects/Characters.tsx",
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/hgss.tsx",
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/overworld.tsx",
         "starter_town.tmx",
-        "overworld.tsx",
-        "StarterTown/untitled.tmx",
-        "indoor_1.tsx"
-    ],
-    "tileset.lastUsedFormat": "tsx",
-    "tileset.tileSize": {
-        "height": 32,
-        "width": 32
-    }
+        "C:/Users/tomsc/Documents/Github/SFML-Poketom/data/tiled_export/Characters.tsx"
+    ]
 }

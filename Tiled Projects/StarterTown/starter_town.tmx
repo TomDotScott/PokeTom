@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="9">
  <editorsettings>
-  <export target="../../data/tiled_export/starter_town.tmx" format="tmx"/>
+  <export target="../../data/tiled_export/starter_town.tmj" format="json"/>
  </editorsettings>
- <tileset firstgid="1" source="../overworld.tsx"/>
- <tileset firstgid="1301" source="../hgss.tsx"/>
- <tileset firstgid="6013" source="../Characters.tsx"/>
+ <tileset firstgid="1" source="../../data/tiled_export/overworld.tsx"/>
+ <tileset firstgid="1301" source="../../data/tiled_export/hgss.tsx"/>
+ <tileset firstgid="6013" source="../../data/tiled_export/Characters.tsx"/>
  <layer id="3" name="GrassAndPaths" width="48" height="36">
   <data encoding="base64" compression="zlib">
    eJztmFtuwjAQRe180bKe0peQ2E6hQEPZToEkIMSC6Gs1vRGxakW2MQE8mSgfJ7KisXwcPzK2FELIQLyACIwCttn60/s/g+0R+pa6d6BXkBL5Tz1iYou3cs55AAuwZOA/KTlTeF/C/5XIufVv/a/l32PsPwMDFOaM/DOwLtgw9NfJ/0sJ2Gl9Uv3i4K9ymJX4zwtMpI64+xr4nwNl/vkBHivy5PBX+RLl2PiOncmfw9mgKf4rYV7vQyb+Qwtcvr9+JlC41nZdaMr8zx1vULgt6Eb0/j77t+6Y4EVXHMgkvb9P+03yj1H4lAfeazB/9L09sZA6Yqjuhsr+XHO7PK8r7+lVoLoj4sQYjx8wqcBUhnctO/yCjqhGFtB/fKariXkUZgx83d8QExuYOep+X3keneL+ZfHYH+nD+kL+fxTBg3Q=
