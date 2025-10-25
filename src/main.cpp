@@ -13,74 +13,10 @@
 #include <zlib.h>
 #include <stdexcept>
 
+#include "Engine/Rendering/SpriteBatcher.h"
+
 GraphicSettings GRAPHIC_SETTINGS{};
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
-
-class SpriteBatcher : public sf::Drawable
-{
-public:
-	sf::Texture* texture{ nullptr };
-	SpriteBatcher() = default;
-
-	void batchSprites(const std::vector<sf::Sprite>& sprites)
-	{
-		m_vertices.resize(sprites.size() * 6u);
-		for (std::size_t i{ 0u }; i < sprites.size(); ++i)
-			setQuad(&(sprites[i]), i * 6u);
-	}
-
-	void batchSprites(const std::vector<sf::Sprite*>& sprites)
-	{
-		m_vertices.resize(sprites.size() * 6u);
-		for (std::size_t i{ 0u }; i < sprites.size(); ++i)
-			setQuad(sprites[i], i * 6u);
-	}
-
-private:
-	std::vector<sf::Vertex> m_vertices{};
-
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		states.texture = texture;
-		target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::Triangles, states);
-	}
-
-	void setQuad(const sf::Sprite* sprite, std::size_t startVertex)
-	{
-		const sf::Transform transform{ sprite->getTransform() };
-		const sf::Color color{ sprite->getColor() };
-		const sf::IntRect rect{ sprite->getTextureRect() };
-
-		sf::Vector2f shapeTopLeft{ 0.f, 0.f };
-		sf::Vector2f shapeBottomRight(rect.size);
-		sf::Vector2f shapeTopRight{ shapeBottomRight.x, shapeTopLeft.y };
-		sf::Vector2f shapeBottomLeft{ shapeTopLeft.x, shapeBottomRight.y };
-		const sf::Vector2f textureTopLeft(rect.position);
-		const sf::Vector2f textureBottomRight{ textureTopLeft + shapeBottomRight };
-		const sf::Vector2f textureTopRight{ textureBottomRight.x, textureTopLeft.y };
-		const sf::Vector2f textureBottomLeft{ textureTopLeft.x, textureBottomRight.y };
-		shapeTopLeft = transform.transformPoint(shapeTopLeft);
-		shapeBottomRight = transform.transformPoint(shapeBottomRight);
-		shapeTopRight = transform.transformPoint(shapeTopRight);
-		shapeBottomLeft = transform.transformPoint(shapeBottomLeft);
-
-		m_vertices[startVertex + 0u].position = shapeTopLeft;
-		m_vertices[startVertex + 0u].texCoords = textureTopLeft;
-		m_vertices[startVertex + 0u].color = color;
-		m_vertices[startVertex + 1u].position = shapeBottomLeft;
-		m_vertices[startVertex + 1u].texCoords = textureBottomLeft;
-		m_vertices[startVertex + 1u].color = color;
-		m_vertices[startVertex + 2u].position = shapeBottomRight;
-		m_vertices[startVertex + 2u].texCoords = textureBottomRight;
-		m_vertices[startVertex + 2u].color = color;
-		m_vertices[startVertex + 5u].position = shapeTopRight;
-		m_vertices[startVertex + 5u].texCoords = textureTopRight;
-		m_vertices[startVertex + 5u].color = color;
-
-		m_vertices[startVertex + 3u] = m_vertices[startVertex + 0u];
-		m_vertices[startVertex + 4u] = m_vertices[startVertex + 2u];
-	}
-};
 
 static std::string DecompressZlib(const std::string& compressed)
 {
@@ -167,10 +103,8 @@ int main(int argc, char** argv)
 	std::vector<std::vector<uint32_t>> layers;
 	if (layersArray.type() == nlohmann::detail::value_t::array)
 	{
-		for (auto i = layersArray.begin(); i != layersArray.end(); ++i)
+		for (const auto& elem : layersArray)
 		{
-			const auto& elem = *i;
-
 			const std::string& content = elem["data"];
 			const auto decodedString = base64_decode(content);
 			const auto decompressed = DecompressZlib(decodedString);
@@ -194,15 +128,14 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	SpriteBatcher batcher;
-	batcher.texture = &spriteSheetTexture;
+	SpriteBatcher batcher(std::make_shared<sf::Texture>(spriteSheetTexture));
 
 	std::vector<sf::Sprite> sprites;
 	sprites.resize(10000, sf::Sprite(spriteSheetTexture));
 
 	std::for_each(sprites.begin(), sprites.end(), SetupSprite);
 
-	batcher.batchSprites(sprites);
+	batcher.BatchSprites(sprites);
 
 
 	sf::RenderWindow window(
