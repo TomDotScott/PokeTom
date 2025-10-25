@@ -13,7 +13,77 @@
 #include <zlib.h>
 #include <stdexcept>
 
-static std::string DecompressZlib(const std::string& compressed) {
+GraphicSettings GRAPHIC_SETTINGS{};
+RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
+
+class SpriteBatcher : public sf::Drawable
+{
+public:
+	sf::Texture* texture{ nullptr };
+	SpriteBatcher() = default;
+
+	void batchSprites(const std::vector<sf::Sprite>& sprites)
+	{
+		m_vertices.resize(sprites.size() * 6u);
+		for (std::size_t i{ 0u }; i < sprites.size(); ++i)
+			setQuad(&(sprites[i]), i * 6u);
+	}
+
+	void batchSprites(const std::vector<sf::Sprite*>& sprites)
+	{
+		m_vertices.resize(sprites.size() * 6u);
+		for (std::size_t i{ 0u }; i < sprites.size(); ++i)
+			setQuad(sprites[i], i * 6u);
+	}
+
+private:
+	std::vector<sf::Vertex> m_vertices{};
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const
+	{
+		states.texture = texture;
+		target.draw(m_vertices.data(), m_vertices.size(), sf::PrimitiveType::Triangles, states);
+	}
+
+	void setQuad(const sf::Sprite* sprite, std::size_t startVertex)
+	{
+		const sf::Transform transform{ sprite->getTransform() };
+		const sf::Color color{ sprite->getColor() };
+		const sf::IntRect rect{ sprite->getTextureRect() };
+
+		sf::Vector2f shapeTopLeft{ 0.f, 0.f };
+		sf::Vector2f shapeBottomRight(rect.size);
+		sf::Vector2f shapeTopRight{ shapeBottomRight.x, shapeTopLeft.y };
+		sf::Vector2f shapeBottomLeft{ shapeTopLeft.x, shapeBottomRight.y };
+		const sf::Vector2f textureTopLeft(rect.position);
+		const sf::Vector2f textureBottomRight{ textureTopLeft + shapeBottomRight };
+		const sf::Vector2f textureTopRight{ textureBottomRight.x, textureTopLeft.y };
+		const sf::Vector2f textureBottomLeft{ textureTopLeft.x, textureBottomRight.y };
+		shapeTopLeft = transform.transformPoint(shapeTopLeft);
+		shapeBottomRight = transform.transformPoint(shapeBottomRight);
+		shapeTopRight = transform.transformPoint(shapeTopRight);
+		shapeBottomLeft = transform.transformPoint(shapeBottomLeft);
+
+		m_vertices[startVertex + 0u].position = shapeTopLeft;
+		m_vertices[startVertex + 0u].texCoords = textureTopLeft;
+		m_vertices[startVertex + 0u].color = color;
+		m_vertices[startVertex + 1u].position = shapeBottomLeft;
+		m_vertices[startVertex + 1u].texCoords = textureBottomLeft;
+		m_vertices[startVertex + 1u].color = color;
+		m_vertices[startVertex + 2u].position = shapeBottomRight;
+		m_vertices[startVertex + 2u].texCoords = textureBottomRight;
+		m_vertices[startVertex + 2u].color = color;
+		m_vertices[startVertex + 5u].position = shapeTopRight;
+		m_vertices[startVertex + 5u].texCoords = textureTopRight;
+		m_vertices[startVertex + 5u].color = color;
+
+		m_vertices[startVertex + 3u] = m_vertices[startVertex + 0u];
+		m_vertices[startVertex + 4u] = m_vertices[startVertex + 2u];
+	}
+};
+
+static std::string DecompressZlib(const std::string& compressed)
+{
 	z_stream stream{};
 	stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(compressed.data()));
 	stream.avail_in = compressed.size();
@@ -24,11 +94,13 @@ static std::string DecompressZlib(const std::string& compressed) {
 	std::string out;
 	char buffer[32768];
 	int status;
-	do {
+	do
+	{
 		stream.next_out = reinterpret_cast<Bytef*>(buffer);
 		stream.avail_out = sizeof(buffer);
 		status = inflate(&stream, Z_NO_FLUSH);
-		if (status != Z_OK && status != Z_STREAM_END) {
+		if (status != Z_OK && status != Z_STREAM_END)
+		{
 			inflateEnd(&stream);
 			throw std::runtime_error("inflate failed");
 		}
@@ -39,12 +111,14 @@ static std::string DecompressZlib(const std::string& compressed) {
 	return out;
 }
 
-static std::vector<uint32_t> BytesToTiles(const std::string& bytes) {
+static std::vector<uint32_t> BytesToTiles(const std::string& bytes)
+{
 	size_t count = bytes.size() / 4;
 	std::vector<uint32_t> tiles(count);
 
 	// interpret every 4 bytes as an unsigned 32-bit int (little-endian)
-	for (size_t i = 0; i < count; ++i) {
+	for (size_t i = 0; i < count; ++i)
+	{
 		const auto b = reinterpret_cast<const unsigned char*>(bytes.data() + i * 4);
 		tiles[i] =
 			static_cast<uint32_t>(b[0]) |
@@ -59,9 +133,23 @@ static std::vector<uint32_t> BytesToTiles(const std::string& bytes) {
 	return tiles;
 }
 
+static void SetupSprite(sf::Sprite& sprite)
+{
+	const sf::Vector2u textureSize = sprite.getTexture().getSize();
+	const std::size_t tileCount = (textureSize.x / 32) * (textureSize.y / 32);
+	const std::size_t randomTileIndex{ rand() % tileCount };
 
-GraphicSettings GRAPHIC_SETTINGS{};
-RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
+	sprite.setTextureRect({
+		{
+			(static_cast<int>(randomTileIndex) % 32) * 32,
+			(static_cast<int>(randomTileIndex) / 32) * 32
+		},
+		{ 32, 32 }
+		});
+
+	sprite.setPosition({ static_cast<float>(rand() % 650), static_cast<float>(rand() % 450) });
+}
+
 
 int main(int argc, char** argv)
 {
@@ -91,6 +179,30 @@ int main(int argc, char** argv)
 			layers.emplace_back(tiles);
 		}
 	}
+
+	sf::Image spriteSheet;
+	if (!spriteSheet.loadFromFile("sprites\\overworld_tileset.png"))
+	{
+		return 1;
+	}
+
+	spriteSheet.createMaskFromColor(sf::Color(0, 0, 0, 0));
+
+	sf::Texture spriteSheetTexture;
+	if (!spriteSheetTexture.loadFromImage(spriteSheet))
+	{
+		return 1;
+	}
+
+	SpriteBatcher batcher;
+	batcher.texture = &spriteSheetTexture;
+
+	std::vector<sf::Sprite> sprites;
+	sprites.resize(10000, sf::Sprite(spriteSheetTexture));
+
+	std::for_each(sprites.begin(), sprites.end(), SetupSprite);
+
+	batcher.batchSprites(sprites);
 
 
 	sf::RenderWindow window(
@@ -138,6 +250,7 @@ int main(int argc, char** argv)
 
 		window.clear();
 
+		window.draw(batcher);
 		game.Render(window);
 
 		window.display();
