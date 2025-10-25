@@ -1,6 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 #include <random>
+#include <sstream>
 #include <SFML/System/Vector2.hpp>
 
 #define HOXML_IMPLEMENTATION
@@ -56,6 +57,18 @@ struct Vector2HashFunction
 };
 
 extern bool OnlyWhitespace(const char* chr);
+
+template<typename... args_t>
+std::string CombinePaths(const std::string& path, args_t&&... args)
+{
+	std::ostringstream os;
+	os << path;
+
+	// add a seperator before each arg
+	((os << "\\" << std::forward<args_t>(args)), ...);
+
+	return os.str();
+}
 
 #define VECTOR2F_ZERO sf::Vector2f(0.f, 0.f)
 #define VECTOR2F_LEFT sf::Vector2f(-1.f, 0.f)
