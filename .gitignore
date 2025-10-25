@@ -35,3 +35,4 @@
 *.csproj
 sharpmakeautocleanupdb_debugsolution.json
 /.vs
+Properties/launchSettings.json
