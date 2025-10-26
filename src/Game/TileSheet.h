@@ -16,7 +16,7 @@ public:
 	{
 		enum Properties : uint32_t
 		{
-			Empty = 0,
+			None = 0,
 
 			IsBarrier = 1 << 0,
 			IsBreakable = 1 << 1,
@@ -27,8 +27,10 @@ public:
 			All = 1 << 16
 		};
 
-		uint32_t m_IDFromTMJ;
-		uint32_t m_IDRelativeToParentTileSet;
+		// ID from the TMJ file
+		uint32_t m_GlobalID;
+		// ID from the TSX file
+		uint32_t m_LocalID;
 		uint32_t m_Flags;
 		std::string m_ParentTileSetName;
 	};
@@ -54,6 +56,22 @@ private:
 
 	std::unordered_map<std::string, std::vector<sf::Sprite>> m_tileSetSprites;
 	std::unordered_map<std::string, SpriteBatcher> m_tileSetSpriteBatchers;
+
+	bool Init();
+	bool LoadTMJ() const;
+	bool LoadTileSets();
+	void BuildTileData();
+	void BuildSprites();
+
+	struct ParentTileset
+	{
+		std::string m_Name;
+		uint32_t m_FirstGID;
+	};
+
+	ParentTileset FindParentTileset(uint32_t tileGID);
+
+	Tile CreateTileFromTSX(const std::shared_ptr<TSX>& parentTileset, uint32_t globalID, uint32_t localID);
 };
 
 #endif

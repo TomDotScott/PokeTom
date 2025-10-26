@@ -7,16 +7,55 @@
 
 #include "../Engine/Globals.h"
 
-
 TileSheet::TileSheet(const std::filesystem::path& tmjPath) :
 	m_tmjParser(TMJ::Create(tmjPath))
 {
-	// TODO: This constructor is gonna be a nightmare to debug if I don't clean it up
-	if (m_tmjParser == nullptr)
+	Init();
+}
+
+void TileSheet::Render(sf::RenderWindow& window) const
+{
+	for (const auto& [tileSetName, batcher] : m_tileSetSpriteBatchers) {
+		window.draw(batcher);
+	}
+}
+
+TileSheet::Tile TileSheet::GetTile(const std::string& layerName, const uint32_t tileGID) const
+{
+	const uint32_t offSetID = m_idMappings.at(tileGID);
+	return m_layers.at(layerName).at(offSetID);
+}
+
+bool TileSheet::Init()
+{
+	if (!LoadTMJ())
 	{
-		std::cout << "Error: Failed to load TMJ file " << tmjPath << "\n";
+		return false;
 	}
 
+	if (!LoadTileSets())
+	{
+		return false;
+	}
+
+	BuildTileData();
+	BuildSprites();
+	return true;
+}
+
+bool TileSheet::LoadTMJ() const
+{
+	if (!m_tmjParser)
+	{
+		std::cout << "TileSheet::LoadTMJ: Failed to load TMJ file!\n";
+		return false;
+	}
+
+	return true;
+}
+
+bool TileSheet::LoadTileSets()
+{
 	// Using the tilesets from the TMJ file, parse the XML TSX file to load the sprite info
 	const std::vector<TMJ::TileSet>& tileSets = m_tmjParser->GetTileSets();
 	for (const auto& tileSet : tileSets)
@@ -26,133 +65,73 @@ TileSheet::TileSheet(const std::filesystem::path& tmjPath) :
 		if (m_tileSets.find(tileSetName) == m_tileSets.end())
 		{
 			m_tileSets[tileSetName] = tsxParser;
-			m_spriteSheets[tileSetName] = std::make_shared<sf::Texture>(tsxParser->GetImageInfo().m_Source);
+
+			const auto& imageSource = tsxParser->GetImageInfo().m_Source;
+			if (!std::filesystem::exists(imageSource))
+			{
+				std::cout << "TileSheet::LoadTileSets: Failed to load spritesheet from " << imageSource << "\n";
+				return false;
+			}
+
+			m_spriteSheets[tileSetName] = std::make_shared<sf::Texture>(imageSource);
 		}
 	}
 
+	return true;
+}
+
+void TileSheet::BuildTileData()
+{
 	// Then, build up the tile contents for this level
 	// Iterate over each layer from the TMJ, getting the correct IDs for the tiles
 	for (const auto& layer : m_tmjParser->GetLayers())
 	{
-		// TODO: Width, height and all the other crap...
-		for (const auto& tileGID : layer.m_Data)
+		// TODO: Fix this!
+		if (layer.m_Name == "NPC Spawns")
 		{
-			// Work out which tileset it belongs to
-			std::string parentTileSetName;
-			uint32_t gidOffset = 0;
-			bool found = false;
+			continue;
+		}
 
-			for (const auto& [firstGid, tsxSource] : tileSets)
+		// TODO: Width, height and all the other crap...
+		for (const auto& globalID : layer.m_Data)
+		{
+			const auto& [parentTileSetName, firstGID] = FindParentTileset(globalID);
+
+			if (parentTileSetName.empty())
 			{
-				int offset = static_cast<int>(tileGID) - firstGid + 1;
-				if (offset >= 0)
-				{
-					for (const auto& [tileSetName, tsxTileSet] : m_tileSets)
-					{
-						if (tsxSource == tsxTileSet->GetPath())
-						{
-							parentTileSetName = tileSetName;
-							gidOffset = firstGid;
-							found = true;
-						}
-
-						if (found)
-						{
-							break;
-						}
-					}
-				}
-
-				if (found)
-				{
-					break;
-				}
-			}
-
-			if (!found)
-			{
-				std::cout << "Error: Cannot locate tileset for tile=" << tileGID << " in layer " << layer.m_Name <<
-					"of sheet " << tmjPath << "\n";
+				std::cout << "Error: Cannot locate tileset for tile=" << globalID << " in layer " << layer.m_Name << "\n";
 				break;
 			}
 
 			const auto& parentTileSet = m_tileSets.at(parentTileSetName);
 
 			// -1 means empty, so we don't want integer overflow!
-			const int offsetTileIndexFromFirstGID = static_cast<int>(tileGID) - static_cast<int>(gidOffset);
-			if (offsetTileIndexFromFirstGID == -1)
+			const int localID = static_cast<int>(globalID) - static_cast<int>(firstGID);
+			if (localID < 0)
 			{
 				continue;
 			}
 
-			m_idMappings[tileGID] = offsetTileIndexFromFirstGID;
+			m_idMappings[globalID] = localID;
 
 			if (m_layers.find(layer.m_Name) == m_layers.end())
 			{
 				m_layers[layer.m_Name] = {};
 			}
 
-			const auto& currentLayer = m_layers.at(layer.m_Name);
-			if (currentLayer.find(offsetTileIndexFromFirstGID) != currentLayer.end())
+			auto& currentLayer = m_layers.at(layer.m_Name);
+			if (currentLayer.find(localID) == currentLayer.end())
 			{
-				// We already have the info ready for this tile
-				continue;
+				currentLayer[localID] = CreateTileFromTSX(parentTileSet, globalID, localID);
 			}
-
-			uint32_t tileFlags = 0;
-			const auto& tileSetTiles = parentTileSet->GetTiles();
-
-			auto foundTile = std::find_if(tileSetTiles.begin(), tileSetTiles.end(), [&](const TSX::Tile& a)
-				{
-					return a.m_ID == offsetTileIndexFromFirstGID;
-				});
-
-			if (foundTile == tileSetTiles.end())
-			{
-				std::cout << "Failed to find tile with ID " << offsetTileIndexFromFirstGID << " in layer " << layer.
-					m_Name << "\n";
-				continue;
-			}
-
-			const TSX::Tile& tsxTile = *foundTile;
-			for (const auto& tileProperties : tsxTile.m_Properties)
-			{
-				// TODO: These probably shouldn't be hardcoded!
-				if (tileProperties.m_Name == "isBarrier")
-				{
-					tileFlags |= Tile::Properties::IsBarrier;
-				}
-				else if (tileProperties.m_Name == "isBreakable")
-				{
-					tileFlags |= Tile::Properties::IsBreakable;
-				}
-				else if (tileProperties.m_Name == "isGrass")
-				{
-					tileFlags |= Tile::Properties::IsGrass;
-				}
-				else if (tileProperties.m_Name == "isWater")
-				{
-					tileFlags |= Tile::Properties::IsWater;
-				}
-				else if (tileProperties.m_Name == "isDoor")
-				{
-					tileFlags |= Tile::Properties::IsDoor;
-				}
-			}
-
-			const Tile gameTile{
-				tileGID,
-				static_cast<uint32_t>(offsetTileIndexFromFirstGID),
-				tileFlags,
-				parentTileSetName
-			};
-
-			m_layers[layer.m_Name][offsetTileIndexFromFirstGID] = gameTile;
 		}
 	}
+}
 
+void TileSheet::BuildSprites()
+{
 	// We now have the tile data set up! Create the sprite objects for them
-	const sf::Vector2u screenSize = GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize;
+	const uint32_t numCols = m_tmjParser->GetNumColumns();
 
 	for (const auto& layer : m_tmjParser->GetLayers())
 	{
@@ -185,16 +164,12 @@ TileSheet::TileSheet(const std::filesystem::path& tmjPath) :
 			int tileHeight = parentTileSet->GetTileSetInfo().m_TileHeight;
 			int tilesPerRow = parentTileSet->GetTileSetInfo().m_NumColumns;
 
-			int localId = currentTile.m_IDRelativeToParentTileSet; // should already be 0-based
+			int localId = currentTile.m_LocalID; // should already be 0-based
 			int x = (localId % tilesPerRow) * tileWidth;
 			int y = (localId / tilesPerRow) * tileHeight;
 
 			sprite.setTextureRect({ { x, y }, { tileWidth, tileHeight } });
 			sprite.setScale({ 0.75, 0.75 });
-
-			// Work out what position the sprite is in on screen
-			const uint32_t numCols = m_tmjParser->GetNumColumns();
-			const uint32_t numRows = m_tmjParser->GetNumRows();
 
 			const sf::Vector2f spritePosition = sf::Vector2f({
 				static_cast<float>((i % numCols) * /*16*/24),
@@ -213,16 +188,77 @@ TileSheet::TileSheet(const std::filesystem::path& tmjPath) :
 	}
 }
 
-
-void TileSheet::Render(sf::RenderWindow& window) const
+TileSheet::Tile TileSheet::CreateTileFromTSX(const std::shared_ptr<TSX>& parentTileset, uint32_t globalID,
+	uint32_t localID)
 {
-	for (const auto& [tileSetName, batcher] : m_tileSetSpriteBatchers) {
-		window.draw(batcher);
+	uint32_t tileFlags = Tile::Properties::None;
+	const auto& tileSetTiles = parentTileset->GetTiles();
+
+	auto foundTile = std::find_if(tileSetTiles.begin(), tileSetTiles.end(), [&](const TSX::Tile& a)
+		{
+			return a.m_ID == localID;
+		});
+
+	if (foundTile == tileSetTiles.end())
+	{
+		std::cout << "Failed to find tile with ID " << localID << " in Tileset " << parentTileset->GetTileSetInfo().m_Name << "\n";
+		// TODO: We want to return a failed value and then catch it
+		// throw;
 	}
+
+	const TSX::Tile& tsxTile = *foundTile;
+	for (const auto& tileProperties : tsxTile.m_Properties)
+	{
+		// TODO: These probably shouldn't be hardcoded!
+		if (tileProperties.m_Name == "isBarrier")
+		{
+			tileFlags |= Tile::Properties::IsBarrier;
+		}
+		else if (tileProperties.m_Name == "isBreakable")
+		{
+			tileFlags |= Tile::Properties::IsBreakable;
+		}
+		else if (tileProperties.m_Name == "isGrass")
+		{
+			tileFlags |= Tile::Properties::IsGrass;
+		}
+		else if (tileProperties.m_Name == "isWater")
+		{
+			tileFlags |= Tile::Properties::IsWater;
+		}
+		else if (tileProperties.m_Name == "isDoor")
+		{
+			tileFlags |= Tile::Properties::IsDoor;
+		}
+	}
+
+	return {
+		globalID,
+		localID,
+		tileFlags,
+		parentTileset->GetTileSetInfo().m_Name
+	};
 }
 
-TileSheet::Tile TileSheet::GetTile(const std::string& layerName, const uint32_t tileGID) const
+TileSheet::ParentTileset TileSheet::FindParentTileset(const uint32_t tileGID)
 {
-	const uint32_t offSetID = m_idMappings.at(tileGID);
-	return m_layers.at(layerName).at(offSetID);
+	// Work out which tileset it belongs to
+	std::string parentTileSetName;
+
+	for (const auto& [firstGid, tsxSource] : m_tmjParser->GetTileSets())
+	{
+		const int offset = static_cast<int>(tileGID) - static_cast<int>(firstGid) + 1;
+		if (offset >= 0)
+		{
+			for (const auto& [tileSetName, tsxTileSet] : m_tileSets)
+			{
+				if (tsxSource == tsxTileSet->GetPath())
+				{
+					return { tileSetName, firstGid };
+				}
+			}
+		}
+	}
+
+	return { "", 0xFFFF };
 }
