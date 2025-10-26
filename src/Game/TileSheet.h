@@ -52,7 +52,7 @@ private:
 	// TODO: Integrate with the TextureManager class
 	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> m_spriteSheets;
 
-	std::unordered_map<std::string, std::vector<sf::Sprite>> m_layerSprites;
+	std::unordered_map<std::string, std::vector<sf::Sprite>> m_tileSetSprites;
 	std::unordered_map<std::string, SpriteBatcher> m_tileSetSpriteBatchers;
 };
 

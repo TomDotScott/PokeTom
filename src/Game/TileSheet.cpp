@@ -174,6 +174,10 @@ TileSheet::TileSheet(const std::filesystem::path& tmjPath) :
 			const auto& parentTileSet = m_tileSets.at(currentTile.m_ParentTileSetName);
 
 			std::shared_ptr<sf::Texture> tileSheet = m_spriteSheets.at(currentTile.m_ParentTileSetName);
+			if (m_tileSetSpriteBatchers.find(currentTile.m_ParentTileSetName) == m_tileSetSpriteBatchers.end())
+			{
+				m_tileSetSpriteBatchers[currentTile.m_ParentTileSetName] = SpriteBatcher(tileSheet);
+			}
 
 			sf::Sprite sprite(*tileSheet);
 
@@ -199,25 +203,25 @@ TileSheet::TileSheet(const std::filesystem::path& tmjPath) :
 
 			sprite.setPosition(spritePosition);
 
-			m_layerSprites[currentTile.m_ParentTileSetName].emplace_back(sprite);
+			m_tileSetSprites[currentTile.m_ParentTileSetName].emplace_back(sprite);
 		}
+	}
+
+	for (const auto& [tileSetName, spritesArray] : m_tileSetSprites)
+	{
+		m_tileSetSpriteBatchers.at(tileSetName).BatchSprites(spritesArray);
 	}
 }
 
 
 void TileSheet::Render(sf::RenderWindow& window) const
 {
-	for (const auto& sprites : m_layerSprites)
-	{
-		for (const auto& sprite : sprites.second)
-		{
-			window.draw(sprite);
-		}
+	for (const auto& [tileSetName, batcher] : m_tileSetSpriteBatchers) {
+		window.draw(batcher);
 	}
-	// window.draw(m_spriteBatcher);
 }
 
-TileSheet::Tile TileSheet::GetTile(const std::string& layerName, uint32_t tileGID) const
+TileSheet::Tile TileSheet::GetTile(const std::string& layerName, const uint32_t tileGID) const
 {
 	const uint32_t offSetID = m_idMappings.at(tileGID);
 	return m_layers.at(layerName).at(offSetID);

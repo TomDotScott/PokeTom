@@ -16,11 +16,11 @@
             "scaleInEditor": 0.75
         },
         "starter_town.tmx": {
-            "scale": 1,
-            "selectedLayer": 2,
+            "scale": 0.75,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 821.5,
-                "y": 493
+                "x": 660.6666666666666,
+                "y": 146.66666666666669
             }
         }
     },

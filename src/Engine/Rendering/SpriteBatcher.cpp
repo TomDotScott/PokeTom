@@ -5,6 +5,11 @@ SpriteBatcher::SpriteBatcher(const std::shared_ptr<sf::Texture>& masterTexture) 
 {
 }
 
+SpriteBatcher::SpriteBatcher() :
+	m_masterTexture(nullptr)
+{
+}
+
 void SpriteBatcher::BatchSprites(const std::vector<sf::Sprite>& sprites)
 {
 	m_vertices.resize(sprites.size() * 6u);
@@ -13,6 +18,11 @@ void SpriteBatcher::BatchSprites(const std::vector<sf::Sprite>& sprites)
 	{
 		SetQuad(&(sprites[i]), i * 6u);
 	}
+}
+
+void SpriteBatcher::SetMasterTexture(const std::shared_ptr<sf::Texture>& masterTexture)
+{
+	m_masterTexture = masterTexture;
 }
 
 void SpriteBatcher::draw(sf::RenderTarget& target, sf::RenderStates states) const

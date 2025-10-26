@@ -10,8 +10,11 @@
 class SpriteBatcher final : public sf::Drawable
 {
 public:
-	explicit SpriteBatcher(const std::shared_ptr<sf::Texture>& masterTexture);
+	SpriteBatcher();
+	SpriteBatcher(const std::shared_ptr<sf::Texture>& masterTexture);
 	void BatchSprites(const std::vector<sf::Sprite>& sprites);
+
+	void SetMasterTexture(const std::shared_ptr<sf::Texture>& masterTexture);
 
 private:
 	std::shared_ptr<sf::Texture> m_masterTexture;
