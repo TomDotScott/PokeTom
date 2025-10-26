@@ -27,7 +27,8 @@ public:
 			All = 1 << 16
 		};
 
-		uint32_t m_ID;
+		uint32_t m_IDFromTMJ;
+		uint32_t m_IDRelativeToParentTileSet;
 		uint32_t m_Flags;
 		std::string m_ParentTileSetName;
 	};
@@ -35,19 +36,24 @@ public:
 	TileSheet(const std::filesystem::path& tmjPath);
 	void Render(sf::RenderWindow& window) const;
 
+	Tile GetTile(const std::string& layerName, uint32_t tileGID) const;
+
 private:
-	// < KEY = LAYER NAME, VALUE = < KEY = TileGID, VALUE = TileInfo > >
+	// TODO: We shouldn't have this many maps! Needs a lot of cleanup!
+	std::unordered_map<uint32_t, uint32_t> m_idMappings;
+
+	// < KEY = LAYER NAME, VALUE = < KEY = OffsetTileGID, VALUE = TileInfo > >
 	std::unordered_map<std::string, std::unordered_map<uint32_t, Tile>> m_layers;
 	std::unordered_map<std::string, std::shared_ptr<TSX>> m_tileSets;
+	std::shared_ptr<TMJ> m_tmjParser;
+
 
 	// TODO: Probably shouldn't be loaded here, but from the TSX parser itself
 	// TODO: Integrate with the TextureManager class
 	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> m_spriteSheets;
-	std::shared_ptr<TMJ> m_tmjParser;
 
-	SpriteBatcher m_spriteBatcher;
-
-	bool SetUpSpriteBatcher();
+	std::unordered_map<std::string, std::vector<sf::Sprite>> m_layerSprites;
+	std::unordered_map<std::string, SpriteBatcher> m_tileSetSpriteBatchers;
 };
 
 #endif

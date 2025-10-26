@@ -74,6 +74,16 @@ const std::vector<TMJ::TileSet>& TMJ::GetTileSets() const
 	return m_tileSets;
 }
 
+uint32_t TMJ::GetNumColumns() const
+{
+	return m_width;
+}
+
+uint32_t TMJ::GetNumRows() const
+{
+	return m_height;
+}
+
 bool TMJ::Init()
 {
 	if (!exists(m_filePath))

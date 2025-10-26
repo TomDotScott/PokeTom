@@ -29,6 +29,9 @@ public:
 
 	const std::vector<Layer>& GetLayers() const;
 	const std::vector<TileSet>& GetTileSets() const;
+	uint32_t GetNumColumns() const;
+	uint32_t GetNumRows() const;
+
 
 private:
 	std::filesystem::path m_filePath;
