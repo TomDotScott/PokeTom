@@ -12,6 +12,7 @@
 
 Game::Game()
 {
+	UIMANAGER.Load("ui.xml");
 }
 
 Game::~Game() = default;

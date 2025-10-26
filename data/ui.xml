@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<ui>
+  <Font>
+    <!-- Taken from https://github.com/tonsky/FiraCode -->
+    <name>DEFAULT</name>
+    <path>fonts/FiraCode-Regular.ttf</path>
+  </Font>
+  <Text>
+    <name>DEBUG_TEXT</name>
+    <string>Testy McTestFace</string>
+    <colour>FF0000FF</colour>
+    <position x="425" y="135"/>
+    <size>10</size>
+    <font>DEFAULT</font>
+  </Text>
+</ui>
