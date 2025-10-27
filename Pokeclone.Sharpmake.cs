@@ -20,13 +20,15 @@ public class PokeClone : Project
                 Optimization.Retail
             )
         );
+
+        SourceFiles.Add(Path.Combine(Constants.LIBS_PATH, "renenyffenegger", "base64.cpp"));
     }
 
     // Probably a bit overkill to have a class for this but it does the job
     class SFML_Dependency
     {
-        public string LibraryName;
-        public bool IsSFMLLibrary;
+        public readonly string LibraryName;
+        public readonly bool IsSFMLLibrary;
 
         public SFML_Dependency(string libraryName, bool isSFMLLibrary = false)
         {
@@ -63,8 +65,8 @@ public class PokeClone : Project
         conf.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
 
         // SFML Paths
-        conf.IncludePaths.Add(Path.Combine(Constants.PROJECT_ROOT, "SFML", "include"));
-        conf.LibraryPaths.Add(Path.Combine(Constants.PROJECT_ROOT, "SFML", "lib"));
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "SFML", "include"));
+        conf.LibraryPaths.Add(Path.Combine(Constants.LIBS_PATH, "SFML", "lib"));
 
         // This sucks. Maybe a better data structure would work but I am fed up with Sharpmake
         var sfmlDependencies = new Dictionary<SFML_Dependency, List<SFML_Dependency>>
@@ -88,10 +90,17 @@ public class PokeClone : Project
         }
 
         // ZLib Paths
-        // TODO: Move the libraries from the src folder!
-        conf.IncludePaths.Add((Path.Combine(Constants.PROJECT_ROOT, "src", "Libs", "ZLib", "include")));
-        conf.LibraryPaths.Add((Path.Combine(Constants.PROJECT_ROOT, "src", "Libs", "ZLib", "lib")));
+        conf.IncludePaths.Add((Path.Combine(Constants.LIBS_PATH, "ZLib", "include")));
+        conf.LibraryPaths.Add((Path.Combine(Constants.LIBS_PATH, "ZLib", "lib")));
         conf.LibraryFiles.Add("zlib.lib");
+
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "nlohmann"));
+
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "renenyffenegger"));
+
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "hoxml"));
+
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "magic_enum"));
 
         if (target.Optimization == Optimization.Debug)
         {

@@ -8,7 +8,6 @@
 #include "UiButton.h"
 #include "UiPanel.h"
 #include "UiText.h"
-#include "../../Libs/hoxml.h"
 #include "../Input/InputMapper.h"
 
 class UiManager
