@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Sharpmake;
@@ -18,6 +19,9 @@ public static class Main
     {
         // Find the folder of this Csharp file
         Constants.PROJECT_ROOT = Path.GetDirectoryName(GetThisFilePath());
+
+        Debug.Assert(Constants.PROJECT_ROOT != null, "Constants.PROJECT_ROOT != null");
+        Constants.LIBS_PATH = Path.Combine(Constants.PROJECT_ROOT, "Lib");
 
         arguments.Generate<PokeCloneSolution>();
     }

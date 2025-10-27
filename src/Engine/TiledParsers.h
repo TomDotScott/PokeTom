@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include "Factory.h"
-#include "../Libs/hoxml.h"
-#include "../Libs/nlohmann/json.hpp"
+#include <json.hpp>
+#include <hoxml.h>
 
 class TMJ final : public Factory<TMJ>
 {

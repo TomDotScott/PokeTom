@@ -3,8 +3,7 @@
 #include <iostream>
 #include "zlib.h"
 #include "../Engine/Globals.h"
-#include "../Libs/nlohmann/json.hpp"
-#include "../Libs/renenyffenegger/base64.h"
+#include <base64.h>
 
 namespace
 {
