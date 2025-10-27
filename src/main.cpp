@@ -46,13 +46,6 @@ int main(int argc, char** argv)
 
 	Game game{};
 
-	const TileMapData mapData = TileParser::ParseTMJ("tiled_export\\starter_town.tmj");
-	const TileLogic logic(mapData);
-	TileRenderer renderer;
-
-	auto renderData = logic.BuildRenderData();
-	renderer.BuildBatches(renderData, mapData.m_Layers);
-
 	while (window.isOpen())
 	{
 		while (const std::optional event = window.pollEvent())
@@ -75,10 +68,6 @@ int main(int argc, char** argv)
 		game.Update();
 
 		window.clear();
-
-
-
-		renderer.Render(window);
 
 		game.Render(window);
 

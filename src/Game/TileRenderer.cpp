@@ -2,6 +2,18 @@
 
 #include <iostream>
 
+#include "../Engine/Globals.h"
+
+TileRenderer::TileRenderer() :
+	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
+{
+}
+
+void TileRenderer::SetCameraCentre(const sf::Vector2f& position)
+{
+	m_cameraView.setCenter(position);
+}
+
 void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers)
 {
 	m_layerBatchers.clear();
@@ -11,7 +23,6 @@ void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const 
 	for (const auto& tile : tiles)
 	{
 		sf::Sprite sprite(*tile.m_Texture);
-		sprite.setScale({ 0.5, 0.5 });
 		sprite.setTextureRect(tile.m_TextureRect);
 		sprite.setPosition(tile.m_Position);
 		buckets[tile.m_LayerName][tile.m_Texture].push_back(sprite);
@@ -49,6 +60,8 @@ void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const 
 
 void TileRenderer::Render(sf::RenderWindow& window) const
 {
+	window.setView(m_cameraView);
+
 	for (const auto& layerBatcher : m_layerBatchers)
 	{
 		window.draw(layerBatcher.m_SpriteBatcher);

@@ -28,8 +28,8 @@ TileLogic::TileLogic(const TileMapData& data)
 				if (definition) {
 					TileInstance instance{
 						{
-							static_cast<float>((i % data.m_NumColumns) * 16),
-							static_cast<float>((i / data.m_NumColumns) * 16)
+							static_cast<float>((i % data.m_NumColumns) * 32),
+							static_cast<float>((i / data.m_NumColumns) * 32)
 						},
 						definition,
 						sheet.get(),
@@ -70,7 +70,6 @@ std::vector<TileRenderData> TileLogic::BuildRenderData() const
 			std::cout << "Warning: Tile " << localId << " rect out of bounds for " << tile.m_LayerName << "\n";
 
 		renderData.m_TextureRect = { { x, y }, { tileWidth, tileHeight } };
-		// sprite.setScale({ 0.75, 0.75 });
 
 		renderables.push_back(std::move(renderData));
 	}

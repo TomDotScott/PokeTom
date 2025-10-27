@@ -6,6 +6,8 @@
 #include "../Engine/Event.h"
 #include "../Engine/UI/UiManager.h"
 #include "../Engine/ObjectPool.h"
+#include "TileLogic.h"
+#include "TileRenderer.h"
 
 class Game
 {
@@ -18,6 +20,22 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
+	enum eInputIDs
+	{
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT,
+	};
+
+	InputMapper m_mapper;
+	sf::Vector2f m_playerPosition;
+
+	TileMapData m_mapData;
+	TileLogic m_tileLogic;
+
+	TileRenderer m_renderer;
+
 #if !BUILD_MASTER
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)

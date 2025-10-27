@@ -29,11 +29,15 @@ struct LayerBatcher
 class TileRenderer
 {
 public:
+	TileRenderer();
+	void SetCameraCentre(const sf::Vector2f& position);
 	void BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers);
 	void Render(sf::RenderWindow& window) const;
 
 private:
 	std::vector<LayerBatcher> m_layerBatchers;
+
+	sf::View m_cameraView;
 };
 
 #endif
