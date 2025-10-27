@@ -29,7 +29,7 @@ private:
 	};
 
 	InputMapper m_mapper;
-	sf::Vector2f m_playerPosition;
+	sf::Vector2f m_cameraPosition;
 
 	TileMapData m_mapData;
 	TileLogic m_tileLogic;

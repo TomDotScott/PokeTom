@@ -19,6 +19,7 @@ struct TileMapData
 	std::vector<TileLayerData> m_Layers;
 	std::unordered_map<std::string, std::shared_ptr<TileSheet>> m_TileSheets;
 	uint32_t m_NumColumns;
+	uint32_t m_NumRows;
 };
 
 class TileParser

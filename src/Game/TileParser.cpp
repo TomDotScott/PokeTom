@@ -29,6 +29,7 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 	}
 
 	data.m_NumColumns = tmjParser->GetNumColumns();
+	data.m_NumRows = tmjParser->GetNumRows();
 
 	// Load each layer
 	for (const auto& layer : tmjParser->GetLayers())

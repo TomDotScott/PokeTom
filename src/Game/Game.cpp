@@ -52,12 +52,19 @@ void Game::Update()
 		m_cameraPosition.x += speed * Timer::Get().DeltaTime();
 	}
 
-	m_renderer.SetCameraCentre(m_cameraPosition);
+	m_renderer.SetCameraCentre(m_cameraPosition, m_mapData.m_NumColumns, m_mapData.m_NumRows);
 }
 
 void Game::Render(sf::RenderWindow& window) const
 {
 	m_renderer.Render(window);
+
+#if BUILD_DEBUG
+	sf::CircleShape cameraReticle(10);
+	cameraReticle.setFillColor({ 255, 255, 255, 128 });
+	cameraReticle.setPosition(m_cameraPosition);
+	window.draw(cameraReticle);
+#endif
 
 	window.setView({
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),

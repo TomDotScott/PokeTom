@@ -9,8 +9,16 @@ TileRenderer::TileRenderer() :
 {
 }
 
-void TileRenderer::SetCameraCentre(const sf::Vector2f& position)
+void TileRenderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight)
 {
+	const sf::Vector2f halfSize = m_cameraView.getSize() / 2.f;
+	const float left = halfSize.x;
+	const float top = halfSize.y;
+	const float right = static_cast<float>(mapWidth) * 32.f - halfSize.x;
+	const float bottom = static_cast<float>(mapHeight) * 32.f - halfSize.y;
+
+	position.x = std::clamp(position.x, left, right);
+	position.y = std::clamp(position.y, top, bottom);
 	m_cameraView.setCenter(position);
 }
 
