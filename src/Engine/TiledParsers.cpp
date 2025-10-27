@@ -130,8 +130,10 @@ bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
 	}
 
 	std::vector<Layer> layers;
-	for (const auto& elem : layersArray)
+	for (int i = 0; i < layersArray.size(); ++i)
 	{
+		const auto& elem = layersArray[i];
+
 		const auto& id = elem["id"];
 		if (!id.is_number_integer())
 		{
@@ -171,7 +173,8 @@ bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
 			tileData,
 			height,
 			width,
-			name
+			name,
+			i
 		};
 
 		layers.emplace_back(layer);

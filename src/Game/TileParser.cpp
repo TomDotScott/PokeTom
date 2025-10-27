@@ -39,7 +39,7 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 			continue;
 		}
 
-		data.m_Layers.push_back({ layer.m_Name, layer.m_Data });
+		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex });
 	}
 
 	return data;

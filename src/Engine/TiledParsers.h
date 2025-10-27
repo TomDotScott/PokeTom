@@ -19,6 +19,7 @@ public:
 		uint32_t m_Height;
 		uint32_t m_Width;
 		std::string m_Name;
+		int m_ZIndex;
 	};
 
 	struct TileSet

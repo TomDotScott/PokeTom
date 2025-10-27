@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles)
+void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers)
 {
 	m_layerBatchers.clear();
 
@@ -17,21 +17,40 @@ void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles)
 		buckets[tile.m_LayerName][tile.m_Texture].push_back(sprite);
 	}
 
-	for (auto& [layerName, textureGroup] : buckets)
+	for (auto& bucket : buckets)
 	{
+		const std::string& layerName = bucket.first;
+		const auto& textureGroup = bucket.second;
+
+		const auto& layerData = std::find_if(layers.begin(), layers.end(), [&](const TileLayerData& a)
+			{
+				return a.m_Name == layerName;
+			});
+
+		if (layerData == layers.end())
+		{
+			std::cout << "TileRenderer::BuildBatcher: Error finding layer data for layerName " << layerName << "\n";
+			continue;
+		}
+
 		for (auto& [texture, sprites] : textureGroup)
 		{
 			SpriteBatcher batcher(texture);
 			batcher.BatchSprites(sprites);
-			m_layerBatchers[layerName] = std::move(batcher);
+			m_layerBatchers.push_back({ layerName, layerData->m_ZIndex, std::move(batcher) });
 		}
 	}
+
+	std::sort(m_layerBatchers.begin(), m_layerBatchers.end(), [](const LayerBatcher& a, const LayerBatcher& b)
+		{
+			return a.m_ZIndex < b.m_ZIndex;
+		});
 }
 
 void TileRenderer::Render(sf::RenderWindow& window) const
 {
-	for (const auto& [_, spriteBatcher] : m_layerBatchers)
+	for (const auto& layerBatcher : m_layerBatchers)
 	{
-		window.draw(spriteBatcher);
+		window.draw(layerBatcher.m_SpriteBatcher);
 	}
 }

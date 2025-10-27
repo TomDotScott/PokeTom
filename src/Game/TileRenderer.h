@@ -1,11 +1,11 @@
 #ifndef TILERENDERER_H
 #define TILERENDERER_H
 #include <memory>
-#include <unordered_map>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "TileParser.h"
 #include "../Engine/Rendering/SpriteBatcher.h"
 
 struct TileRenderData
@@ -16,16 +16,24 @@ struct TileRenderData
 	std::shared_ptr<sf::Texture> m_Texture;
 	sf::IntRect m_TextureRect;
 	std::string m_LayerName;
+	int m_ZIndex;
+};
+
+struct LayerBatcher
+{
+	std::string m_LayerName;
+	int m_ZIndex;
+	SpriteBatcher m_SpriteBatcher;
 };
 
 class TileRenderer
 {
 public:
-	void BuildBatches(const std::vector<TileRenderData>& tiles);
+	void BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers);
 	void Render(sf::RenderWindow& window) const;
 
 private:
-	std::unordered_map<std::string, SpriteBatcher> m_layerBatchers;
+	std::vector<LayerBatcher> m_layerBatchers;
 };
 
 #endif

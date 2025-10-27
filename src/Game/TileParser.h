@@ -11,6 +11,7 @@ struct TileLayerData
 {
 	std::string m_Name;
 	std::vector<uint32_t> m_LevelData;
+	int m_ZIndex;
 };
 
 struct TileMapData

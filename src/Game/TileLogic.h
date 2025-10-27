@@ -9,6 +9,7 @@ public:
 	TileLogic(const TileMapData& data);
 
 	std::vector<TileRenderData> BuildRenderData() const;
+	const std::vector<TileLayerData>& GetLayerData() const;
 
 private:
 	struct TileInstance
@@ -19,6 +20,8 @@ private:
 		std::string m_LayerName;
 	};
 
+	std::unordered_map<std::string, int> m_zIndexes;
+	std::vector<TileLayerData> m_layers;
 	std::vector<TileInstance> m_tiles;
 };
 

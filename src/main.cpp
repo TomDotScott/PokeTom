@@ -40,22 +40,18 @@ int main(int argc, char** argv)
 
 	GRAPHIC_SETTINGS.SetScreenSize(window.getSize());
 
-	window.setFramerateLimit(60);
+	// window.setFramerateLimit(60);
 
 	Mouse::Get().SetRelativeWindow(&window);
 
 	Game game{};
 
-	TileMapData mapData = TileParser::ParseTMJ("tiled_export\\starter_town.tmj");
-	TileLogic logic(mapData);
+	const TileMapData mapData = TileParser::ParseTMJ("tiled_export\\starter_town.tmj");
+	const TileLogic logic(mapData);
 	TileRenderer renderer;
 
-
-	const auto renderData = logic.BuildRenderData();
-
-	renderer.BuildBatches(renderData);
-
-
+	auto renderData = logic.BuildRenderData();
+	renderer.BuildBatches(renderData, mapData.m_Layers);
 
 	while (window.isOpen())
 	{
@@ -79,6 +75,8 @@ int main(int argc, char** argv)
 		game.Update();
 
 		window.clear();
+
+
 
 		renderer.Render(window);
 

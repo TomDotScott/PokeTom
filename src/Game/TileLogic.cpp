@@ -5,8 +5,12 @@
 
 TileLogic::TileLogic(const TileMapData& data)
 {
+	m_layers = data.m_Layers;
+
 	for (const auto& layer : data.m_Layers)
 	{
+		m_zIndexes[layer.m_Name] = layer.m_ZIndex;
+
 		for (size_t i = 0; i < layer.m_LevelData.size(); ++i)
 		{
 			uint32_t globalID = layer.m_LevelData[i];
@@ -52,6 +56,7 @@ std::vector<TileRenderData> TileLogic::BuildRenderData() const
 		renderData.m_Position = tile.m_Position;
 		renderData.m_Texture = tile.m_ParentSheet->GetTexture();
 		renderData.m_LayerName = tile.m_LayerName;
+		renderData.m_ZIndex = m_zIndexes.at(tile.m_LayerName);
 
 		int tileWidth = tile.m_ParentSheet->GetTileWidth();
 		int tileHeight = tile.m_ParentSheet->GetTileHeight();
@@ -71,4 +76,9 @@ std::vector<TileRenderData> TileLogic::BuildRenderData() const
 	}
 
 	return renderables;
+}
+
+const std::vector<TileLayerData>& TileLogic::GetLayerData() const
+{
+	return m_layers;
 }
