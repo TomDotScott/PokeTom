@@ -12,7 +12,7 @@
 class TileSheet
 {
 public:
-	struct Tile
+	struct TileDefinition
 	{
 		enum Properties : uint32_t
 		{
@@ -35,43 +35,30 @@ public:
 		std::string m_ParentTileSetName;
 	};
 
-	TileSheet(const std::filesystem::path& tmjPath);
-	void Render(sf::RenderWindow& window) const;
+	explicit TileSheet(const std::shared_ptr<TSX>& tsxParser, uint32_t firstGID);
+	const TileDefinition* GetTileDefinition(uint32_t localID) const;
 
-	Tile GetTile(const std::string& layerName, uint32_t tileGID) const;
+	std::shared_ptr<sf::Texture> GetTexture() const;
+	uint32_t GetNumColumns() const;
+	uint32_t GetFirstGID() const;
+
+	uint32_t GetTileWidth() const;
+	uint32_t GetTileHeight() const;
 
 private:
-	// TODO: We shouldn't have this many maps! Needs a lot of cleanup!
-	std::unordered_map<uint32_t, uint32_t> m_idMappings;
+	std::string m_name;
+	uint32_t m_firstGID;
 
-	// < KEY = LAYER NAME, VALUE = < KEY = OffsetTileGID, VALUE = TileInfo > >
-	std::unordered_map<std::string, std::unordered_map<uint32_t, Tile>> m_layers;
-	std::unordered_map<std::string, std::shared_ptr<TSX>> m_tileSets;
-	std::shared_ptr<TMJ> m_tmjParser;
+	uint32_t m_numColumns;
 
+	uint32_t m_tileWidth;
+	uint32_t m_tileHeight;
 
-	// TODO: Probably shouldn't be loaded here, but from the TSX parser itself
-	// TODO: Integrate with the TextureManager class
-	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> m_spriteSheets;
+	std::shared_ptr<sf::Texture> m_texture;
+	std::unordered_map<uint32_t, TileDefinition> m_tiles;
 
-	std::unordered_map<std::string, std::vector<sf::Sprite>> m_tileSetSprites;
-	std::unordered_map<std::string, SpriteBatcher> m_tileSetSpriteBatchers;
-
-	bool Init();
-	bool LoadTMJ() const;
-	bool LoadTileSets();
-	void BuildTileData();
-	void BuildSprites();
-
-	struct ParentTileset
-	{
-		std::string m_Name;
-		uint32_t m_FirstGID;
-	};
-
-	ParentTileset FindParentTileset(uint32_t tileGID);
-
-	Tile CreateTileFromTSX(const std::shared_ptr<TSX>& parentTileset, uint32_t globalID, uint32_t localID);
+	bool LoadTexture(const std::filesystem::path& filepath);
+	void BuildTileDefinitions(const std::shared_ptr<TSX>& tsxParser);
 };
 
 #endif

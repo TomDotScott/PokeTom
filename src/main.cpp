@@ -12,6 +12,9 @@
 #include <stdexcept>
 
 #include "Engine/Rendering/SpriteBatcher.h"
+#include "Game/TileRenderer.h"
+#include "Game/TileLogic.h"
+#include "Game/TileParser.h"
 #include "Game/TileSheet.h"
 
 GraphicSettings GRAPHIC_SETTINGS{};
@@ -20,17 +23,6 @@ RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
 int main(int argc, char** argv)
 {
 	std::cout << "zlib version: " << zlibVersion() << "\n";
-
-
-	/*SpriteBatcher batcher(std::make_shared<sf::Texture>(spriteSheetTexture));
-
-	std::vector<sf::Sprite> sprites;
-	sprites.resize(10000, sf::Sprite(spriteSheetTexture));
-
-	std::for_each(sprites.begin(), sprites.end(), SetupSprite);
-
-	batcher.BatchSprites(sprites);*/
-
 
 	sf::RenderWindow window(
 #if BUILD_DEBUG
@@ -54,7 +46,15 @@ int main(int argc, char** argv)
 
 	Game game{};
 
-	TileSheet sheet("tiled_export\\starter_town.tmj");
+	TileMapData mapData = TileParser::ParseTMJ("tiled_export\\starter_town.tmj");
+	TileLogic logic(mapData);
+	TileRenderer renderer;
+
+
+	const auto renderData = logic.BuildRenderData();
+
+	renderer.BuildBatches(renderData);
+
 
 
 	while (window.isOpen())
@@ -80,7 +80,8 @@ int main(int argc, char** argv)
 
 		window.clear();
 
-		sheet.Render(window);
+		renderer.Render(window);
+
 		game.Render(window);
 
 		window.display();
