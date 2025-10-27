@@ -1,38 +1,76 @@
-# Prerequisites
+# ------------------------------
+# Build artifacts and binaries
+# ------------------------------
 *.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
 *.obj
-
-# Precompiled Headers
-*.gch
+*.o
 *.pch
-
-# Compiled Dynamic libraries
+*.gch
+*.pdb
+*.exe
+*.dll
 *.so
 *.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
 *.a
-*.lib
-
-# Executables
-*.exe
+*.la
+*.lo
+*.slo
 *.out
 *.app
-/build_vs2022
+*.mod
+*.smod
+*.lib
+
+# ------------------------------
+# Sharpmake generated files
+# ------------------------------
+# Temporary generation artifacts
+sharpmake.autocleanupdb*
+Sharpmake.Application.log
+Sharpmake.sln
+Sharpmake.vcxproj
+SharpmakeAssemblies/
+Sharpmake.Generated/
+SharpmakeTmp/
+SharpmakeTemp/
+Sharpmake.cache
+*.Sharpmake.cache
+*.Sharpmake.tmp
+*.Sharpmake.csproj
+
+# Generated Visual Studio solutions/projects
 *.sln
+*.vcxproj*
 *.csproj
-sharpmakeautocleanupdb_debugsolution.json
-/.vs
+/.vs/
+**/Debug/
+**/Release/
+**/x64/
+**/bin/
+**/obj/
+build_vs2022/
+
+# ------------------------------
+# IDE metadata
+# ------------------------------
+.vscode/
+.idea/
+*.user
+*.suo
+*.db
+*.cache
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+*.VC.db-shm
+*.VC.db-wal
+*.VC.VC.opendb-shm
+*.VC.VC.opendb-wal
 Properties/launchSettings.json
+
+# ------------------------------
+# Exception rules
+# ------------------------------
+# Keep your Lib source folder and its contents
+!Lib/
+!Lib/**
