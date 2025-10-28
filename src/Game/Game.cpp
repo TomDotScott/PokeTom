@@ -5,11 +5,13 @@
 #include <SFML/Graphics.hpp>
 #include "../Engine/TextureManager.h"
 #include "../Engine/Globals.h"
+#include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
 #include "../Engine/Input/Keyboard.h"
 
 
 Game::Game() :
+	m_playerPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_mapData(TileParser::ParseTMJ("tiled_export\\starter_town.tmj")),
 	m_tileLogic(m_mapData)
@@ -34,23 +36,27 @@ void Game::Update()
 
 	constexpr float speed = 32.f * 5;
 
+	const float deltaTime = Timer::Get().DeltaTime();
+
 	if (m_mapper.IsButtonDown(UP))
 	{
-		m_cameraPosition.y -= speed * Timer::Get().DeltaTime();
+		m_playerPosition.y -= speed * deltaTime;
 	}
 	else if (m_mapper.IsButtonDown(DOWN))
 	{
-		m_cameraPosition.y += speed * Timer::Get().DeltaTime();
+		m_playerPosition.y += speed * deltaTime;
 	}
 
 	if (m_mapper.IsButtonDown(LEFT))
 	{
-		m_cameraPosition.x -= speed * Timer::Get().DeltaTime();
+		m_playerPosition.x -= speed * deltaTime;
 	}
 	else if (m_mapper.IsButtonDown(RIGHT))
 	{
-		m_cameraPosition.x += speed * Timer::Get().DeltaTime();
+		m_playerPosition.x += speed * deltaTime;
 	}
+
+	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_playerPosition, m_cameraVelocity, 0.25, deltaTime);
 
 	m_renderer.SetCameraCentre(m_cameraPosition, m_mapData.m_NumColumns, m_mapData.m_NumRows);
 }
@@ -60,7 +66,14 @@ void Game::Render(sf::RenderWindow& window) const
 	m_renderer.Render(window);
 
 #if BUILD_DEBUG
+	sf::RectangleShape player({ 20, 20 });
+	// player.setOrigin({ player.getLocalBounds().size.x, player.getLocalBounds().size.y });
+	player.setFillColor({ 0, 0, 255, 128 });
+	player.setPosition(m_playerPosition);
+	window.draw(player);
+
 	sf::CircleShape cameraReticle(10);
+	player.setOrigin({ cameraReticle.getLocalBounds().size.x / 2.f, cameraReticle.getLocalBounds().size.y / 2.f });
 	cameraReticle.setFillColor({ 255, 255, 255, 128 });
 	cameraReticle.setPosition(m_cameraPosition);
 	window.draw(cameraReticle);
