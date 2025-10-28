@@ -29,6 +29,12 @@ void GameObject::SetPosition(const sf::Vector2f& position)
 	m_position = position;
 }
 
+void GameObject::SetPosition(const float x, const float y)
+{
+	m_position.x = x;
+	m_position.y = y;
+}
+
 uint64_t GameObject::GetID() const
 {
 	return m_id;

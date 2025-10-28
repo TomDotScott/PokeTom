@@ -65,7 +65,8 @@ int main(int argc, char** argv)
 
 		Timer::Get().Update();
 
-		game.Update();
+		const float deltaTime = Timer::Get().DeltaTime();
+		UPDATEABLE_REGISTRY.UpdateAll(deltaTime);
 
 		window.clear();
 

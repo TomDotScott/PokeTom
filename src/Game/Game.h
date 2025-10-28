@@ -9,27 +9,18 @@
 #include "TileLogic.h"
 #include "TileRenderer.h"
 
-class Game
+class Game final : public Updateable
 {
 public:
 	Game();
-	~Game();
+	~Game() override;
 
-	void Update();
+	void Update(float deltaTime) override;
 
 	void Render(sf::RenderWindow& window) const;
 
 private:
-	enum eInputIDs
-	{
-		UP,
-		DOWN,
-		LEFT,
-		RIGHT,
-	};
-
-	InputMapper m_mapper;
-	sf::Vector2f m_playerPosition;
+	Player m_player;
 
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;

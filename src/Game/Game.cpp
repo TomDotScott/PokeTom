@@ -11,18 +11,16 @@
 
 
 Game::Game() :
-	m_playerPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
+	Updateable(),
+	m_player(),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_mapData(TileParser::ParseTMJ("tiled_export\\starter_town.tmj")),
 	m_tileLogic(m_mapData)
 {
 	UIMANAGER.Load("ui.xml");
 
-	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
-	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
-
-	m_mapper.Map(LEFT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::A));
-	m_mapper.Map(RIGHT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::D));
+	m_player.SetPosition(35.f * 32.f, 17.f * 32.f);
+	m_cameraPosition = m_player.GetPosition();
 
 	auto renderData = m_tileLogic.BuildRenderData();
 	m_renderer.BuildBatches(renderData, m_mapData.m_Layers);
@@ -30,33 +28,11 @@ Game::Game() :
 
 Game::~Game() = default;
 
-void Game::Update()
+void Game::Update(const float deltaTime)
 {
-	m_mapper.Update();
+	m_player.Update(deltaTime);
 
-	constexpr float speed = 32.f * 5;
-
-	const float deltaTime = Timer::Get().DeltaTime();
-
-	if (m_mapper.IsButtonDown(UP))
-	{
-		m_playerPosition.y -= speed * deltaTime;
-	}
-	else if (m_mapper.IsButtonDown(DOWN))
-	{
-		m_playerPosition.y += speed * deltaTime;
-	}
-
-	if (m_mapper.IsButtonDown(LEFT))
-	{
-		m_playerPosition.x -= speed * deltaTime;
-	}
-	else if (m_mapper.IsButtonDown(RIGHT))
-	{
-		m_playerPosition.x += speed * deltaTime;
-	}
-
-	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_playerPosition, m_cameraVelocity, 0.25, deltaTime);
+	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
 	m_renderer.SetCameraCentre(m_cameraPosition, m_mapData.m_NumColumns, m_mapData.m_NumRows);
 }
@@ -66,10 +42,10 @@ void Game::Render(sf::RenderWindow& window) const
 	m_renderer.Render(window);
 
 #if BUILD_DEBUG
-	sf::RectangleShape player({ 20, 20 });
+	sf::RectangleShape player({ 32, 64 });
 	// player.setOrigin({ player.getLocalBounds().size.x, player.getLocalBounds().size.y });
 	player.setFillColor({ 0, 0, 255, 128 });
-	player.setPosition(m_playerPosition);
+	player.setPosition(m_player.GetPosition());
 	window.draw(player);
 
 	sf::CircleShape cameraReticle(10);

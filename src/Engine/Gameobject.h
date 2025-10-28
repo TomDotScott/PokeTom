@@ -4,14 +4,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 
-class Updatable
-{
-public:
-	virtual ~Updatable() = default;
-
-	virtual void Update() = 0;
-};
-
 class GameObject
 {
 public:
@@ -26,6 +18,7 @@ public:
 	const sf::Vector2f& GetPosition() const { return m_position; }
 	sf::Vector2f GetPosition() { return m_position; }
 	virtual void SetPosition(const sf::Vector2f& position);
+	virtual void SetPosition(float x, float y);
 
 	uint64_t GetID() const;
 
