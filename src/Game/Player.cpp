@@ -7,7 +7,8 @@
 
 
 Player::Player() :
-	GameObject()
+	GameObject(),
+	m_movement(32.f, 5.f)
 {
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
@@ -21,23 +22,37 @@ void Player::Update(const float deltaTime)
 	// Update inputs
 	m_mapper.Update();
 
-	constexpr float speed = 32.f * 5;
+	if (!m_movement.IsMoving())
+	{
+		if (m_mapper.IsButtonDown(UP))
+		{
+			m_movement.Move(GridMovementComponent::eDirection::Up);
+		}
+		else if (m_mapper.IsButtonDown(DOWN))
+		{
+			m_movement.Move(GridMovementComponent::eDirection::Down);
+		}
+		else if (m_mapper.IsButtonDown(LEFT))
+		{
+			m_movement.Move(GridMovementComponent::eDirection::Left);
+		}
+		else if (m_mapper.IsButtonDown(RIGHT))
+		{
+			m_movement.Move(GridMovementComponent::eDirection::Right);
+		}
+	}
 
-	if (m_mapper.IsButtonDown(UP))
-	{
-		m_position.y -= speed * deltaTime;
-	}
-	else if (m_mapper.IsButtonDown(DOWN))
-	{
-		m_position.y += speed * deltaTime;
-	}
+	m_position = m_movement.GetWorldPosition();
+}
 
-	if (m_mapper.IsButtonDown(LEFT))
-	{
-		m_position.x -= speed * deltaTime;
-	}
-	else if (m_mapper.IsButtonDown(RIGHT))
-	{
-		m_position.x += speed * deltaTime;
-	}
+void Player::SetPosition(const float x, const float y)
+{
+	SetPosition({ x, y });
+}
+
+void Player::SetPosition(const sf::Vector2f& position)
+{
+	GameObject::SetPosition(position);
+
+	m_movement.SetGridPosition({ static_cast<int>(position.x) / 32, static_cast<int>(position.y) / 32 });
 }
