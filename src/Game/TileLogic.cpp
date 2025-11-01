@@ -23,9 +23,7 @@ TileLogic::TileLogic(const TileMapData& data)
 					continue;
 				}
 
-				const auto& definition = sheet->GetTileDefinition(localID - 1);
-
-				if (definition) {
+				if (const TileSheet::TileDefinition* definition = sheet->GetTileDefinition(localID - 1)) {
 					TileInstance instance{
 						{
 							static_cast<float>((i % data.m_NumColumns) * 32),
@@ -75,9 +73,4 @@ std::vector<TileRenderData> TileLogic::BuildRenderData() const
 	}
 
 	return renderables;
-}
-
-const std::vector<TileLayerData>& TileLogic::GetLayerData() const
-{
-	return m_layers;
 }

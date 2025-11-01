@@ -8,7 +8,8 @@
 
 Player::Player() :
 	GameObject(),
-	m_movement(32.f, 5.f)
+	m_movement(32.f, 5.f),
+	m_currentLevel(nullptr)
 {
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
@@ -26,19 +27,19 @@ void Player::Update(const float deltaTime)
 	{
 		if (m_mapper.IsButtonDown(UP))
 		{
-			m_movement.Move(GridMovementComponent::eDirection::Up);
+			Move(GridMovementComponent::eDirection::Up);
 		}
 		else if (m_mapper.IsButtonDown(DOWN))
 		{
-			m_movement.Move(GridMovementComponent::eDirection::Down);
+			Move(GridMovementComponent::eDirection::Down);
 		}
 		else if (m_mapper.IsButtonDown(LEFT))
 		{
-			m_movement.Move(GridMovementComponent::eDirection::Left);
+			Move(GridMovementComponent::eDirection::Left);
 		}
 		else if (m_mapper.IsButtonDown(RIGHT))
 		{
-			m_movement.Move(GridMovementComponent::eDirection::Right);
+			Move(GridMovementComponent::eDirection::Right);
 		}
 	}
 
@@ -55,4 +56,40 @@ void Player::SetPosition(const sf::Vector2f& position)
 	GameObject::SetPosition(position);
 
 	m_movement.SetGridPosition({ static_cast<int>(position.x) / 32, static_cast<int>(position.y) / 32 });
+}
+
+sf::Vector2i Player::GetGridPosition() const
+{
+	return m_movement.GetGridPosition();
+}
+
+void Player::SetLevel(const Level* level)
+{
+	m_currentLevel = level;
+}
+
+void Player::Move(const GridMovementComponent::eDirection direction)
+{
+	sf::Vector2i newGridPosition = GetGridPosition();
+
+	switch (direction)
+	{
+	case GridMovementComponent::eDirection::Up:
+		newGridPosition.y -= 1;
+		break;
+	case GridMovementComponent::eDirection::Down:
+		newGridPosition.y += 1;
+		break;
+	case GridMovementComponent::eDirection::Left:
+		newGridPosition.x -= 1;
+		break;
+	case GridMovementComponent::eDirection::Right:
+		newGridPosition.x += 1;
+		break;
+	}
+
+	if (m_currentLevel->CanMoveTo(newGridPosition.x, newGridPosition.y))
+	{
+		m_movement.Move(direction);
+	}
 }

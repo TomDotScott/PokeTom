@@ -13,17 +13,17 @@
 Game::Game() :
 	Updateable(),
 	m_player(),
-	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
-	m_mapData(TileParser::ParseTMJ("tiled_export\\starter_town.tmj")),
-	m_tileLogic(m_mapData)
+	m_level("tiled_export\\starter_town.tmj"),
+	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
 {
 	UIMANAGER.Load("ui.xml");
+
+	m_player.SetLevel(&m_level);
 
 	m_player.SetPosition(35.f * 32.f, 17.f * 32.f);
 	m_cameraPosition = m_player.GetPosition();
 
-	auto renderData = m_tileLogic.BuildRenderData();
-	m_renderer.BuildBatches(renderData, m_mapData.m_Layers);
+	m_renderer.BuildBatches(m_level.GetRenderData(), m_level.GetLayers());
 }
 
 Game::~Game() = default;
@@ -34,7 +34,7 @@ void Game::Update(const float deltaTime)
 
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
-	m_renderer.SetCameraCentre(m_cameraPosition, m_mapData.m_NumColumns, m_mapData.m_NumRows);
+	m_renderer.SetCameraCentre(m_cameraPosition, m_level.GetNumColumns(), m_level.GetNumRows());
 }
 
 void Game::Render(sf::RenderWindow& window) const
@@ -42,7 +42,7 @@ void Game::Render(sf::RenderWindow& window) const
 	m_renderer.Render(window);
 
 #if BUILD_DEBUG
-	sf::RectangleShape player({ 32, 64 });
+	sf::RectangleShape player({ 32, 32 });
 	// player.setOrigin({ player.getLocalBounds().size.x, player.getLocalBounds().size.y });
 	player.setFillColor({ 0, 0, 255, 128 });
 	player.setPosition(m_player.GetPosition());

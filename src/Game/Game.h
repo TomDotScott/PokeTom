@@ -2,6 +2,8 @@
 #define GAME_H
 #include <set>
 #include <SFML/Graphics/RectangleShape.hpp>
+
+#include "Level.h"
 #include "Player.h"
 #include "../Engine/Event.h"
 #include "../Engine/UI/UiManager.h"
@@ -21,12 +23,10 @@ public:
 
 private:
 	Player m_player;
+	Level m_level;
 
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;
-
-	TileMapData m_mapData;
-	TileLogic m_tileLogic;
 
 	TileRenderer m_renderer;
 
