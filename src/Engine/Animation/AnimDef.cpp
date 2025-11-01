@@ -3,12 +3,18 @@
 #include <fstream>
 #include <hoxml.h>
 #include <iostream>
+#include <SFML/Graphics/Image.hpp>
 
 #include "../Globals.h"
 
 const Animation& AnimationDictionary::GetClip(const std::string& name) const
 {
 	return m_animationClips.at(name);
+}
+
+const sf::Texture& AnimationDictionary::GetSpriteSheet()
+{
+	return m_spriteSheet;
 }
 
 bool AnimationDictionary::Init()
@@ -97,20 +103,9 @@ bool AnimationDictionary::ParseAnimDict(const std::filesystem::path& parentFolde
 
 			if (strcmp("Image", context->tag) == 0)
 			{
-				const std::string combinedPaths = CombinePaths(parentFolderPath.string(), context->value);
-
-				if (!std::filesystem::exists(combinedPaths))
+				if (!ParseImage(parentFolderPath, context, xml, xmlLength))
 				{
-					std::cerr << "AnimationDictionary::ParseAnimDict: Texture with path " << combinedPaths <<
-						"does not exist!\n";
-					return false;
-				}
-
-				// TODO: Think about how to integrate this with the TextureManager...
-				if (!m_spriteSheet.loadFromFile(combinedPaths))
-				{
-					std::cerr << "AnimationDictionary::ParseAnimDict: Failed to load texture from path " <<
-						combinedPaths << "\n";
+					std::cerr << "AnimationDictionary::ParseImage: Failed to parse Image from xml " << m_filepath << "\n";
 					return false;
 				}
 			}
@@ -167,6 +162,42 @@ bool AnimationDictionary::ParseAnimation(hoxml_context_t*& context, const char* 
 		else if (code == HOXML_ELEMENT_END && strcmp("Animation", context->tag) == 0)
 		{
 			m_animationClips[anim.m_Name] = anim;
+			return true;
+		}
+
+		code = hoxml_parse(context, xml, xmlLength);
+	}
+
+	return false;
+}
+
+bool AnimationDictionary::ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, const size_t xmlLength)
+{
+	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
+	while (code != HOXML_END_OF_DOCUMENT)
+	{
+		if (code == HOXML_ATTRIBUTE && strcmp("source", context->attribute) == 0)
+		{
+			const std::string combinedPaths = CombinePaths(parentFolderPath.string(), context->value);
+
+			if (!std::filesystem::exists(combinedPaths))
+			{
+				std::cerr << "AnimationDictionary::ParseAnimDict: Texture with path " << combinedPaths <<
+					"does not exist!\n";
+				return false;
+			}
+
+			// TODO: Think about how to integrate this with the TextureManager...
+			sf::Image animationSpriteSheet(combinedPaths);
+			animationSpriteSheet.createMaskFromColor(sf::Color(0x589058FF));
+			if (!m_spriteSheet.loadFromImage(animationSpriteSheet))
+			{
+				std::cerr << "AnimationDictionary::ParseAnimDict: Failed to load texture from path " <<
+					combinedPaths << "\n";
+				return false;
+			}
+
+			// TODO: Handle Width and Height
 			return true;
 		}
 

@@ -1,7 +1,11 @@
 #include "GridMovementComponent.h"
 
+#include <iostream>
+
 
 GridMovementComponent::GridMovementComponent(const float tileSize, const float tilesPerSecond) :
+	m_previousDirection(eDirection::None),
+	m_currentDirection(eDirection::None),
 	m_tileSize(tileSize),
 	m_speed(tilesPerSecond),
 	m_progress(0.f),
@@ -37,15 +41,36 @@ void GridMovementComponent::Move(const eDirection direction)
 	case eDirection::Right:
 		newPos += { 1, 0 };
 		break;
+	default:
+		std::cerr << "GridMovementComponent::Move: Unhandled case " << static_cast<int>(direction) << "!\n";
+		break;
 	}
 
+	m_previousDirection = m_currentDirection;
+	m_currentDirection = direction;
+
 	StartMove(newPos);
+}
+
+GridMovementComponent::eDirection GridMovementComponent::GetCurrentDirection() const
+{
+	return m_currentDirection;
+}
+
+GridMovementComponent::eDirection GridMovementComponent::GetPreviousDirection() const
+{
+	return m_previousDirection;
 }
 
 void GridMovementComponent::Update(const float deltaTime)
 {
 	if (!m_isMoving)
 	{
+		if (m_currentDirection != eDirection::None) {
+			m_previousDirection = m_currentDirection;
+			m_currentDirection = eDirection::None;
+		}
+
 		return;
 	}
 

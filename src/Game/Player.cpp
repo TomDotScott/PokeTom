@@ -9,7 +9,8 @@
 Player::Player() :
 	GameObject(),
 	m_movement(32.f, 5.f),
-	m_currentLevel(nullptr)
+	m_currentLevel(nullptr),
+	m_animationState(IDLE_DOWN)
 {
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
@@ -68,6 +69,69 @@ void Player::SetLevel(const Level* level)
 	m_currentLevel = level;
 }
 
+Player::eAnimationState Player::GetAnimationStateFromMovement() const
+{
+	if (m_movement.IsMoving())
+	{
+		switch (m_movement.GetCurrentDirection())
+		{
+		case GridMovementComponent::eDirection::None:
+			return IDLE_DOWN;
+		case GridMovementComponent::eDirection::Up:
+			return WALK_UP;
+		case GridMovementComponent::eDirection::Down:
+			return WALK_DOWN;
+		case GridMovementComponent::eDirection::Left:
+			return WALK_LEFT;
+		case GridMovementComponent::eDirection::Right:
+			return WALK_RIGHT;
+		}
+	}
+	else
+	{
+		switch (m_movement.GetPreviousDirection())
+		{
+		case GridMovementComponent::eDirection::None:
+			return IDLE_DOWN;
+		case GridMovementComponent::eDirection::Up:
+			return IDLE_UP;
+		case GridMovementComponent::eDirection::Down:
+			return IDLE_DOWN;
+		case GridMovementComponent::eDirection::Left:
+			return IDLE_LEFT;
+		case GridMovementComponent::eDirection::Right:
+			return IDLE_RIGHT;
+		}
+	}
+
+	return IDLE_DOWN;
+}
+
+std::string Player::GetAnimationName(const eAnimationState state)
+{
+	switch (state)
+	{
+	case IDLE_UP:
+		return "idle_up";
+	case IDLE_DOWN:
+		return "idle_down";
+	case IDLE_LEFT:
+		return "idle_left";
+	case IDLE_RIGHT:
+		return "idle_right";
+	case WALK_UP:
+		return "walk_up";
+	case WALK_DOWN:
+		return "walk_down";
+	case WALK_LEFT:
+		return "walk_left";
+	case WALK_RIGHT:
+		return "walk_right";
+	}
+
+	return "UNKNOWN";
+}
+
 void Player::Move(const GridMovementComponent::eDirection direction)
 {
 	sf::Vector2i newGridPosition = GetGridPosition();
@@ -85,6 +149,8 @@ void Player::Move(const GridMovementComponent::eDirection direction)
 		break;
 	case GridMovementComponent::eDirection::Right:
 		newGridPosition.x += 1;
+		break;
+	case GridMovementComponent::eDirection::None:
 		break;
 	}
 

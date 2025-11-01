@@ -31,6 +31,9 @@ public:
 
 	const Animation& GetClip(const std::string& name) const;
 
+	const sf::Texture& GetSpriteSheet();
+
+	// TODO: Get rid of this - I think we need a wrapper for the map below...
 	AnimationDictionary() = default;
 
 protected:
@@ -47,7 +50,7 @@ private:
 	AnimationDictionary(std::filesystem::path filepath);
 	bool ParseAnimDict(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 	bool ParseAnimation(hoxml_context_t*& context, const char* xml, size_t xmlLength);
-
+	bool ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 	bool ParseFrame(Animation& animation, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 	bool ParseAnimEnd(Animation& animation, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 };

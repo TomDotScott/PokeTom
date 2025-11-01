@@ -9,6 +9,7 @@ class GridMovementComponent : Updateable
 public:
 	enum class eDirection
 	{
+		None = -1,
 		Up,
 		Down,
 		Left,
@@ -19,6 +20,10 @@ public:
 
 	void SetGridPosition(const sf::Vector2i& gridPos);
 	void Move(eDirection direction);
+
+	eDirection GetCurrentDirection() const;
+	eDirection GetPreviousDirection() const;
+
 
 	void Update(float deltaTime) override;
 	const sf::Vector2f& GetWorldPosition() const;
@@ -32,6 +37,9 @@ private:
 	sf::Vector2f m_startPos;
 	sf::Vector2f m_endPos;
 	sf::Vector2f m_worldPos;
+
+	eDirection m_previousDirection;
+	eDirection m_currentDirection;
 
 	float m_tileSize;
 	float m_speed;
