@@ -23,7 +23,27 @@
     <Frame topLeftX="36" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
     <Frame topLeftX="4" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
     <Frame topLeftX="68" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
 
-    <OnEnd animName="idle_up" />
+  <Animation name="walk_down" looping="true">
+    <Frame topLeftX="36" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="68" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="walk_left" looping="true">
+    <Frame topLeftX="36" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="68" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="walk_right" looping="true">
+    <Frame topLeftX="36" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="68" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
   </Animation>
 </AnimDict>
