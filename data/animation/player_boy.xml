@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AnimDict version="0.1" name="player_movement">
+  <Image source="../sprites/characters/players.png" width="760" height="480" />
+
+  <Animation name="idle_up" looping="true">
+    <Frame topLeftX="4" topLeftY="4" duration="100" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="idle_down" looping="true">
+    <Frame topLeftX="4" topLeftY="36" duration="100" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="idle_left" looping="true">
+    <Frame topLeftX="4" topLeftY="68" duration="100" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="idle_right" looping="true">
+    <Frame topLeftX="4" topLeftY="100" duration="100" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="walk_up" looping="true">
+    <Frame topLeftX="36" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="4" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="68" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+
+    <OnEnd animName="idle_up" />
+  </Animation>
+</AnimDict>

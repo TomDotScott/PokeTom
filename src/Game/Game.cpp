@@ -7,6 +7,7 @@
 #include "../Engine/Globals.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
+#include "../Engine/Animation/AnimDef.h"
 #include "../Engine/Input/Keyboard.h"
 
 
