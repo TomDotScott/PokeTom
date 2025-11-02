@@ -3,7 +3,7 @@
 #include "GridMovementComponent.h"
 #include "Level.h"
 #include "../Engine/Gameobject.h"
-#include "../Engine/Updateable.h"
+#include "../Engine/Animation/AnimationPlayer.h"
 #include "../Engine/Input/InputMapper.h"
 
 class Player final : public GameObject
@@ -19,6 +19,7 @@ public:
 	sf::Vector2i GetGridPosition() const;
 
 	void SetLevel(const Level* level);
+	int GetZIndex() const;
 
 	enum eAnimationState
 	{
@@ -35,10 +36,14 @@ public:
 	eAnimationState GetAnimationStateFromMovement() const;
 	static std::string GetAnimationName(eAnimationState state);
 
+	const AnimationPlayer& GetAnimator() const;
+
 private:
 	GridMovementComponent m_movement;
 	const Level* m_currentLevel;
 	eAnimationState m_animationState;
+
+	AnimationPlayer m_animationPlayer;
 
 	enum eInputs : uint8_t
 	{

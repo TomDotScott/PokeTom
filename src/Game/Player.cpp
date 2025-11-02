@@ -10,7 +10,8 @@ Player::Player() :
 	GameObject(),
 	m_movement(32.f, 5.f),
 	m_currentLevel(nullptr),
-	m_animationState(IDLE_DOWN)
+	m_animationState(IDLE_DOWN),
+	m_animationPlayer(AnimationDictionary::Create("animation\\player_boy.xml"))
 {
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
@@ -45,6 +46,9 @@ void Player::Update(const float deltaTime)
 	}
 
 	m_position = m_movement.GetWorldPosition();
+
+	m_animationPlayer.PlayAnimation(GetAnimationName(GetAnimationStateFromMovement()), false);
+	m_animationPlayer.Update(deltaTime);
 }
 
 void Player::SetPosition(const float x, const float y)
@@ -67,6 +71,11 @@ sf::Vector2i Player::GetGridPosition() const
 void Player::SetLevel(const Level* level)
 {
 	m_currentLevel = level;
+}
+
+int Player::GetZIndex() const
+{
+	return m_currentLevel->GetPlayerZIndex();
 }
 
 Player::eAnimationState Player::GetAnimationStateFromMovement() const
@@ -130,6 +139,11 @@ std::string Player::GetAnimationName(const eAnimationState state)
 	}
 
 	return "UNKNOWN";
+}
+
+const AnimationPlayer& Player::GetAnimator() const
+{
+	return m_animationPlayer;
 }
 
 void Player::Move(const GridMovementComponent::eDirection direction)
