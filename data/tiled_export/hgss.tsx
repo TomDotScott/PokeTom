@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.11.2" name="hgss" tilewidth="32" tileheight="32" tilecount="4712" columns="8">
+ <editorsettings>
+  <export target="hgss.tsx" format="tsx"/>
+ </editorsettings>
  <image source="../sprites/hgss_overworld.png" width="256" height="18848"/>
  <tile id="0">
   <properties>
@@ -2856,7 +2859,7 @@
  </tile>
  <tile id="317">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2865,7 +2868,7 @@
  </tile>
  <tile id="318">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2874,7 +2877,7 @@
  </tile>
  <tile id="319">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2883,7 +2886,7 @@
  </tile>
  <tile id="320">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2892,7 +2895,7 @@
  </tile>
  <tile id="321">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2901,7 +2904,7 @@
  </tile>
  <tile id="322">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2928,7 +2931,7 @@
  </tile>
  <tile id="325">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2937,7 +2940,7 @@
  </tile>
  <tile id="326">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2946,7 +2949,7 @@
  </tile>
  <tile id="327">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2955,7 +2958,7 @@
  </tile>
  <tile id="328">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2964,7 +2967,7 @@
  </tile>
  <tile id="329">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -2973,7 +2976,7 @@
  </tile>
  <tile id="330">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3000,7 +3003,7 @@
  </tile>
  <tile id="333">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3018,7 +3021,7 @@
  </tile>
  <tile id="335">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3027,7 +3030,7 @@
  </tile>
  <tile id="336">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3045,7 +3048,7 @@
  </tile>
  <tile id="338">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3072,7 +3075,7 @@
  </tile>
  <tile id="341">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3090,7 +3093,7 @@
  </tile>
  <tile id="343">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3099,7 +3102,7 @@
  </tile>
  <tile id="344">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3117,7 +3120,7 @@
  </tile>
  <tile id="346">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3144,7 +3147,7 @@
  </tile>
  <tile id="349">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -3162,7 +3165,7 @@
  </tile>
  <tile id="351">
   <properties>
-   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBarrier" type="bool" value="false"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
