@@ -12,7 +12,7 @@
 #include <stdexcept>
 
 #include "Engine/Rendering/SpriteBatcher.h"
-#include "Game/TileRenderer.h"
+#include "Game/Renderer.h"
 #include "Game/TileLogic.h"
 #include "Game/TileParser.h"
 #include "Game/TileSheet.h"

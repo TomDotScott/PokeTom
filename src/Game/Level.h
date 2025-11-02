@@ -1,6 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 #include "TileLogic.h"
+#include "Renderer.h"
 
 class Level
 {
@@ -12,6 +13,8 @@ public:
 
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
+
+	uint32_t GetPlayerZIndex() const;
 
 	bool CanMoveTo(uint32_t x, uint32_t y) const;
 

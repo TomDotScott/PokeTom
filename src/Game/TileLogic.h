@@ -1,7 +1,7 @@
 #ifndef TILELOGIC_H
 #define TILELOGIC_H
 #include "TileParser.h"
-#include "TileRenderer.h"
+#include "Renderer.h"
 
 class TileLogic
 {

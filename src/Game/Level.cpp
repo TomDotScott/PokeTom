@@ -27,6 +27,12 @@ uint32_t Level::GetNumRows() const
 	return m_mapData.m_NumRows;
 }
 
+uint32_t Level::GetPlayerZIndex() const
+{
+	// TODO: Integrate this with the level somehow
+	return 2;
+}
+
 bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
 {
 	if (x >= GetNumColumns() || y >= GetNumRows())

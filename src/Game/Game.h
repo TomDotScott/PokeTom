@@ -9,7 +9,7 @@
 #include "../Engine/UI/UiManager.h"
 #include "../Engine/ObjectPool.h"
 #include "TileLogic.h"
-#include "TileRenderer.h"
+#include "Renderer.h"
 
 class Game final : public Updateable
 {
@@ -28,7 +28,7 @@ private:
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;
 
-	TileRenderer m_renderer;
+	Renderer m_renderer;
 
 #if !BUILD_MASTER
 	template<typename... Args>

@@ -1,15 +1,16 @@
-#include "TileRenderer.h"
+#include "Renderer.h"
 
 #include <iostream>
 
+#include "Player.h"
 #include "../Engine/Globals.h"
 
-TileRenderer::TileRenderer() :
+Renderer::Renderer() :
 	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
 {
 }
 
-void TileRenderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight)
+void Renderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight)
 {
 	const sf::Vector2f halfSize = m_cameraView.getSize() / 2.f;
 	const float left = halfSize.x;
@@ -22,7 +23,7 @@ void TileRenderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidt
 	m_cameraView.setCenter(position);
 }
 
-void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers)
+void Renderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers)
 {
 	m_layerBatchers.clear();
 
@@ -48,7 +49,7 @@ void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const 
 
 		if (layerData == layers.end())
 		{
-			std::cout << "TileRenderer::BuildBatcher: Error finding layer data for layerName " << layerName << "\n";
+			std::cout << "Renderer::BuildBatcher: Error finding layer data for layerName " << layerName << "\n";
 			continue;
 		}
 
@@ -66,12 +67,31 @@ void TileRenderer::BuildBatches(const std::vector<TileRenderData>& tiles, const 
 		});
 }
 
-void TileRenderer::Render(sf::RenderWindow& window) const
+void Renderer::Render(sf::RenderWindow& window, const Player& player) const
 {
 	window.setView(m_cameraView);
 
 	for (const auto& layerBatcher : m_layerBatchers)
 	{
 		window.draw(layerBatcher.m_SpriteBatcher);
+
+		if (layerBatcher.m_ZIndex == player.GetZIndex())
+		{
+			// TODO: Come up with a proper way to render all the Entities in the level
+			// TODO: Make this generic and reusable - everything has walking animations
+			sf::Sprite playerSprite(player.GetAnimator().GetTexture());
+			const AnimationFrame& currentFrame = player.GetAnimator().GetCurrentFrame();
+
+			playerSprite.setTextureRect({
+				{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
+				{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
+				});
+
+			playerSprite.setOrigin({ playerSprite.getLocalBounds().size.x / 2, playerSprite.getLocalBounds().size.y / 2 });
+			playerSprite.setPosition(player.GetPosition() + sf::Vector2f{ 16, 0 });
+
+			playerSprite.setScale({ 2, 2 });
+			window.draw(playerSprite);
+		}
 	}
 }

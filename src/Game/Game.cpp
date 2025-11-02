@@ -40,9 +40,9 @@ void Game::Update(const float deltaTime)
 void Game::Render(sf::RenderWindow& window) const
 {
 	// TODO: Figure out how to draw the Entities at their relevant z-levels!
-	m_renderer.Render(window);
+	m_renderer.Render(window, m_player);
 
-#if BUILD_DEBUG
+#if BUILD_DEBUG && 0
 	sf::RectangleShape player({ 32, 32 });
 	player.setFillColor({ 0, 0, 255, 128 });
 	player.setPosition(m_player.GetPosition());

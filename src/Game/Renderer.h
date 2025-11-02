@@ -8,6 +8,8 @@
 #include "TileParser.h"
 #include "../Engine/Rendering/SpriteBatcher.h"
 
+class Player;
+
 struct TileRenderData
 {
 	uint32_t m_GlobalID;
@@ -26,16 +28,16 @@ struct LayerBatcher
 	SpriteBatcher m_SpriteBatcher;
 };
 
-class TileRenderer
+class Renderer
 {
 public:
-	TileRenderer();
+	Renderer();
 
 	// Sets the position of the camera view, clamped to the width and height of the map
 	void SetCameraCentre(sf::Vector2f position, uint32_t mapWidth, uint32_t mapHeight);
 
 	void BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers);
-	void Render(sf::RenderWindow& window) const;
+	void Render(sf::RenderWindow& window, const Player& player) const;
 
 private:
 	std::vector<LayerBatcher> m_layerBatchers;
