@@ -71,12 +71,11 @@ public class PokeClone : Project
         // This sucks. Maybe a better data structure would work but I am fed up with Sharpmake
         var sfmlDependencies = new Dictionary<SFML_Dependency, List<SFML_Dependency>>
         {
-            { new("sfml-main", true), new List<SFML_Dependency>() },
-            { new("sfml-graphics", true), new List<SFML_Dependency> { new("sfml-window", true), new("sfml-system", true), new("opengl32"), new("freetype") } },
-            { new("sfml-window", true), new List<SFML_Dependency>{ new("sfml-system", true), new("opengl32"), new("winmm"), new("gdi32") } },
+            { new("sfml-graphics", true), new List<SFML_Dependency>{ new("sfml-window", true), new("sfml-system", true), new("opengl32"), new("freetype") } },
+            { new("sfml-window", true), new List<SFML_Dependency>{ new("sfml-system", true), new("winmm"), new("gdi32") } },
             { new("sfml-audio", true), new List<SFML_Dependency>{ new("sfml-system", true), new("flac"), new("vorbisenc"), new("vorbisfile"), new("vorbis"), new("ogg") } },
             { new("sfml-network", true), new List<SFML_Dependency>{ new("sfml-system", true), new("ws2_32") } },
-            { new("sfml-system", true), new List<SFML_Dependency> { new("winmm") } }
+            { new("sfml-system", true), new List<SFML_Dependency>{ new("winmm") } }
         };
 
         foreach (var pair in sfmlDependencies)
@@ -89,9 +88,9 @@ public class PokeClone : Project
             }
         }
 
-        // ZLib Paths
-        conf.IncludePaths.Add((Path.Combine(Constants.LIBS_PATH, "ZLib", "include")));
-        conf.LibraryPaths.Add((Path.Combine(Constants.LIBS_PATH, "ZLib", "lib")));
+        // ZLib paths
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "ZLib", "include"));
+        conf.LibraryPaths.Add(Path.Combine(Constants.LIBS_PATH, "ZLib", "lib"));
         conf.LibraryFiles.Add("zlib.lib");
 
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "nlohmann"));
@@ -128,6 +127,7 @@ public class PokeClone : Project
 
         conf.Options.Add(Options.Vc.Compiler.Exceptions.Enable);
 
+        // **Important for static SFML**
         conf.Defines.Add("SFML_STATIC");
 
         conf.VcxprojUserFile = new Configuration.VcxprojUserFileSettings
