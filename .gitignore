@@ -76,4 +76,5 @@ Properties/launchSettings.json
 !Lib/**
 
 # Ignore generated SFML folder
+build_sfmldb/
 Lib/SFML/

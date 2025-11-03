@@ -55,10 +55,3 @@ echo ===============================
 
 cmake --build . --config Release --target INSTALL
 cmake --build . --config Debug   --target INSTALL
-
-:: ----------------------
-:: Prepare SFML folder
-:: ----------------------
-if exist "%SFML_DIR%\include" rmdir /s /q "%SFML_DIR%\include"
-if exist "%SFML_DIR%\lib"     rmdir /s /q "%SFML_DIR%\lib"
-if exist "%SFML_DIR%\bin"     rmdir /s /q "%SFML_DIR%\bin"
