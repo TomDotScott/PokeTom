@@ -16,7 +16,7 @@ public:
 		Right
 	};
 
-	GridMovementComponent(float tileSize, float tilesPerSecond);
+	GridMovementComponent(float tileSize, float walkTilesPerSecond, float sprintTilesPerSecond);
 
 	void SetGridPosition(const sf::Vector2i& gridPos);
 	void Move(eDirection direction);
@@ -24,12 +24,14 @@ public:
 	eDirection GetCurrentDirection() const;
 	eDirection GetPreviousDirection() const;
 
-
 	void Update(float deltaTime) override;
 	const sf::Vector2f& GetWorldPosition() const;
 
 	bool IsMoving() const;
 	sf::Vector2i GetGridPosition() const;
+
+	void SetSprinting(bool isSprinting);
+	bool IsSprinting() const;
 
 private:
 	sf::Vector2i m_gridPos;
@@ -43,6 +45,8 @@ private:
 
 	float m_tileSize;
 	float m_speed;
+	float m_sprintSpeed;
+	bool m_isSprinting;
 	float m_progress;
 	bool m_isMoving;
 

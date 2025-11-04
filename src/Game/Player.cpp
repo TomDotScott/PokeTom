@@ -8,7 +8,7 @@
 
 Player::Player() :
 	GameObject(),
-	m_movement(32.f, 5.f),
+	m_movement(32.f, 3.f, 7.5f),
 	m_currentLevel(nullptr),
 	m_animationState(IDLE_DOWN),
 	m_animationPlayer(AnimationDictionary::Create("animation\\player_boy.xml"))
@@ -18,6 +18,8 @@ Player::Player() :
 
 	m_mapper.Map(LEFT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::A));
 	m_mapper.Map(RIGHT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::D));
+
+	m_mapper.Map(SPRINT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::LShift));
 }
 
 void Player::Update(const float deltaTime)
@@ -44,6 +46,8 @@ void Player::Update(const float deltaTime)
 			Move(GridMovementComponent::eDirection::Right);
 		}
 	}
+
+	m_movement.SetSprinting(m_mapper.IsButtonDown(SPRINT));
 
 	m_position = m_movement.GetWorldPosition();
 
@@ -82,18 +86,36 @@ Player::eAnimationState Player::GetAnimationStateFromMovement() const
 {
 	if (m_movement.IsMoving())
 	{
-		switch (m_movement.GetCurrentDirection())
+		if (m_movement.IsSprinting()) {
+			switch (m_movement.GetCurrentDirection())
+			{
+			case GridMovementComponent::eDirection::None:
+				return RUN_DOWN;
+			case GridMovementComponent::eDirection::Up:
+				return RUN_UP;
+			case GridMovementComponent::eDirection::Down:
+				return RUN_DOWN;
+			case GridMovementComponent::eDirection::Left:
+				return RUN_LEFT;
+			case GridMovementComponent::eDirection::Right:
+				return RUN_RIGHT;
+			}
+		}
+		else
 		{
-		case GridMovementComponent::eDirection::None:
-			return IDLE_DOWN;
-		case GridMovementComponent::eDirection::Up:
-			return WALK_UP;
-		case GridMovementComponent::eDirection::Down:
-			return WALK_DOWN;
-		case GridMovementComponent::eDirection::Left:
-			return WALK_LEFT;
-		case GridMovementComponent::eDirection::Right:
-			return WALK_RIGHT;
+			switch (m_movement.GetCurrentDirection())
+			{
+			case GridMovementComponent::eDirection::None:
+				return IDLE_DOWN;
+			case GridMovementComponent::eDirection::Up:
+				return WALK_UP;
+			case GridMovementComponent::eDirection::Down:
+				return WALK_DOWN;
+			case GridMovementComponent::eDirection::Left:
+				return WALK_LEFT;
+			case GridMovementComponent::eDirection::Right:
+				return WALK_RIGHT;
+			}
 		}
 	}
 	else
@@ -136,6 +158,14 @@ std::string Player::GetAnimationName(const eAnimationState state)
 		return "walk_left";
 	case WALK_RIGHT:
 		return "walk_right";
+	case RUN_UP:
+		return "run_up";
+	case RUN_DOWN:
+		return "run_down";
+	case RUN_LEFT:
+		return "run_left";
+	case RUN_RIGHT:
+		return "run_right";
 	}
 
 	return "UNKNOWN";

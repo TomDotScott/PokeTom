@@ -32,6 +32,11 @@ public:
 		WALK_DOWN,
 		WALK_LEFT,
 		WALK_RIGHT,
+
+		RUN_UP,
+		RUN_DOWN,
+		RUN_LEFT,
+		RUN_RIGHT,
 	};
 	eAnimationState GetAnimationStateFromMovement() const;
 	static std::string GetAnimationName(eAnimationState state);
@@ -51,6 +56,7 @@ private:
 		DOWN,
 		LEFT,
 		RIGHT,
+		SPRINT
 	};
 	InputMapper m_mapper;
 

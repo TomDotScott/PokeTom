@@ -46,4 +46,32 @@
     <Frame topLeftX="68" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
     <Frame topLeftX="4" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
   </Animation>
+
+  <Animation name="run_up" looping="true">
+    <Frame topLeftX="144" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="176" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="4" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="run_down" looping="true">
+    <Frame topLeftX="144" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="176" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="36" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="run_left" looping="true">
+    <Frame topLeftX="144" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="176" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="68" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="run_right" looping="true">
+    <Frame topLeftX="144" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="176" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+    <Frame topLeftX="112" topLeftY="100" duration="250" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
 </AnimDict>

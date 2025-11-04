@@ -3,11 +3,13 @@
 #include <iostream>
 
 
-GridMovementComponent::GridMovementComponent(const float tileSize, const float tilesPerSecond) :
+GridMovementComponent::GridMovementComponent(const float tileSize, const float walkTilesPerSecond, const float sprintTilesPerSecond) :
 	m_previousDirection(eDirection::None),
 	m_currentDirection(eDirection::None),
 	m_tileSize(tileSize),
-	m_speed(tilesPerSecond),
+	m_speed(walkTilesPerSecond),
+	m_sprintSpeed(sprintTilesPerSecond),
+	m_isSprinting(false),
 	m_progress(0.f),
 	m_isMoving(false)
 {
@@ -66,7 +68,8 @@ void GridMovementComponent::Update(const float deltaTime)
 {
 	if (!m_isMoving)
 	{
-		if (m_currentDirection != eDirection::None) {
+		if (m_currentDirection != eDirection::None)
+		{
 			m_previousDirection = m_currentDirection;
 			m_currentDirection = eDirection::None;
 		}
@@ -74,7 +77,14 @@ void GridMovementComponent::Update(const float deltaTime)
 		return;
 	}
 
-	m_progress += m_speed * deltaTime;
+	float speed = m_speed;
+	if (m_isSprinting)
+	{
+		speed = m_sprintSpeed;
+	}
+
+	m_progress += speed * deltaTime;
+
 	if (m_progress >= 1.f)
 	{
 		m_progress = 1.f;
@@ -98,6 +108,16 @@ bool GridMovementComponent::IsMoving() const
 sf::Vector2i GridMovementComponent::GetGridPosition() const
 {
 	return m_gridPos;
+}
+
+void GridMovementComponent::SetSprinting(const bool isSprinting)
+{
+	m_isSprinting = isSprinting;
+}
+
+bool GridMovementComponent::IsSprinting() const
+{
+	return m_isSprinting;
 }
 
 void GridMovementComponent::StartMove(const sf::Vector2i& newGridPos)
