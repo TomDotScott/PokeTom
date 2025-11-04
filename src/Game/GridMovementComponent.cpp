@@ -82,10 +82,7 @@ void GridMovementComponent::Update(const float deltaTime)
 		m_gridPos = m_targetGridPos;
 	}
 
-	float t = m_progress;
-	t = t * t * (3.f - 2.f * t);
-
-	m_worldPos = m_startPos + (m_endPos - m_startPos) * t;
+	m_worldPos = m_startPos + (m_endPos - m_startPos) * m_progress;
 }
 
 const sf::Vector2f& GridMovementComponent::GetWorldPosition() const
