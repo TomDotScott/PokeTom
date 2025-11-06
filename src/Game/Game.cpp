@@ -13,14 +13,14 @@
 Game::Game() :
 	Updateable(),
 	m_player(),
-	m_level("tiled_export\\starter_town.tmj"),
+	m_level("tiled_export\\player_house.tmj"),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
 {
 	UIMANAGER.Load("ui.xml");
 
 	m_player.SetLevel(&m_level);
 
-	m_player.SetPosition(35.f * 32.f, 17.f * 32.f);
+	m_player.SetPosition(5 * 32, 9 * 32);
 	m_cameraPosition = m_player.GetPosition();
 
 	m_renderer.BuildBatches(m_level.GetRenderData(), m_level.GetLayers());

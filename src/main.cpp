@@ -46,6 +46,8 @@ int main(int argc, char** argv)
 
 	Game game{};
 
+	constexpr sf::Color clearColour(0x2B2B2BFF);
+
 	while (window.isOpen())
 	{
 		while (const std::optional event = window.pollEvent())
@@ -68,7 +70,7 @@ int main(int argc, char** argv)
 		const float deltaTime = Timer::Get().DeltaTime();
 		UPDATEABLE_REGISTRY.UpdateAll(deltaTime);
 
-		window.clear();
+		window.clear(clearColour);
 
 		game.Render(window);
 

@@ -12,14 +12,31 @@ Renderer::Renderer() :
 
 void Renderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight)
 {
-	const sf::Vector2f halfSize = m_cameraView.getSize() / 2.f;
-	const float left = halfSize.x;
-	const float top = halfSize.y;
-	const float right = static_cast<float>(mapWidth) * 32.f - halfSize.x;
-	const float bottom = static_cast<float>(mapHeight) * 32.f - halfSize.y;
+	const sf::Vector2f mapSizePixels = { static_cast<float>(mapWidth) * 32.f, static_cast<float>(mapHeight) * 32.f };
+	const sf::Vector2f viewSize = m_cameraView.getSize();
+	const sf::Vector2f halfView = viewSize / 2.f;
 
-	position.x = std::clamp(position.x, left, right);
-	position.y = std::clamp(position.y, top, bottom);
+	sf::Vector2f minBound = halfView;
+	sf::Vector2f maxBound = mapSizePixels - halfView;
+
+	if (mapSizePixels.x < viewSize.x)
+	{
+		position.x = mapSizePixels.x / 2.f;
+	}
+	else
+	{
+		position.x = std::clamp(position.x, minBound.x, maxBound.x);
+	}
+
+	if (mapSizePixels.y < viewSize.y)
+	{
+		position.y = mapSizePixels.y / 2.f;
+	}
+	else
+	{
+		position.y = std::clamp(position.y, minBound.y, maxBound.y);
+	}
+
 	m_cameraView.setCenter(position);
 }
 
