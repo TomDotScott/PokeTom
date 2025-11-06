@@ -68,6 +68,11 @@ build_vs2022/
 *.VC.VC.opendb-wal
 Properties/launchSettings.json
 
+# -----------------------------
+# Tiled Projects
+# -----------------------------
+*.tiled-session
+
 # ------------------------------
 # Exception rules
 # ------------------------------
