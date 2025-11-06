@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="12" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="1">
+ <editorsettings>
+  <export target="../../data/tiled_export/player_bedroom.tmj" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../../data/tiled_export/interiors.tsx"/>
+ <layer id="1" name="Background" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJzLZWBgyB3FwxYDAFFgMxk=
+  </data>
+ </layer>
+ <layer id="5" name="Floor" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJwrYGBgWEsA5zMgQB4Qr2PEj3PQ1KuxMTDoM0PwBiZUnIhFfRpQfToQZ7BhqgfhNUjuIkY9srtA6pcB1S0H4hU41MMwTD0+NfRWbwDEukRifSAGAL8MQGg=
+  </data>
+ </layer>
+ <layer id="6" name="Decor" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAMpDIRVvOYmYFBHkg/BdJLgeqTgDiZgL54JPYioNrFRNhDLnjEjMp/ALTrIQn2KQD1KzITVocMFpOonlwAAC+sCQQ=
+  </data>
+ </layer>
+ <layer id="7" name="On Top of Player" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxkAAAHgAAE=
+  </data>
+ </layer>
+ <layer id="8" name="Top Layer" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxkAAAHgAAE=
+  </data>
+ </layer>
+</map>
