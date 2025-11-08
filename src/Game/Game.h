@@ -44,6 +44,8 @@ private:
 		}
 	}
 #endif
+
+	void TransitionLevel(const std::filesystem::path& newLevel);
 };
 
 

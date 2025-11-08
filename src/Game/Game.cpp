@@ -10,20 +10,17 @@
 #include "../Engine/Animation/AnimDef.h"
 #include "../Engine/Input/Keyboard.h"
 
+const std::filesystem::path START_LEVEL = "tiled_export\\player_bedroom.tmj";
+
 Game::Game() :
 	Updateable(),
 	m_player(),
-	m_level("tiled_export\\player_house.tmj"),
+	m_level(START_LEVEL),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
 {
 	UIMANAGER.Load("ui.xml");
 
-	m_player.SetLevel(&m_level);
-
-	m_player.SetPosition(5 * 32, 9 * 32);
-	m_cameraPosition = m_player.GetPosition();
-
-	m_renderer.BuildBatches(m_level.GetRenderData(), m_level.GetLayers());
+	TransitionLevel(START_LEVEL);
 }
 
 Game::~Game() = default;
@@ -35,11 +32,16 @@ void Game::Update(const float deltaTime)
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
 	m_renderer.SetCameraCentre(m_cameraPosition, m_level.GetNumColumns(), m_level.GetNumRows());
+
+	// If the player is on a door, start a level transition
+	if (const DoorData* doorData = m_level.GetDoorPlayerIsOver(m_player.GetGridPosition()))
+	{
+		TransitionLevel(doorData->m_LevelToLoad);
+	}
 }
 
 void Game::Render(sf::RenderWindow& window) const
 {
-	// TODO: Figure out how to draw the Entities at their relevant z-levels!
 	m_renderer.Render(window, m_player);
 
 #if BUILD_DEBUG && 0
@@ -73,4 +75,15 @@ void Game::Render(sf::RenderWindow& window) const
 #if !BUILD_MASTER
 	DrawText(window, sf::Vector2f{ 0, 10 }, 30, "%.1fFPS", Timer::Get().Fps());
 #endif
+}
+
+void Game::TransitionLevel(const std::filesystem::path& newLevel)
+{
+	m_level = Level(newLevel);
+	m_player.SetLevel(&m_level);
+
+	m_player.SetPosition(3 * 32, 3 * 32);
+	m_cameraPosition = m_player.GetPosition();
+
+	m_renderer.BuildBatches(m_level.GetRenderData(), m_level.GetLayers());
 }
