@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="9">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="14">
  <editorsettings>
   <export target="../../data/tiled_export/starter_town.tmj" format="json"/>
  </editorsettings>
@@ -36,4 +36,11 @@
    eJztztEJABAUQFFboExjEbsZxWSG8Ap1zv+tmxK8qZfbBxBn5tsHAADwp9HO+lVjPgAA+MsGzVMCag==
   </data>
  </layer>
+ <objectgroup id="10" name="Doors">
+  <object id="12" name="player_house" x="416" y="320" width="32" height="32">
+   <properties>
+    <property name="LevelToLoad" type="file" value="../../data/tiled_export/player_house.tmj"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
