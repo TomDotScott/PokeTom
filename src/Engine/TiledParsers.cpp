@@ -68,6 +68,11 @@ const std::vector<TMJ::Layer>& TMJ::GetLayers() const
 	return m_layers;
 }
 
+const std::vector<TMJ::Door>& TMJ::GetDoors() const
+{
+	return m_doors;
+}
+
 const std::vector<TMJ::TileSet>& TMJ::GetTileSets() const
 {
 	return m_tileSets;
@@ -133,6 +138,25 @@ bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
 	{
 		const auto& elem = layersArray[i];
 
+		const auto& name = elem["name"];
+		if (!name.is_string())
+		{
+			return false;
+		}
+
+		// TODO: Support more object layers than just the doors
+		// TODO: Does "Portals" make more sense than "Doors"?
+		if (std::string{ name } == "Doors")
+		{
+			if (ParseDoors(elem))
+			{
+				// The "Doors" Object Layer is treated here. We don't want to parse the rest to avoid exceptions thrown, safely move onto the next layer
+				continue;
+			}
+
+			return false;
+		}
+
 		const auto& id = elem["id"];
 		if (!id.is_number_integer())
 		{
@@ -147,12 +171,6 @@ bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
 
 		const auto& width = elem["width"];
 		if (!width.is_number_integer())
-		{
-			return false;
-		}
-
-		const auto& name = elem["name"];
-		if (!name.is_string())
 		{
 			return false;
 		}
@@ -180,6 +198,87 @@ bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
 	}
 
 	m_layers = layers;
+
+	return true;
+}
+
+
+bool TMJ::ParseDoors(const nlohmann::basic_json<>& doorsLayerObj)
+{
+	const auto& doorObjects = doorsLayerObj["objects"];
+	if (!doorObjects.is_array())
+	{
+		std::cerr << "TMJ::ParseDoors: \"Objects\" is NOT an array!\n";
+		return false;
+	}
+
+	m_doors.reserve(doorObjects.size());
+	for (const auto& doorObj : doorObjects)
+	{
+		const auto& properties = doorObj["properties"];
+		if (!properties.is_array())
+		{
+			return false;
+		}
+
+		std::string levelToLoad = "UNKNOWN";
+		for (const auto& property : properties)
+		{
+			const auto& propertyName = property["name"];
+			if (!propertyName.is_string())
+			{
+				return false;
+			}
+
+			if (std::string{ propertyName } == "LevelToLoad")
+			{
+				const auto& propertyVal = property["value"];
+				if (!propertyVal.is_string())
+				{
+					return false;
+				}
+
+				levelToLoad = propertyVal;
+			}
+			else
+			{
+				// TODO: Might support more properties in the future
+				continue;
+			}
+		}
+
+		const auto& height = doorObj["height"];
+		if (!height.is_number())
+		{
+			return false;
+		}
+
+		const auto& width = doorObj["width"];
+		if (!width.is_number())
+		{
+			return false;
+		}
+
+		const auto& x = doorObj["x"];
+		if (!x.is_number())
+		{
+			return false;
+		}
+
+		const auto& y = doorObj["y"];
+		if (!y.is_number())
+		{
+			return false;
+		}
+
+		m_doors.push_back({
+			levelToLoad,
+			height,
+			width,
+			x,
+			y
+			});
+	}
 
 	return true;
 }

@@ -12,6 +12,15 @@ class TMJ final : public Factory<TMJ>
 	friend class Factory<TMJ>;
 
 public:
+	struct Door
+	{
+		std::filesystem::path m_LevelToLoad;
+		uint32_t m_Height;
+		uint32_t m_Width;
+		uint32_t m_X;
+		uint32_t m_Y;
+	};
+
 	struct Layer
 	{
 		uint32_t m_ID;
@@ -29,6 +38,7 @@ public:
 	};
 
 	const std::vector<Layer>& GetLayers() const;
+	const std::vector<Door>& GetDoors() const;
 	const std::vector<TileSet>& GetTileSets() const;
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
@@ -39,6 +49,7 @@ private:
 	uint32_t m_height;
 	uint32_t m_width;
 	std::vector<Layer> m_layers;
+	std::vector<Door> m_doors;
 
 	// The GIDs are sorted from highest to lowest
 	std::vector<TileSet> m_tileSets;
@@ -47,6 +58,7 @@ private:
 	explicit TMJ(std::filesystem::path path);
 	bool ParseLayers(const nlohmann::basic_json<>& layersArray);
 	bool ParseTileSets(const nlohmann::basic_json<>& tileSetsArray);
+	bool ParseDoors(const nlohmann::basic_json<>& doorsLayerObj);
 };
 
 

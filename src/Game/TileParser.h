@@ -14,9 +14,17 @@ struct TileLayerData
 	int m_ZIndex;
 };
 
+struct DoorData
+{
+	std::filesystem::path m_LevelToLoad;
+	sf::Vector2i m_Size;
+	sf::Vector2i m_GridPosition;
+};
+
 struct TileMapData
 {
 	std::vector<TileLayerData> m_Layers;
+	std::vector<DoorData> m_Doors;
 	std::unordered_map<std::string, std::shared_ptr<TileSheet>> m_TileSheets;
 	uint32_t m_NumColumns;
 	uint32_t m_NumRows;

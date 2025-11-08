@@ -6,7 +6,7 @@
 TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 {
 	TileMapData data;
-	auto tmjParser = TMJ::Create(tmjPath);
+	const auto tmjParser = TMJ::Create(tmjPath);
 
 	if (!tmjParser)
 	{
@@ -24,7 +24,7 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 			continue;
 		}
 
-		auto tileSheet = std::make_shared<TileSheet>(tsx, tileset.m_FirstGid);
+		const auto tileSheet = std::make_shared<TileSheet>(tsx, tileset.m_FirstGid);
 		data.m_TileSheets[tsx->GetTileSetInfo().m_Name] = tileSheet;
 	}
 
@@ -41,6 +41,25 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 		}
 
 		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex });
+	}
+
+	const auto& doors = tmjParser->GetDoors();
+	data.m_Doors.reserve(doors.size());
+	for (const auto& door : doors)
+	{
+		DoorData doorData{
+			door.m_LevelToLoad,
+			{
+				static_cast<int>(door.m_Width) / 32,
+				static_cast<int>(door.m_Height) / 32
+			},
+			{
+				static_cast<int>(door.m_X) / 32,
+				static_cast<int>(door.m_Y) / 32
+			}
+		};
+
+		data.m_Doors.emplace_back(doorData);
 	}
 
 	return data;
