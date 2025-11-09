@@ -61,6 +61,9 @@ private:
 	InputMapper m_mapper;
 
 	void Move(GridMovementComponent::eDirection direction);
+	static eAnimationState GetWalkAnimationState(GridMovementComponent::eDirection direction);
+	static eAnimationState GetIdleAnimationState(GridMovementComponent::eDirection direction);
+	static eAnimationState GetSprintAnimationState(GridMovementComponent::eDirection direction);
 };
 
 #endif

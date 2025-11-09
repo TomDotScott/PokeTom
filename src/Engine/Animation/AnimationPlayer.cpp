@@ -3,6 +3,7 @@
 
 AnimationPlayer::AnimationPlayer(const std::shared_ptr<AnimationDictionary>& dict) :
 	m_dictionary(dict),
+	m_currentAnimName("idle_down"),
 	m_frameIndex(0),
 	m_frameTime(0.f)
 {

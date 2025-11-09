@@ -82,60 +82,30 @@ int Player::GetZIndex() const
 	return m_currentLevel->GetPlayerZIndex();
 }
 
+// TODO: This could do with a refactor to have a PlayerState machine
 Player::eAnimationState Player::GetAnimationStateFromMovement() const
 {
 	if (m_movement.IsMoving())
 	{
 		if (m_movement.IsSprinting()) {
-			switch (m_movement.GetCurrentDirection())
-			{
-			case GridMovementComponent::eDirection::None:
-				return RUN_DOWN;
-			case GridMovementComponent::eDirection::Up:
-				return RUN_UP;
-			case GridMovementComponent::eDirection::Down:
-				return RUN_DOWN;
-			case GridMovementComponent::eDirection::Left:
-				return RUN_LEFT;
-			case GridMovementComponent::eDirection::Right:
-				return RUN_RIGHT;
-			}
+			return GetSprintAnimationState(m_movement.GetCurrentDirection());
 		}
 		else
 		{
-			switch (m_movement.GetCurrentDirection())
-			{
-			case GridMovementComponent::eDirection::None:
-				return IDLE_DOWN;
-			case GridMovementComponent::eDirection::Up:
-				return WALK_UP;
-			case GridMovementComponent::eDirection::Down:
-				return WALK_DOWN;
-			case GridMovementComponent::eDirection::Left:
-				return WALK_LEFT;
-			case GridMovementComponent::eDirection::Right:
-				return WALK_RIGHT;
-			}
+			return GetWalkAnimationState(m_movement.GetCurrentDirection());
 		}
 	}
 	else
 	{
-		switch (m_movement.GetPreviousDirection())
+		// For a frame, PreviousDirection is None but the Current direction isn't, which leads to some flickering where it goes to the Idle
+		if (m_movement.GetPreviousDirection() == GridMovementComponent::eDirection::None)
 		{
-		case GridMovementComponent::eDirection::None:
-			return IDLE_DOWN;
-		case GridMovementComponent::eDirection::Up:
-			return IDLE_UP;
-		case GridMovementComponent::eDirection::Down:
-			return IDLE_DOWN;
-		case GridMovementComponent::eDirection::Left:
-			return IDLE_LEFT;
-		case GridMovementComponent::eDirection::Right:
-			return IDLE_RIGHT;
+			return GetIdleAnimationState(m_movement.GetCurrentDirection());
+		}
+		else {
+			return GetIdleAnimationState(m_movement.GetPreviousDirection());
 		}
 	}
-
-	return IDLE_DOWN;
 }
 
 std::string Player::GetAnimationName(const eAnimationState state)
@@ -202,4 +172,57 @@ void Player::Move(const GridMovementComponent::eDirection direction)
 	{
 		m_movement.Move(direction);
 	}
+}
+
+Player::eAnimationState Player::GetWalkAnimationState(const GridMovementComponent::eDirection direction)
+{
+	switch (direction)
+	{
+	case GridMovementComponent::eDirection::None:
+		return WALK_DOWN;
+	case GridMovementComponent::eDirection::Up:
+		return WALK_UP;
+	case GridMovementComponent::eDirection::Down:
+		return WALK_DOWN;
+	case GridMovementComponent::eDirection::Left:
+		return WALK_LEFT;
+	case GridMovementComponent::eDirection::Right:
+		return WALK_RIGHT;
+	}
+}
+
+Player::eAnimationState Player::GetIdleAnimationState(const GridMovementComponent::eDirection direction)
+{
+	switch (direction)
+	{
+	case GridMovementComponent::eDirection::None:
+		return IDLE_DOWN;
+	case GridMovementComponent::eDirection::Up:
+		return IDLE_UP;
+	case GridMovementComponent::eDirection::Down:
+		return IDLE_DOWN;
+	case GridMovementComponent::eDirection::Left:
+		return IDLE_LEFT;
+	case GridMovementComponent::eDirection::Right:
+		return IDLE_RIGHT;
+	}
+}
+
+Player::eAnimationState Player::GetSprintAnimationState(const GridMovementComponent::eDirection direction)
+{
+	switch (direction)
+	{
+	case GridMovementComponent::eDirection::None:
+		return RUN_DOWN;
+	case GridMovementComponent::eDirection::Up:
+		return RUN_UP;
+	case GridMovementComponent::eDirection::Down:
+		return RUN_DOWN;
+	case GridMovementComponent::eDirection::Left:
+		return RUN_LEFT;
+	case GridMovementComponent::eDirection::Right:
+		return RUN_RIGHT;
+	}
+
+	return RUN_DOWN;
 }
