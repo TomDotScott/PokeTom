@@ -34,12 +34,12 @@
    <properties>
     <property name="LevelToLoad" type="file" value="../../data/tiled_export/player_house.tmj"/>
     <property name="Orientation" value="Up,Right"/>
-    <property name="SpawnPointID" type="int" value="1"/>
+    <property name="SpawnPointID" type="int" value="2"/>
    </properties>
   </object>
-  <object id="2" name="level_spawn" x="224" y="64" width="32" height="32">
+  <object id="2" name="level_spawn_1" x="224" y="64" width="32" height="32">
    <properties>
-    <property name="orientation" value="down"/>
+    <property name="Orientation" value="Down"/>
    </properties>
   </object>
  </objectgroup>

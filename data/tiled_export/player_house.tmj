@@ -117,7 +117,7 @@
                         {
                          "name":"SpawnPointID",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }],
                  "rotation":0,
                  "type":"",
@@ -129,12 +129,12 @@
                 {
                  "height":32,
                  "id":4,
-                 "name":"level_spawn2",
+                 "name":"level_spawn_2",
                  "properties":[
                         {
-                         "name":"orientation",
+                         "name":"Orientation",
                          "type":"string",
-                         "value":"down"
+                         "value":"Down"
                         }],
                  "rotation":0,
                  "type":"",
@@ -142,6 +142,23 @@
                  "width":32,
                  "x":128,
                  "y":64
+                }, 
+                {
+                 "height":32,
+                 "id":7,
+                 "name":"level_spawn_1",
+                 "properties":[
+                        {
+                         "name":"Orientation",
+                         "type":"string",
+                         "value":"Up"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":160,
+                 "y":256
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -150,7 +167,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":6,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

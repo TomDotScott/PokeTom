@@ -95,7 +95,7 @@
                         {
                          "name":"SpawnPointID",
                          "type":"int",
-                         "value":1
+                         "value":2
                         }],
                  "rotation":0,
                  "type":"",
@@ -107,12 +107,12 @@
                 {
                  "height":32,
                  "id":2,
-                 "name":"level_spawn",
+                 "name":"level_spawn_1",
                  "properties":[
                         {
-                         "name":"orientation",
+                         "name":"Orientation",
                          "type":"string",
-                         "value":"down"
+                         "value":"Down"
                         }],
                  "rotation":0,
                  "type":"",

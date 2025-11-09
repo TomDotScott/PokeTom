@@ -109,7 +109,7 @@
                         {
                          "name":"SpawnPointID",
                          "type":"int",
-                         "value":0
+                         "value":1
                         }],
                  "rotation":0,
                  "type":"",
