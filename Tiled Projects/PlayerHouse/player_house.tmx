@@ -34,6 +34,7 @@
    <properties>
     <property name="LevelToLoad" type="file" value="../../data/tiled_export/starter_town.tmj"/>
     <property name="Orientation" value="down"/>
+    <property name="SpawnPointID" type="int" value="1"/>
    </properties>
   </object>
   <object id="3" name="door_upstairs" x="160" y="64" width="32" height="32">

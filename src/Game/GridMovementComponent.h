@@ -2,6 +2,7 @@
 #define GRIDMOVEMENTCOMPONENT_H
 #include <SFML/System/Vector2.hpp>
 
+#include "Orientation.h"
 #include "../Engine/Updateable.h"
 
 class GridMovementComponent : Updateable
@@ -52,5 +53,24 @@ private:
 
 	void StartMove(const sf::Vector2i& newGridPos);
 };
+
+inline eOrientation GetOrientationFromDirection(const GridMovementComponent::eDirection direction)
+{
+	switch (direction)
+	{
+	case GridMovementComponent::eDirection::Up:
+		return eOrientation::Up;
+	case GridMovementComponent::eDirection::Down:
+		return eOrientation::Down;
+	case GridMovementComponent::eDirection::Left:
+		return eOrientation::Left;
+	case GridMovementComponent::eDirection::Right:
+		return eOrientation::Right;
+	default:
+		break;
+	}
+
+	return eOrientation::Down;
+}
 
 #endif

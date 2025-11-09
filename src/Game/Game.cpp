@@ -95,8 +95,10 @@ void Game::UpdateOverworld(const float deltaTime)
 
 	m_renderer.SetCameraCentre(m_cameraPosition, m_currentLevel->GetNumColumns(), m_currentLevel->GetNumRows());
 
-	// If the player is on a door, start a level transition
-	if (const DoorData* doorData = m_currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition()))
+	// If the player is on a door in the right orientation, start a level transition
+	const DoorData* doorData = m_currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
+	if (doorData != nullptr &&
+		doorData->m_Orientation & static_cast<uint8_t>(m_player.GetCurrentOrientation()))
 	{
 		TransitionLevel(doorData->m_LevelToLoad);
 	}

@@ -121,7 +121,7 @@
                 {
                  "height":32,
                  "id":14,
-                 "name":"level_spawn1",
+                 "name":"level_spawn_1",
                  "properties":[
                         {
                          "name":"Orientation",

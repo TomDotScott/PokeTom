@@ -44,7 +44,7 @@
     <property name="SpawnPointID" type="int" value="1"/>
    </properties>
   </object>
-  <object id="14" name="level_spawn1" x="416" y="352" width="32" height="32">
+  <object id="14" name="level_spawn_1" x="416" y="352" width="32" height="32">
    <properties>
     <property name="Orientation" value="Down"/>
    </properties>

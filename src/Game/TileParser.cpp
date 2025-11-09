@@ -1,6 +1,7 @@
 #include "TileParser.h"
 
 #include <iostream>
+#include <sstream>
 
 
 TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
@@ -47,8 +48,29 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 	data.m_Doors.reserve(doors.size());
 	for (const auto& door : doors)
 	{
+		// Parse the orientations for the door;
+		uint8_t orientation = 0;
+
+		std::stringstream ss(door.m_Orientation);
+		std::vector<std::string> splitString;
+
+		while (ss.good())
+		{
+			std::string substr;
+			getline(ss, substr, ',');
+			splitString.push_back(substr);
+		}
+
+		for (const auto& orientationString : splitString)
+		{
+			eOrientation o = StringToOrientation(orientationString);
+			orientation |= static_cast<uint32_t>(o);
+		}
+
 		DoorData doorData{
 			door.m_LevelToLoad,
+			door.m_SpawnPointID,
+			orientation,
 			{
 				static_cast<int>(door.m_Width) / 32,
 				static_cast<int>(door.m_Height) / 32
@@ -60,6 +82,22 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 		};
 
 		data.m_Doors.emplace_back(doorData);
+	}
+
+	const auto& spawnPoints = tmjParser->GetSpawnPoints();
+	data.m_SpawnPoints.reserve(spawnPoints.size());
+	for (const auto& spawnPoint : spawnPoints)
+	{
+		const SpawnPointData spawnPointData{
+			spawnPoint.m_ID,
+			StringToOrientation(spawnPoint.m_Orientation),
+			{
+				static_cast<int>(spawnPoint.m_X) / 32,
+				static_cast<int>(spawnPoint.m_Y) / 32
+			},
+		};
+
+		data.m_SpawnPoints[spawnPoint.m_ID] = spawnPointData;
 	}
 
 	return data;

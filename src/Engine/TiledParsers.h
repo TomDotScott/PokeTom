@@ -26,6 +26,11 @@ public:
 
 		// Needs to be divided by the tile size
 		uint32_t m_Y;
+
+		// Comma-delimited "Up", "Down", "Left", or "Right"
+		std::string m_Orientation;
+
+		uint32_t m_SpawnPointID;
 	};
 
 	struct SpawnPoint
@@ -66,6 +71,7 @@ public:
 
 	const std::vector<Layer>& GetLayers() const;
 	const std::vector<Door>& GetDoors() const;
+	const std::vector<SpawnPoint>& GetSpawnPoints() const;
 	const std::vector<TileSet>& GetTileSets() const;
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;

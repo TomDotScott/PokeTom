@@ -21,6 +21,8 @@ public:
 	void SetLevel(const Level* level);
 	int GetZIndex() const;
 
+	eOrientation GetCurrentOrientation() const;
+
 	enum eAnimationState
 	{
 		IDLE_UP,
@@ -61,9 +63,9 @@ private:
 	InputMapper m_mapper;
 
 	void Move(GridMovementComponent::eDirection direction);
-	static eAnimationState GetWalkAnimationState(GridMovementComponent::eDirection direction);
-	static eAnimationState GetIdleAnimationState(GridMovementComponent::eDirection direction);
-	static eAnimationState GetSprintAnimationState(GridMovementComponent::eDirection direction);
+	static eAnimationState GetWalkAnimationState(eOrientation orientation);
+	static eAnimationState GetIdleAnimationState(eOrientation orientation);
+	static eAnimationState GetSprintAnimationState(eOrientation orientation);
 };
 
 #endif

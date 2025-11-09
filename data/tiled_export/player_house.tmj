@@ -91,6 +91,11 @@
                          "name":"Orientation",
                          "type":"string",
                          "value":"down"
+                        }, 
+                        {
+                         "name":"SpawnPointID",
+                         "type":"int",
+                         "value":1
                         }],
                  "rotation":0,
                  "type":"",
