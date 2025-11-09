@@ -1,7 +1,6 @@
 #include "ScreenFader.h"
 #include <algorithm>
-#include "Maths.h"
-
+#include "../Maths.h"
 
 ScreenFader::ScreenFader() :
 	m_alpha(0),

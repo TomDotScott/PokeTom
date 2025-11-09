@@ -2,8 +2,6 @@
 #define SCREENFADER_H
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "Timer.h"
-
 class ScreenFader
 {
 public:

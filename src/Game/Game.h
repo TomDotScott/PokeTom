@@ -8,9 +8,9 @@
 #include "../Engine/Event.h"
 #include "../Engine/UI/UiManager.h"
 #include "../Engine/ObjectPool.h"
+#include "../Engine/Rendering/ScreenFader.h"
 #include "TileLogic.h"
 #include "Renderer.h"
-#include "../Engine/ScreenFader.h"
 
 class Game final : public Updateable
 {
