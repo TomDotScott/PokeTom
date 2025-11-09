@@ -56,9 +56,11 @@ private:
 
 	bool Init() override;
 	explicit TMJ(std::filesystem::path path);
-	bool ParseLayers(const nlohmann::basic_json<>& layersArray);
+	bool ParseLayersArray(const nlohmann::basic_json<>& layersArray);
 	bool ParseTileSets(const nlohmann::basic_json<>& tileSetsArray);
-	bool ParseDoors(const nlohmann::basic_json<>& doorsLayerObj);
+	static bool ParseTileLayerType(const nlohmann::basic_json<>& layerObj, int zIndex, std::vector<Layer>& layers);
+	bool ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Door>& doors);
+	bool ParseDoors(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Door>& doors);
 };
 
 

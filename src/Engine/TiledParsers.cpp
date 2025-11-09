@@ -110,7 +110,7 @@ bool TMJ::Init()
 	m_width = json["width"];
 
 	const auto& layersArray = json["layers"];
-	if (!ParseLayers(layersArray))
+	if (!ParseLayersArray(layersArray))
 	{
 		std::cout << "Error: Failed to parse layers array! Dumping...\n" << layersArray << "\n";
 		return false;
@@ -125,7 +125,7 @@ bool TMJ::Init()
 	return true;
 }
 
-bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
+bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 {
 	if (layersArray.type() != nlohmann::detail::value_t::array)
 	{
@@ -134,151 +134,108 @@ bool TMJ::ParseLayers(const nlohmann::basic_json<>& layersArray)
 	}
 
 	std::vector<Layer> layers;
+	std::vector<Door> doors;
 	for (int i = 0; i < layersArray.size(); ++i)
 	{
 		const auto& elem = layersArray[i];
 
-		const auto& name = elem["name"];
-		if (!name.is_string())
+		const auto& objectType = elem["type"];
+		if (!objectType.is_string())
 		{
 			return false;
 		}
+
+		const std::string objectTypeString = objectType;
 
 		// TODO: Support more object layers than just the doors
 		// TODO: Does "Portals" make more sense than "Doors"?
-		if (std::string{ name } == "Doors")
+		if (objectTypeString == "objectgroup")
 		{
-			if (ParseDoors(elem))
+			if (!ParseObjectLayerType(elem, doors))
 			{
-				// The "Doors" Object Layer is treated here. We don't want to parse the rest to avoid exceptions thrown, safely move onto the next layer
-				continue;
+				return false;
 			}
-
-			return false;
 		}
-
-		const auto& id = elem["id"];
-		if (!id.is_number_integer())
+		else if (objectTypeString == "tilelayer")
 		{
-			return false;
+			if (!ParseTileLayerType(elem, i, layers))
+			{
+				return false;
+			}
 		}
-
-		const auto& height = elem["height"];
-		if (!height.is_number_integer())
-		{
-			return false;
-		}
-
-		const auto& width = elem["width"];
-		if (!width.is_number_integer())
-		{
-			return false;
-		}
-
-		const auto& data = elem["data"];
-		if (!data.is_string())
-		{
-			return false;
-		}
-
-		const std::string stringData = data;
-		const auto decompressed = DecompressZlib(base64_decode(stringData));
-		const auto tileData = BytesToTiles(decompressed);
-
-		Layer layer = {
-			id,
-			tileData,
-			height,
-			width,
-			name,
-			i
-		};
-
-		layers.emplace_back(layer);
 	}
 
 	m_layers = layers;
-
+	m_doors = doors;
 	return true;
 }
 
 
-bool TMJ::ParseDoors(const nlohmann::basic_json<>& doorsLayerObj)
+bool TMJ::ParseDoors(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Door>& doors)
 {
-	const auto& doorObjects = doorsLayerObj["objects"];
-	if (!doorObjects.is_array())
+	const auto& properties = doorsLayerObj["properties"];
+	if (!properties.is_array())
 	{
-		std::cerr << "TMJ::ParseDoors: \"Objects\" is NOT an array!\n";
 		return false;
 	}
 
-	m_doors.reserve(doorObjects.size());
-	for (const auto& doorObj : doorObjects)
+	std::string levelToLoad = "UNKNOWN";
+	for (const auto& property : properties)
 	{
-		const auto& properties = doorObj["properties"];
-		if (!properties.is_array())
+		const auto& propertyName = property["name"];
+		if (!propertyName.is_string())
 		{
 			return false;
 		}
 
-		std::string levelToLoad = "UNKNOWN";
-		for (const auto& property : properties)
+		if (std::string{ propertyName } == "LevelToLoad")
 		{
-			const auto& propertyName = property["name"];
-			if (!propertyName.is_string())
+			const auto& propertyVal = property["value"];
+			if (!propertyVal.is_string())
 			{
 				return false;
 			}
 
-			if (std::string{ propertyName } == "LevelToLoad")
-			{
-				const auto& propertyVal = property["value"];
-				if (!propertyVal.is_string())
-				{
-					return false;
-				}
-
-				levelToLoad = propertyVal;
-			}
-			else
-			{
-				// TODO: Might support more properties in the future
-				continue;
-			}
+			levelToLoad = propertyVal;
 		}
-
-		const auto& height = doorObj["height"];
-		if (!height.is_number())
+		else
 		{
-			return false;
+			// TODO: Might support more properties in the future
+			continue;
 		}
-
-		const auto& width = doorObj["width"];
-		if (!width.is_number())
-		{
-			return false;
-		}
-
-		const auto& x = doorObj["x"];
-		if (!x.is_number())
-		{
-			return false;
-		}
-
-		const auto& y = doorObj["y"];
-		if (!y.is_number())
-		{
-			return false;
-		}
-
-		m_doors.push_back({
-			levelToLoad,
-			height,
-			width,
-			x,
-			y
-			});
 	}
+
+	const auto& height = doorsLayerObj["height"];
+	if (!height.is_number())
+	{
+		return false;
+	}
+
+	const auto& width = doorsLayerObj["width"];
+	if (!width.is_number())
+	{
+		return false;
+	}
+
+	const auto& x = doorsLayerObj["x"];
+	if (!x.is_number())
+	{
+		return false;
+	}
+
+	const auto& y = doorsLayerObj["y"];
+	if (!y.is_number())
+	{
+		return false;
+	}
+
+	doors.push_back({
+		levelToLoad,
+		height,
+		width,
+		x,
+		y
+		});
 
 	return true;
 }
@@ -326,6 +283,77 @@ bool TMJ::ParseTileSets(const nlohmann::basic_json<>& tileSetsArray)
 		}
 	);
 	m_tileSets = tileSets;
+	return true;
+}
+
+bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int zIndex, std::vector<Layer>& layers)
+{
+	const auto& name = layerObj["name"];
+	if (!name.is_string())
+	{
+		return false;
+	}
+
+	const auto& id = layerObj["id"];
+	if (!id.is_number_integer())
+	{
+		return false;
+	}
+
+	const auto& height = layerObj["height"];
+	if (!height.is_number_integer())
+	{
+		return false;
+	}
+
+	const auto& width = layerObj["width"];
+	if (!width.is_number_integer())
+	{
+		return false;
+	}
+
+	const auto& data = layerObj["data"];
+	if (!data.is_string())
+	{
+		return false;
+	}
+
+	const std::string stringData = data;
+	const auto decompressed = DecompressZlib(base64_decode(stringData));
+	const auto tileData = BytesToTiles(decompressed);
+
+	Layer layer = {
+		id,
+		tileData,
+		height,
+		width,
+		name,
+		zIndex
+	};
+
+	layers.emplace_back(layer);
+	return true;
+}
+
+bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Door>& doors)
+{
+	const auto& objectsArray = objLayerObj["objects"];
+	if (!objectsArray.is_array())
+	{
+		std::cerr << "TMJ::ParseDoors: \"Objects\" is NOT an array!\n";
+		return false;
+	}
+
+	m_doors.reserve(objectsArray.size());
+	for (const auto& object : objectsArray)
+	{
+		const auto& objectName = object["name"];
+
+		if (std::string{ objectName } != "level_spawn" && !ParseDoors(object, doors))
+		{
+			return false;
+		}
+	}
 	return true;
 }
 
