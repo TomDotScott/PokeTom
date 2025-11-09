@@ -49,7 +49,7 @@
     <property name="Orientation" value="Down"/>
    </properties>
   </object>
-  <object id="7" name="level_spawn_1" x="160" y="256" width="32" height="32">
+  <object id="7" name="level_spawn_1" x="160" y="288" width="32" height="32">
    <properties>
     <property name="Orientation" value="Up"/>
    </properties>

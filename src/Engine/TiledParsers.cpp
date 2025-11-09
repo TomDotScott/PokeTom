@@ -175,6 +175,7 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 
 	m_layers = layers;
 	m_doors = doors;
+	m_spawnPoints = spawnPoints;
 	return true;
 }
 
@@ -320,14 +321,14 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 
 	spawnPoint.m_X = x;
 
-	const auto& y = spawnPointObject["x"];
+	const auto& y = spawnPointObject["y"];
 	if (!y.is_number_integer())
 	{
-		std::cerr << "TMJ::ParseSpawnPoint: X is not an integer!\n";
+		std::cerr << "TMJ::ParseSpawnPoint: Y is not an integer!\n";
 		return false;
 	}
 
-	spawnPoint.m_Y = x;
+	spawnPoint.m_Y = y;
 
 	const auto& properties = spawnPointObject["properties"];
 	if (!properties.is_array())

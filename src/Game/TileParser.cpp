@@ -85,7 +85,6 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 	}
 
 	const auto& spawnPoints = tmjParser->GetSpawnPoints();
-	data.m_SpawnPoints.reserve(spawnPoints.size());
 	for (const auto& spawnPoint : spawnPoints)
 	{
 		const SpawnPointData spawnPointData{

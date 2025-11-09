@@ -32,6 +32,7 @@ private:
 	Player m_player;
 	Level* m_currentLevel;
 	Level* m_nextLevel;
+	const DoorData* m_lastEnteredDoor;
 
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;

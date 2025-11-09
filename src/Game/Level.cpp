@@ -98,3 +98,8 @@ const DoorData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPosition
 
 	return nullptr;
 }
+
+const SpawnPointData& Level::GetSpawnPointData(const uint32_t spawnPointID) const
+{
+	return m_mapData.m_SpawnPoints.at(spawnPointID);
+}

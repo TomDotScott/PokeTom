@@ -31,16 +31,16 @@ void GridMovementComponent::Move(const eDirection direction)
 	sf::Vector2i newPos = m_gridPos;
 	switch (direction)
 	{
-	case eDirection::Up:
+	case eDirection::North:
 		newPos += { 0, -1 };
 		break;
-	case eDirection::Down:
+	case eDirection::South:
 		newPos += { 0, 1 };
 		break;
-	case eDirection::Left:
+	case eDirection::West:
 		newPos += { -1, 0 };
 		break;
-	case eDirection::Right:
+	case eDirection::East:
 		newPos += { 1, 0 };
 		break;
 	default:
@@ -48,10 +48,14 @@ void GridMovementComponent::Move(const eDirection direction)
 		break;
 	}
 
+	SetDirection(direction);
+	StartMove(newPos);
+}
+
+void GridMovementComponent::SetDirection(const eDirection direction)
+{
 	m_previousDirection = m_currentDirection;
 	m_currentDirection = direction;
-
-	StartMove(newPos);
 }
 
 GridMovementComponent::eDirection GridMovementComponent::GetCurrentDirection() const

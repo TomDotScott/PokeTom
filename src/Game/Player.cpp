@@ -31,19 +31,19 @@ void Player::Update(const float deltaTime)
 	{
 		if (m_mapper.IsButtonDown(UP))
 		{
-			Move(GridMovementComponent::eDirection::Up);
+			Move(GridMovementComponent::eDirection::North);
 		}
 		else if (m_mapper.IsButtonDown(DOWN))
 		{
-			Move(GridMovementComponent::eDirection::Down);
+			Move(GridMovementComponent::eDirection::South);
 		}
 		else if (m_mapper.IsButtonDown(LEFT))
 		{
-			Move(GridMovementComponent::eDirection::Left);
+			Move(GridMovementComponent::eDirection::West);
 		}
 		else if (m_mapper.IsButtonDown(RIGHT))
 		{
-			Move(GridMovementComponent::eDirection::Right);
+			Move(GridMovementComponent::eDirection::East);
 		}
 	}
 
@@ -72,6 +72,12 @@ sf::Vector2i Player::GetGridPosition() const
 	return m_movement.GetGridPosition();
 }
 
+void Player::SetGridPosition(const sf::Vector2i& gridPosition)
+{
+	m_movement.SetGridPosition(gridPosition);
+	SetPosition(m_movement.GetWorldPosition());
+}
+
 void Player::SetLevel(const Level* level)
 {
 	m_currentLevel = level;
@@ -80,6 +86,12 @@ void Player::SetLevel(const Level* level)
 int Player::GetZIndex() const
 {
 	return m_currentLevel->GetPlayerZIndex();
+}
+
+void Player::SetOrientation(const eOrientation orientation)
+{
+	m_movement.SetDirection(GetDirectionFromOrientation(orientation));
+	m_animationPlayer.PlayAnimation(GetAnimationName(GetAnimationStateFromMovement()), false);
 }
 
 // TODO: This could do with a refactor to have a PlayerState machine
@@ -158,16 +170,16 @@ void Player::Move(const GridMovementComponent::eDirection direction)
 
 	switch (direction)
 	{
-	case GridMovementComponent::eDirection::Up:
+	case GridMovementComponent::eDirection::North:
 		newGridPosition.y -= 1;
 		break;
-	case GridMovementComponent::eDirection::Down:
+	case GridMovementComponent::eDirection::South:
 		newGridPosition.y += 1;
 		break;
-	case GridMovementComponent::eDirection::Left:
+	case GridMovementComponent::eDirection::West:
 		newGridPosition.x -= 1;
 		break;
-	case GridMovementComponent::eDirection::Right:
+	case GridMovementComponent::eDirection::East:
 		newGridPosition.x += 1;
 		break;
 	case GridMovementComponent::eDirection::None:
@@ -177,6 +189,10 @@ void Player::Move(const GridMovementComponent::eDirection direction)
 	if (m_currentLevel->CanMoveTo(newGridPosition.x, newGridPosition.y))
 	{
 		m_movement.Move(direction);
+	}
+	else
+	{
+		m_movement.SetDirection(direction);
 	}
 }
 

@@ -19,6 +19,8 @@ public:
 	bool CanMoveTo(uint32_t x, uint32_t y) const;
 	const DoorData* GetDoorPlayerIsOver(sf::Vector2i playerGridPosition) const;
 
+	const SpawnPointData& GetSpawnPointData(uint32_t spawnPointID) const;
+
 private:
 	TileMapData m_mapData;
 	TileLogic m_tileLogic;

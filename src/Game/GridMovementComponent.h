@@ -11,16 +11,18 @@ public:
 	enum class eDirection
 	{
 		None = -1,
-		Up,
-		Down,
-		Left,
-		Right
+		North,
+		South,
+		West,
+		East
 	};
 
 	GridMovementComponent(float tileSize, float walkTilesPerSecond, float sprintTilesPerSecond);
 
 	void SetGridPosition(const sf::Vector2i& gridPos);
 	void Move(eDirection direction);
+
+	void SetDirection(eDirection direction);
 
 	eDirection GetCurrentDirection() const;
 	eDirection GetPreviousDirection() const;
@@ -58,19 +60,38 @@ inline eOrientation GetOrientationFromDirection(const GridMovementComponent::eDi
 {
 	switch (direction)
 	{
-	case GridMovementComponent::eDirection::Up:
+	case GridMovementComponent::eDirection::North:
 		return eOrientation::Up;
-	case GridMovementComponent::eDirection::Down:
+	case GridMovementComponent::eDirection::South:
 		return eOrientation::Down;
-	case GridMovementComponent::eDirection::Left:
+	case GridMovementComponent::eDirection::West:
 		return eOrientation::Left;
-	case GridMovementComponent::eDirection::Right:
+	case GridMovementComponent::eDirection::East:
 		return eOrientation::Right;
 	default:
 		break;
 	}
 
 	return eOrientation::Down;
+}
+
+inline GridMovementComponent::eDirection GetDirectionFromOrientation(const eOrientation orientation)
+{
+	switch (orientation)
+	{
+	case eOrientation::Up:
+		return GridMovementComponent::eDirection::North;
+	case eOrientation::Down:
+		return GridMovementComponent::eDirection::South;
+	case eOrientation::Left:
+		return GridMovementComponent::eDirection::West;
+	case eOrientation::Right:
+		return GridMovementComponent::eDirection::East;
+	default:
+		break;
+	}
+
+	return GridMovementComponent::eDirection::None;
 }
 
 #endif

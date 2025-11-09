@@ -18,6 +18,7 @@ Game::Game() :
 	m_player(),
 	m_currentLevel(new Level(START_LEVEL)),
 	m_nextLevel(nullptr),
+	m_lastEnteredDoor(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
 {
 	UIMANAGER.Load("ui.xml");
@@ -97,10 +98,15 @@ void Game::UpdateOverworld(const float deltaTime)
 
 	// If the player is on a door in the right orientation, start a level transition
 	const DoorData* doorData = m_currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
-	if (doorData != nullptr &&
-		doorData->m_Orientation & static_cast<uint8_t>(m_player.GetCurrentOrientation()))
+
+	if (doorData != nullptr)
 	{
-		TransitionLevel(doorData->m_LevelToLoad);
+		const uint8_t playerOrientation = static_cast<uint8_t>(m_player.GetCurrentOrientation());
+
+		if (doorData->m_Orientation & playerOrientation) {
+			TransitionLevel(doorData->m_LevelToLoad);
+			m_lastEnteredDoor = doorData;
+		}
 	}
 }
 
@@ -115,10 +121,12 @@ void Game::UpdateScreenFade(const float deltaTime)
 		{
 			m_screenFader.StartFade(ScreenFader::FadeType::FadeIn, 1.f, 0.5f);
 
-			delete m_currentLevel;
+			const Level* previousLevel = m_currentLevel;
 			m_currentLevel = m_nextLevel;
 
 			ReadyPlayerAndRenderer();
+
+			delete previousLevel;
 		}
 		else if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeIn)
 		{
@@ -146,8 +154,23 @@ void Game::ReadyPlayerAndRenderer()
 {
 	m_player.SetLevel(m_currentLevel);
 
-	m_player.SetPosition(3 * 32, 3 * 32);
-	m_cameraPosition = m_player.GetPosition();
+	// TODO: Remove this little hack!
+	if (m_lastEnteredDoor == nullptr)
+	{
+		m_player.SetGridPosition({ 3, 3 });
+		m_player.SetOrientation(eOrientation::Down);
+	}
+	else
+	{
+		const auto& spawnPointData = m_currentLevel->GetSpawnPointData(m_lastEnteredDoor->m_SpawnPointID);
+		m_player.SetGridPosition(spawnPointData.m_GridPosition);
+		m_player.SetOrientation(spawnPointData.m_Orientation);
+	}
 
 	m_renderer.BuildBatches(m_currentLevel->GetRenderData(), m_currentLevel->GetLayers());
+
+	m_cameraPosition = m_player.GetPosition();
+	m_renderer.SetCameraCentre(m_cameraPosition, m_currentLevel->GetNumColumns(), m_currentLevel->GetNumRows());
+
+	m_lastEnteredDoor = nullptr;
 }

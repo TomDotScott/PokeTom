@@ -17,10 +17,12 @@ public:
 	void SetPosition(const sf::Vector2f& position) override;
 
 	sf::Vector2i GetGridPosition() const;
+	void SetGridPosition(const sf::Vector2i& gridPosition);
 
 	void SetLevel(const Level* level);
 	int GetZIndex() const;
 
+	void SetOrientation(eOrientation);
 	eOrientation GetCurrentOrientation() const;
 
 	enum eAnimationState
