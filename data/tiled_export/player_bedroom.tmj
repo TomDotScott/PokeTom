@@ -80,18 +80,45 @@
                 {
                  "height":32,
                  "id":1,
-                 "name":"downstairs",
+                 "name":"door_downstairs",
                  "properties":[
                         {
                          "name":"LevelToLoad",
                          "type":"file",
                          "value":"tiled_export\/player_house.tmj"
+                        }, 
+                        {
+                         "name":"Orientation",
+                         "type":"string",
+                         "value":"Up,Right"
+                        }, 
+                        {
+                         "name":"SpawnPointID",
+                         "type":"int",
+                         "value":1
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
                  "x":256,
+                 "y":64
+                }, 
+                {
+                 "height":32,
+                 "id":2,
+                 "name":"level_spawn",
+                 "properties":[
+                        {
+                         "name":"orientation",
+                         "type":"string",
+                         "value":"down"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":224,
                  "y":64
                 }],
          "opacity":1,
@@ -101,7 +128,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":2,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

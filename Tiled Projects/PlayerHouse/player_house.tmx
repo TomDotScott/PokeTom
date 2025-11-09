@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="12" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="12" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="6">
  <editorsettings>
   <export target="../../data/tiled_export/player_house.tmj" format="json"/>
  </editorsettings>
@@ -30,14 +30,22 @@
   </data>
  </layer>
  <objectgroup id="7" name="Doors">
-  <object id="1" name="exit" x="160" y="288" width="64" height="32">
+  <object id="1" name="door_exit" x="160" y="288" width="64" height="32">
    <properties>
     <property name="LevelToLoad" type="file" value="../../data/tiled_export/starter_town.tmj"/>
+    <property name="Orientation" value="down"/>
    </properties>
   </object>
-  <object id="3" name="upstairs" x="160" y="64" width="32" height="32">
+  <object id="3" name="door_upstairs" x="160" y="64" width="32" height="32">
    <properties>
     <property name="LevelToLoad" type="file" value="../../data/tiled_export/player_bedroom.tmj"/>
+    <property name="Orientation" value="Up,Right"/>
+    <property name="SpawnPointID" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="4" name="level_spawn2" x="128" y="64" width="32" height="32">
+   <properties>
+    <property name="orientation" value="down"/>
    </properties>
   </object>
  </objectgroup>
