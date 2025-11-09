@@ -19,6 +19,11 @@ namespace maths
 
 		return target + (delta + temp) * exp;
 	}
+
+	inline float Lerp(const float a, const float b, const float t)
+	{
+		return a + t * (b - a);
+	}
 } // namespace maths
 
 #endif

@@ -86,9 +86,9 @@ const DoorData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPosition
 {
 	for (const auto& doorData : m_mapData.m_Doors)
 	{
-		const bool xEqual = playerGridPosition.x == doorData.m_GridPosition.x || playerGridPosition.x == doorData.m_GridPosition.x + doorData.m_Size.x;
+		const bool xEqual = playerGridPosition.x == doorData.m_GridPosition.x || playerGridPosition.x == doorData.m_GridPosition.x + (doorData.m_Size.x - 1);
 
-		const bool yEqual = playerGridPosition.y == doorData.m_GridPosition.y || playerGridPosition.y == doorData.m_GridPosition.y + doorData.m_Size.y;
+		const bool yEqual = playerGridPosition.y == doorData.m_GridPosition.y || playerGridPosition.y == doorData.m_GridPosition.y + (doorData.m_Size.y - 1);
 
 		if (xEqual && yEqual)
 		{

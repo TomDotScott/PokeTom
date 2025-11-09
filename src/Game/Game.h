@@ -10,6 +10,7 @@
 #include "../Engine/ObjectPool.h"
 #include "TileLogic.h"
 #include "Renderer.h"
+#include "../Engine/ScreenFader.h"
 
 class Game final : public Updateable
 {
@@ -22,13 +23,21 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
+	enum class eGameState
+	{
+		FadingScreen,
+		Overworld
+	} m_state;
+
 	Player m_player;
-	Level m_level;
+	Level* m_currentLevel;
+	Level* m_nextLevel;
 
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;
 
 	Renderer m_renderer;
+	ScreenFader m_screenFader;
 
 #if !BUILD_MASTER
 	template<typename... Args>
@@ -45,7 +54,12 @@ private:
 	}
 #endif
 
+	void UpdateOverworld(float deltaTime);
+	void UpdateScreenFade(float deltaTime);
+
 	void TransitionLevel(const std::filesystem::path& newLevel);
+
+	void ReadyPlayerAndRenderer();
 };
 
 
