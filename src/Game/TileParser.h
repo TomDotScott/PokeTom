@@ -15,7 +15,7 @@ struct TileLayerData
 	int m_ZIndex;
 };
 
-struct DoorData
+struct PortalData
 {
 	// TODO: This needs to be improved; we shouldn't be loading the levels willy-nilly
 	// TODO: Some sort of asset management system that preloads things
@@ -47,7 +47,7 @@ struct SpawnPointData
 struct TileMapData
 {
 	std::vector<TileLayerData> m_Layers;
-	std::vector<DoorData> m_Doors;
+	std::vector<PortalData> m_Portals;
 	std::unordered_map<uint32_t, SpawnPointData> m_SpawnPoints;
 	std::unordered_map<std::string, std::shared_ptr<TileSheet>> m_TileSheets;
 	uint32_t m_NumColumns;

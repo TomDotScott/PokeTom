@@ -68,9 +68,9 @@ const std::vector<TMJ::Layer>& TMJ::GetLayers() const
 	return m_layers;
 }
 
-const std::vector<TMJ::Door>& TMJ::GetDoors() const
+const std::vector<TMJ::Portal>& TMJ::GetPortals() const
 {
-	return m_doors;
+	return m_portals;
 }
 
 const std::vector<TMJ::SpawnPoint>& TMJ::GetSpawnPoints() const
@@ -139,7 +139,7 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 	}
 
 	std::vector<Layer> layers;
-	std::vector<Door> doors;
+	std::vector<Portal> portals;
 	std::vector<SpawnPoint> spawnPoints;
 	for (int i = 0; i < layersArray.size(); ++i)
 	{
@@ -153,11 +153,9 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 
 		const std::string objectTypeString = objectType;
 
-		// TODO: Support more object layers than just the doors
-		// TODO: Does "Portals" make more sense than "Doors"?
 		if (objectTypeString == "objectgroup")
 		{
-			if (!ParseObjectLayerType(elem, doors, spawnPoints))
+			if (!ParseObjectLayerType(elem, portals, spawnPoints))
 			{
 				std::cerr << "TMJ::ParseLayersArray: Failed to parse Object Layers!\n";
 				return false;
@@ -174,13 +172,13 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 	}
 
 	m_layers = layers;
-	m_doors = doors;
+	m_portals = portals;
 	m_spawnPoints = spawnPoints;
 	return true;
 }
 
 
-bool TMJ::ParseDoors(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Door>& doors)
+bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Portal>& doors)
 {
 	const auto& properties = doorsLayerObj["properties"];
 	if (!properties.is_array())
@@ -239,19 +237,19 @@ bool TMJ::ParseDoors(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Do
 
 	if (levelToLoad == "UNKNOWN")
 	{
-		std::cerr << "TMJ::ParseDoors: Failed to parse LevelToLoad!\n";
+		std::cerr << "TMJ::ParsePortals: Failed to parse LevelToLoad!\n";
 		return false;
 	}
 
 	if (orientation == "UNKNOWN")
 	{
-		std::cerr << "TMJ::ParseDoors: Failed to parse Orientation!\n";
+		std::cerr << "TMJ::ParsePortals: Failed to parse Orientation!\n";
 		return false;
 	}
 
 	if (spawnPointID == 0x69420)
 	{
-		std::cerr << "TMJ::ParseDoors: Failed to parse SpawnPointID!\n";
+		std::cerr << "TMJ::ParsePortals: Failed to parse SpawnPointID!\n";
 		return false;
 	}
 
@@ -477,7 +475,7 @@ bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int z
 	return true;
 }
 
-bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Door>& doors,
+bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Portal>& doors,
 	std::vector<SpawnPoint>& spawnPoints)
 {
 	const auto& objectsArray = objLayerObj["objects"];
@@ -491,10 +489,10 @@ bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::v
 	{
 		const std::string objectName = object["name"];
 
-		// Determine what type of object it is (NPC spawn, Door, SpawnPoint, etc)
+		// Determine what type of object it is (NPC spawn, Portal, SpawnPoint, etc)
 		if (objectName.find("door") != std::string::npos)
 		{
-			if (!ParseDoors(object, doors))
+			if (!ParsePortals(object, doors))
 			{
 				std::cerr << "TMJ::ParseObjectLayerType: Failed to parse doors layer!\n";
 				return false;

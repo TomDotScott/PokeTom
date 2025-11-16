@@ -82,9 +82,9 @@ bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
 	return true;
 }
 
-const DoorData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPosition) const
+const PortalData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPosition) const
 {
-	for (const auto& doorData : m_mapData.m_Doors)
+	for (const auto& doorData : m_mapData.m_Portals)
 	{
 		const bool xEqual = playerGridPosition.x == doorData.m_GridPosition.x || playerGridPosition.x == doorData.m_GridPosition.x + (doorData.m_Size.x - 1);
 

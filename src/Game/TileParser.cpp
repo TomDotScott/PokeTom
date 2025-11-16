@@ -44,8 +44,8 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex });
 	}
 
-	const auto& doors = tmjParser->GetDoors();
-	data.m_Doors.reserve(doors.size());
+	const auto& doors = tmjParser->GetPortals();
+	data.m_Portals.reserve(doors.size());
 	for (const auto& door : doors)
 	{
 		// Parse the orientations for the door;
@@ -67,7 +67,7 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 			orientation |= static_cast<uint32_t>(o);
 		}
 
-		DoorData doorData{
+		PortalData doorData{
 			door.m_LevelToLoad,
 			door.m_SpawnPointID,
 			orientation,
@@ -81,7 +81,7 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 			}
 		};
 
-		data.m_Doors.emplace_back(doorData);
+		data.m_Portals.emplace_back(doorData);
 	}
 
 	const auto& spawnPoints = tmjParser->GetSpawnPoints();

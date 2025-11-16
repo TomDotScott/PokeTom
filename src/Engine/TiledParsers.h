@@ -12,7 +12,7 @@ class TMJ final : public Factory<TMJ>
 	friend class Factory<TMJ>;
 
 public:
-	struct Door
+	struct Portal
 	{
 		// TODO: This should probably be a hash of the asset
 		// There really needs to be some proper asset management in this
@@ -70,7 +70,7 @@ public:
 	};
 
 	const std::vector<Layer>& GetLayers() const;
-	const std::vector<Door>& GetDoors() const;
+	const std::vector<Portal>& GetPortals() const;
 	const std::vector<SpawnPoint>& GetSpawnPoints() const;
 	const std::vector<TileSet>& GetTileSets() const;
 	uint32_t GetNumColumns() const;
@@ -82,7 +82,7 @@ private:
 	uint32_t m_height;
 	uint32_t m_width;
 	std::vector<Layer> m_layers;
-	std::vector<Door> m_doors;
+	std::vector<Portal> m_portals;
 	std::vector<SpawnPoint> m_spawnPoints;
 
 	// The GIDs are sorted from highest to lowest
@@ -93,8 +93,8 @@ private:
 	bool ParseLayersArray(const nlohmann::basic_json<>& layersArray);
 	bool ParseTileSets(const nlohmann::basic_json<>& tileSetsArray);
 	static bool ParseTileLayerType(const nlohmann::basic_json<>& layerObj, int zIndex, std::vector<Layer>& layers);
-	static bool ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Door>& doors, std::vector<SpawnPoint>& spawnPoints);
-	static bool ParseDoors(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Door>& doors);
+	static bool ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Portal>& portals, std::vector<SpawnPoint>& spawnPoints);
+	static bool ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Portal>& portals);
 	static bool ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::vector<SpawnPoint>& spawnPoints);
 };
 

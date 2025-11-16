@@ -18,7 +18,7 @@ Game::Game() :
 	m_player(),
 	m_currentLevel(new Level(START_LEVEL)),
 	m_nextLevel(nullptr),
-	m_lastEnteredDoor(nullptr),
+	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
 {
 	UIMANAGER.Load("ui.xml");
@@ -97,15 +97,15 @@ void Game::UpdateOverworld(const float deltaTime)
 	m_renderer.SetCameraCentre(m_cameraPosition, m_currentLevel->GetNumColumns(), m_currentLevel->GetNumRows());
 
 	// If the player is on a door in the right orientation, start a level transition
-	const DoorData* doorData = m_currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
+	const PortalData* portalData = m_currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
 
-	if (doorData != nullptr)
+	if (portalData != nullptr)
 	{
 		const uint8_t playerOrientation = static_cast<uint8_t>(m_player.GetCurrentOrientation());
 
-		if (doorData->m_Orientation & playerOrientation) {
-			TransitionLevel(doorData->m_LevelToLoad);
-			m_lastEnteredDoor = doorData;
+		if (portalData->m_Orientation & playerOrientation) {
+			TransitionLevel(portalData->m_LevelToLoad);
+			m_lastEnteredPortal = portalData;
 		}
 	}
 }
@@ -155,14 +155,14 @@ void Game::ReadyPlayerAndRenderer()
 	m_player.SetLevel(m_currentLevel);
 
 	// TODO: Remove this little hack!
-	if (m_lastEnteredDoor == nullptr)
+	if (m_lastEnteredPortal == nullptr)
 	{
 		m_player.SetGridPosition({ 3, 3 });
 		m_player.SetOrientation(eOrientation::Down);
 	}
 	else
 	{
-		const auto& spawnPointData = m_currentLevel->GetSpawnPointData(m_lastEnteredDoor->m_SpawnPointID);
+		const auto& spawnPointData = m_currentLevel->GetSpawnPointData(m_lastEnteredPortal->m_SpawnPointID);
 		m_player.SetGridPosition(spawnPointData.m_GridPosition);
 		m_player.SetOrientation(spawnPointData.m_Orientation);
 	}
@@ -172,5 +172,5 @@ void Game::ReadyPlayerAndRenderer()
 	m_cameraPosition = m_player.GetPosition();
 	m_renderer.SetCameraCentre(m_cameraPosition, m_currentLevel->GetNumColumns(), m_currentLevel->GetNumRows());
 
-	m_lastEnteredDoor = nullptr;
+	m_lastEnteredPortal = nullptr;
 }
