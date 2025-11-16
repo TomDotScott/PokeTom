@@ -6,7 +6,7 @@
 class TileLogic
 {
 public:
-	TileLogic(const TileMapData& data);
+	TileLogic(const std::shared_ptr<MapData>& mapData);
 
 	std::vector<TileRenderData> BuildRenderData() const;
 

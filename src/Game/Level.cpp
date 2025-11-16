@@ -1,8 +1,8 @@
 #include "Level.h"
 
 
-Level::Level(const std::filesystem::path& levelTMJFilepath) :
-	m_mapData(TileParser::ParseTMJ(levelTMJFilepath)),
+Level::Level(const std::shared_ptr<MapData>& mapData) :
+	m_mapData(mapData),
 	m_tileLogic(m_mapData)
 {
 }
@@ -14,17 +14,17 @@ std::vector<TileRenderData> Level::GetRenderData() const
 
 std::vector<TileLayerData> Level::GetLayers() const
 {
-	return m_mapData.m_Layers;
+	return m_mapData->m_Layers;
 }
 
 uint32_t Level::GetNumColumns() const
 {
-	return m_mapData.m_NumColumns;
+	return m_mapData->m_NumColumns;
 }
 
 uint32_t Level::GetNumRows() const
 {
-	return m_mapData.m_NumRows;
+	return m_mapData->m_NumRows;
 }
 
 uint32_t Level::GetPlayerZIndex() const
@@ -56,7 +56,7 @@ bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
 		}
 
 		// Find which TileSheet this ID belongs to
-		for (const auto& [sheetName, tileSheet] : m_mapData.m_TileSheets)
+		for (const auto& [sheetName, tileSheet] : m_mapData->m_TileSheets)
 		{
 			if (globalTileID < tileSheet->GetFirstGID())
 			{
@@ -84,22 +84,28 @@ bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
 
 const PortalData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPosition) const
 {
-	for (const auto& doorData : m_mapData.m_Portals)
+	for (const auto& [_, portalData] : m_mapData->m_Portals)
 	{
-		const bool xEqual = playerGridPosition.x == doorData.m_GridPosition.x || playerGridPosition.x == doorData.m_GridPosition.x + (doorData.m_Size.x - 1);
+		const bool xEqual = playerGridPosition.x == portalData.m_GridPosition.x || playerGridPosition.x == portalData.m_GridPosition.x + (portalData.m_Size.x - 1);
 
-		const bool yEqual = playerGridPosition.y == doorData.m_GridPosition.y || playerGridPosition.y == doorData.m_GridPosition.y + (doorData.m_Size.y - 1);
+		const bool yEqual = playerGridPosition.y == portalData.m_GridPosition.y || playerGridPosition.y == portalData.m_GridPosition.y + (portalData.m_Size.y - 1);
 
 		if (xEqual && yEqual)
 		{
-			return &doorData;
+			return &portalData;
 		}
 	}
 
 	return nullptr;
 }
 
-const SpawnPointData& Level::GetSpawnPointData(const uint32_t spawnPointID) const
+const PortalData& Level::GetPortalData(const std::string& name) const
 {
-	return m_mapData.m_SpawnPoints.at(spawnPointID);
+	return m_mapData->m_Portals.at(name);
 }
+
+const SpawnPointData& Level::GetSpawnPointData(const std::string& name) const
+{
+	return m_mapData->m_SpawnPoints.at(name);
+}
+

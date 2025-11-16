@@ -178,17 +178,27 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 }
 
 
-bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Portal>& doors)
+bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<Portal>& portals)
 {
+	const auto& height = doorsLayerObj["height"];
+	if (!height.is_number())
+	{
+		return false;
+	}
+
+	const auto& name = doorsLayerObj["name"];
+	if (!name.is_string())
+	{
+		return false;
+	}
+
 	const auto& properties = doorsLayerObj["properties"];
 	if (!properties.is_array())
 	{
 		return false;
 	}
 
-	std::string levelToLoad = "UNKNOWN";
 	std::string orientation = "UNKNOWN";
-	uint32_t spawnPointID = 0x69420;
 	for (const auto& property : properties)
 	{
 		const auto& propertyName = property["name"];
@@ -198,17 +208,7 @@ bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<
 		}
 
 		const std::string propertyNameAsString = propertyName;
-		if (propertyNameAsString == "LevelToLoad")
-		{
-			const auto& propertyVal = property["value"];
-			if (!propertyVal.is_string())
-			{
-				return false;
-			}
-
-			levelToLoad = propertyVal;
-		}
-		else if (propertyNameAsString == "Orientation")
+		if (propertyNameAsString == "Orientation")
 		{
 			const auto& propertyVal = property["value"];
 			if (!propertyVal.is_string())
@@ -218,16 +218,6 @@ bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<
 
 			orientation = propertyVal;
 		}
-		else if (propertyNameAsString == "SpawnPointID")
-		{
-			const auto& propertyVal = property["value"];
-			if (!propertyVal.is_number_integer())
-			{
-				return false;
-			}
-
-			spawnPointID = propertyVal;
-		}
 		else
 		{
 			// TODO: Might support more properties in the future
@@ -235,27 +225,9 @@ bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<
 		}
 	}
 
-	if (levelToLoad == "UNKNOWN")
-	{
-		std::cerr << "TMJ::ParsePortals: Failed to parse LevelToLoad!\n";
-		return false;
-	}
-
 	if (orientation == "UNKNOWN")
 	{
 		std::cerr << "TMJ::ParsePortals: Failed to parse Orientation!\n";
-		return false;
-	}
-
-	if (spawnPointID == 0x69420)
-	{
-		std::cerr << "TMJ::ParsePortals: Failed to parse SpawnPointID!\n";
-		return false;
-	}
-
-	const auto& height = doorsLayerObj["height"];
-	if (!height.is_number())
-	{
 		return false;
 	}
 
@@ -277,14 +249,13 @@ bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<
 		return false;
 	}
 
-	doors.push_back({
-		levelToLoad,
+	portals.push_back({
+		name,
 		height,
 		width,
 		x,
 		y,
-		orientation,
-		spawnPointID
+		orientation
 		});
 
 	return true;
@@ -295,20 +266,14 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 	// TODO: Maybe some extra enforcement here?
 	const std::string spawnPointName = spawnPointObject["name"];
 
-	SpawnPoint spawnPoint;
-
-	const size_t lastUnderscorePos = spawnPointName.find_last_of('_');
-	if (lastUnderscorePos == std::string::npos)
+	if (spawnPointName.empty())
 	{
-		std::cerr << "TMJ::ParseSpawnPoint: No underscores present in name " << spawnPointName << "\n";
 		return false;
 	}
 
-	// Find the ID of the spawnpoint
-	const std::string spawnPointID = spawnPointName.substr(lastUnderscorePos + 1,
-		spawnPointName.size() - lastUnderscorePos - 1);
+	SpawnPoint spawnPoint;
 
-	spawnPoint.m_ID = std::stoi(spawnPointID);
+	spawnPoint.m_Name = spawnPointName;
 
 	const auto& x = spawnPointObject["x"];
 	if (!x.is_number_integer())
@@ -475,7 +440,7 @@ bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int z
 	return true;
 }
 
-bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Portal>& doors,
+bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Portal>& portals,
 	std::vector<SpawnPoint>& spawnPoints)
 {
 	const auto& objectsArray = objLayerObj["objects"];
@@ -487,18 +452,18 @@ bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::v
 
 	for (const auto& object : objectsArray)
 	{
-		const std::string objectName = object["name"];
+		const std::string objectType = object["type"];
 
 		// Determine what type of object it is (NPC spawn, Portal, SpawnPoint, etc)
-		if (objectName.find("door") != std::string::npos)
+		if (objectType == "Portal")
 		{
-			if (!ParsePortals(object, doors))
+			if (!ParsePortals(object, portals))
 			{
-				std::cerr << "TMJ::ParseObjectLayerType: Failed to parse doors layer!\n";
+				std::cerr << "TMJ::ParseObjectLayerType: Failed to parse portals layer!\n";
 				return false;
 			}
 		}
-		else if (objectName.find("level_spawn") != std::string::npos)
+		else if (objectType == "SpawnPoint")
 		{
 			if (!ParseSpawnPoint(object, spawnPoints))
 			{
@@ -508,7 +473,7 @@ bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::v
 		}
 		else
 		{
-			std::cerr << "Unable to parse object with name: " << objectName << "\n";
+			std::cerr << "Unable to parse object with name: " << object["name"] << "\n";
 		}
 	}
 	return true;
@@ -570,10 +535,6 @@ bool TSX::Init()
 	{
 		if (code == HOXML_ELEMENT_BEGIN)
 		{
-#if BUILD_DEBUG
-			printf("TSX::Init: Opened <%s>\n", hoxml_context->tag);
-#endif
-
 			if (strcmp("tileset", hoxml_context->tag) == 0)
 			{
 				if (!ParseTileSet(m_filePath.parent_path(), hoxml_context, content, content_length))

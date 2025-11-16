@@ -6,7 +6,7 @@
 class Level
 {
 public:
-	explicit Level(const std::filesystem::path& levelTMJFilepath);
+	explicit Level(const std::shared_ptr<MapData>& mapData);
 
 	std::vector<TileRenderData> GetRenderData() const;
 	std::vector<TileLayerData> GetLayers() const;
@@ -19,10 +19,11 @@ public:
 	bool CanMoveTo(uint32_t x, uint32_t y) const;
 	const PortalData* GetDoorPlayerIsOver(sf::Vector2i playerGridPosition) const;
 
-	const SpawnPointData& GetSpawnPointData(uint32_t spawnPointID) const;
+	const PortalData& GetPortalData(const std::string& name) const;
+	const SpawnPointData& GetSpawnPointData(const std::string& name) const;
 
 private:
-	TileMapData m_mapData;
+	std::shared_ptr<MapData> m_mapData;
 	TileLogic m_tileLogic;
 };
 

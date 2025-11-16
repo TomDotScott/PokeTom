@@ -4,15 +4,15 @@
 #include <sstream>
 
 
-TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
+std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 {
-	TileMapData data;
+	MapData data;
 	const auto tmjParser = TMJ::Create(tmjPath);
 
 	if (!tmjParser)
 	{
 		std::cout << "TileParser::ParseTMJ: Failed to parse TMJ file " << tmjPath << "\n";
-		return {};
+		return nullptr;
 	}
 
 	// Load each tileset
@@ -46,12 +46,12 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 
 	const auto& doors = tmjParser->GetPortals();
 	data.m_Portals.reserve(doors.size());
-	for (const auto& door : doors)
+	for (const auto& portal : doors)
 	{
 		// Parse the orientations for the door;
 		uint8_t orientation = 0;
 
-		std::stringstream ss(door.m_Orientation);
+		std::stringstream ss(portal.m_Orientation);
 		std::vector<std::string> splitString;
 
 		while (ss.good())
@@ -67,28 +67,27 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 			orientation |= static_cast<uint32_t>(o);
 		}
 
-		PortalData doorData{
-			door.m_LevelToLoad,
-			door.m_SpawnPointID,
+		PortalData portalData{
+			portal.m_Name,
 			orientation,
 			{
-				static_cast<int>(door.m_Width) / 32,
-				static_cast<int>(door.m_Height) / 32
+				static_cast<int>(portal.m_Width) / 32,
+				static_cast<int>(portal.m_Height) / 32
 			},
 			{
-				static_cast<int>(door.m_X) / 32,
-				static_cast<int>(door.m_Y) / 32
+				static_cast<int>(portal.m_X) / 32,
+				static_cast<int>(portal.m_Y) / 32
 			}
 		};
 
-		data.m_Portals.emplace_back(doorData);
+		data.m_Portals[portal.m_Name] = portalData;
 	}
 
 	const auto& spawnPoints = tmjParser->GetSpawnPoints();
 	for (const auto& spawnPoint : spawnPoints)
 	{
 		const SpawnPointData spawnPointData{
-			spawnPoint.m_ID,
+			spawnPoint.m_Name,
 			StringToOrientation(spawnPoint.m_Orientation),
 			{
 				static_cast<int>(spawnPoint.m_X) / 32,
@@ -96,8 +95,8 @@ TileMapData TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 			},
 		};
 
-		data.m_SpawnPoints[spawnPoint.m_ID] = spawnPointData;
+		data.m_SpawnPoints[spawnPoint.m_Name] = spawnPointData;
 	}
 
-	return data;
+	return std::make_shared<MapData>(data);
 }

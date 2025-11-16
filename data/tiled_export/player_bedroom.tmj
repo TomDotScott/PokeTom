@@ -83,22 +83,12 @@
                  "name":"door_downstairs",
                  "properties":[
                         {
-                         "name":"LevelToLoad",
-                         "type":"file",
-                         "value":"tiled_export\/player_house.tmj"
-                        }, 
-                        {
                          "name":"Orientation",
                          "type":"string",
                          "value":"Up,Right"
-                        }, 
-                        {
-                         "name":"SpawnPointID",
-                         "type":"int",
-                         "value":2
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Portal",
                  "visible":true,
                  "width":32,
                  "x":256,
@@ -107,7 +97,7 @@
                 {
                  "height":32,
                  "id":2,
-                 "name":"level_spawn_1",
+                 "name":"player_bedroom_landing",
                  "properties":[
                         {
                          "name":"Orientation",
@@ -115,7 +105,7 @@
                          "value":"Down"
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"SpawnPoint",
                  "visible":true,
                  "width":32,
                  "x":224,

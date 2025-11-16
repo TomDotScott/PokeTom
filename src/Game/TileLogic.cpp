@@ -3,11 +3,11 @@
 #include <iostream>
 
 
-TileLogic::TileLogic(const TileMapData& data)
+TileLogic::TileLogic(const std::shared_ptr<MapData>& mapData)
 {
-	m_layers = data.m_Layers;
+	m_layers = mapData->m_Layers;
 
-	for (const auto& layer : data.m_Layers)
+	for (const auto& layer : mapData->m_Layers)
 	{
 		m_zIndexes[layer.m_Name] = layer.m_ZIndex;
 
@@ -15,7 +15,7 @@ TileLogic::TileLogic(const TileMapData& data)
 		{
 			uint32_t globalID = layer.m_LevelData[i];
 
-			for (const auto& [name, sheet] : data.m_TileSheets)
+			for (const auto& [name, sheet] : mapData->m_TileSheets)
 			{
 				const int localID = static_cast<int>(globalID) - static_cast<int>(sheet->GetFirstGID()) + 1;
 				if (localID < 0)
@@ -26,8 +26,8 @@ TileLogic::TileLogic(const TileMapData& data)
 				if (const TileSheet::TileDefinition* definition = sheet->GetTileDefinition(localID - 1)) {
 					TileInstance instance{
 						{
-							static_cast<float>((i % data.m_NumColumns) * 32),
-							static_cast<float>((i / data.m_NumColumns) * 32)
+							static_cast<float>((i % mapData->m_NumColumns) * 32),
+							static_cast<float>((i / mapData->m_NumColumns) * 32)
 						},
 						definition,
 						sheet.get(),

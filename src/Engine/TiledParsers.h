@@ -14,10 +14,8 @@ class TMJ final : public Factory<TMJ>
 public:
 	struct Portal
 	{
-		// TODO: This should probably be a hash of the asset
-		// There really needs to be some proper asset management in this
-		// little engine, but that sounds v complicated to do at this stage
-		std::filesystem::path m_LevelToLoad;
+		std::string m_Name;
+
 		uint32_t m_Height;
 		uint32_t m_Width;
 
@@ -29,17 +27,11 @@ public:
 
 		// Comma-delimited "Up", "Down", "Left", or "Right"
 		std::string m_Orientation;
-
-		uint32_t m_SpawnPointID;
 	};
 
 	struct SpawnPoint
 	{
-		// The ID comes from the "name" of the Object in the Object Layer
-		// There is an ID field, but it increments by 1 every time an
-		// object is created, so may not be reliable to use when
-		// setting the entrance and exits of the doors
-		uint32_t m_ID;
+		std::string m_Name;
 
 		// Needs to be divided by the tile size
 		uint32_t m_X;
@@ -49,7 +41,7 @@ public:
 
 		// Either "Up", "Down", "Left", or "Right"
 		// Converted into an Enum when the TileLogic creates
-		// the TileMapData instance
+		// the MapData instance
 		std::string m_Orientation;
 	};
 

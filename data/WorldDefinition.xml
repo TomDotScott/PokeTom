@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<WorldDefinition>
+  <Level id="starter_town" tmj="tiled_export\\starter_town.tmj">
+    <Portal id="door_player_house" targetLevel="player_house" targetSpawnPoint="front_door_spawn"/>
+  </Level>
+  
+  <Level id="player_house" tmj="tiled_export\\player_house.tmj">
+    <Portal id="door_exit" targetLevel="starter_town" targetSpawnPoint="player_house_exit"/>
+    <Portal id="door_upstairs" targetLevel="player_bedroom" targetSpawnPoint="player_bedroom_landing"/>
+  </Level>
+  
+  <Level id="player_bedroom" tmj="tiled_export\\player_bedroom.tmj">
+    <Portal id="door_downstairs" targetLevel="player_house" targetSpawnPoint="landing"/>
+  </Level>
+</WorldDefinition>
+

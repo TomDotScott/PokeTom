@@ -10,14 +10,11 @@
 #include "../Engine/Animation/AnimDef.h"
 #include "../Engine/Input/Keyboard.h"
 
-const std::filesystem::path START_LEVEL = "tiled_export\\player_bedroom.tmj";
-
 Game::Game() :
 	Updateable(),
 	m_state(eGameState::Overworld),
 	m_player(),
-	m_currentLevel(new Level(START_LEVEL)),
-	m_nextLevel(nullptr),
+	m_world("WorldDefinition.xml", "player_bedroom"),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
 {
@@ -94,18 +91,23 @@ void Game::UpdateOverworld(const float deltaTime)
 
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
-	m_renderer.SetCameraCentre(m_cameraPosition, m_currentLevel->GetNumColumns(), m_currentLevel->GetNumRows());
+	const auto currentLevel = m_world.GetLevel(m_world.GetCurrentLevelName());
+
+	m_renderer.SetCameraCentre(m_cameraPosition, currentLevel->GetNumColumns(), currentLevel->GetNumRows());
 
 	// If the player is on a door in the right orientation, start a level transition
-	const PortalData* portalData = m_currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
+	const PortalData* portalData = currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
 
 	if (portalData != nullptr)
 	{
 		const uint8_t playerOrientation = static_cast<uint8_t>(m_player.GetCurrentOrientation());
 
 		if (portalData->m_Orientation & playerOrientation) {
-			TransitionLevel(portalData->m_LevelToLoad);
 			m_lastEnteredPortal = portalData;
+
+			std::cout << "Transitioning to " << m_world.GetPortalData(m_world.GetCurrentLevelName(), portalData->m_Name).m_TargetLevel << "\n";
+
+			TransitionLevel();
 		}
 	}
 }
@@ -120,13 +122,7 @@ void Game::UpdateScreenFade(const float deltaTime)
 		if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeOut)
 		{
 			m_screenFader.StartFade(ScreenFader::FadeType::FadeIn, 1.f, 0.5f);
-
-			const Level* previousLevel = m_currentLevel;
-			m_currentLevel = m_nextLevel;
-
 			ReadyPlayerAndRenderer();
-
-			delete previousLevel;
 		}
 		else if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeIn)
 		{
@@ -135,24 +131,16 @@ void Game::UpdateScreenFade(const float deltaTime)
 	}
 }
 
-void Game::TransitionLevel(const std::filesystem::path& newLevel)
+void Game::TransitionLevel()
 {
-	if (m_currentLevel == nullptr)
-	{
-		m_currentLevel = new Level(newLevel);
-	}
-	else
-	{
-		m_nextLevel = new Level(newLevel);
-	}
-
 	m_state = eGameState::FadingScreen;
 	m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
 }
 
 void Game::ReadyPlayerAndRenderer()
 {
-	m_player.SetLevel(m_currentLevel);
+	std::string levelName = m_world.GetCurrentLevelName();
+	std::shared_ptr<Level> level = m_world.GetLevel(levelName);
 
 	// TODO: Remove this little hack!
 	if (m_lastEnteredPortal == nullptr)
@@ -162,15 +150,23 @@ void Game::ReadyPlayerAndRenderer()
 	}
 	else
 	{
-		const auto& spawnPointData = m_currentLevel->GetSpawnPointData(m_lastEnteredPortal->m_SpawnPointID);
+		const auto& portalData = m_world.GetPortalData(levelName, m_lastEnteredPortal->m_Name);
+		m_world.OnPlayerEnterPortal(m_lastEnteredPortal->m_Name);
+
+		level = m_world.GetLevel(m_world.GetCurrentLevelName());
+
+		const SpawnPointData& spawnPointData = level->GetSpawnPointData(portalData.m_TargetSpawnPoint);
+
 		m_player.SetGridPosition(spawnPointData.m_GridPosition);
 		m_player.SetOrientation(spawnPointData.m_Orientation);
 	}
 
-	m_renderer.BuildBatches(m_currentLevel->GetRenderData(), m_currentLevel->GetLayers());
+	m_player.SetLevel(level);
+
+	m_renderer.BuildBatches(level->GetRenderData(), level->GetLayers());
 
 	m_cameraPosition = m_player.GetPosition();
-	m_renderer.SetCameraCentre(m_cameraPosition, m_currentLevel->GetNumColumns(), m_currentLevel->GetNumRows());
+	m_renderer.SetCameraCentre(m_cameraPosition, level->GetNumColumns(), level->GetNumRows());
 
 	m_lastEnteredPortal = nullptr;
 }

@@ -19,7 +19,7 @@ public:
 	sf::Vector2i GetGridPosition() const;
 	void SetGridPosition(const sf::Vector2i& gridPosition);
 
-	void SetLevel(const Level* level);
+	void SetLevel(const std::shared_ptr<Level>& level);
 	int GetZIndex() const;
 
 	void SetOrientation(eOrientation);
@@ -49,7 +49,7 @@ public:
 
 private:
 	GridMovementComponent m_movement;
-	const Level* m_currentLevel;
+	std::shared_ptr<Level> m_currentLevel;
 	eAnimationState m_animationState;
 
 	AnimationPlayer m_animationPlayer;

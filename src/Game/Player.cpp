@@ -78,7 +78,7 @@ void Player::SetGridPosition(const sf::Vector2i& gridPosition)
 	SetPosition(m_movement.GetWorldPosition());
 }
 
-void Player::SetLevel(const Level* level)
+void Player::SetLevel(const std::shared_ptr<Level>& level)
 {
 	m_currentLevel = level;
 }

@@ -11,6 +11,7 @@
 #include "../Engine/Rendering/ScreenFader.h"
 #include "TileLogic.h"
 #include "Renderer.h"
+#include "WorldDefinition.h"
 
 class Game final : public Updateable
 {
@@ -30,8 +31,7 @@ private:
 	} m_state;
 
 	Player m_player;
-	Level* m_currentLevel;
-	Level* m_nextLevel;
+	WorldDefinition m_world;
 	const PortalData* m_lastEnteredPortal;
 
 	sf::Vector2f m_cameraPosition;
@@ -58,7 +58,7 @@ private:
 	void UpdateOverworld(float deltaTime);
 	void UpdateScreenFade(float deltaTime);
 
-	void TransitionLevel(const std::filesystem::path& newLevel);
+	void TransitionLevel();
 
 	void ReadyPlayerAndRenderer();
 };

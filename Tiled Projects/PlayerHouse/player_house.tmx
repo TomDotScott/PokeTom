@@ -30,26 +30,22 @@
   </data>
  </layer>
  <objectgroup id="7" name="Doors">
-  <object id="1" name="door_exit" x="160" y="288" width="64" height="32">
-   <properties>
-    <property name="LevelToLoad" type="file" value="../../data/tiled_export/starter_town.tmj"/>
-    <property name="Orientation" value="down"/>
-    <property name="SpawnPointID" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="3" name="door_upstairs" x="160" y="64" width="32" height="32">
-   <properties>
-    <property name="LevelToLoad" type="file" value="../../data/tiled_export/player_bedroom.tmj"/>
-    <property name="Orientation" value="Up,Right"/>
-    <property name="SpawnPointID" type="int" value="1"/>
-   </properties>
-  </object>
-  <object id="4" name="level_spawn_2" x="128" y="64" width="32" height="32">
+  <object id="1" name="door_exit" type="Portal" x="160" y="288" width="64" height="32">
    <properties>
     <property name="Orientation" value="Down"/>
    </properties>
   </object>
-  <object id="7" name="level_spawn_1" x="160" y="288" width="32" height="32">
+  <object id="3" name="door_upstairs" type="Portal" x="160" y="64" width="32" height="32">
+   <properties>
+    <property name="Orientation" value="Up,Right"/>
+   </properties>
+  </object>
+  <object id="4" name="landing" type="SpawnPoint" x="128" y="64" width="32" height="32">
+   <properties>
+    <property name="Orientation" value="Down"/>
+   </properties>
+  </object>
+  <object id="7" name="front_door_spawn" type="SpawnPoint" x="160" y="288" width="32" height="32">
    <properties>
     <property name="Orientation" value="Up"/>
    </properties>

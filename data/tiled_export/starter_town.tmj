@@ -97,22 +97,12 @@
                  "name":"door_player_house",
                  "properties":[
                         {
-                         "name":"LevelToLoad",
-                         "type":"file",
-                         "value":"tiled_export\/player_house.tmj"
-                        }, 
-                        {
                          "name":"Orientation",
                          "type":"string",
                          "value":"Up"
-                        }, 
-                        {
-                         "name":"SpawnPointID",
-                         "type":"int",
-                         "value":1
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Portal",
                  "visible":true,
                  "width":32,
                  "x":416,
@@ -121,7 +111,7 @@
                 {
                  "height":32,
                  "id":14,
-                 "name":"level_spawn_1",
+                 "name":"player_house_exit",
                  "properties":[
                         {
                          "name":"Orientation",
@@ -129,7 +119,7 @@
                          "value":"Down"
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"SpawnPoint",
                  "visible":true,
                  "width":32,
                  "x":416,
