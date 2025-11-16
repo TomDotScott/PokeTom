@@ -46,10 +46,6 @@ bool AnimationDictionary::Init()
 	{
 		if (code == HOXML_ELEMENT_BEGIN)
 		{
-#if BUILD_DEBUG
-			printf("AnimationDictionary::Init: Opened <%s>\n", hoxml_context->tag);
-#endif
-
 			if (strcmp("AnimDict", hoxml_context->tag) == 0)
 			{
 				if (!ParseAnimDict(m_filepath.parent_path(), hoxml_context, content, content_length))

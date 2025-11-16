@@ -107,10 +107,6 @@ bool UiManager::Load(const std::filesystem::path& path)
 	{
 		if (code == HOXML_ELEMENT_BEGIN)
 		{
-#if BUILD_DEBUG
-			printf(" Opened <%s>\n", hoxml_context->tag);
-#endif
-
 			if (strcmp("Font", hoxml_context->tag) == 0)
 			{
 				LoadFont(hoxml_context, content, content_length);
