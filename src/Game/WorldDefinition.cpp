@@ -13,19 +13,23 @@ WorldDefinition::WorldDefinition(const std::filesystem::path& worldDefinitionFil
 	ParseWorldDefinition(worldDefinitionFilepath);
 }
 
-void WorldDefinition::OnPlayerEnterPortal(const std::string& portalName)
+std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const std::string& portalName)
 {
 	const auto& currentLevelPortals = m_levelPortals.at(m_currentLevel);
 	if (currentLevelPortals.find(portalName) == currentLevelPortals.end())
 	{
 		std::cerr << "WorldDefinition::OnPlayerEnterPortal - Portal with name " << portalName <<
 			" Does not exist in level " << m_currentLevel << "\n";
-		return;
+		return std::nullopt;
 	}
 
 	const Portal& portalData = currentLevelPortals.at(portalName);
-
 	m_currentLevel = portalData.m_TargetLevel;
+
+	return LevelTransition{
+		portalData.m_TargetLevel,
+		portalData.m_TargetSpawnPoint
+	};
 }
 
 const WorldDefinition::Portal& WorldDefinition::GetPortalData(const std::string& levelName,

@@ -20,7 +20,7 @@ Game::Game() :
 {
 	UIMANAGER.Load("ui.xml");
 
-	ReadyPlayerAndRenderer();
+	OnTransitionEnd();
 }
 
 Game::~Game() = default;
@@ -122,7 +122,7 @@ void Game::UpdateScreenFade(const float deltaTime)
 		if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeOut)
 		{
 			m_screenFader.StartFade(ScreenFader::FadeType::FadeIn, 1.f, 0.5f);
-			ReadyPlayerAndRenderer();
+			OnTransitionEnd();
 		}
 		else if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeIn)
 		{
@@ -137,7 +137,7 @@ void Game::TransitionLevel()
 	m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
 }
 
-void Game::ReadyPlayerAndRenderer()
+void Game::OnTransitionEnd()
 {
 	std::string levelName = m_world.GetCurrentLevelName();
 	std::shared_ptr<Level> level = m_world.GetLevel(levelName);
@@ -150,15 +150,18 @@ void Game::ReadyPlayerAndRenderer()
 	}
 	else
 	{
-		const auto& portalData = m_world.GetPortalData(levelName, m_lastEnteredPortal->m_Name);
-		m_world.OnPlayerEnterPortal(m_lastEnteredPortal->m_Name);
+		if (const auto transition = m_world.EnterPortal(m_lastEnteredPortal->m_Name)) {
+			level = m_world.GetLevel(transition->m_NewLevelName);
 
-		level = m_world.GetLevel(m_world.GetCurrentLevelName());
+			const SpawnPointData& spawnPointData = level->GetSpawnPointData(transition->m_SpawnPointName);
 
-		const SpawnPointData& spawnPointData = level->GetSpawnPointData(portalData.m_TargetSpawnPoint);
-
-		m_player.SetGridPosition(spawnPointData.m_GridPosition);
-		m_player.SetOrientation(spawnPointData.m_Orientation);
+			m_player.SetGridPosition(spawnPointData.m_GridPosition);
+			m_player.SetOrientation(spawnPointData.m_Orientation);
+		}
+		else
+		{
+			std::cerr << "Game::OnTransitionEnd - Failed to enter portal " << m_lastEnteredPortal->m_Name << "\n";
+		}
 	}
 
 	m_player.SetLevel(level);

@@ -60,7 +60,7 @@ private:
 
 	void TransitionLevel();
 
-	void ReadyPlayerAndRenderer();
+	void OnTransitionEnd();
 };
 
 

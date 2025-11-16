@@ -2,6 +2,7 @@
 #define WORLDDEFINITION_H
 #include <filesystem>
 #include <hoxml.h>
+#include <optional>
 #include <string>
 #include <unordered_map>
 
@@ -12,7 +13,13 @@ class WorldDefinition
 public:
 	WorldDefinition(const std::filesystem::path& worldDefinitionFilepath, std::string startLevel);
 
-	void OnPlayerEnterPortal(const std::string& portalName);
+	struct LevelTransition
+	{
+		std::string m_NewLevelName;
+		std::string m_SpawnPointName;
+	};
+
+	std::optional<LevelTransition> EnterPortal(const std::string& portalName);
 
 	struct Portal
 	{
