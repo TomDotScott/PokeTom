@@ -110,6 +110,23 @@
                  "width":32,
                  "x":224,
                  "y":64
+                }, 
+                {
+                 "height":32,
+                 "id":4,
+                 "name":"player_spawn",
+                 "properties":[
+                        {
+                         "name":"Orientation",
+                         "type":"string",
+                         "value":"Right"
+                        }],
+                 "rotation":0,
+                 "type":"SpawnPoint",
+                 "visible":true,
+                 "width":32,
+                 "x":96,
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -118,7 +135,7 @@
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":4,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

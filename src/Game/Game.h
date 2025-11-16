@@ -58,8 +58,9 @@ private:
 	void UpdateOverworld(float deltaTime);
 	void UpdateScreenFade(float deltaTime);
 
-	void TransitionLevel();
+	void LoadLevel(const std::string& levelName, const std::string& spawnPointName);
 
+	void TransitionLevel();
 	void OnTransitionEnd();
 };
 

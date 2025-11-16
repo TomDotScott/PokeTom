@@ -131,6 +131,23 @@ void Game::UpdateScreenFade(const float deltaTime)
 	}
 }
 
+void Game::LoadLevel(const std::string& levelName, const std::string& spawnPointName)
+{
+	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
+
+	const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
+
+	m_player.SetGridPosition(spawnPointData.m_GridPosition);
+	m_player.SetOrientation(spawnPointData.m_Orientation);
+
+	m_player.SetLevel(level);
+
+	m_renderer.BuildBatches(level->GetRenderData(), level->GetLayers());
+
+	m_cameraPosition = m_player.GetPosition();
+	m_renderer.SetCameraCentre(m_cameraPosition, level->GetNumColumns(), level->GetNumRows());
+}
+
 void Game::TransitionLevel()
 {
 	m_state = eGameState::FadingScreen;
@@ -139,37 +156,20 @@ void Game::TransitionLevel()
 
 void Game::OnTransitionEnd()
 {
-	std::string levelName = m_world.GetCurrentLevelName();
-	std::shared_ptr<Level> level = m_world.GetLevel(levelName);
-
-	// TODO: Remove this little hack!
 	if (m_lastEnteredPortal == nullptr)
 	{
-		m_player.SetGridPosition({ 3, 3 });
-		m_player.SetOrientation(eOrientation::Down);
+		LoadLevel(m_world.GetCurrentLevelName(), "player_spawn");
+		return;
+	}
+
+	if (auto transition = m_world.EnterPortal(m_lastEnteredPortal->m_Name))
+	{
+		LoadLevel(transition->m_NewLevelName, transition->m_SpawnPointName);
 	}
 	else
 	{
-		if (const auto transition = m_world.EnterPortal(m_lastEnteredPortal->m_Name)) {
-			level = m_world.GetLevel(transition->m_NewLevelName);
-
-			const SpawnPointData& spawnPointData = level->GetSpawnPointData(transition->m_SpawnPointName);
-
-			m_player.SetGridPosition(spawnPointData.m_GridPosition);
-			m_player.SetOrientation(spawnPointData.m_Orientation);
-		}
-		else
-		{
-			std::cerr << "Game::OnTransitionEnd - Failed to enter portal " << m_lastEnteredPortal->m_Name << "\n";
-		}
+		std::cerr << "Game::OnTransitionEnd - Failed to transition to portal!\n";
 	}
-
-	m_player.SetLevel(level);
-
-	m_renderer.BuildBatches(level->GetRenderData(), level->GetLayers());
-
-	m_cameraPosition = m_player.GetPosition();
-	m_renderer.SetCameraCentre(m_cameraPosition, level->GetNumColumns(), level->GetNumRows());
 
 	m_lastEnteredPortal = nullptr;
 }
