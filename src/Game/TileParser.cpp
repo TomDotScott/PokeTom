@@ -4,6 +4,11 @@
 #include <sstream>
 
 
+bool PortalTrigger::AllowsOrientation(eOrientation orientation) const
+{
+	return static_cast<uint8_t>(orientation) & m_AllowedOrientations;
+}
+
 std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
 {
 	MapData data;
@@ -67,7 +72,7 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 			orientation |= static_cast<uint32_t>(o);
 		}
 
-		PortalData portalData{
+		PortalTrigger portalData{
 			portal.m_Name,
 			orientation,
 			{

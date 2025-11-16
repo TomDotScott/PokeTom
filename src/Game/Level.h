@@ -17,9 +17,8 @@ public:
 	uint32_t GetPlayerZIndex() const;
 
 	bool CanMoveTo(uint32_t x, uint32_t y) const;
-	const PortalData* GetDoorPlayerIsOver(sf::Vector2i playerGridPosition) const;
+	const PortalTrigger* GetPortalAtPlayerPosition(sf::Vector2i playerGridPosition) const;
 
-	const PortalData& GetPortalData(const std::string& name) const;
 	const SpawnPointData& GetSpawnPointData(const std::string& name) const;
 
 private:

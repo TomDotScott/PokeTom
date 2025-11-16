@@ -82,7 +82,7 @@ bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
 	return true;
 }
 
-const PortalData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPosition) const
+const PortalTrigger* Level::GetPortalAtPlayerPosition(const sf::Vector2i playerGridPosition) const
 {
 	for (const auto& [_, portalData] : m_mapData->m_Portals)
 	{
@@ -97,11 +97,6 @@ const PortalData* Level::GetDoorPlayerIsOver(const sf::Vector2i playerGridPositi
 	}
 
 	return nullptr;
-}
-
-const PortalData& Level::GetPortalData(const std::string& name) const
-{
-	return m_mapData->m_Portals.at(name);
 }
 
 const SpawnPointData& Level::GetSpawnPointData(const std::string& name) const

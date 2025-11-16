@@ -32,7 +32,7 @@ private:
 
 	Player m_player;
 	WorldDefinition m_world;
-	const PortalData* m_lastEnteredPortal;
+	const PortalTrigger* m_lastEnteredPortal;
 
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;
@@ -56,6 +56,9 @@ private:
 #endif
 
 	void UpdateOverworld(float deltaTime);
+	void UpdateCamera(float deltaTime);
+	void CheckForPortals();
+
 	void UpdateScreenFade(float deltaTime);
 
 	void LoadLevel(const std::string& levelName, const std::string& spawnPointName);

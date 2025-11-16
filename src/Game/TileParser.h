@@ -15,13 +15,15 @@ struct TileLayerData
 	int m_ZIndex;
 };
 
-struct PortalData
+struct PortalTrigger
 {
+	bool AllowsOrientation(eOrientation orientation) const;
+
 	std::string m_Name;
 
 	// The orientations the player can be in, in order to use the door
 	// a bitmask of the values in eOrientation
-	uint8_t m_Orientation;
+	uint8_t m_AllowedOrientations;
 	sf::Vector2i m_Size;
 	sf::Vector2i m_GridPosition;
 };
@@ -40,7 +42,7 @@ struct SpawnPointData
 struct MapData
 {
 	std::vector<TileLayerData> m_Layers;
-	std::unordered_map<std::string, PortalData> m_Portals;
+	std::unordered_map<std::string, PortalTrigger> m_Portals;
 	std::unordered_map<std::string, SpawnPointData> m_SpawnPoints;
 	std::unordered_map<std::string, std::shared_ptr<TileSheet>> m_TileSheets;
 	uint32_t m_NumColumns;

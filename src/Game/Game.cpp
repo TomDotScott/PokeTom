@@ -88,27 +88,36 @@ void Game::Render(sf::RenderWindow& window) const
 void Game::UpdateOverworld(const float deltaTime)
 {
 	m_player.Update(deltaTime);
+	UpdateCamera(deltaTime);
+	CheckForPortals();
+}
 
+void Game::UpdateCamera(const float deltaTime)
+{
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
 	const auto currentLevel = m_world.GetLevel(m_world.GetCurrentLevelName());
 
-	m_renderer.SetCameraCentre(m_cameraPosition, currentLevel->GetNumColumns(), currentLevel->GetNumRows());
+	m_renderer.SetCameraCentre(m_cameraPosition,
+		currentLevel->GetNumColumns(),
+		currentLevel->GetNumRows()
+	);
+}
+
+void Game::CheckForPortals()
+{
+	const std::shared_ptr<Level> currentLevel = m_world.GetLevel(m_world.GetCurrentLevelName());
 
 	// If the player is on a door in the right orientation, start a level transition
-	const PortalData* portalData = currentLevel->GetDoorPlayerIsOver(m_player.GetGridPosition());
+	const PortalTrigger* portal = currentLevel->GetPortalAtPlayerPosition(m_player.GetGridPosition());
 
-	if (portalData != nullptr)
+	if (portal != nullptr && portal->AllowsOrientation(m_player.GetCurrentOrientation()))
 	{
-		const uint8_t playerOrientation = static_cast<uint8_t>(m_player.GetCurrentOrientation());
+		m_lastEnteredPortal = portal;
 
-		if (portalData->m_Orientation & playerOrientation) {
-			m_lastEnteredPortal = portalData;
+		std::cout << "Transitioning to " << m_world.GetPortalData(m_world.GetCurrentLevelName(), portal->m_Name).m_TargetLevel << "\n";
 
-			std::cout << "Transitioning to " << m_world.GetPortalData(m_world.GetCurrentLevelName(), portalData->m_Name).m_TargetLevel << "\n";
-
-			TransitionLevel();
-		}
+		TransitionLevel();
 	}
 }
 
