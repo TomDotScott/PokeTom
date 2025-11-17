@@ -101,6 +101,13 @@ const PortalTrigger* Level::GetPortalAtPlayerPosition(const sf::Vector2i playerG
 
 const SpawnPointData& Level::GetSpawnPointData(const std::string& name) const
 {
+#if BUILD_DEBUG
+	// If the map isn't found, assume we are debug-teleporting to a place
+	if (m_mapData->m_SpawnPoints.find(name) == m_mapData->m_SpawnPoints.end())
+	{
+		return m_mapData->m_SpawnPoints.begin()->second;
+	}
+#endif
 	return m_mapData->m_SpawnPoints.at(name);
 }
 

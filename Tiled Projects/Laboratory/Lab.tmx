@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="24" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="4">
+ <editorsettings>
+  <export target="../../data/tiled_export/lab.tmj" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../../data/tiled_export/interiors.tsx"/>
+ <tileset firstgid="2753" source="../../data/tiled_export/hgss.tsx"/>
+ <layer id="1" name="Background" width="24" height="12">
+  <data encoding="base64" compression="zlib">
+   eJwrYGBgWEsjnA/EeUCcSyOcM2r+qPmj5tPUfAMg1qUR1gdiAKTNeis=
+  </data>
+ </layer>
+ <layer id="2" name="Floor" width="24" height="12">
+  <data encoding="base64" compression="zlib">
+   eJxjYKA9+MDIwPCOBhgGQOytNMAwQAuzR80fNX+omE9LAABsz6GK
+  </data>
+ </layer>
+ <layer id="3" name="Decor" width="24" height="12">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAPeMTEwPCYCVXsFxD/JsAmFigxMzAoA/EWRgi/CkhbAbE1lI+NXQxkl2DBpQwIc4YL+A0MmwfA8H/IhF1eDehfDUaIOhjAFz7YgAJQryJUvwU/AoPAMqDZKygMU2S3kSJHK1CN5J8qRuziAw2esTMwvGAfaFfgBgC/1h1e
+  </data>
+ </layer>
+ <layer id="4" name="On Top of Player" width="24" height="12">
+  <data encoding="base64" compression="zlib">
+   eJxjYBi8wBiITbBg04F01CACo+EzCoY6AABZlwLZ
+  </data>
+ </layer>
+ <layer id="5" name="Top Layer" width="24" height="12">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjIKBAQAEgAAB
+  </data>
+ </layer>
+ <objectgroup id="6" name="Objects">
+  <object id="1" name="door" type="Portal" x="256" y="320" width="64" height="32">
+   <properties>
+    <property name="Orientation" value="Down"/>
+   </properties>
+  </object>
+  <object id="3" name="spawn" type="SpawnPoint" x="256" y="320" width="32" height="32">
+   <properties>
+    <property name="Orientation" value="Up"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

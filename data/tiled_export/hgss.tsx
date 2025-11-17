@@ -10293,7 +10293,7 @@
  </tile>
  <tile id="1143">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -10365,7 +10365,7 @@
  </tile>
  <tile id="1151">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -10437,7 +10437,7 @@
  </tile>
  <tile id="1159">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -10509,7 +10509,7 @@
  </tile>
  <tile id="1167">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -10581,7 +10581,7 @@
  </tile>
  <tile id="1175">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
@@ -10653,7 +10653,7 @@
  </tile>
  <tile id="1183">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>

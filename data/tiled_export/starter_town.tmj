@@ -124,6 +124,40 @@
                  "width":32,
                  "x":416,
                  "y":352
+                }, 
+                {
+                 "height":32,
+                 "id":15,
+                 "name":"lab_door",
+                 "properties":[
+                        {
+                         "name":"Orientation",
+                         "type":"string",
+                         "value":"Up"
+                        }],
+                 "rotation":0,
+                 "type":"Portal",
+                 "visible":true,
+                 "width":32,
+                 "x":608,
+                 "y":768
+                }, 
+                {
+                 "height":32,
+                 "id":16,
+                 "name":"lab_exit",
+                 "properties":[
+                        {
+                         "name":"Orientation",
+                         "type":"string",
+                         "value":"Down"
+                        }],
+                 "rotation":0,
+                 "type":"SpawnPoint",
+                 "visible":true,
+                 "width":32,
+                 "x":608,
+                 "y":800
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -132,7 +166,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":15,
+ "nextobjectid":17,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -140,17 +174,16 @@
  "tilesets":[
         {
          "firstgid":1,
-      "source": "tiled_export\/overworld.tsx"
+         "source":"tiled_export\/overworld.tsx"
         }, 
         {
          "firstgid":1301,
-      "source": "tiled_export\/hgss.tsx"
+         "source":"tiled_export\/hgss.tsx"
         }, 
         {
          "firstgid":6013,
-      "source": "tiled_export\/Characters.tsx"
-    }
-  ],
+         "source":"tiled_export\/Characters.tsx"
+        }],
  "tilewidth":32,
  "type":"map",
  "version":"1.10",
