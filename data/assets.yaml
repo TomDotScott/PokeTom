@@ -3,7 +3,19 @@ textures:
     source: sprites/characters/players.png
   - name: OVERWORLD_ENTITIES
     source: sprites/characters/overworld_entities.png
+  - name: POKE_BALLS_SPRITESHEET
+    source: sprites/balls.png
+  - name: HGSS_SPRITESHEET
+    source: sprites/hgss_overworld.png
+  - name: INTERIOR_SPRITESHEET
+    source: sprites/interiors.png
+  - name: OVERWORLD_SPRITESHEET
+    source: sprites/overworld_tileset.png
 
 fonts:
   - name: FIRA_CODE
     source: fonts/FiraCode-Regular.ttf
+
+animations:
+  - name: PLAYER_BOY
+    source: animation/player_boy.xml
