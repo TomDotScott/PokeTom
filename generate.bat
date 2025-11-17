@@ -18,6 +18,21 @@ if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
 call setup.bat %SFML_DIR% %BUILD_DIR%
 
 :generate
+:: -------------------------------
+:: Generate the asset header files
+:: -------------------------------
+echo ===========================================
+echo Generating header files from assets.yaml...
+echo ===========================================
+py -3 generate_assets_header.py
+
+:: -------------------------------
+:: Generate the solution with Sharpmake
+:: -------------------------------
+echo ================================
+echo Generating Sharpmake Solution...
+echo ================================
+
 pushd Sharpmake
 Sharpmake.Application.exe /sources('../main.sharpmake.cs') /generateDebugSolution
 popd

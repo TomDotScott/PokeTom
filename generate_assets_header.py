@@ -28,7 +28,9 @@ std::string_view get_resource(ResourceType type, std::string_view name);
 {macros}
 """
 
-CPP_TEMPLATE = """#include "Resources.generated.hpp"
+CPP_TEMPLATE = """// THIS FILE IS AUTO-GENERATED. DO NOT EDIT. DO NOT COMMIT TO SOURCE CONTROL.
+// Simply edit assets.yaml and re-run generate.bat!
+#include "Resources.hpp"
 
 const std::array<std::string_view, static_cast<size_t>(ResourceType::COUNT)> ResourceTypeNames = {{
 {resource_type_names}
