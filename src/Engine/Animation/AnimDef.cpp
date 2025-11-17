@@ -63,6 +63,7 @@ bool AnimationDictionary::Init()
 		code = hoxml_parse(hoxml_context, content, content_length);
 	}
 
+	delete hoxml_context;
 	free(buffer);
 
 	// TODO: Should these have a lifetime?

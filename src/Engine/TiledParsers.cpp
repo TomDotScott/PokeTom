@@ -552,6 +552,7 @@ bool TSX::Init()
 		code = hoxml_parse(hoxml_context, content, content_length);
 	}
 
+	delete hoxml_context;
 	free(buffer);
 	return true;
 }

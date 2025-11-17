@@ -125,6 +125,7 @@ bool UiManager::Load(const std::filesystem::path& path)
 		code = hoxml_parse(hoxml_context, content, content_length);
 	}
 
+	delete hoxml_context;
 	free(buffer);
 	return true;
 }
