@@ -1,0 +1,9 @@
+textures:
+  - name: PLAYER_SPRITESHEET
+    source: sprites/characters/players.png
+  - name: OVERWORLD_ENTITIES
+    source: sprites/characters/overworld_entities.png
+
+fonts:
+  - name: FIRA_CODE
+    source: fonts/FiraCode-Regular.ttf

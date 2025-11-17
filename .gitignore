@@ -83,3 +83,4 @@ Properties/launchSettings.json
 # Ignore generated SFML folder
 build_sfmldb/
 Lib/SFML/
+src/Engine/CodeGen/
