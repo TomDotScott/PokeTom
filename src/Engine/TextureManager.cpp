@@ -32,8 +32,7 @@ bool TextureManager::LoadTextureFromImage(const std::string& name, const std::fi
 
 	image.createMaskFromColor(sf::Color{ maskColour });
 
-	const auto texture = new sf::Texture(image);
-	m_textures[name] = texture;
+	m_textures[name] = sf::Texture(image);
 	return true;
 }
 
@@ -51,9 +50,7 @@ bool TextureManager::LoadTexture(const std::string& name, const std::filesystem:
 		return false;
 	}
 
-	const auto texture = new sf::Texture(path);
-
-	m_textures[name] = texture;
+	m_textures[name] = sf::Texture(path);
 
 	return true;
 }
@@ -66,13 +63,5 @@ const sf::Texture* TextureManager::GetTexture(const std::string& name) const
 		return nullptr;
 	}
 
-	return m_textures.at(name);
-}
-
-TextureManager::~TextureManager()
-{
-	for (auto& [name, texture] : m_textures)
-	{
-		delete texture;
-	}
+	return &m_textures.at(name);
 }

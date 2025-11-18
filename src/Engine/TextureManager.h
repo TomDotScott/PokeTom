@@ -13,11 +13,16 @@ public:
 
 	const sf::Texture* GetTexture(const std::string& name) const;
 
+	TextureManager(const TextureManager&) = delete;
+	TextureManager& operator=(const TextureManager&) = delete;
+	TextureManager(TextureManager&&) = delete;
+	TextureManager& operator=(TextureManager&&) = delete;
+
 private:
-	std::unordered_map<std::string, sf::Texture*> m_textures;
+	std::unordered_map<std::string, sf::Texture> m_textures;
 
 	TextureManager() = default;
-	~TextureManager();
+	~TextureManager() = default;
 };
 
 #define TEXTUREMANAGER TextureManager::Get()
