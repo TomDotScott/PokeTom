@@ -6,16 +6,8 @@
 #include "Engine/Input/Keyboard.h"
 #include "Engine/Timer.h"
 #include "Game/Game.h"
-#include <fstream>
 #include <iostream>
 #include <zlib.h>
-#include <stdexcept>
-
-#include "Engine/Rendering/SpriteBatcher.h"
-#include "Game/Renderer.h"
-#include "Game/TileLogic.h"
-#include "Game/TileParser.h"
-#include "Game/TileSheet.h"
 
 GraphicSettings GRAPHIC_SETTINGS{};
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
@@ -25,13 +17,13 @@ int main(int argc, char** argv)
 	std::cout << "zlib version: " << zlibVersion() << "\n";
 
 	sf::RenderWindow window(
-#if BUILD_DEBUG
+#if !BUILD_MASTER
 		sf::VideoMode({ 768, 576 }),
 #else
 		sf::VideoMode::getDesktopMode(),
 #endif
 		"PokéTom",
-#if BUILD_DEBUG
+#if !BUILD_MASTER
 		sf::State::Windowed
 #else
 		sf::State::Fullscreen
