@@ -42,14 +42,17 @@ public class PokeClone : Project
     {
         string libraryName = dependency.LibraryName;
 
-        // Static debug SFML libraries end in -s-d.lib... Yay...
-        if (dependency.IsSFMLLibrary)
+        // Static debug SFML libraries end in -s-d.lib... Apart from sfml-main apparently... Yay...
+        if (libraryName != "sfml-main")
         {
-            libraryName += "-s";
-
-            if (target.Optimization == Optimization.Debug)
+            if (dependency.IsSFMLLibrary)
             {
-                libraryName += "-d";
+                libraryName += "-s";
+
+                if (target.Optimization == Optimization.Debug)
+                {
+                    libraryName += "-d";
+                }
             }
         }
 
@@ -71,6 +74,7 @@ public class PokeClone : Project
         // This sucks. Maybe a better data structure would work but I am fed up with Sharpmake
         var sfmlDependencies = new Dictionary<SFML_Dependency, List<SFML_Dependency>>
         {
+            { new("sfml-main", true), new List<SFML_Dependency>() },
             { new("sfml-graphics", true), new List<SFML_Dependency>{ new("sfml-window", true), new("sfml-system", true), new("opengl32"), new("freetype") } },
             { new("sfml-window", true), new List<SFML_Dependency>{ new("sfml-system", true), new("winmm"), new("gdi32") } },
             { new("sfml-audio", true), new List<SFML_Dependency>{ new("sfml-system", true), new("flac"), new("vorbisenc"), new("vorbisfile"), new("vorbis"), new("ogg") } },
@@ -113,14 +117,15 @@ public class PokeClone : Project
         {
             conf.Options.Add(Options.Vc.Compiler.RuntimeLibrary.MultiThreadedDLL);
 
-            conf.Options.Add(Sharpmake.Options.Vc.Linker.SubSystem.Windows);
-
             if (target.Optimization == Optimization.Release)
             {
+                conf.Options.Add(Sharpmake.Options.Vc.Linker.SubSystem.Console);
+
                 conf.Defines.Add("BUILD_RELEASE");
             }
             else if (target.Optimization == Optimization.Retail)
             {
+                conf.Options.Add(Sharpmake.Options.Vc.Linker.SubSystem.Windows);
                 conf.Defines.Add("BUILD_MASTER");
             }
         }
