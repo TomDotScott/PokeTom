@@ -4,6 +4,7 @@
 #include "../Engine/Input/Keyboard.h"
 #include "../Engine/Input/Mouse.h"
 #include "../Engine/Timer.h"
+#include "../Engine/CodeGen/Resources.hpp"
 
 
 Player::Player() :
@@ -11,7 +12,7 @@ Player::Player() :
 	m_movement(32.f, 3.f, 7.5f),
 	m_currentLevel(nullptr),
 	m_animationState(IDLE_DOWN),
-	m_animationPlayer(AnimationDictionary::Create("animation\\player_boy.xml"))
+	m_animationPlayer(AnimationDictionary::Create(GET_ANIMATION_PATH("PLAYER_BOY")))
 {
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));

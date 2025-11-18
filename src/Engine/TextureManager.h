@@ -8,9 +8,10 @@ class TextureManager
 public:
 	static TextureManager& Get();
 
+	bool LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, uint32_t maskColour);
 	bool LoadTexture(const std::string& name, const std::filesystem::path& path);
 
-	sf::Texture* GetTexture(const std::string& name) const;
+	const sf::Texture* GetTexture(const std::string& name) const;
 
 private:
 	std::unordered_map<std::string, sf::Texture*> m_textures;

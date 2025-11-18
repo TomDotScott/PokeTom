@@ -12,7 +12,7 @@ public:
 	void PlayAnimation(const std::string& name, bool forceRestart);
 	void Update(float deltaTime);
 	const AnimationFrame& GetCurrentFrame() const;
-	const sf::Texture& GetTexture() const;
+	const std::string& GetDictionarySpritesheetResourceName() const;
 
 private:
 	std::shared_ptr<AnimationDictionary> m_dictionary;

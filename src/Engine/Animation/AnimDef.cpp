@@ -6,15 +6,17 @@
 #include <SFML/Graphics/Image.hpp>
 
 #include "../Globals.h"
+#include "../TextureManager.h"
+#include "../CodeGen/Resources.hpp"
 
 const Animation& AnimationDictionary::GetClip(const std::string& name) const
 {
 	return m_animationClips.at(name);
 }
 
-const sf::Texture& AnimationDictionary::GetSpriteSheet()
+const std::string& AnimationDictionary::GetSpriteSheetResourceName() const
 {
-	return m_spriteSheet;
+	return m_spriteSheetResourceName;
 }
 
 bool AnimationDictionary::Init()
@@ -175,22 +177,18 @@ bool AnimationDictionary::ParseImage(const std::filesystem::path& parentFolderPa
 	{
 		if (code == HOXML_ATTRIBUTE && strcmp("source", context->attribute) == 0)
 		{
-			const std::string combinedPaths = CombinePaths(parentFolderPath.string(), context->value);
-
-			if (!std::filesystem::exists(combinedPaths))
+			m_spriteSheetResourceName = context->value;
+			const auto path = GET_TEXTURE_PATH(m_spriteSheetResourceName);
+			if (!std::filesystem::exists(path))
 			{
-				std::cerr << "AnimationDictionary::ParseAnimDict: Texture with path " << combinedPaths <<
+				std::cerr << "AnimationDictionary::ParseAnimDict: Texture with path " << path <<
 					"does not exist!\n";
 				return false;
 			}
 
-			// TODO: Think about how to integrate this with the TextureManager...
-			sf::Image animationSpriteSheet(combinedPaths);
-			animationSpriteSheet.createMaskFromColor(sf::Color(0x589058FF));
-			if (!m_spriteSheet.loadFromImage(animationSpriteSheet))
+			if (!TEXTUREMANAGER.LoadTextureFromImage(context->value, path, 0x589058FF))
 			{
-				std::cerr << "AnimationDictionary::ParseAnimDict: Failed to load texture from path " <<
-					combinedPaths << "\n";
+				std::cerr << "AnimationDictionary::ParseAnimDict: TextureManager was unable to load texture with path " << path << "\n";
 				return false;
 			}
 

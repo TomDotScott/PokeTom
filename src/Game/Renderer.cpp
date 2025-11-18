@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "../Engine/Globals.h"
+#include "../Engine/TextureManager.h"
 
 Renderer::Renderer() :
 	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
@@ -94,9 +95,12 @@ void Renderer::Render(sf::RenderWindow& window, const Player& player) const
 
 		if (layerBatcher.m_ZIndex == player.GetZIndex())
 		{
+			// TODO: What a HORRIBLE line of code!
+			const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(player.GetAnimator().GetDictionarySpritesheetResourceName());
+
 			// TODO: Come up with a proper way to render all the Entities in the level
 			// TODO: Make this generic and reusable - everything has walking animations
-			sf::Sprite playerSprite(player.GetAnimator().GetTexture());
+			sf::Sprite playerSprite(animatedPlayerTexture);
 			const AnimationFrame& currentFrame = player.GetAnimator().GetCurrentFrame();
 
 			playerSprite.setTextureRect({

@@ -31,7 +31,7 @@ public:
 
 	const Animation& GetClip(const std::string& name) const;
 
-	const sf::Texture& GetSpriteSheet();
+	const std::string& GetSpriteSheetResourceName() const;
 
 	// TODO: Get rid of this - I think we need a wrapper for the map below...
 	AnimationDictionary() = default;
@@ -42,7 +42,7 @@ protected:
 private:
 	std::string m_name;
 	std::filesystem::path m_filepath;
-	sf::Texture m_spriteSheet;
+	std::string m_spriteSheetResourceName;
 	uint32_t m_spriteWidth;
 	uint32_t m_spriteHeight;
 	std::unordered_map<std::string, Animation> m_animationClips;
@@ -50,6 +50,8 @@ private:
 	AnimationDictionary(std::filesystem::path filepath);
 	bool ParseAnimDict(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 	bool ParseAnimation(hoxml_context_t*& context, const char* xml, size_t xmlLength);
+
+	// Parses the <Image/> tag from the animation XML. Loads the referenced resource into the TEXTUREMANAGER
 	bool ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 	bool ParseFrame(Animation& animation, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 	bool ParseAnimEnd(Animation& animation, hoxml_context_t*& context, const char* xml, size_t xmlLength);

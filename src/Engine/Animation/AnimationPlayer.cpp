@@ -66,7 +66,7 @@ const AnimationFrame& AnimationPlayer::GetCurrentFrame() const
 	return clip.m_Frames[m_frameIndex];
 }
 
-const sf::Texture& AnimationPlayer::GetTexture() const
+const std::string& AnimationPlayer::GetDictionarySpritesheetResourceName() const
 {
-	return m_dictionary->GetSpriteSheet();
+	return m_dictionary->GetSpriteSheetResourceName();
 }
