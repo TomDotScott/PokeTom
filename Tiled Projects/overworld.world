@@ -1,0 +1,20 @@
+{
+    "maps": [
+        {
+            "fileName": "StarterTown/starter_town.tmx",
+            "height": 1152,
+            "width": 1536,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "fileName": "StarterTown/route_1.tmx",
+            "height": 2240,
+            "width": 1536,
+            "x": 0,
+            "y": -2240
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}

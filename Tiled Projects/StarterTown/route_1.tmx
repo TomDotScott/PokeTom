@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="70" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="1">
+ <tileset firstgid="1" source="../../data/tiled_export/overworld.tsx"/>
+ <tileset firstgid="1301" source="../../data/tiled_export/hgss.tsx"/>
+ <layer id="1" name="GrassAndPaths" width="48" height="70">
+  <data encoding="base64" compression="zlib">
+   eJzt2tltAjEQBmATonSUQ2kidQRESFICfeQiR0fhSAGpA/vBkmXZO2Pw2jPS//AvSCzSt4O9GptdGWNWzEwqZBa8/5+mz+F6SlPbn0srf1i/WUGk+Evryg384/jvzofnrXS/9vrDP67/1Mwb+HNz7/WE3NqcNfKPkfvG/oU9PBBZTuT6P+xhTWRXcA09/Y82T0Geg88+Ffi/bL6D/Cjz+3Hi7G5e/Anzu/slNf7dNewju2T/rz1sGNkK8KfGz7G5tLlKZK3E7+rcs3/g5GJgzHj/jUn3EW8N/DXqPyfOg3/c8dPLX2v+wg+/dn9qHen3d0r98fdQ/+P8uf4m7HN6+7c2u+A1VV/uPom0+vs+ONffxH2OVD9VXyrwww8//PDDD38dP9VbS/drrz/87fzvZngdcy3Yr3n98mLo/3lT/ngvoJef+/v0rH9ujU6NaSl+P0fjcO45EvzxGI+fXZDuz90z4Ye/tV/C87fcnkHK/mfOXxJJfqpn4PQPrf3U86ea5i/88Pf2o/+v70/t92jyt6r/Adpb4dQ=
+  </data>
+ </layer>
+ <layer id="4" name="Tall Grass" width="48" height="70">
+  <data encoding="base64" compression="zlib">
+   eJzt2E0KwjAQhuEU3LjwOGqvJIIn8Qr+4EnbgtkEQsc2mczY94OPbrp4EiZZpAshdMKuzeX7vc78J/X82lyOY0+Cfoz6bzOeNFb9/dinoC+j/mlfd0mXBD9+j/53kN2juZ4b+0tF2/9w7i8dq/70bOfON/56/vvepn9ySfze9x9/O780+P/Tr7XGmr547tJ7PPbgxJ+rdb/n+dEKfvz48eO35y/xvoZ/u/4Y/G383udH6l+zTvzbmB/Jm6Flv/f99+hP14Bf1+99fvC39WsE/3J/7l0XP378+Gv7SwQ/fvz48ePHj7+mfwBXmx+h
+  </data>
+ </layer>
+ <layer id="2" name="Trees" width="48" height="70">
+  <data encoding="base64" compression="zlib">
+   eJztme1KA0EMRftrH1BtC/UL1Cr4Cer74/3h4LCYJWEm6x25B0KWgdB09kzYbQ/TZnOOuEDcIG4Rd4iDsZ6N9Vn1unX9iHhCPC+sZ+Ppwbp+R3wgPhfWs/H0YF3X39daz8bTg/zJQ/7InxbkT19/tqjZIfbOWjZ/LlFzhbh21rL5c0TNPeLBWcvmzwtqXhFvg/oT3X82f6L7z+ZPdP/Z/Inuf7Y/2+8+lvJu+sms86fM83ku875ktvlT7+dv+WhklvlT9jOaR50/UbL9qZ/HypndT/HnNItsf+bnc569z2kW2f5Y5zN6Ti2y/el1Ti3Ynn+iaP7o/b2Ftf3pNfcLa/vTa+4X1van19wvrO1Pr7lfGNGfE9SeIs6cPTD4U/ds/dfG5o+nZ2Z/PD0z++PpmdkfT8/M/nh6ZvYnei/Y/IneCzZ/LEb0p2ZEfyxG9KdmRH9q5I/e31vQ7z/ypwX5I39akD/ypwX5I39akD/ypwX58//8+Ss8/nwBSChFBQ==
+  </data>
+ </layer>
+ <layer id="3" name="On top of Player" width="48" height="70">
+  <data encoding="base64" compression="zlib">
+   eJztl8kKwzAMRH3yB3YLdD2VHvv/t/pQgwlVkDKWq8A8MArZkIdnk6QUl3NO6VLGNevu35X79mUcsu68B5oepON2vtJ5bzQ9SMfSe/4F/aE/CPSH/iDQHx9/poX3RPPnWJ4/5eWeNXPR4OHPrTxzL+PRsYeR/ljzj+bPr/zXzEWDhz/W/KP5Y/Xf25+ap1TnOUfbf2qeUq051xp1/3nm3/UlVC2j9p93ttU1RNh/rIzyZ/peb2sPRvkzX6fa9bl2Lhos/qDrFOmhhz8912lLtO8fBO4//H9HoD/0B4H+0B8E+jPGH2sPEfzR5BPZH6k3+rOcjwdb9AfpIZo/LVv0R4L+0B8E+kN/EOgP/UGgP/QHgf7QHwT6Q38Q6A/9QejlTwQkZ1oiZC6hcWaLfACRqqmk
+  </data>
+ </layer>
+ <layer id="5" name="Top Layer" width="48" height="70">
+  <data encoding="base64" compression="zlib">
+   eJztziEBAAAIA7AratK/BQXwN1uCJQAAANC30x4AAAAAAAAAAADwOSa7AGY=
+  </data>
+ </layer>
+</map>
