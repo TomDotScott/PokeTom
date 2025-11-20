@@ -1162,9 +1162,9 @@
    <property name="isWater" type="bool" value="false"/>
   </properties>
  </tile>
- <tile id="129">
+ <tile id="129" type="COLLISION_BOX">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
    <property name="isBreakable" type="bool" value="false"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
