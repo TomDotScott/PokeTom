@@ -13,8 +13,8 @@ enum class ResourceType {{
 }};
 
 struct ResourceEntry {{
-    std::string_view key;
-    std::string_view value;
+    std::string_view resourceID;
+    std::string_view resourcePath;
 }};
 
 extern const std::array<std::string_view, static_cast<size_t>(ResourceType::COUNT)> ResourceTypeNames;
@@ -85,7 +85,7 @@ def main():
 
         # switch-case clause
         switch_cases += f"        case ResourceType::{t.upper()}:\n"
-        switch_cases += f"            for (const auto& e : {arr_name}) {{ if (e.key == name) return e.value; }}\n"
+        switch_cases += f"            for (const auto& e : {arr_name}) {{ if (e.resourceID == name) return e.resourcePath; }}\n"
         switch_cases += "            break;\n"
 
         # if the type is plural, remove the `s`

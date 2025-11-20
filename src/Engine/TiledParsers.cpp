@@ -642,7 +642,7 @@ bool TSX::ParseImage(const std::filesystem::path& parentFolderPath, hoxml_contex
 		{
 			if (strcmp("source", context->attribute) == 0)
 			{
-				const auto combinedPaths = CombinePaths(parentFolderPath.string(), context->value);
+				const auto combinedPaths = (std::filesystem::current_path() / "data" / context->value).lexically_normal();
 
 				if (std::filesystem::exists(combinedPaths))
 				{

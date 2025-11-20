@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../Engine/TextureManager.h"
+
 
 TileLogic::TileLogic(const std::shared_ptr<MapData>& mapData)
 {
@@ -52,20 +54,29 @@ std::vector<TileRenderData> TileLogic::BuildRenderData() const
 		renderData.m_GlobalID = tile.m_Definition->m_GlobalID;
 		renderData.m_LocalID = tile.m_Definition->m_LocalID;
 		renderData.m_Position = tile.m_Position;
-		renderData.m_Texture = tile.m_ParentSheet->GetTexture();
+		renderData.m_SpriteSheetResourceName = tile.m_ParentSheet->GetSpriteSheetResourceName();
 		renderData.m_LayerName = tile.m_LayerName;
 		renderData.m_ZIndex = m_zIndexes.at(tile.m_LayerName);
 
-		int tileWidth = tile.m_ParentSheet->GetTileWidth();
-		int tileHeight = tile.m_ParentSheet->GetTileHeight();
-		int tilesPerRow = tile.m_ParentSheet->GetNumColumns();
+		const int tileWidth = tile.m_ParentSheet->GetTileWidth();
+		const int tileHeight = tile.m_ParentSheet->GetTileHeight();
+		const int tilesPerRow = tile.m_ParentSheet->GetNumColumns();
 
-		int localId = tile.m_Definition->m_LocalID; // should already be 0-based
-		int x = (localId % tilesPerRow) * tileWidth;
-		int y = (localId / tilesPerRow) * tileHeight;
+		const int localId = tile.m_Definition->m_LocalID; // should already be 0-based
+		const int x = (localId % tilesPerRow) * tileWidth;
+		const int y = (localId / tilesPerRow) * tileHeight;
 
-		if (x + tileWidth > renderData.m_Texture->getSize().x || y + tileHeight > renderData.m_Texture->getSize().y)
+		const sf::Texture* spriteSheetTexture = TEXTUREMANAGER.GetTexture(renderData.m_SpriteSheetResourceName);
+		if (spriteSheetTexture == nullptr)
+		{
+			continue;
+		}
+
+		if (x + tileWidth > spriteSheetTexture->getSize().x || y + tileHeight > spriteSheetTexture->getSize().y)
+		{
 			std::cout << "Warning: Tile " << localId << " rect out of bounds for " << tile.m_LayerName << "\n";
+			continue;
+		}
 
 		renderData.m_TextureRect = { { x, y }, { tileWidth, tileHeight } };
 

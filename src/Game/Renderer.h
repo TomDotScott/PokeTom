@@ -15,7 +15,7 @@ struct TileRenderData
 	uint32_t m_GlobalID;
 	uint32_t m_LocalID;
 	sf::Vector2f m_Position;
-	std::shared_ptr<sf::Texture> m_Texture;
+	std::string m_SpriteSheetResourceName;
 	sf::IntRect m_TextureRect;
 	std::string m_LayerName;
 	int m_ZIndex;

@@ -38,7 +38,7 @@ public:
 	explicit TileSheet(const std::shared_ptr<TSX>& tsxParser, uint32_t firstGID);
 	const TileDefinition* GetTileDefinition(uint32_t localID) const;
 
-	std::shared_ptr<sf::Texture> GetTexture() const;
+	const std::string& GetSpriteSheetResourceName() const;
 	uint32_t GetNumColumns() const;
 	uint32_t GetFirstGID() const;
 
@@ -54,7 +54,7 @@ private:
 	uint32_t m_tileWidth;
 	uint32_t m_tileHeight;
 
-	std::shared_ptr<sf::Texture> m_texture;
+	std::string m_spriteSheetResourceName;
 	std::unordered_map<uint32_t, TileDefinition> m_tiles;
 
 	bool LoadTexture(const std::filesystem::path& filepath);

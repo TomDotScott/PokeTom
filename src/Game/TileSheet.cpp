@@ -4,6 +4,8 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
+#include "../Engine/TextureManager.h"
+
 
 TileSheet::TileSheet(const std::shared_ptr<TSX>& tsxParser, const uint32_t firstGID) :
 	m_name(tsxParser->GetTileSetInfo().m_Name),
@@ -32,9 +34,9 @@ const TileSheet::TileDefinition* TileSheet::GetTileDefinition(const uint32_t loc
 	return &it->second;
 }
 
-std::shared_ptr<sf::Texture> TileSheet::GetTexture() const
+const std::string& TileSheet::GetSpriteSheetResourceName() const
 {
-	return m_texture;
+	return m_spriteSheetResourceName;
 }
 
 uint32_t TileSheet::GetNumColumns() const
@@ -61,17 +63,17 @@ bool TileSheet::LoadTexture(const std::filesystem::path& filepath)
 {
 	if (!std::filesystem::exists(filepath))
 	{
-		std::cout << "TileSheet: Missing texture at " << filepath << "\n";
+		std::cerr << "TileSheet: Missing texture at " << filepath << "\n";
 		return false;
 	}
 
-	m_texture = std::make_shared<sf::Texture>();
-	if (!m_texture->loadFromFile(filepath))
+	if (!TEXTUREMANAGER.HasTextureLoaded(filepath))
 	{
-		std::cout << "TileSheet: Failed to load " << filepath << "\n";
+		std::cerr << "TileSheet::LoadTexture: Texture from TSX file hasn't been loaded! Is the path " << filepath << " in assets.yaml?\n";
 		return false;
 	}
 
+	m_spriteSheetResourceName = TEXTUREMANAGER.GetTextureNameFromPath(filepath);
 	return true;
 }
 

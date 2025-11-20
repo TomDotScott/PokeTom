@@ -6,18 +6,17 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
+#include <string>
 
 class SpriteBatcher final : public sf::Drawable
 {
 public:
-	SpriteBatcher();
-	SpriteBatcher(const std::shared_ptr<sf::Texture>& masterTexture);
+	SpriteBatcher() = default;
+	SpriteBatcher(std::string masterTextureResourceName);
 	void BatchSprites(const std::vector<sf::Sprite>& sprites);
 
-	void SetMasterTexture(const std::shared_ptr<sf::Texture>& masterTexture);
-
 private:
-	std::shared_ptr<sf::Texture> m_masterTexture;
+	std::string m_masterTextureResourceName;
 	std::vector<sf::Vertex> m_vertices{};
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

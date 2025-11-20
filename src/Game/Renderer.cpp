@@ -45,21 +45,18 @@ void Renderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std:
 {
 	m_layerBatchers.clear();
 
-	std::unordered_map<std::string, std::unordered_map<std::shared_ptr<sf::Texture>, std::vector<sf::Sprite>>> buckets;
+	std::unordered_map<std::string, std::unordered_map<std::string, std::vector<sf::Sprite>>> buckets;
 
 	for (const auto& tile : tiles)
 	{
-		sf::Sprite sprite(*tile.m_Texture);
+		sf::Sprite sprite(*TEXTUREMANAGER.GetTexture(tile.m_SpriteSheetResourceName));
 		sprite.setTextureRect(tile.m_TextureRect);
 		sprite.setPosition(tile.m_Position);
-		buckets[tile.m_LayerName][tile.m_Texture].push_back(sprite);
+		buckets[tile.m_LayerName][tile.m_SpriteSheetResourceName].push_back(sprite);
 	}
 
-	for (auto& bucket : buckets)
+	for (auto& [layerName, textureGroup] : buckets)
 	{
-		const std::string& layerName = bucket.first;
-		const auto& textureGroup = bucket.second;
-
 		const auto& layerData = std::find_if(layers.begin(), layers.end(), [&](const TileLayerData& a)
 			{
 				return a.m_Name == layerName;

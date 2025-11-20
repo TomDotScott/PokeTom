@@ -1,12 +1,9 @@
 #include "SpriteBatcher.h"
 
-SpriteBatcher::SpriteBatcher(const std::shared_ptr<sf::Texture>& masterTexture) :
-	m_masterTexture(masterTexture)
-{
-}
+#include "../TextureManager.h"
 
-SpriteBatcher::SpriteBatcher() :
-	m_masterTexture(nullptr)
+SpriteBatcher::SpriteBatcher(std::string masterTextureResourceName) :
+	m_masterTextureResourceName(std::move(masterTextureResourceName))
 {
 }
 
@@ -20,14 +17,9 @@ void SpriteBatcher::BatchSprites(const std::vector<sf::Sprite>& sprites)
 	}
 }
 
-void SpriteBatcher::SetMasterTexture(const std::shared_ptr<sf::Texture>& masterTexture)
-{
-	m_masterTexture = masterTexture;
-}
-
 void SpriteBatcher::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.texture = m_masterTexture.get();
+	states.texture = TEXTUREMANAGER.GetTexture(m_masterTextureResourceName);
 	target.draw(m_vertices.data(),
 		m_vertices.size(),
 		sf::PrimitiveType::Triangles,
