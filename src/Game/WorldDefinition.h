@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-class Level;
+#include "Level.h"
 
 class WorldDefinition
 {
@@ -32,6 +32,9 @@ public:
 
 	const std::string& GetCurrentLevelName() const;
 	std::shared_ptr<Level> GetLevel(const std::string& name) const;
+
+
+	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
 
 private:
 	std::string m_currentLevel;

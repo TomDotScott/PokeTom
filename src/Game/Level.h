@@ -6,7 +6,15 @@
 class Level
 {
 public:
-	explicit Level(const std::shared_ptr<MapData>& mapData);
+	struct AdjacentLevels
+	{
+		std::string m_North;
+		std::string m_South;
+		std::string m_East;
+		std::string m_West;
+	};
+
+	explicit Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
 
 	std::vector<TileRenderData> GetRenderData() const;
 	std::vector<TileLayerData> GetLayers() const;
@@ -23,6 +31,8 @@ public:
 
 private:
 	std::shared_ptr<MapData> m_mapData;
+	AdjacentLevels m_adjacentLevels;
+
 	TileLogic m_tileLogic;
 };
 

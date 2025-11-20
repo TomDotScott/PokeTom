@@ -112,7 +112,11 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
 
 	std::string levelName;
-	while (code != HOXML_END_OF_DOCUMENT)
+	std::shared_ptr<MapData> tileMapData = nullptr;
+	Level::AdjacentLevels adjacentLevels{};
+
+	bool closedLevelTag = false;
+	while (!closedLevelTag)
 	{
 		if (code == HOXML_ELEMENT_BEGIN)
 		{
@@ -139,12 +143,6 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 			}
 			else if (strcmp("tmj", context->attribute) == 0)
 			{
-				if (levelName.empty())
-				{
-					std::cerr << "WorldDefinition::ParseLevel - Unable to parse level as ID is empty!\n";
-					return false;
-				}
-
 				const std::filesystem::path tmjPath = context->value;
 				if (!std::filesystem::exists(tmjPath))
 				{
@@ -153,27 +151,58 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 					return false;
 				}
 
-				const auto tileMapData = TileParser::ParseTMJ(tmjPath);
+				tileMapData = TileParser::ParseTMJ(tmjPath);
 				if (tileMapData == nullptr)
 				{
 					return false;
 				}
-
-				levels[levelName] = std::make_shared<Level>(tileMapData);
+			}
+			else if (strcmp("north", context->attribute) == 0)
+			{
+				adjacentLevels.m_North = context->value;
+			}
+			else if (strcmp("south", context->attribute) == 0)
+			{
+				adjacentLevels.m_South = context->value;
+			}
+			else if (strcmp("east", context->attribute) == 0)
+			{
+				adjacentLevels.m_East = context->value;
+			}
+			else if (strcmp("west", context->attribute) == 0)
+			{
+				adjacentLevels.m_West = context->value;
 			}
 		}
 		else if (code == HOXML_ELEMENT_END)
 		{
 			if (strcmp("Level", context->tag) == 0)
 			{
-				return true;
+				closedLevelTag = true;
 			}
 		}
 
-		code = hoxml_parse(context, xml, xmlLength);
+		if (!closedLevelTag)
+		{
+			code = hoxml_parse(context, xml, xmlLength);
+		}
 	}
 
-	return false;
+	if (levelName.empty())
+	{
+		std::cerr << "WorldDefinition::ParseLevel - Unable to parse level as ID is empty!\n";
+		return false;
+	}
+
+	if (tileMapData == nullptr)
+	{
+		std::cerr << "WorldDefinition::ParseLevel - Unable to parse level " << levelName <<
+			"as tileMapData is null. Check the log and try again.\n";
+		return false;
+	}
+
+	levels[levelName] = std::make_shared<Level>(tileMapData, adjacentLevels);
+	return true;
 }
 
 bool WorldDefinition::ParsePortal(const std::string& levelName,

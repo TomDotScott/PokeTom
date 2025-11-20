@@ -1,8 +1,9 @@
 #include "Level.h"
 
 
-Level::Level(const std::shared_ptr<MapData>& mapData) :
+Level::Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
 	m_mapData(mapData),
+	m_adjacentLevels(std::move(adjacentLevels)),
 	m_tileLogic(m_mapData)
 {
 }
