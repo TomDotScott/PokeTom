@@ -43,21 +43,24 @@ TileLogic::TileLogic(const std::shared_ptr<MapData>& mapData)
 	}
 }
 
-std::vector<TileRenderData> TileLogic::BuildRenderData() const
+std::vector<TileRenderData> TileLogic::BuildRenderData(const sf::Vector2i& offsetFromOrigin) const
 {
 	std::vector <TileRenderData> renderables;
 	renderables.reserve(m_tiles.size());
+
+	const sf::Vector2f worldSpaceOffset = static_cast<sf::Vector2f>(offsetFromOrigin) * 32.f;
 
 	for (const auto& tile : m_tiles)
 	{
 		TileRenderData renderData;
 		renderData.m_GlobalID = tile.m_Definition->m_GlobalID;
 		renderData.m_LocalID = tile.m_Definition->m_LocalID;
-		renderData.m_Position = tile.m_Position;
+		renderData.m_Position = tile.m_Position - worldSpaceOffset;
 		renderData.m_SpriteSheetResourceName = tile.m_ParentSheet->GetSpriteSheetResourceName();
 		renderData.m_LayerName = tile.m_LayerName;
 		renderData.m_ZIndex = m_zIndexes.at(tile.m_LayerName);
 
+		// TODO: Assert that these are equal to 32... Not sure these calls are needed outside of Engine-side code
 		const int tileWidth = tile.m_ParentSheet->GetTileWidth();
 		const int tileHeight = tile.m_ParentSheet->GetTileHeight();
 		const int tilesPerRow = tile.m_ParentSheet->GetNumColumns();

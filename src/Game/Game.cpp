@@ -16,7 +16,8 @@ Game::Game() :
 	m_player(),
 	m_world("WorldDefinition.xml", "player_bedroom"),
 	m_lastEnteredPortal(nullptr),
-	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
+	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
+	m_adjacentLevelLoaded(false)
 {
 	UIMANAGER.Load("ui.xml");
 
@@ -88,19 +89,56 @@ void Game::Render(sf::RenderWindow& window) const
 void Game::UpdateOverworld(const float deltaTime)
 {
 	m_player.Update(deltaTime);
-	UpdateCamera(deltaTime);
+
+	const sf::Vector2i playerGridPosition = m_player.GetGridPosition();
+	const std::string& currentLevelName = m_world.GetCurrentLevelName();
+	const std::shared_ptr<Level>& currentLevel = m_world.GetLevel(currentLevelName);
+	const Level::AdjacentLevels& adjacentLevels = currentLevel->GetAdjacentLevels();
+
+	if (!m_adjacentLevelLoaded) {
+		if (playerGridPosition.y < currentLevel->GetNumColumns() - 8)
+		{
+			if (!adjacentLevels.m_North.empty())
+			{
+				const auto& northLevel = m_world.GetLevel(adjacentLevels.m_North);
+				const auto northLevelRenderData = northLevel->GetRenderData();
+				const auto currentLevelRenderData = currentLevel->GetRenderData();
+
+				std::vector<TileRenderData> renderData;
+				renderData.insert(renderData.end(), currentLevelRenderData.begin(), currentLevelRenderData.end());
+				renderData.insert(renderData.end(), northLevelRenderData.begin(), northLevelRenderData.end());
+
+				const auto northLevelLayerData = northLevel->GetLayers();
+				const auto currentLevelLayerData = currentLevel->GetLayers();
+
+				std::vector<TileLayerData> layerData;
+				layerData.insert(layerData.end(), currentLevelLayerData.begin(), currentLevelLayerData.end());
+				layerData.insert(layerData.end(), northLevelLayerData.begin(), northLevelLayerData.end());
+
+				m_renderer.BuildBatches(renderData, layerData);
+
+				std::cout << "LOADED AND RENDERING ADJACENT LEVEL " << adjacentLevels.m_North << "\n";
+
+				m_adjacentLevelLoaded = true;
+			}
+		}
+		else
+		{
+			m_adjacentLevelLoaded = false;
+		}
+	}
+
+	UpdateCamera(deltaTime, 100, 100);
 	CheckForPortals();
 }
 
-void Game::UpdateCamera(const float deltaTime)
+void Game::UpdateCamera(const float deltaTime, const uint32_t numCols, const uint32_t numRows)
 {
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
-	const auto currentLevel = m_world.GetLevel(m_world.GetCurrentLevelName());
-
 	m_renderer.SetCameraCentre(m_cameraPosition,
-		currentLevel->GetNumColumns(),
-		currentLevel->GetNumRows()
+		numCols,
+		numRows
 	);
 }
 

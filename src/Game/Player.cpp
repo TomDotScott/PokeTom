@@ -70,7 +70,7 @@ void Player::SetPosition(const sf::Vector2f& position)
 
 sf::Vector2i Player::GetGridPosition() const
 {
-	return m_movement.GetGridPosition();
+	return m_currentLevel->GetOffsetFromOrigin() + m_movement.GetGridPosition();
 }
 
 void Player::SetGridPosition(const sf::Vector2i& gridPosition)

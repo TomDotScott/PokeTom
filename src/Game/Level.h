@@ -14,7 +14,7 @@ public:
 		std::string m_West;
 	};
 
-	explicit Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
+	explicit Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin);
 
 	std::vector<TileRenderData> GetRenderData() const;
 	std::vector<TileLayerData> GetLayers() const;
@@ -29,9 +29,17 @@ public:
 
 	const SpawnPointData& GetSpawnPointData(const std::string& name) const;
 
+	const AdjacentLevels& GetAdjacentLevels() const;
+
+	// x = Columns, y = Rows
+	const sf::Vector2i& GetOffsetFromOrigin() const;
+
 private:
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
+
+	// x = Columns, y = Rows
+	sf::Vector2i m_offsetFromOrigin;
 
 	TileLogic m_tileLogic;
 };

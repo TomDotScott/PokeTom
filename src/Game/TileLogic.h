@@ -8,7 +8,7 @@ class TileLogic
 public:
 	TileLogic(const std::shared_ptr<MapData>& mapData);
 
-	std::vector<TileRenderData> BuildRenderData() const;
+	std::vector<TileRenderData> BuildRenderData(const sf::Vector2i& offsetFromOrigin) const;
 
 	struct TileInstance
 	{

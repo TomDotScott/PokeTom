@@ -1,16 +1,17 @@
 #include "Level.h"
 
 
-Level::Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
+Level::Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin) :
 	m_mapData(mapData),
 	m_adjacentLevels(std::move(adjacentLevels)),
+	m_offsetFromOrigin(std::max(static_cast<int>(offsetColumnsFromOrigin) -1 , 0), std::max(static_cast<int>(offsetRowsFromOrigin) - 1, 0)),
 	m_tileLogic(m_mapData)
 {
 }
 
 std::vector<TileRenderData> Level::GetRenderData() const
 {
-	return m_tileLogic.BuildRenderData();
+	return m_tileLogic.BuildRenderData(m_offsetFromOrigin);
 }
 
 std::vector<TileLayerData> Level::GetLayers() const
@@ -110,5 +111,15 @@ const SpawnPointData& Level::GetSpawnPointData(const std::string& name) const
 	}
 #endif
 	return m_mapData->m_SpawnPoints.at(name);
+}
+
+const Level::AdjacentLevels& Level::GetAdjacentLevels() const
+{
+	return m_adjacentLevels;
+}
+
+const sf::Vector2i& Level::GetOffsetFromOrigin() const
+{
+	return m_offsetFromOrigin;
 }
 

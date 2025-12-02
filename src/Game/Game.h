@@ -40,6 +40,8 @@ private:
 	Renderer m_renderer;
 	ScreenFader m_screenFader;
 
+	bool m_adjacentLevelLoaded;
+
 #if !BUILD_MASTER
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)
@@ -56,7 +58,7 @@ private:
 #endif
 
 	void UpdateOverworld(float deltaTime);
-	void UpdateCamera(float deltaTime);
+	void UpdateCamera(float deltaTime, uint32_t numCols, uint32_t numRows);
 	void CheckForPortals();
 
 	void UpdateScreenFade(float deltaTime);

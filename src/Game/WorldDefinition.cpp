@@ -53,6 +53,11 @@ std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
 	return m_levels.at(name);
 }
 
+const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const std::string& levelName) const
+{
+	return GetLevel(levelName)->GetAdjacentLevels();
+}
+
 bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDefinitionFilepath)
 {
 	std::string line, text;
@@ -201,7 +206,23 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 		return false;
 	}
 
-	levels[levelName] = std::make_shared<Level>(tileMapData, adjacentLevels);
+	// Work out the offset from the levels that are at the bottom or left of this level (hopefully they all load in order!)
+	// TODO: Work out a way of determining the offset without having to load the levels in a specific way - maybe some sort of tree structure that can update dynamically?
+	uint32_t offsetCols = 0;
+	uint32_t offsetRows = 0;
+	if (!adjacentLevels.m_South.empty())
+	{
+		const std::shared_ptr<Level>& southLevel = levels.at(adjacentLevels.m_South);
+		offsetRows = southLevel->GetOffsetFromOrigin().y + tileMapData->m_NumRows;
+	}
+
+	if (!adjacentLevels.m_West.empty())
+	{
+		const std::shared_ptr<Level>& westLevel = levels.at(adjacentLevels.m_South);
+		offsetCols = westLevel->GetOffsetFromOrigin().x + tileMapData->m_NumColumns;
+	}
+
+	levels[levelName] = std::make_shared<Level>(tileMapData, adjacentLevels, offsetRows, offsetCols);
 	return true;
 }
 
