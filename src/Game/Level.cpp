@@ -152,7 +152,7 @@ const sf::Vector2i& Level::GetWorldOrigin() const
 
 sf::Vector2i Level::GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const
 {
-	const sf::Vector2i localPosition = static_cast<sf::Vector2i>(worldSpacePosition) + m_worldTileOrigin;
+	const sf::Vector2i localPosition = static_cast<sf::Vector2i>(worldSpacePosition) - m_worldTileOrigin;
 
 	// Floor/truncate to get integer tile coordinates
 	const int gx = static_cast<int>(std::floor(localPosition.x / 32.f));

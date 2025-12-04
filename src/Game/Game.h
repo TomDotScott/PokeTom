@@ -66,7 +66,7 @@ private:
 
 	void UpdateScreenFade(float deltaTime);
 
-	void LoadLevel(const std::string& levelName, const std::string& spawnPointName, bool shouldSetPlayerPosition);
+	void RespawnPlayer(const std::string& levelName, const std::string& spawnPointName, bool shouldSetPlayerPosition);
 
 	void TransitionLevel();
 	void OnTransitionEnd();

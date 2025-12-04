@@ -14,7 +14,7 @@ Game::Game() :
 	Updateable(),
 	m_state(eGameState::Overworld),
 	m_player(),
-	m_world("WorldDefinition.xml", "player_bedroom"),
+	m_world("WorldDefinition.xml"),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.x), static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.y) }),
@@ -170,7 +170,13 @@ void Game::UpdateCamera(const float deltaTime)
 
 void Game::CheckForPortals()
 {
-	const std::shared_ptr<Level> currentLevel = m_world.GetLevel(m_world.GetCurrentLevelName());
+	const auto currentLevel = m_world.GetLevelAtPosition(m_player.GetPosition());
+
+	if (currentLevel == nullptr)
+	{
+		std::cerr << "Game::CheckForPortals - currentLevel is a nullptr!\n";
+		return;
+	}
 
 	// If the player is on a door in the right orientation, start a level transition
 	const PortalTrigger* portal = currentLevel->GetPortalAtPosition(m_player.GetPosition());
@@ -179,7 +185,7 @@ void Game::CheckForPortals()
 	{
 		m_lastEnteredPortal = portal;
 
-		std::cout << "Transitioning to " << m_world.GetPortalData(m_world.GetCurrentLevelName(), portal->m_Name).m_TargetLevel << "\n";
+		std::cout << "Transitioning to " << m_world.GetPortalData(currentLevel->GetName(), portal->m_Name).m_TargetLevel << "\n";
 
 		TransitionLevel();
 	}
@@ -204,7 +210,7 @@ void Game::UpdateScreenFade(const float deltaTime)
 	}
 }
 
-void Game::LoadLevel(const std::string& levelName, const std::string& spawnPointName, const bool shouldSetPlayerPosition)
+void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnPointName, const bool shouldSetPlayerPosition)
 {
 	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
 
@@ -212,7 +218,7 @@ void Game::LoadLevel(const std::string& levelName, const std::string& spawnPoint
 	{
 		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
 
-		m_player.SetPosition(static_cast<sf::Vector2f>(spawnPointData.m_GridPosition * 32));
+		m_player.SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition * 32));
 		m_player.SetOrientation(spawnPointData.m_Orientation);
 
 		m_cameraPosition = m_player.GetPosition();
@@ -232,13 +238,13 @@ void Game::OnTransitionEnd()
 {
 	if (m_lastEnteredPortal == nullptr)
 	{
-		LoadLevel(m_world.GetCurrentLevelName(), "player_spawn", true);
+		RespawnPlayer("starter_town", "player_spawn", true);
 		return;
 	}
 
-	if (auto transition = m_world.EnterPortal(m_lastEnteredPortal->m_Name))
+	if (auto transition = m_world.EnterPortal(m_world.GetLevelAtPosition(m_player.GetPosition())->GetName(), m_lastEnteredPortal->m_Name))
 	{
-		LoadLevel(transition->m_NewLevelName, transition->m_SpawnPointName, true);
+		RespawnPlayer(transition->m_NewLevelName, transition->m_SpawnPointName, true);
 	}
 	else
 	{

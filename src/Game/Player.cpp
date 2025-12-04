@@ -174,26 +174,8 @@ void Player::Move(const WorldDefinition& gameWorld, const GridMovementComponent:
 
 	const sf::Vector2f newPosition = GetPosition() + moveDirection * 32.f;
 
-	// TODO: This really needs to be unified somewhere
-	const auto& currentLevel = gameWorld.GetLevel(gameWorld.GetCurrentLevelName());
-	const auto& adjacentLevels = currentLevel->GetAdjacentLevels();
-	if (direction == GridMovementComponent::eDirection::North && !adjacentLevels.m_North.empty())
-	{
-		// Check the current level first, and if that doesn't work, check the adjacent one
-		if (currentLevel->CanMoveTo(newPosition))
-		{
-			m_movement.Move(direction);
-		}
-		else
-		{
-			const auto& northLevel = gameWorld.GetLevel(adjacentLevels.m_North);
-			if (northLevel->CanMoveTo(newPosition))
-			{
-				m_movement.Move(direction);
-			}
-		}
-	}
-	else if (currentLevel->CanMoveTo(newPosition))
+	const auto& currentLevel = gameWorld.GetLevelAtPosition(newPosition);
+	if (currentLevel != nullptr && currentLevel->CanMoveTo(newPosition))
 	{
 		m_movement.Move(direction);
 	}

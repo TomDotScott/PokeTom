@@ -11,7 +11,7 @@
 class WorldDefinition
 {
 public:
-	WorldDefinition(const std::filesystem::path& worldDefinitionFilepath, std::string startLevel);
+	WorldDefinition(const std::filesystem::path& worldDefinitionFilepath);
 
 	struct LevelTransition
 	{
@@ -19,7 +19,7 @@ public:
 		std::string m_SpawnPointName;
 	};
 
-	std::optional<LevelTransition> EnterPortal(const std::string& portalName);
+	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName) const;
 
 	struct Portal
 	{
@@ -30,20 +30,15 @@ public:
 
 	const Portal& GetPortalData(const std::string& levelName, const std::string& portalName);
 
-	const std::string& GetCurrentLevelName() const;
-
 	std::vector<std::shared_ptr<Level>> GetLevelsIntersectingRect(const sf::FloatRect& rect) const;
 
 	std::shared_ptr<Level> GetLevel(const std::string& name) const;
-
-	void SetCurrentLevel(const std::string& levelName);
+	std::shared_ptr<Level> GetLevelAtPosition(const sf::Vector2f& position) const;
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
 
 private:
-	std::string m_currentLevel;
 	std::unordered_map<std::string, std::shared_ptr<Level>> m_levels;
-
 
 	// Key - LevelName
 	// Value - Map of Portal Names to Portal data

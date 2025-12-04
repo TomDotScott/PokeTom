@@ -8,25 +8,25 @@
 #include "Level.h"
 #include "TileParser.h"
 
+constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
-WorldDefinition::WorldDefinition(const std::filesystem::path& worldDefinitionFilepath, std::string startLevel) :
-	m_currentLevel(std::move(startLevel))
+
+WorldDefinition::WorldDefinition(const std::filesystem::path& worldDefinitionFilepath)
 {
 	ParseWorldDefinition(worldDefinitionFilepath);
 }
 
-std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const std::string& portalName)
+std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const std::string& levelName, const std::string& portalName) const
 {
-	const auto& currentLevelPortals = m_levelPortals.at(m_currentLevel);
+	const auto& currentLevelPortals = m_levelPortals.at(levelName);
 	if (currentLevelPortals.find(portalName) == currentLevelPortals.end())
 	{
 		std::cerr << "WorldDefinition::OnPlayerEnterPortal - Portal with name " << portalName <<
-			" Does not exist in level " << m_currentLevel << "\n";
+			" Does not exist in level " << levelName << "\n";
 		return std::nullopt;
 	}
 
 	const Portal& portalData = currentLevelPortals.at(portalName);
-	m_currentLevel = portalData.m_TargetLevel;
 
 	return LevelTransition{
 		portalData.m_TargetLevel,
@@ -34,28 +34,10 @@ std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(con
 	};
 }
 
-// TODO: We really need to lose the concept of a "Current" level!
-void WorldDefinition::SetCurrentLevel(const std::string& levelName)
-{
-	if (m_levels.find(levelName) == m_levels.end())
-	{
-		std::cerr << "WorldDefinition::SetCurrentLevel: Level with name " << levelName << " doesn't exist!\n";
-		return;
-	}
-
-	m_currentLevel = levelName;
-}
-
-
 const WorldDefinition::Portal& WorldDefinition::GetPortalData(const std::string& levelName,
 	const std::string& portalName)
 {
 	return m_levelPortals.at(levelName).at(portalName);
-}
-
-const std::string& WorldDefinition::GetCurrentLevelName() const
-{
-	return m_currentLevel;
 }
 
 std::vector<std::shared_ptr<Level>> WorldDefinition::GetLevelsIntersectingRect(const sf::FloatRect& rect) const
@@ -83,6 +65,19 @@ std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
 	}
 
 	return m_levels.at(name);
+}
+
+std::shared_ptr<Level> WorldDefinition::GetLevelAtPosition(const sf::Vector2f& position) const
+{
+	for (const auto& [_, level] : m_levels)
+	{
+		if (level->GetBounds().contains(position))
+		{
+			return level;
+		}
+	}
+
+	return nullptr;
 }
 
 const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const std::string& levelName) const
@@ -141,11 +136,11 @@ bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDef
 	}
 
 	// If the provided starting level doesn't exist, pick the first parsed level as root
-	std::string root = m_currentLevel;
+	std::string root = OVERWORLD_ROOT_LEVEL;
 	if (levels.find(root) == levels.end())
 	{
 		root = levels.begin()->first;
-		std::cerr << "WorldDefinition::ParseWorldDefinition - start level '" << m_currentLevel << "' not found. Using '" << root << "' as root.\n";
+		std::cerr << "WorldDefinition::ParseWorldDefinition - start level '" << OVERWORLD_ROOT_LEVEL << "' not found. Using '" << root << "' as root.\n";
 	}
 
 	// BFS to determine the offsets of each of the levels (in tiles)
