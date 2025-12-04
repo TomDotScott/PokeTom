@@ -33,6 +33,7 @@ public:
 	const std::string& GetCurrentLevelName() const;
 	std::shared_ptr<Level> GetLevel(const std::string& name) const;
 
+	void SetCurrentLevel(const std::string& levelName);
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
 

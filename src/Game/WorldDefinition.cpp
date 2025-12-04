@@ -32,6 +32,19 @@ std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(con
 	};
 }
 
+// TODO: We really need to lose the concept of a "Current" level!
+void WorldDefinition::SetCurrentLevel(const std::string& levelName)
+{
+	if (m_levels.find(levelName) == m_levels.end())
+	{
+		std::cerr << "WorldDefinition::SetCurrentLevel: Level with name " << levelName << " doesn't exist!\n";
+		return;
+	}
+
+	m_currentLevel = levelName;
+}
+
+
 const WorldDefinition::Portal& WorldDefinition::GetPortalData(const std::string& levelName,
 	const std::string& portalName)
 {
@@ -222,7 +235,7 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 		offsetCols = westLevel->GetOffsetFromOrigin().x + tileMapData->m_NumColumns;
 	}
 
-	levels[levelName] = std::make_shared<Level>(tileMapData, adjacentLevels, offsetRows, offsetCols);
+	levels[levelName] = std::make_shared<Level>(levelName, tileMapData, adjacentLevels, offsetRows, offsetCols);
 	return true;
 }
 

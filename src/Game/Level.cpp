@@ -1,12 +1,18 @@
 #include "Level.h"
 
 
-Level::Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin) :
+Level::Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin) :
+	m_name(std::move(name)),
 	m_mapData(mapData),
 	m_adjacentLevels(std::move(adjacentLevels)),
-	m_offsetFromOrigin(std::max(static_cast<int>(offsetColumnsFromOrigin) -1 , 0), std::max(static_cast<int>(offsetRowsFromOrigin) - 1, 0)),
+	m_offsetFromOrigin(std::max(static_cast<int>(offsetColumnsFromOrigin) - 1, 0), std::max(static_cast<int>(offsetRowsFromOrigin) - 1, 0)),
 	m_tileLogic(m_mapData)
 {
+}
+
+const std::string& Level::GetName() const
+{
+	return m_name;
 }
 
 std::vector<TileRenderData> Level::GetRenderData() const
@@ -29,20 +35,25 @@ uint32_t Level::GetNumRows() const
 	return m_mapData->m_NumRows;
 }
 
-uint32_t Level::GetPlayerZIndex() const
+bool Level::IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const
 {
-	// TODO: Integrate this with the level somehow
-	return 2;
+	const sf::Vector2i gridPos = GetGridPositionFromWorldPosition(worldSpacePosition);
+
+	return gridPos.x >= 0
+		&& gridPos.x < static_cast<int>(GetNumColumns())
+		&& gridPos.y >= 0
+		&& gridPos.y < static_cast<int>(GetNumRows());
 }
 
-bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
+bool Level::CanMoveTo(const sf::Vector2f& worldSpacePosition) const
 {
-	if (x >= GetNumColumns() || y >= GetNumRows())
+	if (!IsWorldSpacePointOnGrid(worldSpacePosition))
 	{
 		return false;
 	}
 
-	const uint32_t index = y * GetNumColumns() + x;
+	const sf::Vector2i gridPos = GetGridPositionFromWorldPosition(worldSpacePosition);
+	const uint32_t index = gridPos.y * GetNumColumns() + gridPos.x;
 
 	for (const TileLayerData& layer : GetLayers())
 	{
@@ -84,13 +95,14 @@ bool Level::CanMoveTo(const uint32_t x, const uint32_t y) const
 	return true;
 }
 
-const PortalTrigger* Level::GetPortalAtPlayerPosition(const sf::Vector2i playerGridPosition) const
+const PortalTrigger* Level::GetPortalAtPosition(const sf::Vector2f worldSpacePosition) const
 {
+	const sf::Vector2i gridPosition = GetGridPositionFromWorldPosition(worldSpacePosition);
 	for (const auto& [_, portalData] : m_mapData->m_Portals)
 	{
-		const bool xEqual = playerGridPosition.x == portalData.m_GridPosition.x || playerGridPosition.x == portalData.m_GridPosition.x + (portalData.m_Size.x - 1);
+		const bool xEqual = gridPosition.x == portalData.m_GridPosition.x || gridPosition.x == portalData.m_GridPosition.x + (portalData.m_Size.x - 1);
 
-		const bool yEqual = playerGridPosition.y == portalData.m_GridPosition.y || playerGridPosition.y == portalData.m_GridPosition.y + (portalData.m_Size.y - 1);
+		const bool yEqual = gridPosition.y == portalData.m_GridPosition.y || gridPosition.y == portalData.m_GridPosition.y + (portalData.m_Size.y - 1);
 
 		if (xEqual && yEqual)
 		{
@@ -121,5 +133,14 @@ const Level::AdjacentLevels& Level::GetAdjacentLevels() const
 const sf::Vector2i& Level::GetOffsetFromOrigin() const
 {
 	return m_offsetFromOrigin;
+}
+
+sf::Vector2i Level::GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const
+{
+	const sf::Vector2i localPosition = static_cast<sf::Vector2i>(worldSpacePosition) + m_offsetFromOrigin * 32;
+	return {
+		localPosition.x / 32,
+		localPosition.y / 32
+	};
 }
 

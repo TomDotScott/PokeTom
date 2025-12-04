@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include "GridMovementComponent.h"
 #include "Level.h"
+#include "WorldDefinition.h"
 #include "../Engine/Gameobject.h"
 #include "../Engine/Animation/AnimationPlayer.h"
 #include "../Engine/Input/InputMapper.h"
@@ -11,15 +12,11 @@ class Player final : public GameObject
 public:
 	Player();
 
-	void Update(float deltaTime);
+	void Update(float deltaTime, const WorldDefinition& gameWorld);
 
 	void SetPosition(float x, float y) override;
 	void SetPosition(const sf::Vector2f& position) override;
 
-	sf::Vector2i GetGridPosition() const;
-	void SetGridPosition(const sf::Vector2i& gridPosition);
-
-	void SetLevel(const std::shared_ptr<Level>& level);
 	int GetZIndex() const;
 
 	void SetOrientation(eOrientation);
@@ -49,7 +46,6 @@ public:
 
 private:
 	GridMovementComponent m_movement;
-	std::shared_ptr<Level> m_currentLevel;
 	eAnimationState m_animationState;
 
 	AnimationPlayer m_animationPlayer;
@@ -64,7 +60,7 @@ private:
 	};
 	InputMapper m_mapper;
 
-	void Move(GridMovementComponent::eDirection direction);
+	void Move(const WorldDefinition& gameWorld, GridMovementComponent::eDirection direction);
 	static eAnimationState GetWalkAnimationState(eOrientation orientation);
 	static eAnimationState GetIdleAnimationState(eOrientation orientation);
 	static eAnimationState GetSprintAnimationState(eOrientation orientation);

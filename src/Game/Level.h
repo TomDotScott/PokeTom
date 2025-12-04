@@ -14,7 +14,9 @@ public:
 		std::string m_West;
 	};
 
-	explicit Level(const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin);
+	explicit Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin);
+
+	const std::string& GetName() const;
 
 	std::vector<TileRenderData> GetRenderData() const;
 	std::vector<TileLayerData> GetLayers() const;
@@ -22,10 +24,10 @@ public:
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
 
-	uint32_t GetPlayerZIndex() const;
-
-	bool CanMoveTo(uint32_t x, uint32_t y) const;
-	const PortalTrigger* GetPortalAtPlayerPosition(sf::Vector2i playerGridPosition) const;
+	bool IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const;
+	bool CanMoveTo(const sf::Vector2f& worldSpacePosition) const;
+	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
+	sf::Vector2i GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const;
 
 	const SpawnPointData& GetSpawnPointData(const std::string& name) const;
 
@@ -35,6 +37,7 @@ public:
 	const sf::Vector2i& GetOffsetFromOrigin() const;
 
 private:
+	std::string m_name;
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
 

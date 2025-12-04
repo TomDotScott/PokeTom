@@ -10,7 +10,6 @@
 Player::Player() :
 	GameObject(),
 	m_movement(32.f, 3.f, 7.5f),
-	m_currentLevel(nullptr),
 	m_animationState(IDLE_DOWN),
 	m_animationPlayer(AnimationDictionary::Create(GET_ANIMATION_PATH("PLAYER_BOY")))
 {
@@ -23,7 +22,7 @@ Player::Player() :
 	m_mapper.Map(SPRINT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::LShift));
 }
 
-void Player::Update(const float deltaTime)
+void Player::Update(const float deltaTime, const WorldDefinition& gameWorld)
 {
 	// Update inputs
 	m_mapper.Update();
@@ -32,19 +31,19 @@ void Player::Update(const float deltaTime)
 	{
 		if (m_mapper.IsButtonDown(UP))
 		{
-			Move(GridMovementComponent::eDirection::North);
+			Move(gameWorld, GridMovementComponent::eDirection::North);
 		}
 		else if (m_mapper.IsButtonDown(DOWN))
 		{
-			Move(GridMovementComponent::eDirection::South);
+			Move(gameWorld, GridMovementComponent::eDirection::South);
 		}
 		else if (m_mapper.IsButtonDown(LEFT))
 		{
-			Move(GridMovementComponent::eDirection::West);
+			Move(gameWorld, GridMovementComponent::eDirection::West);
 		}
 		else if (m_mapper.IsButtonDown(RIGHT))
 		{
-			Move(GridMovementComponent::eDirection::East);
+			Move(gameWorld, GridMovementComponent::eDirection::East);
 		}
 	}
 
@@ -65,28 +64,14 @@ void Player::SetPosition(const sf::Vector2f& position)
 {
 	GameObject::SetPosition(position);
 
-	m_movement.SetGridPosition({ static_cast<int>(position.x) / 32, static_cast<int>(position.y) / 32 });
+	m_movement.SetWorldPosition(position);
 }
 
-sf::Vector2i Player::GetGridPosition() const
-{
-	return m_currentLevel->GetOffsetFromOrigin() + m_movement.GetGridPosition();
-}
-
-void Player::SetGridPosition(const sf::Vector2i& gridPosition)
-{
-	m_movement.SetGridPosition(gridPosition);
-	SetPosition(m_movement.GetWorldPosition());
-}
-
-void Player::SetLevel(const std::shared_ptr<Level>& level)
-{
-	m_currentLevel = level;
-}
 
 int Player::GetZIndex() const
 {
-	return m_currentLevel->GetPlayerZIndex();
+	// TODO: Integrate this with the level somehow
+	return 2;
 }
 
 void Player::SetOrientation(const eOrientation orientation)
@@ -165,29 +150,50 @@ const AnimationPlayer& Player::GetAnimator() const
 	return m_animationPlayer;
 }
 
-void Player::Move(const GridMovementComponent::eDirection direction)
+void Player::Move(const WorldDefinition& gameWorld, const GridMovementComponent::eDirection direction)
 {
-	sf::Vector2i newGridPosition = GetGridPosition();
+	sf::Vector2f moveDirection(0, 0);
 
 	switch (direction)
 	{
 	case GridMovementComponent::eDirection::North:
-		newGridPosition.y -= 1;
+		moveDirection.y -= 1;
 		break;
 	case GridMovementComponent::eDirection::South:
-		newGridPosition.y += 1;
+		moveDirection.y += 1;
 		break;
 	case GridMovementComponent::eDirection::West:
-		newGridPosition.x -= 1;
+		moveDirection.x -= 1;
 		break;
 	case GridMovementComponent::eDirection::East:
-		newGridPosition.x += 1;
+		moveDirection.x += 1;
 		break;
 	case GridMovementComponent::eDirection::None:
 		break;
 	}
 
-	if (m_currentLevel->CanMoveTo(newGridPosition.x, newGridPosition.y))
+	const sf::Vector2f newPosition = GetPosition() + moveDirection * 32.f;
+
+	// TODO: This really needs to be unified somewhere
+	const auto& currentLevel = gameWorld.GetLevel(gameWorld.GetCurrentLevelName());
+	const auto& adjacentLevels = currentLevel->GetAdjacentLevels();
+	if (direction == GridMovementComponent::eDirection::North && !adjacentLevels.m_North.empty())
+	{
+		// Check the current level first, and if that doesn't work, check the adjacent one
+		if (currentLevel->CanMoveTo(newPosition))
+		{
+			m_movement.Move(direction);
+		}
+		else
+		{
+			const auto& northLevel = gameWorld.GetLevel(adjacentLevels.m_North);
+			if (northLevel->CanMoveTo(newPosition))
+			{
+				m_movement.Move(direction);
+			}
+		}
+	}
+	else if (currentLevel->CanMoveTo(newPosition))
 	{
 		m_movement.Move(direction);
 	}

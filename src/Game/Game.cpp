@@ -17,7 +17,9 @@ Game::Game() :
 	m_world("WorldDefinition.xml", "player_bedroom"),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
-	m_adjacentLevelLoaded(false)
+	m_adjacentLevelLoaded(false),
+	m_numVisibleCols(m_world.GetLevel(m_world.GetCurrentLevelName())->GetNumColumns()),
+	m_numVisibleRows(m_world.GetLevel(m_world.GetCurrentLevelName())->GetNumRows())
 {
 	UIMANAGER.Load("ui.xml");
 
@@ -86,59 +88,114 @@ void Game::Render(sf::RenderWindow& window) const
 #endif
 }
 
-void Game::UpdateOverworld(const float deltaTime)
+void Game::ChangeChunk(const std::shared_ptr<Level>& currentLevel, const std::string& adjacentLevelName, const eOrientation orientation, const sf::Vector2i& playerGridPosition)
 {
-	m_player.Update(deltaTime);
+	if (adjacentLevelName.empty())
+	{
+		return;
+	}
 
-	const sf::Vector2i playerGridPosition = m_player.GetGridPosition();
+	const auto& adjacentLevel = m_world.GetLevel(adjacentLevelName);
+
+	if (adjacentLevel == nullptr)
+	{
+		std::cerr << "Game::ChangeChunk - No level with name " << adjacentLevelName << " exists!\n";
+		return;
+	}
+
+	if (m_adjacentLevelLoaded)
+	{
+		if ((orientation == eOrientation::Up && playerGridPosition.y <= -1) ||
+			(orientation == eOrientation::Down && playerGridPosition.y >= static_cast<int>(adjacentLevel->GetNumRows() - 1)) || 
+			(orientation == eOrientation::Left && playerGridPosition.x <= -1) || 
+			(orientation == eOrientation::Right && playerGridPosition.x >= static_cast<int>(adjacentLevel->GetNumColumns() - 1)))
+		{
+			m_world.SetCurrentLevel(adjacentLevelName);
+		}
+		return;
+	}
+
+	sf::Vector2f adjacentLevelOffset(0.f, 0.f);
+	if (orientation == eOrientation::Up)
+	{
+		adjacentLevelOffset = static_cast<sf::Vector2f>(adjacentLevel->GetOffsetFromOrigin());
+	}
+	else if (orientation == eOrientation::Down)
+	{
+		adjacentLevelOffset = m_adjacentMapOffset;
+	}
+
+	BuildAdjacentLevelRenderData(currentLevel, adjacentLevel, adjacentLevelOffset);
+}
+
+void Game::BuildAdjacentLevelRenderData(const std::shared_ptr<Level>& currentLevel, const std::shared_ptr<Level>& adjacentLevel, const sf::Vector2f& newOffset)
+{
+	const auto adjacentLevelRenderData = adjacentLevel->GetRenderData();
+	const auto currentLevelRenderData = currentLevel->GetRenderData();
+
+	std::vector<TileRenderData> renderData;
+	renderData.insert(renderData.end(), currentLevelRenderData.begin(), currentLevelRenderData.end());
+	renderData.insert(renderData.end(), adjacentLevelRenderData.begin(), adjacentLevelRenderData.end());
+
+	const auto adjacentLevelLayerData = adjacentLevel->GetLayers();
+	const auto currentLevelLayerData = currentLevel->GetLayers();
+
+	std::vector<TileLayerData> layerData;
+	layerData.insert(layerData.end(), currentLevelLayerData.begin(), currentLevelLayerData.end());
+	layerData.insert(layerData.end(), adjacentLevelLayerData.begin(), adjacentLevelLayerData.end());
+
+	m_renderer.BuildBatches(renderData, layerData);
+
+	m_numVisibleRows = adjacentLevel->GetNumRows() + currentLevel->GetNumRows();
+	m_adjacentMapOffset = newOffset;
+
+	std::cout << "LOADED AND RENDERING ADJACENT LEVEL " << adjacentLevel->GetName() << "\n";
+
+	m_adjacentLevelLoaded = true;
+}
+
+void Game::UpdateContinuousWorld()
+{
+	// TODO: This is terrible, think about this properly!
 	const std::string& currentLevelName = m_world.GetCurrentLevelName();
 	const std::shared_ptr<Level>& currentLevel = m_world.GetLevel(currentLevelName);
 	const Level::AdjacentLevels& adjacentLevels = currentLevel->GetAdjacentLevels();
+	const sf::Vector2i playerGridPosition = currentLevel->GetGridPositionFromWorldPosition(m_player.GetPosition());
 
-	if (!m_adjacentLevelLoaded) {
-		if (playerGridPosition.y < currentLevel->GetNumColumns() - 8)
-		{
-			if (!adjacentLevels.m_North.empty())
-			{
-				const auto& northLevel = m_world.GetLevel(adjacentLevels.m_North);
-				const auto northLevelRenderData = northLevel->GetRenderData();
-				const auto currentLevelRenderData = currentLevel->GetRenderData();
-
-				std::vector<TileRenderData> renderData;
-				renderData.insert(renderData.end(), currentLevelRenderData.begin(), currentLevelRenderData.end());
-				renderData.insert(renderData.end(), northLevelRenderData.begin(), northLevelRenderData.end());
-
-				const auto northLevelLayerData = northLevel->GetLayers();
-				const auto currentLevelLayerData = currentLevel->GetLayers();
-
-				std::vector<TileLayerData> layerData;
-				layerData.insert(layerData.end(), currentLevelLayerData.begin(), currentLevelLayerData.end());
-				layerData.insert(layerData.end(), northLevelLayerData.begin(), northLevelLayerData.end());
-
-				m_renderer.BuildBatches(renderData, layerData);
-
-				std::cout << "LOADED AND RENDERING ADJACENT LEVEL " << adjacentLevels.m_North << "\n";
-
-				m_adjacentLevelLoaded = true;
-			}
-		}
-		else
-		{
-			m_adjacentLevelLoaded = false;
-		}
+	if (playerGridPosition.y < static_cast<int>(currentLevel->GetNumRows() / 3))
+	{
+		ChangeChunk(currentLevel, adjacentLevels.m_North, eOrientation::Up, playerGridPosition);
 	}
+	else if (playerGridPosition.y > static_cast<int>(currentLevel->GetNumRows() / 3) * 2)
+	{
+		ChangeChunk(currentLevel, adjacentLevels.m_South, eOrientation::Down, playerGridPosition);
+	}
+	else
+	{
+		if (m_adjacentLevelLoaded) {
+			LoadLevel(m_world.GetCurrentLevelName(), "", false);
+		}
 
-	UpdateCamera(deltaTime, 100, 100);
+		m_adjacentLevelLoaded = false;
+	}
+}
+
+void Game::UpdateOverworld(const float deltaTime)
+{
+	m_player.Update(deltaTime, m_world);
+	UpdateContinuousWorld();
+	UpdateCamera(deltaTime);
 	CheckForPortals();
 }
 
-void Game::UpdateCamera(const float deltaTime, const uint32_t numCols, const uint32_t numRows)
+void Game::UpdateCamera(const float deltaTime)
 {
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
 	m_renderer.SetCameraCentre(m_cameraPosition,
-		numCols,
-		numRows
+		m_numVisibleCols,
+		m_numVisibleRows,
+		m_adjacentMapOffset
 	);
 }
 
@@ -147,7 +204,7 @@ void Game::CheckForPortals()
 	const std::shared_ptr<Level> currentLevel = m_world.GetLevel(m_world.GetCurrentLevelName());
 
 	// If the player is on a door in the right orientation, start a level transition
-	const PortalTrigger* portal = currentLevel->GetPortalAtPlayerPosition(m_player.GetGridPosition());
+	const PortalTrigger* portal = currentLevel->GetPortalAtPosition(m_player.GetPosition());
 
 	if (portal != nullptr && portal->AllowsOrientation(m_player.GetCurrentOrientation()))
 	{
@@ -178,21 +235,31 @@ void Game::UpdateScreenFade(const float deltaTime)
 	}
 }
 
-void Game::LoadLevel(const std::string& levelName, const std::string& spawnPointName)
+void Game::LoadLevel(const std::string& levelName, const std::string& spawnPointName, const bool shouldSetPlayerPosition)
 {
 	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
 
-	const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
+	m_numVisibleRows = level->GetNumRows();
+	m_numVisibleCols = level->GetNumColumns();
+	m_adjacentMapOffset = static_cast<sf::Vector2f>(level->GetOffsetFromOrigin());
 
-	m_player.SetGridPosition(spawnPointData.m_GridPosition);
-	m_player.SetOrientation(spawnPointData.m_Orientation);
+	if (shouldSetPlayerPosition)
+	{
+		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
 
-	m_player.SetLevel(level);
+		m_player.SetPosition(static_cast<sf::Vector2f>(spawnPointData.m_GridPosition * 32));
+		m_player.SetOrientation(spawnPointData.m_Orientation);
+
+		m_cameraPosition = m_player.GetPosition();
+		m_renderer.SetCameraCentre(
+			m_cameraPosition,
+			level->GetNumColumns(),
+			level->GetNumRows(),
+			m_adjacentMapOffset
+		);
+	}
 
 	m_renderer.BuildBatches(level->GetRenderData(), level->GetLayers());
-
-	m_cameraPosition = m_player.GetPosition();
-	m_renderer.SetCameraCentre(m_cameraPosition, level->GetNumColumns(), level->GetNumRows());
 }
 
 void Game::TransitionLevel()
@@ -205,18 +272,19 @@ void Game::OnTransitionEnd()
 {
 	if (m_lastEnteredPortal == nullptr)
 	{
-		LoadLevel(m_world.GetCurrentLevelName(), "player_spawn");
+		LoadLevel(m_world.GetCurrentLevelName(), "player_spawn", true);
 		return;
 	}
 
 	if (auto transition = m_world.EnterPortal(m_lastEnteredPortal->m_Name))
 	{
-		LoadLevel(transition->m_NewLevelName, transition->m_SpawnPointName);
+		LoadLevel(transition->m_NewLevelName, transition->m_SpawnPointName, true);
 	}
 	else
 	{
 		std::cerr << "Game::OnTransitionEnd - Failed to transition to portal!\n";
 	}
 
+	m_adjacentLevelLoaded = false;
 	m_lastEnteredPortal = nullptr;
 }

@@ -11,14 +11,15 @@ Renderer::Renderer() :
 {
 }
 
-void Renderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight)
+void Renderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight, const sf::Vector2f mapOffsetFromOrigin)
 {
 	const sf::Vector2f mapSizePixels = { static_cast<float>(mapWidth) * 32.f, static_cast<float>(mapHeight) * 32.f };
+	const sf::Vector2f mapOffsetPixels = mapOffsetFromOrigin * 32.f;
 	const sf::Vector2f viewSize = m_cameraView.getSize();
 	const sf::Vector2f halfView = viewSize / 2.f;
 
-	sf::Vector2f minBound = halfView;
-	sf::Vector2f maxBound = mapSizePixels - halfView;
+	const sf::Vector2f minBound = halfView - mapOffsetPixels;
+	const sf::Vector2f maxBound = mapSizePixels - halfView - mapOffsetPixels;
 
 	if (mapSizePixels.x < viewSize.x)
 	{

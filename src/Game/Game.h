@@ -41,6 +41,9 @@ private:
 	ScreenFader m_screenFader;
 
 	bool m_adjacentLevelLoaded;
+	sf::Vector2f m_adjacentMapOffset;
+	uint32_t m_numVisibleCols;
+	uint32_t m_numVisibleRows;
 
 #if !BUILD_MASTER
 	template<typename... Args>
@@ -57,13 +60,16 @@ private:
 	}
 #endif
 
+	void ChangeChunk(const std::shared_ptr<Level>& currentLevel, const std::string& adjacentLevelName, eOrientation orientation, const sf::Vector2i& playerGridPosition);
+	void BuildAdjacentLevelRenderData(const std::shared_ptr<Level>& currentLevel, const std::shared_ptr<Level>& adjacentLevel, const sf::Vector2f& newOffset);
+	void UpdateContinuousWorld();
 	void UpdateOverworld(float deltaTime);
-	void UpdateCamera(float deltaTime, uint32_t numCols, uint32_t numRows);
+	void UpdateCamera(float deltaTime);
 	void CheckForPortals();
 
 	void UpdateScreenFade(float deltaTime);
 
-	void LoadLevel(const std::string& levelName, const std::string& spawnPointName);
+	void LoadLevel(const std::string& levelName, const std::string& spawnPointName, bool shouldSetPlayerPosition);
 
 	void TransitionLevel();
 	void OnTransitionEnd();

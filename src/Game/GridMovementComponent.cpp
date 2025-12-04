@@ -15,12 +15,6 @@ GridMovementComponent::GridMovementComponent(const float tileSize, const float w
 {
 }
 
-void GridMovementComponent::SetGridPosition(const sf::Vector2i& gridPos)
-{
-	m_gridPos = gridPos;
-	m_worldPos = static_cast<sf::Vector2f>(gridPos) * m_tileSize;
-}
-
 void GridMovementComponent::Move(const eDirection direction)
 {
 	if (m_isMoving)
@@ -28,20 +22,20 @@ void GridMovementComponent::Move(const eDirection direction)
 		return;
 	}
 
-	sf::Vector2i newPos = m_gridPos;
+	sf::Vector2i dir(0, 0);
 	switch (direction)
 	{
 	case eDirection::North:
-		newPos += { 0, -1 };
+		dir += { 0, -1 };
 		break;
 	case eDirection::South:
-		newPos += { 0, 1 };
+		dir += { 0, 1 };
 		break;
 	case eDirection::West:
-		newPos += { -1, 0 };
+		dir += { -1, 0 };
 		break;
 	case eDirection::East:
-		newPos += { 1, 0 };
+		dir += { 1, 0 };
 		break;
 	default:
 		std::cerr << "GridMovementComponent::Move: Unhandled case " << static_cast<int>(direction) << "!\n";
@@ -49,7 +43,7 @@ void GridMovementComponent::Move(const eDirection direction)
 	}
 
 	SetDirection(direction);
-	StartMove(newPos);
+	StartMove(dir);
 }
 
 void GridMovementComponent::SetDirection(const eDirection direction)
@@ -93,7 +87,7 @@ void GridMovementComponent::Update(const float deltaTime)
 	{
 		m_progress = 1.f;
 		m_isMoving = false;
-		m_gridPos = m_targetGridPos;
+		m_worldPos = m_endPos;
 	}
 
 	m_worldPos = m_startPos + (m_endPos - m_startPos) * m_progress;
@@ -104,14 +98,14 @@ const sf::Vector2f& GridMovementComponent::GetWorldPosition() const
 	return m_worldPos;
 }
 
+void GridMovementComponent::SetWorldPosition(const sf::Vector2f& pos)
+{
+	m_worldPos = pos;
+}
+
 bool GridMovementComponent::IsMoving() const
 {
 	return m_isMoving;
-}
-
-sf::Vector2i GridMovementComponent::GetGridPosition() const
-{
-	return m_gridPos;
 }
 
 void GridMovementComponent::SetSprinting(const bool isSprinting)
@@ -124,11 +118,10 @@ bool GridMovementComponent::IsSprinting() const
 	return m_isSprinting;
 }
 
-void GridMovementComponent::StartMove(const sf::Vector2i& newGridPos)
+void GridMovementComponent::StartMove(const sf::Vector2i& dir)
 {
 	m_isMoving = true;
 	m_progress = 0.f;
 	m_startPos = m_worldPos;
-	m_endPos = static_cast<sf::Vector2f>(newGridPos) * m_tileSize;
-	m_targetGridPos = newGridPos;
+	m_endPos = m_startPos + static_cast<sf::Vector2f>(dir) * m_tileSize;
 }
