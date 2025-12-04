@@ -34,7 +34,7 @@ public:
 	Renderer();
 
 	// Sets the position of the camera view, clamped to the width and height of the map
-	void SetCameraCentre(sf::Vector2f position, uint32_t mapWidth, uint32_t mapHeight, sf::Vector2f mapOffsetFromOrigin);
+	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
 	void BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers);
 	void Render(sf::RenderWindow& window, const Player& player) const;

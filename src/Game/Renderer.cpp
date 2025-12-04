@@ -11,36 +11,38 @@ Renderer::Renderer() :
 {
 }
 
-void Renderer::SetCameraCentre(sf::Vector2f position, const uint32_t mapWidth, const uint32_t mapHeight, const sf::Vector2f mapOffsetFromOrigin)
+void Renderer::SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds)
 {
-	const sf::Vector2f mapSizePixels = { static_cast<float>(mapWidth) * 32.f, static_cast<float>(mapHeight) * 32.f };
-	const sf::Vector2f mapOffsetPixels = mapOffsetFromOrigin * 32.f;
 	const sf::Vector2f viewSize = m_cameraView.getSize();
 	const sf::Vector2f halfView = viewSize / 2.f;
 
-	const sf::Vector2f minBound = halfView - mapOffsetPixels;
-	const sf::Vector2f maxBound = mapSizePixels - halfView - mapOffsetPixels;
+	const float minX = worldBounds.position.x + halfView.x;
+	const float maxX = worldBounds.position.x + worldBounds.size.x - halfView.x;
 
-	if (mapSizePixels.x < viewSize.x)
+	const float minY = worldBounds.position.y + halfView.y;
+	const float maxY = worldBounds.position.y + worldBounds.size.y - halfView.y;
+
+	if (worldBounds.size.x < viewSize.x)
 	{
-		position.x = mapSizePixels.x / 2.f;
+		position.x = worldBounds.size.x / 2.f;
 	}
 	else
 	{
-		position.x = std::clamp(position.x, minBound.x, maxBound.x);
+		position.x = std::clamp(position.x, minX, maxX);
 	}
 
-	if (mapSizePixels.y < viewSize.y)
+	if (worldBounds.size.y < viewSize.y)
 	{
-		position.y = mapSizePixels.y / 2.f;
+		position.y = worldBounds.size.y / 2.f;
 	}
 	else
 	{
-		position.y = std::clamp(position.y, minBound.y, maxBound.y);
+		position.y = std::clamp(position.y, minY, maxY);
 	}
 
 	m_cameraView.setCenter(position);
 }
+
 
 void Renderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers)
 {

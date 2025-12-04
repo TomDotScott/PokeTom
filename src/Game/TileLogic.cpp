@@ -48,14 +48,12 @@ std::vector<TileRenderData> TileLogic::BuildRenderData(const sf::Vector2i& offse
 	std::vector <TileRenderData> renderables;
 	renderables.reserve(m_tiles.size());
 
-	const sf::Vector2f worldSpaceOffset = static_cast<sf::Vector2f>(offsetFromOrigin) * 32.f;
-
 	for (const auto& tile : m_tiles)
 	{
 		TileRenderData renderData;
 		renderData.m_GlobalID = tile.m_Definition->m_GlobalID;
 		renderData.m_LocalID = tile.m_Definition->m_LocalID;
-		renderData.m_Position = tile.m_Position - worldSpaceOffset;
+		renderData.m_Position = tile.m_Position + static_cast<sf::Vector2f>(offsetFromOrigin);
 		renderData.m_SpriteSheetResourceName = tile.m_ParentSheet->GetSpriteSheetResourceName();
 		renderData.m_LayerName = tile.m_LayerName;
 		renderData.m_ZIndex = m_zIndexes.at(tile.m_LayerName);

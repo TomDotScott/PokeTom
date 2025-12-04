@@ -1,7 +1,9 @@
 #include "WorldDefinition.h"
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <queue>
 
 #include "Level.h"
 #include "TileParser.h"
@@ -54,6 +56,23 @@ const WorldDefinition::Portal& WorldDefinition::GetPortalData(const std::string&
 const std::string& WorldDefinition::GetCurrentLevelName() const
 {
 	return m_currentLevel;
+}
+
+std::vector<std::shared_ptr<Level>> WorldDefinition::GetLevelsIntersectingRect(const sf::FloatRect& rect) const
+{
+	std::vector<std::shared_ptr<Level>> intersectingLevels;
+
+	for (const auto& [_, level] : m_levels)
+	{
+		const auto levelBounds = level->GetBounds();
+
+		if (rect.findIntersection(levelBounds) != std::nullopt)
+		{
+			intersectingLevels.emplace_back(level);
+		}
+	}
+
+	return intersectingLevels;
 }
 
 std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
@@ -113,8 +132,120 @@ bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDef
 		code = hoxml_parse(hoxml_context, content, content_length);
 	}
 
-	m_levels = levels;
-	m_levelPortals = portals;
+	if (levels.empty())
+	{
+		std::cerr << "WorldDefinition::ParseWorldDefinition - No levels parsed!\n";
+		free(buffer);
+		delete hoxml_context;
+		return false;
+	}
+
+	// If the provided starting level doesn't exist, pick the first parsed level as root
+	std::string root = m_currentLevel;
+	if (levels.find(root) == levels.end())
+	{
+		root = levels.begin()->first;
+		std::cerr << "WorldDefinition::ParseWorldDefinition - start level '" << m_currentLevel << "' not found. Using '" << root << "' as root.\n";
+	}
+
+	// BFS to determine the offsets of each of the levels (in tiles)
+	std::unordered_map<std::string, sf::Vector2i> origins;
+	std::queue<std::string> levelQueue;
+
+	origins[root] = { 0, 0 };
+	levelQueue.push(root);
+
+	while (!levelQueue.empty())
+	{
+		const std::string current = levelQueue.front();
+		levelQueue.pop();
+
+		const auto& currentLevel = levels.at(current);
+		const Level::AdjacentLevels& adjacentLevels = currentLevel->GetAdjacentLevels();
+		const sf::Vector2i& currentOrigin = origins.at(current);
+		const int curCols = static_cast<int>(currentLevel->GetNumColumns());
+		const int curRows = static_cast<int>(currentLevel->GetNumRows());
+
+		auto tryAssignNeighbor = [&](const std::string& neighbourName, const std::function<sf::Vector2i()>& computeOrigin) {
+			if (neighbourName.empty())
+			{
+				return;
+			}
+
+			if (levels.find(neighbourName) == levels.end())
+			{
+				return;
+			}
+
+			sf::Vector2i proposedOrigin = computeOrigin();
+
+			auto it = origins.find(neighbourName);
+			if (it == origins.end())
+			{
+				origins[neighbourName] = proposedOrigin;
+				levelQueue.push(neighbourName);
+			}
+			else
+			{
+				if (it->second != proposedOrigin)
+				{
+					std::cerr << "WorldDefinition::ParseWorldDefinition - placement conflict for level '" << neighbourName << "'. Existing origin: ("
+						<< it->second.x << "," << it->second.y << ") proposed: (" << proposedOrigin.x << "," << proposedOrigin.y << ").\n";
+					// Keep the existing placement (could add reconciliation logic here)
+				}
+			}
+			};
+
+		// North neighbour: it sits above current -> neighbour.origin.y = current.origin.y - neighbourRows
+		tryAssignNeighbor(adjacentLevels.m_North, [&]() -> sf::Vector2i {
+			const auto& neighbor = levels.at(adjacentLevels.m_North);
+			return { currentOrigin.x, currentOrigin.y - static_cast<int>(neighbor->GetNumRows()) };
+			});
+
+		// South neighbour: it sits below current -> neighbour.origin.y = current.origin.y + currentRows
+		tryAssignNeighbor(adjacentLevels.m_South, [&]() -> sf::Vector2i {
+			return { currentOrigin.x, currentOrigin.y + curRows };
+			});
+
+		// East neighbour: sits to the right -> neighbour.origin.x = current.origin.x + currentCols
+		tryAssignNeighbor(adjacentLevels.m_East, [&]() -> sf::Vector2i {
+			return { currentOrigin.x + curCols, currentOrigin.y };
+			});
+
+		// West neighbour: sits to the left -> neighbour.origin.x = current.origin.x - neighbourCols
+		tryAssignNeighbor(adjacentLevels.m_West, [&]() -> sf::Vector2i {
+			const auto& neighbor = levels.at(adjacentLevels.m_West);
+			return { currentOrigin.x - static_cast<int>(neighbor->GetNumColumns()), currentOrigin.y };
+			});
+	}
+
+	// Apply the computed offsets to the levels. Some levels are not connected to the root (maybe offshoots, interiors, etc...)
+	sf::Vector2i maxExtentStart(-0xFFFF, -0xFFFF);
+	for (const auto& [levelName, origin] : origins)
+	{
+		const auto& levelPtr = levels.at(levelName);
+		maxExtentStart.x = std::max<int>(origin.x * 32 + static_cast<int>(levelPtr->GetNumColumns()) * 32, maxExtentStart.x);
+		maxExtentStart.y = std::max<int>(origin.y * 32 + static_cast<int>(levelPtr->GetNumRows()) * 32, maxExtentStart.y);
+	}
+	maxExtentStart.x += 3200;
+
+	for (auto& [levelName, levelPtr] : levels)
+	{
+		if (const auto it = origins.find(levelName); it != origins.end())
+		{
+			levelPtr->SetWorldOrigin(it->second * 32);
+		}
+		else
+		{
+			levelPtr->SetWorldOrigin(maxExtentStart);
+			maxExtentStart.y += static_cast<int>(levelPtr->GetNumRows()) * 32 * 2;
+		}
+	}
+
+
+	// ALL DONE! Store the results...
+	m_levels = std::move(levels);
+	m_levelPortals = std::move(portals);
 
 	free(buffer);
 	delete hoxml_context;
@@ -219,23 +350,7 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 		return false;
 	}
 
-	// Work out the offset from the levels that are at the bottom or left of this level (hopefully they all load in order!)
-	// TODO: Work out a way of determining the offset without having to load the levels in a specific way - maybe some sort of tree structure that can update dynamically?
-	uint32_t offsetCols = 0;
-	uint32_t offsetRows = 0;
-	if (!adjacentLevels.m_South.empty())
-	{
-		const std::shared_ptr<Level>& southLevel = levels.at(adjacentLevels.m_South);
-		offsetRows = southLevel->GetOffsetFromOrigin().y + tileMapData->m_NumRows;
-	}
-
-	if (!adjacentLevels.m_West.empty())
-	{
-		const std::shared_ptr<Level>& westLevel = levels.at(adjacentLevels.m_South);
-		offsetCols = westLevel->GetOffsetFromOrigin().x + tileMapData->m_NumColumns;
-	}
-
-	levels[levelName] = std::make_shared<Level>(levelName, tileMapData, adjacentLevels, offsetRows, offsetCols);
+	levels[levelName] = std::make_shared<Level>(levelName, tileMapData, adjacentLevels);
 	return true;
 }
 

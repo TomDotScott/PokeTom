@@ -40,10 +40,9 @@ private:
 	Renderer m_renderer;
 	ScreenFader m_screenFader;
 
-	bool m_adjacentLevelLoaded;
-	sf::Vector2f m_adjacentMapOffset;
-	uint32_t m_numVisibleCols;
-	uint32_t m_numVisibleRows;
+	sf::FloatRect m_worldBounds;
+	sf::FloatRect m_lastCameraRect;
+	float m_cameraRebuildThreshold;
 
 #if !BUILD_MASTER
 	template<typename... Args>
@@ -60,9 +59,7 @@ private:
 	}
 #endif
 
-	void ChangeChunk(const std::shared_ptr<Level>& currentLevel, const std::string& adjacentLevelName, eOrientation orientation, const sf::Vector2i& playerGridPosition);
-	void BuildAdjacentLevelRenderData(const std::shared_ptr<Level>& currentLevel, const std::shared_ptr<Level>& adjacentLevel, const sf::Vector2f& newOffset);
-	void UpdateContinuousWorld();
+	void UpdateChunks();
 	void UpdateOverworld(float deltaTime);
 	void UpdateCamera(float deltaTime);
 	void CheckForPortals();

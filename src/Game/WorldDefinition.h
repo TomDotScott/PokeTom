@@ -31,6 +31,9 @@ public:
 	const Portal& GetPortalData(const std::string& levelName, const std::string& portalName);
 
 	const std::string& GetCurrentLevelName() const;
+
+	std::vector<std::shared_ptr<Level>> GetLevelsIntersectingRect(const sf::FloatRect& rect) const;
+
 	std::shared_ptr<Level> GetLevel(const std::string& name) const;
 
 	void SetCurrentLevel(const std::string& levelName);

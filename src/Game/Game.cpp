@@ -17,9 +17,9 @@ Game::Game() :
 	m_world("WorldDefinition.xml", "player_bedroom"),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
-	m_adjacentLevelLoaded(false),
-	m_numVisibleCols(m_world.GetLevel(m_world.GetCurrentLevelName())->GetNumColumns()),
-	m_numVisibleRows(m_world.GetLevel(m_world.GetCurrentLevelName())->GetNumRows())
+	m_worldBounds({ 0, 0 }, { static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.x), static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.y) }),
+	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
+	m_cameraRebuildThreshold(10.f * 32.f)
 {
 	UIMANAGER.Load("ui.xml");
 
@@ -88,102 +88,75 @@ void Game::Render(sf::RenderWindow& window) const
 #endif
 }
 
-void Game::ChangeChunk(const std::shared_ptr<Level>& currentLevel, const std::string& adjacentLevelName, const eOrientation orientation, const sf::Vector2i& playerGridPosition)
+void Game::UpdateChunks()
 {
-	if (adjacentLevelName.empty())
-	{
-		return;
-	}
+	const sf::Vector2f viewSize = m_worldBounds.size;
+	const sf::FloatRect camRect(
+		{ m_cameraPosition.x - viewSize.x * 0.5f,
+		  m_cameraPosition.y - viewSize.y * 0.5f },
+		viewSize
+	);
 
-	const auto& adjacentLevel = m_world.GetLevel(adjacentLevelName);
-
-	if (adjacentLevel == nullptr)
+	if (m_lastCameraRect.size.lengthSquared() == 0.f ||
+		(camRect.position - m_lastCameraRect.position).lengthSquared() >
+		m_cameraRebuildThreshold * m_cameraRebuildThreshold)
 	{
-		std::cerr << "Game::ChangeChunk - No level with name " << adjacentLevelName << " exists!\n";
-		return;
-	}
+		const auto visibleLevels = m_world.GetLevelsIntersectingRect(camRect);
 
-	if (m_adjacentLevelLoaded)
-	{
-		if ((orientation == eOrientation::Up && playerGridPosition.y <= -1) ||
-			(orientation == eOrientation::Down && playerGridPosition.y >= static_cast<int>(adjacentLevel->GetNumRows() - 1)) || 
-			(orientation == eOrientation::Left && playerGridPosition.x <= -1) || 
-			(orientation == eOrientation::Right && playerGridPosition.x >= static_cast<int>(adjacentLevel->GetNumColumns() - 1)))
+		std::vector<TileRenderData> renderData;
+		std::vector<TileLayerData> layerData;
+
+		sf::FloatRect mergedBounds;
+		bool first = true;
+
+		for (const auto& level : visibleLevels)
 		{
-			m_world.SetCurrentLevel(adjacentLevelName);
-		}
-		return;
-	}
+			const auto lvlRender = level->GetRenderData();
+			renderData.insert(renderData.end(), lvlRender.begin(), lvlRender.end());
 
-	sf::Vector2f adjacentLevelOffset(0.f, 0.f);
-	if (orientation == eOrientation::Up)
-	{
-		adjacentLevelOffset = static_cast<sf::Vector2f>(adjacentLevel->GetOffsetFromOrigin());
-	}
-	else if (orientation == eOrientation::Down)
-	{
-		adjacentLevelOffset = m_adjacentMapOffset;
-	}
+			const auto lvlLayers = level->GetLayers();
+			layerData.insert(layerData.end(), lvlLayers.begin(), lvlLayers.end());
 
-	BuildAdjacentLevelRenderData(currentLevel, adjacentLevel, adjacentLevelOffset);
-}
+			sf::FloatRect r = level->GetBounds();
 
-void Game::BuildAdjacentLevelRenderData(const std::shared_ptr<Level>& currentLevel, const std::shared_ptr<Level>& adjacentLevel, const sf::Vector2f& newOffset)
-{
-	const auto adjacentLevelRenderData = adjacentLevel->GetRenderData();
-	const auto currentLevelRenderData = currentLevel->GetRenderData();
+			if (first)
+			{
+				mergedBounds = r;
+				first = false;
+			}
+			else
+			{
+				// Union the rectangles
+				float minX = std::min(mergedBounds.position.x, r.position.x);
+				float minY = std::min(mergedBounds.position.y, r.position.y);
 
-	std::vector<TileRenderData> renderData;
-	renderData.insert(renderData.end(), currentLevelRenderData.begin(), currentLevelRenderData.end());
-	renderData.insert(renderData.end(), adjacentLevelRenderData.begin(), adjacentLevelRenderData.end());
+				float maxX = std::max(mergedBounds.position.x + mergedBounds.size.x,
+					r.position.x + r.size.x);
+				float maxY = std::max(mergedBounds.position.y + mergedBounds.size.y,
+					r.position.y + r.size.y);
 
-	const auto adjacentLevelLayerData = adjacentLevel->GetLayers();
-	const auto currentLevelLayerData = currentLevel->GetLayers();
-
-	std::vector<TileLayerData> layerData;
-	layerData.insert(layerData.end(), currentLevelLayerData.begin(), currentLevelLayerData.end());
-	layerData.insert(layerData.end(), adjacentLevelLayerData.begin(), adjacentLevelLayerData.end());
-
-	m_renderer.BuildBatches(renderData, layerData);
-
-	m_numVisibleRows = adjacentLevel->GetNumRows() + currentLevel->GetNumRows();
-	m_adjacentMapOffset = newOffset;
-
-	std::cout << "LOADED AND RENDERING ADJACENT LEVEL " << adjacentLevel->GetName() << "\n";
-
-	m_adjacentLevelLoaded = true;
-}
-
-void Game::UpdateContinuousWorld()
-{
-	// TODO: This is terrible, think about this properly!
-	const std::string& currentLevelName = m_world.GetCurrentLevelName();
-	const std::shared_ptr<Level>& currentLevel = m_world.GetLevel(currentLevelName);
-	const Level::AdjacentLevels& adjacentLevels = currentLevel->GetAdjacentLevels();
-	const sf::Vector2i playerGridPosition = currentLevel->GetGridPositionFromWorldPosition(m_player.GetPosition());
-
-	if (playerGridPosition.y < static_cast<int>(currentLevel->GetNumRows() / 3))
-	{
-		ChangeChunk(currentLevel, adjacentLevels.m_North, eOrientation::Up, playerGridPosition);
-	}
-	else if (playerGridPosition.y > static_cast<int>(currentLevel->GetNumRows() / 3) * 2)
-	{
-		ChangeChunk(currentLevel, adjacentLevels.m_South, eOrientation::Down, playerGridPosition);
-	}
-	else
-	{
-		if (m_adjacentLevelLoaded) {
-			LoadLevel(m_world.GetCurrentLevelName(), "", false);
+				mergedBounds = sf::FloatRect(
+					sf::Vector2f(minX, minY),
+					sf::Vector2f(maxX - minX, maxY - minY)
+				);
+			}
 		}
 
-		m_adjacentLevelLoaded = false;
+		// Update renderer data
+		m_renderer.BuildBatches(renderData, layerData);
+
+		// Update world boundary the camera clamps inside
+		m_worldBounds = mergedBounds;
+
+		m_lastCameraRect = camRect;
 	}
 }
+
 
 void Game::UpdateOverworld(const float deltaTime)
 {
 	m_player.Update(deltaTime, m_world);
-	UpdateContinuousWorld();
+	UpdateChunks();
 	UpdateCamera(deltaTime);
 	CheckForPortals();
 }
@@ -192,11 +165,7 @@ void Game::UpdateCamera(const float deltaTime)
 {
 	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
-	m_renderer.SetCameraCentre(m_cameraPosition,
-		m_numVisibleCols,
-		m_numVisibleRows,
-		m_adjacentMapOffset
-	);
+	m_renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
 }
 
 void Game::CheckForPortals()
@@ -239,10 +208,6 @@ void Game::LoadLevel(const std::string& levelName, const std::string& spawnPoint
 {
 	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
 
-	m_numVisibleRows = level->GetNumRows();
-	m_numVisibleCols = level->GetNumColumns();
-	m_adjacentMapOffset = static_cast<sf::Vector2f>(level->GetOffsetFromOrigin());
-
 	if (shouldSetPlayerPosition)
 	{
 		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
@@ -251,12 +216,7 @@ void Game::LoadLevel(const std::string& levelName, const std::string& spawnPoint
 		m_player.SetOrientation(spawnPointData.m_Orientation);
 
 		m_cameraPosition = m_player.GetPosition();
-		m_renderer.SetCameraCentre(
-			m_cameraPosition,
-			level->GetNumColumns(),
-			level->GetNumRows(),
-			m_adjacentMapOffset
-		);
+		m_renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
 	}
 
 	m_renderer.BuildBatches(level->GetRenderData(), level->GetLayers());
@@ -285,6 +245,5 @@ void Game::OnTransitionEnd()
 		std::cerr << "Game::OnTransitionEnd - Failed to transition to portal!\n";
 	}
 
-	m_adjacentLevelLoaded = false;
 	m_lastEnteredPortal = nullptr;
 }

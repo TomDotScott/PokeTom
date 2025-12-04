@@ -14,7 +14,7 @@ public:
 		std::string m_West;
 	};
 
-	explicit Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin);
+	explicit Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
 
 	const std::string& GetName() const;
 
@@ -33,16 +33,21 @@ public:
 
 	const AdjacentLevels& GetAdjacentLevels() const;
 
-	// x = Columns, y = Rows
-	const sf::Vector2i& GetOffsetFromOrigin() const;
+	// The level's top-leftmost tile coordinates in world-space
+	const sf::Vector2i& GetWorldOrigin() const;
+
+	// Called after WorldDefinition computes the offset positions
+	void SetWorldOrigin(const sf::Vector2i& tileOrigin);
+
+	sf::FloatRect GetBounds() const;
 
 private:
 	std::string m_name;
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
 
-	// x = Columns, y = Rows
-	sf::Vector2i m_offsetFromOrigin;
+	// The position of the top-left tile in world-space coordinates
+	sf::Vector2i m_worldTileOrigin;
 
 	TileLogic m_tileLogic;
 };

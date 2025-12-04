@@ -1,11 +1,13 @@
 #include "Level.h"
 
+#include <complex.h>
 
-Level::Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels, uint32_t offsetRowsFromOrigin, uint32_t offsetColumnsFromOrigin) :
+
+Level::Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
 	m_name(std::move(name)),
 	m_mapData(mapData),
 	m_adjacentLevels(std::move(adjacentLevels)),
-	m_offsetFromOrigin(std::max(static_cast<int>(offsetColumnsFromOrigin) - 1, 0), std::max(static_cast<int>(offsetRowsFromOrigin) - 1, 0)),
+	m_worldTileOrigin(0, 0),
 	m_tileLogic(m_mapData)
 {
 }
@@ -17,7 +19,7 @@ const std::string& Level::GetName() const
 
 std::vector<TileRenderData> Level::GetRenderData() const
 {
-	return m_tileLogic.BuildRenderData(m_offsetFromOrigin);
+	return m_tileLogic.BuildRenderData(m_worldTileOrigin);
 }
 
 std::vector<TileLayerData> Level::GetLayers() const
@@ -130,17 +132,31 @@ const Level::AdjacentLevels& Level::GetAdjacentLevels() const
 	return m_adjacentLevels;
 }
 
-const sf::Vector2i& Level::GetOffsetFromOrigin() const
+void Level::SetWorldOrigin(const sf::Vector2i& tileOrigin)
 {
-	return m_offsetFromOrigin;
+	m_worldTileOrigin = tileOrigin;
+}
+
+sf::FloatRect Level::GetBounds() const
+{
+	return {
+		static_cast<sf::Vector2f>(m_worldTileOrigin),
+		{ static_cast<float>(GetNumColumns()) * 32.f, static_cast<float>(GetNumRows()) * 32.f}
+	};
+}
+
+const sf::Vector2i& Level::GetWorldOrigin() const
+{
+	return m_worldTileOrigin;
 }
 
 sf::Vector2i Level::GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const
 {
-	const sf::Vector2i localPosition = static_cast<sf::Vector2i>(worldSpacePosition) + m_offsetFromOrigin * 32;
-	return {
-		localPosition.x / 32,
-		localPosition.y / 32
-	};
+	const sf::Vector2i localPosition = static_cast<sf::Vector2i>(worldSpacePosition) + m_worldTileOrigin;
+
+	// Floor/truncate to get integer tile coordinates
+	const int gx = static_cast<int>(std::floor(localPosition.x / 32.f));
+	const int gy = static_cast<int>(std::floor(localPosition.y / 32.f));
+	return { gx, gy };
 }
 
