@@ -172,7 +172,12 @@ void Player::Move(const WorldDefinition& gameWorld, const GridMovementComponent:
 		break;
 	}
 
-	const sf::Vector2f newPosition = GetPosition() + moveDirection * 32.f;
+	sf::Vector2f newPosition = GetPosition() + moveDirection * 32.f;
+
+	newPosition = {
+		std::round(newPosition.x / 32.f) * 32.f,
+		std::round(newPosition.y / 32.f) * 32.f
+	};
 
 	const auto& currentLevel = gameWorld.GetLevelAtPosition(newPosition);
 	if (currentLevel != nullptr && currentLevel->CanMoveTo(newPosition))
