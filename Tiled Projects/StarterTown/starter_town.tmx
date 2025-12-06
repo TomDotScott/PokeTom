@@ -16,7 +16,7 @@
    eJztl0EKwjAQRbMohR5AXYkLKV7AU7jsEaorlS7UE6hn8lCewpQyMMRp1WaSTGw/DKILeU0eM9MyVWqra6drr+ugS2qAsySYj7pOus6C+YGTYr6g55Ia4KSY/92fSabUtKVmmR9+G3/mHYwLT/w2/kjgt/FHAv/oD53Y/Vkx8Jv9jeppNv7k2TvnNVHqkTSftsHnc0/oO+WeX8D+ZOavQ/GH3H+qHv97M84l1v0H/Bzy/lNn7alPQsy+EIs/m5ZzkuqPea8F+o7vYMjvX/gc8Kz0GS5/unYJl+HyJxQ/V/8Jxc/lT/6D/332hra46D/1jmLuKfBbwXxPLuZXFz8Ox+yWOr++jav5tYzg/V1CRn/CZvQnbGL2p0o/+yM9lD8vOEGyVg==
   </data>
  </layer>
- <layer id="4" name="Houses" width="48" height="36">
+ <layer id="4" name="Houses" class="PLAYER_LAYER" width="48" height="36">
   <data encoding="base64" compression="zlib">
    eJzt1LURQlEQRuH7XkAruLaDa0YtuLaDazO4DqcAkhddltkz8+V/smuMpmmajA6OMUeccMbFsb3IW37XmACCCCHs2l7krTR7M8gih7yw/Q32NtFCGx1h+yfsnWKGORbC9mvf079mN/1rdtO/pknsyp++4Y4HnnjhLeR/R7izKGKII4EkUkLur8DOIkooo4IqakL2d9nZQx8DDDHCWMj+JTtXWGODLXbYC9mvaZqm/XZ1n+0F2j/2AV/ZMcA=
   </data>

@@ -43,7 +43,7 @@ void Game::Update(const float deltaTime)
 
 void Game::Render(sf::RenderWindow& window) const
 {
-	m_renderer.Render(window, m_player);
+	m_renderer.Render(window, m_player, m_world.GetLevelAtPosition(m_player.GetPosition())->GetEntityZIndex());
 
 #if BUILD_DEBUG && 0
 	sf::RectangleShape player({ 32, 32 });

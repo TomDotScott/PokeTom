@@ -17,6 +17,7 @@
          "y":0
         }, 
         {
+         "class":"PLAYER_LAYER",
          "compression":"zlib",
          "data":"eJzt2E0KwjAQhuEU3LjwOGqvJIIn8Qr+4EnbgtkEQsc2mczY94OPbrp4EiZZpAshdMKuzeX7vc78J\/X82lyOY0+Cfoz6bzOeNFb9\/dinoC+j\/mlfd0mXBD9+j\/53kN2juZ4b+0tF2\/9w7i8dq\/70bOfON\/56\/vvepn9ySfze9x9\/O780+P\/Tr7XGmr547tJ7PPbgxJ+rdb\/n+dEKfvz48eO35y\/xvoZ\/u\/4Y\/G383udH6l+zTvzbmB\/Jm6Flv\/f99+hP14Bf1+99fvC39WsE\/3J\/7l0XP378+Gv7SwQ\/fvz48ePHj7+mfwBXmx+h",
          "encoding":"base64",
@@ -50,7 +51,7 @@
          "encoding":"base64",
          "height":70,
          "id":3,
-         "name":"On top of Player",
+         "name":"OnTopOfPlayer",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -60,11 +61,11 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztziEBAAAIA7AratK\/BQXwN1uCJQAAANC30x4AAAAAAAAAAADwOSa7AGY=",
+         "data":"eJzt1jERADAMA7FMIVgA5c+iINy7ZJAQePjBVQAAADDv9vQCAID\/jo9DQD8k9ENCPyT0Q0I\/AAAAAHs9408CfA==",
          "encoding":"base64",
          "height":70,
          "id":5,
-         "name":"Top Layer",
+         "name":"AboveAll",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,

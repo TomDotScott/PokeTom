@@ -14,7 +14,7 @@
    eJwrYGBgWEsA5zMgQB4Qr2PEj3PQ1KuxMTDoM0PwBiZUnIhFfRpQfToQZ7BhqgfhNUjuIkY9srtA6pcB1S0H4hU41MMwTD0+NfRWbwDEukRifSAGAL8MQGg=
   </data>
  </layer>
- <layer id="6" name="Decor" width="12" height="10">
+ <layer id="6" name="Decor" class="PLAYER_LAYER" width="12" height="10">
   <data encoding="base64" compression="zlib">
    eJxjYKAMpDIRVvOYmYFBHkg/BdJLgeqTgDiZgL54JPYioNrFRNhDLnjEjMp/ALTrIQn2KQD1KzITVocMFpOonlwAAC+sCQQ=
   </data>

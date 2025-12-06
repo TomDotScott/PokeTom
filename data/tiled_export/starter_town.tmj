@@ -31,6 +31,7 @@
          "y":0
         }, 
         {
+         "class":"PLAYER_LAYER",
          "compression":"zlib",
          "data":"eJzt1LURQlEQRuH7XkAruLaDa0YtuLaDazO4DqcAkhddltkz8+V\/smuMpmmajA6OMUeccMbFsb3IW37XmACCCCHs2l7krTR7M8gih7yw\/Q32NtFCGx1h+yfsnWKGORbC9mvf079mN\/1rdtO\/pknsyp++4Y4HnnjhLeR\/R7izKGKII4EkUkLur8DOIkooo4IqakL2d9nZQx8DDDHCWMj+JTtXWGODLXbYC9mvaZqm\/XZ1n+0F2j\/2AV\/ZMcA=",
          "encoding":"base64",

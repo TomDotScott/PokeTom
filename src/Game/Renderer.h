@@ -37,7 +37,7 @@ public:
 	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
 	void BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers);
-	void Render(sf::RenderWindow& window, const Player& player) const;
+	void Render(sf::RenderWindow& window, const Player& player, int entityZIndex) const;
 
 private:
 	std::vector<LayerBatcher> m_layerBatchers;

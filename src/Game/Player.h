@@ -17,8 +17,6 @@ public:
 	void SetPosition(float x, float y) override;
 	void SetPosition(const sf::Vector2f& position) override;
 
-	int GetZIndex() const;
-
 	void SetOrientation(eOrientation);
 	eOrientation GetCurrentOrientation() const;
 

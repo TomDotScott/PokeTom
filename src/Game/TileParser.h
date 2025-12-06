@@ -13,6 +13,7 @@ struct TileLayerData
 	std::string m_Name;
 	std::vector<uint32_t> m_LevelData;
 	int m_ZIndex;
+	bool m_IsPlayerLayer;
 };
 
 struct PortalTrigger

@@ -85,7 +85,7 @@ void Renderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std:
 		});
 }
 
-void Renderer::Render(sf::RenderWindow& window, const Player& player) const
+void Renderer::Render(sf::RenderWindow& window, const Player& player, const int entityZIndex) const
 {
 	window.setView(m_cameraView);
 
@@ -93,7 +93,7 @@ void Renderer::Render(sf::RenderWindow& window, const Player& player) const
 	{
 		window.draw(layerBatcher.m_SpriteBatcher);
 
-		if (layerBatcher.m_ZIndex == player.GetZIndex())
+		if (layerBatcher.m_ZIndex == entityZIndex)
 		{
 			// TODO: What a HORRIBLE line of code!
 			const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(player.GetAnimator().GetDictionarySpritesheetResourceName());

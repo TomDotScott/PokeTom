@@ -1,15 +1,21 @@
 #include "Level.h"
 
-#include <complex.h>
-
-
 Level::Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
 	m_name(std::move(name)),
 	m_mapData(mapData),
 	m_adjacentLevels(std::move(adjacentLevels)),
+	m_entityZIndex(0),
 	m_worldTileOrigin(0, 0),
 	m_tileLogic(m_mapData)
 {
+	for (const auto& layer : m_mapData->m_Layers)
+	{
+		if (layer.m_IsPlayerLayer)
+		{
+			m_entityZIndex = layer.m_ZIndex;
+			break;
+		}
+	}
 }
 
 const std::string& Level::GetName() const
@@ -35,6 +41,11 @@ uint32_t Level::GetNumColumns() const
 uint32_t Level::GetNumRows() const
 {
 	return m_mapData->m_NumRows;
+}
+
+int Level::GetEntityZIndex() const
+{
+	return m_entityZIndex;
 }
 
 bool Level::IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const

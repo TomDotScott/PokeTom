@@ -411,6 +411,20 @@ bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int z
 		return false;
 	}
 
+	bool isPlayerLayer = false;
+	const auto& layerClass = layerObj.find("class");
+	if (layerClass != layerObj.end())
+	{
+		if (*layerClass == static_cast<std::string>("PLAYER_LAYER"))
+		{
+			isPlayerLayer = true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	const auto& width = layerObj["width"];
 	if (!width.is_number_integer())
 	{
@@ -433,7 +447,8 @@ bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int z
 		height,
 		width,
 		name,
-		zIndex
+		zIndex,
+		isPlayerLayer
 	};
 
 	layers.emplace_back(layer);

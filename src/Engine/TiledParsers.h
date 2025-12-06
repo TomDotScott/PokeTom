@@ -53,6 +53,7 @@ public:
 		uint32_t m_Width;
 		std::string m_Name;
 		int m_ZIndex;
+		bool m_IsPlayerLayer;
 	};
 
 	struct TileSet

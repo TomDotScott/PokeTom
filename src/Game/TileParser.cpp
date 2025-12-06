@@ -46,7 +46,7 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 			continue;
 		}
 
-		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex });
+		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex, layer.m_IsPlayerLayer });
 	}
 
 	const auto& doors = tmjParser->GetPortals();

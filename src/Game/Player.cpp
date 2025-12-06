@@ -67,13 +67,6 @@ void Player::SetPosition(const sf::Vector2f& position)
 	m_movement.SetWorldPosition(position);
 }
 
-
-int Player::GetZIndex() const
-{
-	// TODO: Integrate this with the level somehow
-	return 2;
-}
-
 void Player::SetOrientation(const eOrientation orientation)
 {
 	m_movement.SetDirection(GetDirectionFromOrientation(orientation));

@@ -24,6 +24,8 @@ public:
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
 
+	int GetEntityZIndex() const;
+
 	bool IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const;
 	bool CanMoveTo(const sf::Vector2f& worldSpacePosition) const;
 	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
@@ -45,6 +47,8 @@ private:
 	std::string m_name;
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
+
+	int m_entityZIndex;
 
 	// The position of the top-left tile in world-space coordinates
 	sf::Vector2i m_worldTileOrigin;
