@@ -13,11 +13,9 @@ ScreenFader::ScreenFader() :
 
 void ScreenFader::Update(const float deltaTime)
 {
-	const float fullDuration = m_duration + m_holdTime;
-
 	m_progress += deltaTime;
 
-	m_alpha = maths::Lerp(0, 255, std::clamp(m_progress / fullDuration, 0.0f, 1.f));
+	m_alpha = maths::Lerp(0, 255, std::clamp(m_progress / m_duration, 0.0f, 1.f));
 
 	if (m_fadeType == FadeType::FadeIn)
 	{

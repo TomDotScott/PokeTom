@@ -39,6 +39,9 @@ void Game::Update(const float deltaTime)
 		UpdateOverworld(deltaTime);
 		break;
 	}
+
+	UpdateChunks();
+	UpdateCamera(deltaTime);
 }
 
 void Game::Render(sf::RenderWindow& window) const
@@ -64,9 +67,10 @@ void Game::Render(sf::RenderWindow& window) const
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
 		});
 
-	const uint8_t screenAlpha = m_screenFader.GetScreenAlpha();
-	if (screenAlpha != 255)
+	if (m_screenFader.FadeInProgress())
 	{
+		const uint8_t screenAlpha = m_screenFader.GetScreenAlpha();
+
 		sf::RectangleShape screenFade{ static_cast<sf::Vector2f>(window.getSize()) };
 		screenFade.setFillColor({ 0, 0, 0, screenAlpha });
 		window.draw(screenFade);
@@ -157,8 +161,6 @@ void Game::UpdateChunks()
 void Game::UpdateOverworld(const float deltaTime)
 {
 	m_player.Update(deltaTime, m_world);
-	UpdateChunks();
-	UpdateCamera(deltaTime);
 	CheckForPortals();
 }
 
@@ -201,8 +203,8 @@ void Game::UpdateScreenFade(const float deltaTime)
 		// If we have finished the fade out, fade back in again
 		if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeOut)
 		{
-			m_screenFader.StartFade(ScreenFader::FadeType::FadeIn, 1.f, 0.5f);
 			OnTransitionEnd();
+			m_screenFader.StartFade(ScreenFader::FadeType::FadeIn, 1.f, 0.5f);
 		}
 		else if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeIn)
 		{
@@ -223,7 +225,8 @@ void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnP
 		m_player.SetOrientation(spawnPointData.m_Orientation);
 
 		m_cameraPosition = m_player.GetPosition();
-		m_renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
+
+		m_worldBounds = level->GetBounds();
 	}
 }
 

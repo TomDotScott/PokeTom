@@ -11,7 +11,7 @@ Renderer::Renderer() :
 {
 }
 
-void Renderer::SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds)
+void Renderer::SetCameraCentre(sf::Vector2f position, const sf::FloatRect worldBounds)
 {
 	const sf::Vector2f viewSize = m_cameraView.getSize();
 	const sf::Vector2f halfView = viewSize / 2.f;
@@ -24,7 +24,7 @@ void Renderer::SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds)
 
 	if (worldBounds.size.x < viewSize.x)
 	{
-		position.x = worldBounds.size.x / 2.f;
+		position.x = worldBounds.position.x + worldBounds.size.x * 0.5f;
 	}
 	else
 	{
@@ -33,7 +33,7 @@ void Renderer::SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds)
 
 	if (worldBounds.size.y < viewSize.y)
 	{
-		position.y = worldBounds.size.y / 2.f;
+		position.y = worldBounds.position.y + worldBounds.size.y * 0.5f;
 	}
 	else
 	{
