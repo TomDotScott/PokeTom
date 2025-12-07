@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
 	GRAPHIC_SETTINGS.SetScreenSize(window.getSize());
 
-	// window.setFramerateLimit(60);
+	window.setVerticalSyncEnabled(true);
 
 	Mouse::Get().SetRelativeWindow(&window);
 
