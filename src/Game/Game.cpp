@@ -17,7 +17,7 @@ Game::Game() :
 	m_world("WorldDefinition.xml"),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
-	m_worldBounds({ 0, 0 }, { static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.x), static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.y) }),
+	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
 	m_cameraRebuildThreshold(10.f * 32.f)
 {
@@ -103,19 +103,20 @@ void Game::UpdateChunks()
 	{
 		const auto visibleLevels = m_world.GetLevelsIntersectingRect(camRect);
 
-		std::vector<TileRenderData> renderData;
-		std::vector<TileLayerData> layerData;
+		std::unordered_map<std::string, LevelRenderData> renderData;
 
 		sf::FloatRect mergedBounds;
 		bool first = true;
 
 		for (const auto& level : visibleLevels)
 		{
-			const auto lvlRender = level->GetRenderData();
-			renderData.insert(renderData.end(), lvlRender.begin(), lvlRender.end());
+			const auto& levelName = level->GetName();
+			renderData[levelName] = LevelRenderData();
 
-			const auto lvlLayers = level->GetLayers();
-			layerData.insert(layerData.end(), lvlLayers.begin(), lvlLayers.end());
+			auto& levelRenderData = renderData.at(levelName);
+
+			levelRenderData.m_TileRenderData = level->GetRenderData();
+			levelRenderData.m_TileLayerData = level->GetLayers();
 
 			sf::FloatRect r = level->GetBounds();
 
@@ -143,7 +144,7 @@ void Game::UpdateChunks()
 		}
 
 		// Update renderer data
-		m_renderer.BuildBatches(renderData, layerData);
+		m_renderer.BuildBatches(renderData);
 
 		// Update world boundary the camera clamps inside
 		m_worldBounds = mergedBounds;
@@ -224,8 +225,6 @@ void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnP
 		m_cameraPosition = m_player.GetPosition();
 		m_renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
 	}
-
-	m_renderer.BuildBatches(level->GetRenderData(), level->GetLayers());
 }
 
 void Game::TransitionLevel()

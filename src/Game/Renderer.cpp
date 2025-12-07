@@ -44,38 +44,49 @@ void Renderer::SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds)
 }
 
 
-void Renderer::BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers)
+void Renderer::BuildBatches(const std::unordered_map<std::string, LevelRenderData>& visibleLevelRenderData)
 {
 	m_layerBatchers.clear();
 
-	std::unordered_map<std::string, std::unordered_map<std::string, std::vector<sf::Sprite>>> buckets;
+	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string
+		{
+			return levelName + "#" + layerName;
+		};
 
-	for (const auto& tile : tiles)
+	std::unordered_map<std::string, std::unordered_map<std::string, std::vector<sf::Sprite>>> buckets;
+	for (const auto& [levelName, renderData] : visibleLevelRenderData)
 	{
-		sf::Sprite sprite(*TEXTUREMANAGER.GetTexture(tile.m_SpriteSheetResourceName));
-		sprite.setTextureRect(tile.m_TextureRect);
-		sprite.setPosition(tile.m_Position);
-		buckets[tile.m_LayerName][tile.m_SpriteSheetResourceName].push_back(sprite);
+		for (const auto& tile : renderData.m_TileRenderData)
+		{
+			sf::Sprite sprite(*TEXTUREMANAGER.GetTexture(tile.m_SpriteSheetResourceName));
+			sprite.setTextureRect(tile.m_TextureRect);
+			sprite.setPosition(tile.m_Position);
+			buckets[generateLayerName(levelName, tile.m_LayerName)][tile.m_SpriteSheetResourceName].push_back(sprite);
+		}
 	}
 
-	for (auto& [layerName, textureGroup] : buckets)
+	for (const auto& [levelName, renderData] : visibleLevelRenderData)
 	{
-		const auto& layerData = std::find_if(layers.begin(), layers.end(), [&](const TileLayerData& a)
+		for (auto& [layerName, textureGroup] : buckets)
+		{
+			const std::vector<TileLayerData>& tileLayerData = renderData.m_TileLayerData;
+
+			const auto& layerData = std::find_if(renderData.m_TileLayerData.begin(), renderData.m_TileLayerData.end(), [&](const TileLayerData& a)
+				{
+					return generateLayerName(levelName, a.m_Name) == layerName;
+				});
+
+			if (layerData == tileLayerData.end())
 			{
-				return a.m_Name == layerName;
-			});
+				continue;
+			}
 
-		if (layerData == layers.end())
-		{
-			std::cout << "Renderer::BuildBatcher: Error finding layer data for layerName " << layerName << "\n";
-			continue;
-		}
-
-		for (auto& [texture, sprites] : textureGroup)
-		{
-			SpriteBatcher batcher(texture);
-			batcher.BatchSprites(sprites);
-			m_layerBatchers.push_back({ layerName, layerData->m_ZIndex, std::move(batcher) });
+			for (auto& [texture, sprites] : textureGroup)
+			{
+				SpriteBatcher batcher(texture);
+				batcher.BatchSprites(sprites);
+				m_layerBatchers.push_back({ layerName, layerData->m_ZIndex, std::move(batcher) });
+			}
 		}
 	}
 

@@ -28,6 +28,12 @@ struct LayerBatcher
 	SpriteBatcher m_SpriteBatcher;
 };
 
+struct LevelRenderData
+{
+	std::vector<TileRenderData> m_TileRenderData;
+	std::vector<TileLayerData> m_TileLayerData;
+};
+
 class Renderer
 {
 public:
@@ -36,7 +42,7 @@ public:
 	// Sets the position of the camera view, clamped to the width and height of the map
 	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
-	void BuildBatches(const std::vector<TileRenderData>& tiles, const std::vector<TileLayerData>& layers);
+	void BuildBatches(const std::unordered_map<std::string, LevelRenderData>& visibleLevelRenderData);
 	void Render(sf::RenderWindow& window, const Player& player, int entityZIndex) const;
 
 private:
