@@ -10,6 +10,8 @@
 #include "../Engine/Animation/AnimDef.h"
 #include "../Engine/Input/Keyboard.h"
 
+static constexpr const char* START_LEVEL = "player_bedroom";
+
 Game::Game() :
 	Updateable(),
 	m_state(eGameState::Overworld),
@@ -240,7 +242,7 @@ void Game::OnTransitionEnd()
 {
 	if (m_lastEnteredPortal == nullptr)
 	{
-		RespawnPlayer("starter_town", "player_spawn", true);
+		RespawnPlayer(START_LEVEL, "player_spawn", true);
 		return;
 	}
 
