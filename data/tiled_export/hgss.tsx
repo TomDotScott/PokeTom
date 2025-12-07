@@ -10438,7 +10438,7 @@
  <tile id="1159">
   <properties>
    <property name="isBarrier" type="bool" value="true"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
@@ -10582,7 +10582,7 @@
  <tile id="1175">
   <properties>
    <property name="isBarrier" type="bool" value="true"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>

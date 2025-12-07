@@ -111,8 +111,8 @@
  </tile>
  <tile id="12">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
@@ -120,8 +120,8 @@
  </tile>
  <tile id="13">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
@@ -129,8 +129,8 @@
  </tile>
  <tile id="14">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
@@ -138,8 +138,8 @@
  </tile>
  <tile id="15">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
@@ -147,8 +147,8 @@
  </tile>
  <tile id="16">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
@@ -156,8 +156,8 @@
  </tile>
  <tile id="17">
   <properties>
-   <property name="isBarrier" type="bool" value="false"/>
-   <property name="isBreakable" type="bool" value="false"/>
+   <property name="isBarrier" type="bool" value="true"/>
+   <property name="isBreakable" type="bool" value="true"/>
    <property name="isDoor" type="bool" value="false"/>
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
