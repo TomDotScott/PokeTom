@@ -2,7 +2,12 @@
 <WorldDefinition>
   <Level id="starter_town" tmj="tiled_export\\starter_town.tmj" north="route_1" south="" east="" west="">
     <Portal id="door_player_house" targetLevel="player_house" targetSpawnPoint="front_door_spawn"/>
+    <Portal id="door_rival_house" targetLevel="rival_house" targetSpawnPoint="front_door_spawn"/>
     <Portal id="lab_door" targetLevel="starter_town_lab" targetSpawnPoint="spawn"/>
+  </Level>
+
+  <Level id="rival_house" tmj="tiled_export\\rival_house.tmj" north="" south="" east="" west="">
+    <Portal id="door_exit" targetLevel="starter_town" targetSpawnPoint="rival_house_exit"/>
   </Level>
 
   <Level id="player_house" tmj="tiled_export\\player_house.tmj" north="" south="" east="" west="">

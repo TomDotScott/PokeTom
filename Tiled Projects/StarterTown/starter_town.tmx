@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="17">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="19">
  <editorsettings>
   <export target="../../data/tiled_export/starter_town.tmj" format="json"/>
  </editorsettings>
@@ -53,6 +53,16 @@
    </properties>
   </object>
   <object id="16" name="lab_exit" type="SpawnPoint" x="608" y="800" width="32" height="32">
+   <properties>
+    <property name="Orientation" value="Down"/>
+   </properties>
+  </object>
+  <object id="17" name="door_rival_house" type="Portal" x="1120" y="512" width="32" height="32">
+   <properties>
+    <property name="Orientation" value="Up"/>
+   </properties>
+  </object>
+  <object id="18" name="rival_house_exit" type="SpawnPoint" x="1120" y="544" width="32" height="32">
    <properties>
     <property name="Orientation" value="Down"/>
    </properties>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="12" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="15" nextobjectid="9">
+ <editorsettings>
+  <export target="../../data/tiled_export/rival_house.tmj" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../../data/tiled_export/interiors.tsx"/>
+ <layer id="1" name="Background" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJzLZWBgWIuGc6EYXTwfiPOQ5AnhHCqpzyJR/Soau2cg1RsAsS4Q6+FRpwNVow/EAABAM9o=
+  </data>
+ </layer>
+ <layer id="2" name="Floor" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAd6DEyMBhBMYiNLI6M4eLMqBgGNjChYlzqYeYRqx5dHbp6GJ9U9YQwvdSj63vGzsDwgh27OgCFui1Z
+  </data>
+ </layer>
+ <layer id="3" name="Decor" class="PLAYER_LAYER" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAMKCKxU5kYGJKAOJkJwoaBBUBcwsjAUAbEiUjqlwLVLALixUwQNrVBDBI7FomdxAjB6GAOEnsuBfYmMDMwPAOa/wLkX2YKDKICAADQWAuM
+  </data>
+ </layer>
+ <layer id="4" name="On Top of Player" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxkAAAHgAAE=
+  </data>
+ </layer>
+ <layer id="5" name="Top Layer" width="12" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxkAAAHgAAE=
+  </data>
+ </layer>
+ <objectgroup id="7" name="Doors">
+  <object id="1" name="door_exit" type="Portal" x="160" y="288" width="64" height="32">
+   <properties>
+    <property name="Orientation" value="Down"/>
+   </properties>
+  </object>
+  <object id="7" name="front_door_spawn" type="SpawnPoint" x="160" y="288" width="32" height="32">
+   <properties>
+    <property name="Orientation" value="Up"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
