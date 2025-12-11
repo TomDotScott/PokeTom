@@ -83,4 +83,9 @@ Properties/launchSettings.json
 # Ignore generated SFML folder
 build_sfmldb/
 Lib/SFML/
+
+# Ignore generated sol2 folder
+Lib/sol2
+
+# Ignore all the auto-generated code
 src/Engine/CodeGen/
