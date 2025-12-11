@@ -19,6 +19,11 @@ int main(int argc, char** argv)
 {
 	std::cout << "zlib version: " << zlibVersion() << "\n";
 
+	sol::state lua;
+	lua.open_libraries(sol::lib::base);
+
+	lua.script("print('Hello, World!!!')");
+
 	/*
 	sf::RenderWindow window(
 #if !BUILD_MASTER
