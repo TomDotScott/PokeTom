@@ -3,7 +3,9 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Sharpmake;
 
+
 [module: Sharpmake.Include("Constants.cs")]
+[module: Sharpmake.Include("Lib/lua/lua.sharpmake.cs")]
 [module: Sharpmake.Include("Pokeclone.Sharpmake.cs")]
 
 public static class Main

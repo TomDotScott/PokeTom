@@ -9,6 +9,9 @@
 #include <iostream>
 #include <zlib.h>
 
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+
 GraphicSettings GRAPHIC_SETTINGS{};
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
 
@@ -16,6 +19,7 @@ int main(int argc, char** argv)
 {
 	std::cout << "zlib version: " << zlibVersion() << "\n";
 
+	/*
 	sf::RenderWindow window(
 #if !BUILD_MASTER
 		sf::VideoMode({ 768, 576 }),
@@ -68,4 +72,5 @@ int main(int argc, char** argv)
 
 		window.display();
 	}
+	*/
 }
