@@ -4,8 +4,17 @@ setlocal
 :: ----------------------
 :: Paths
 :: ----------------------
-set SFML_DIR=%CD%\Lib\SFML
-set BUILD_DIR=%CD%\build_sfmldb
+if not "%~1"=="" (
+    set SFML_DIR=%~1
+) else (
+    set SFML_DIR=%CD%\Lib\SFML
+)
+
+if not "%~2"=="" (
+    set BUILD_DIR=%~2
+) else (
+    set BUILD_DIR=%CD%\build_sfmldb
+)
 
 set SOL2_DIR=%CD%\Lib\sol2
 set SOL2_SINGLE_HEADER=%CD%\Lib\sol2\single

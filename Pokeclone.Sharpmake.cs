@@ -95,10 +95,12 @@ public class PokeClone : Project
             }
         }
 
-        // ZLib paths
+        // Zlib must be linked statically to avoid a zlib.dll runtime dependency.
+        // Do NOT switch to zlib.lib (dynamic import lib) as this will cause 0xc000007b
+        // on machines where zlib.dll is not present or is the wrong architecture.
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "ZLib", "include"));
         conf.LibraryPaths.Add(Path.Combine(Constants.LIBS_PATH, "ZLib", "lib"));
-        conf.LibraryFiles.Add("zlib.lib");
+        conf.LibraryFiles.Add("zlibstatic.lib");
 
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "nlohmann"));
 
