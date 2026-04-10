@@ -2,8 +2,13 @@
 
 #include <iostream>
 
-
-GridMovementComponent::GridMovementComponent(const float tileSize, const float walkTilesPerSecond, const float sprintTilesPerSecond) :
+GridMovementComponent::GridMovementComponent(
+	Entity* owner,
+	const float tileSize,
+	const float walkTilesPerSecond,
+	const float sprintTilesPerSecond
+) :
+	m_owningEntity(owner),
 	m_previousDirection(eDirection::None),
 	m_currentDirection(eDirection::None),
 	m_tileSize(tileSize),
@@ -11,6 +16,7 @@ GridMovementComponent::GridMovementComponent(const float tileSize, const float w
 	m_sprintSpeed(sprintTilesPerSecond),
 	m_isSprinting(false),
 	m_progress(0.f),
+	m_wasMoving(false),
 	m_isMoving(false)
 {
 }
@@ -43,7 +49,11 @@ void GridMovementComponent::Move(const eDirection direction)
 	}
 
 	SetDirection(direction);
-	StartMove(dir);
+
+	if (m_canMove && m_canMove(direction))
+	{
+		StartMove(dir);
+	}
 }
 
 void GridMovementComponent::SetDirection(const eDirection direction)
@@ -52,12 +62,12 @@ void GridMovementComponent::SetDirection(const eDirection direction)
 	m_currentDirection = direction;
 }
 
-GridMovementComponent::eDirection GridMovementComponent::GetCurrentDirection() const
+eDirection GridMovementComponent::GetCurrentDirection() const
 {
 	return m_currentDirection;
 }
 
-GridMovementComponent::eDirection GridMovementComponent::GetPreviousDirection() const
+eDirection GridMovementComponent::GetPreviousDirection() const
 {
 	return m_previousDirection;
 }
@@ -126,6 +136,26 @@ void GridMovementComponent::SetSprinting(const bool isSprinting)
 bool GridMovementComponent::IsSprinting() const
 {
 	return m_isSprinting;
+}
+
+eOrientation GridMovementComponent::GetCurrentOrientation() const
+{
+	if (IsMoving())
+	{
+		return GetOrientationFromDirection(GetCurrentDirection());
+	}
+
+	if (GetPreviousDirection() == eDirection::None)
+	{
+		return GetOrientationFromDirection(GetCurrentDirection());
+	}
+
+	return GetOrientationFromDirection(GetPreviousDirection());
+}
+
+void GridMovementComponent::SetCanMoveCallback(can_move_func callback)
+{
+	m_canMove = std::move(callback);
 }
 
 void GridMovementComponent::StartMove(const sf::Vector2i& dir)

@@ -1,13 +1,16 @@
 #include "Player.h"
 
+#include "../Engine/Asserts.h"
 #include "../Engine/CodeGen/Resources.hpp"
 #include "../Engine/Globals.h"
+#include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Input/Keyboard.h"
 
 
-Player::Player(const WorldDefinition* const gameWorld) :
-	Entity(gameWorld, EntityAnimation{ GET_ANIMATION_PATH("PLAYER_BOY"), EntityAnimation::IDLE_DOWN })
+Player::Player()
 {
+	AddComponent<GridMovementComponent>(this, 32.f, 3.f, 6.5f);
+	AddComponent<EntityAnimationComponent>(this, GET_ANIMATION_PATH("PLAYER_BOY"), EntityAnimationComponent::eAnimationName::IDLE_DOWN);
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
 
@@ -22,27 +25,35 @@ void Player::Update(const float deltaTime)
 	// Update inputs
 	m_mapper.Update();
 
-	if (!m_movement.IsMoving())
+	GridMovementComponent* movement = GetComponent<GridMovementComponent>();
+	ASSERT_MSG(movement != nullptr, "No GridMovementComponent attached to the Player!");
+
+	if (!movement->IsMoving())
 	{
 		if (m_mapper.IsButtonDown(UP))
 		{
-			Move(GridMovementComponent::eDirection::North);
+			movement->Move(eDirection::North);
 		}
 		else if (m_mapper.IsButtonDown(DOWN))
 		{
-			Move(GridMovementComponent::eDirection::South);
+			movement->Move(eDirection::South);
 		}
 		else if (m_mapper.IsButtonDown(LEFT))
 		{
-			Move(GridMovementComponent::eDirection::West);
+			movement->Move(eDirection::West);
 		}
 		else if (m_mapper.IsButtonDown(RIGHT))
 		{
-			Move(GridMovementComponent::eDirection::East);
+			movement->Move(eDirection::East);
 		}
 	}
 
-	m_movement.SetSprinting(m_mapper.IsButtonDown(SPRINT));
+	movement->SetSprinting(m_mapper.IsButtonDown(SPRINT));
 
-	UpdateInternal(deltaTime);
+	Entity::Update(deltaTime);
+}
+
+void Player::SetCanMoveCallback(const can_move_func& callback)
+{
+	GetComponent<GridMovementComponent>()->SetCanMoveCallback(callback);
 }

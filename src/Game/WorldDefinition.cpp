@@ -7,6 +7,7 @@
 
 #include "Level.h"
 #include "TileParser.h"
+#include "../Engine/Entity.h"
 
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
@@ -83,6 +84,45 @@ std::shared_ptr<Level> WorldDefinition::GetLevelAtPosition(const sf::Vector2f& p
 const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const std::string& levelName) const
 {
 	return GetLevel(levelName)->GetAdjacentLevels();
+}
+
+bool WorldDefinition::CanMoveTo(const Entity* entity, const eDirection direction) const
+{
+	const GridMovementComponent* entityMovement = entity->GetComponent<GridMovementComponent>();
+	if (entityMovement == nullptr)
+	{
+		return false;
+	}
+
+	sf::Vector2f moveDirection(0, 0);
+
+	switch (direction)
+	{
+	case eDirection::North:
+		moveDirection.y -= 1;
+		break;
+	case eDirection::South:
+		moveDirection.y += 1;
+		break;
+	case eDirection::West:
+		moveDirection.x -= 1;
+		break;
+	case eDirection::East:
+		moveDirection.x += 1;
+		break;
+	case eDirection::None:
+		break;
+	}
+
+	sf::Vector2f newPosition = entityMovement->GetWorldPosition() + moveDirection * 32.f;
+
+	newPosition = {
+		std::round(newPosition.x / 32.f) * 32.f,
+		std::round(newPosition.y / 32.f) * 32.f
+	};
+
+	const auto& currentLevel = GetLevelAtPosition(newPosition);
+	return currentLevel != nullptr && currentLevel->CanMoveTo(newPosition);
 }
 
 bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDefinitionFilepath)

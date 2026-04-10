@@ -5,6 +5,7 @@
 #include "../Engine/Entity.h"
 #include "../Engine/Globals.h"
 #include "../Engine/TextureManager.h"
+#include "../Engine/Animation/AnimationComponent.h"
 
 Renderer::Renderer() :
 	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
@@ -48,9 +49,9 @@ void Renderer::BuildBatches(const std::unordered_map<std::string, LevelRenderDat
 {
 	m_layerBatchers.clear();
 
-	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string{
+	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string {
 		return levelName + "#" + layerName;
-	};
+		};
 
 	std::unordered_map<std::string, std::unordered_map<std::string, std::vector<sf::Sprite>>> buckets;
 	for (const auto& [levelName, renderData] : visibleLevelRenderData)
@@ -70,9 +71,9 @@ void Renderer::BuildBatches(const std::unordered_map<std::string, LevelRenderDat
 		{
 			const std::vector<TileLayerData>& tileLayerData = renderData.m_TileLayerData;
 
-			const auto& layerData = std::find_if(renderData.m_TileLayerData.begin(), renderData.m_TileLayerData.end(), [&](const TileLayerData& a){
+			const auto& layerData = std::find_if(renderData.m_TileLayerData.begin(), renderData.m_TileLayerData.end(), [&](const TileLayerData& a) {
 				return generateLayerName(levelName, a.m_Name) == layerName;
-			});
+				});
 
 			if (layerData == tileLayerData.end())
 			{
@@ -88,9 +89,9 @@ void Renderer::BuildBatches(const std::unordered_map<std::string, LevelRenderDat
 		}
 	}
 
-	std::sort(m_layerBatchers.begin(), m_layerBatchers.end(), [](const LayerBatcher& a, const LayerBatcher& b){
+	std::sort(m_layerBatchers.begin(), m_layerBatchers.end(), [](const LayerBatcher& a, const LayerBatcher& b) {
 		return a.m_ZIndex < b.m_ZIndex;
-	});
+		});
 }
 
 void Renderer::Render(sf::RenderWindow& window, const std::vector<std::shared_ptr<Entity>>& entities, const int entityZIndex) const
@@ -105,18 +106,24 @@ void Renderer::Render(sf::RenderWindow& window, const std::vector<std::shared_pt
 		{
 			for (const auto& entity : entities)
 			{
+				const EntityAnimationComponent* animation = entity->GetComponent<EntityAnimationComponent>();
+				if (animation == nullptr)
+				{
+					continue;
+				}
+
 				// TODO: What a HORRIBLE line of code!
-				const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(entity->GetAnimator().GetDictionarySpritesheetResourceName());
+				const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(animation->GetAnimator().GetDictionarySpritesheetResourceName());
 
 				// TODO: Come up with a proper way to render all the Entities in the level
 				// TODO: Make this generic and reusable - everything has walking animations
 				sf::Sprite playerSprite(animatedPlayerTexture);
-				const AnimationFrame& currentFrame = entity->GetAnimator().GetCurrentFrame();
+				const AnimationFrame& currentFrame = animation->GetAnimator().GetCurrentFrame();
 
 				playerSprite.setTextureRect({
 					{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
 					{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
-				});
+					});
 
 				playerSprite.setOrigin({ playerSprite.getLocalBounds().size.x / 2, playerSprite.getLocalBounds().size.y / 2 });
 				playerSprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });

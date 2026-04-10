@@ -1,23 +1,27 @@
 #ifndef GRIDMOVEMENTCOMPONENT_H
 #define GRIDMOVEMENTCOMPONENT_H
+#include <functional>
 #include <SFML/System/Vector2.hpp>
 
-#include "Orientation.h"
-#include "../Engine/Updateable.h"
+#include "Entity.h"
+#include "../Engine/Orientation.h"
+#include "../Engine/IUpdateable.h"
 
-class GridMovementComponent : Updateable
+enum class eDirection
+{
+	None = -1,
+	North,
+	South,
+	West,
+	East
+};
+
+typedef std::function<bool(eDirection dir)> can_move_func;
+
+class GridMovementComponent : public IUpdateable
 {
 public:
-	enum class eDirection
-	{
-		None = -1,
-		North,
-		South,
-		West,
-		East
-	};
-
-	GridMovementComponent(float tileSize, float walkTilesPerSecond, float sprintTilesPerSecond);
+	GridMovementComponent(Entity* owner, float tileSize, float walkTilesPerSecond, float sprintTilesPerSecond);
 
 	void Move(eDirection direction);
 
@@ -39,7 +43,12 @@ public:
 	void SetSprinting(bool isSprinting);
 	bool IsSprinting() const;
 
+	eOrientation GetCurrentOrientation() const;
+
+	void SetCanMoveCallback(can_move_func callback);
+
 private:
+	Entity* m_owningEntity;
 	sf::Vector2f m_startPos;
 	sf::Vector2f m_endPos;
 	sf::Vector2f m_worldPos;
@@ -58,20 +67,22 @@ private:
 
 	bool m_isMoving;
 
+	can_move_func m_canMove;
+
 	void StartMove(const sf::Vector2i& dir);
 };
 
-inline eOrientation GetOrientationFromDirection(const GridMovementComponent::eDirection direction)
+inline eOrientation GetOrientationFromDirection(const eDirection direction)
 {
 	switch (direction)
 	{
-	case GridMovementComponent::eDirection::North:
+	case eDirection::North:
 		return eOrientation::Up;
-	case GridMovementComponent::eDirection::South:
+	case eDirection::South:
 		return eOrientation::Down;
-	case GridMovementComponent::eDirection::West:
+	case eDirection::West:
 		return eOrientation::Left;
-	case GridMovementComponent::eDirection::East:
+	case eDirection::East:
 		return eOrientation::Right;
 	default:
 		break;
@@ -80,23 +91,23 @@ inline eOrientation GetOrientationFromDirection(const GridMovementComponent::eDi
 	return eOrientation::Down;
 }
 
-inline GridMovementComponent::eDirection GetDirectionFromOrientation(const eOrientation orientation)
+inline eDirection GetDirectionFromOrientation(const eOrientation orientation)
 {
 	switch (orientation)
 	{
 	case eOrientation::Up:
-		return GridMovementComponent::eDirection::North;
+		return eDirection::North;
 	case eOrientation::Down:
-		return GridMovementComponent::eDirection::South;
+		return eDirection::South;
 	case eOrientation::Left:
-		return GridMovementComponent::eDirection::West;
+		return eDirection::West;
 	case eOrientation::Right:
-		return GridMovementComponent::eDirection::East;
+		return eDirection::East;
 	default:
 		break;
 	}
 
-	return GridMovementComponent::eDirection::None;
+	return eDirection::None;
 }
 
 #endif

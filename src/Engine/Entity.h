@@ -1,75 +1,61 @@
 #ifndef ENTITY_H
 #define ENTITY_H
-#include "../Game/GridMovementComponent.h"
-#include "../Game/WorldDefinition.h"
-#include "Animation/AnimationPlayer.h"
 #include "Gameobject.h"
+#include "IUpdateable.h"
+#include "Orientation.h"
+#include "Animation/AnimationPlayer.h"
 
 
-struct EntityAnimation
-{
-	enum eAnimationName
-	{
-		IDLE_UP,
-		IDLE_DOWN,
-		IDLE_LEFT,
-		IDLE_RIGHT,
-
-		WALK_UP,
-		WALK_DOWN,
-		WALK_LEFT,
-		WALK_RIGHT,
-
-		RUN_UP,
-		RUN_DOWN,
-		RUN_LEFT,
-		RUN_RIGHT,
-	};
-
-	EntityAnimation(const std::string_view& animationPath, eAnimationName initialAnimation);
-	void PlayAnimation(bool forceRestart);
-
-	eAnimationName AnimationName;
-	AnimationPlayer Player;
-
-	static std::string_view GetAnimationName(eAnimationName state);
-};
-
-
-class Entity : public GameObject
+class Entity : public GameObject, public IUpdateable
 {
 public:
-	Entity(const WorldDefinition* gameWorld, EntityAnimation animation);
+	Entity();
+	Entity(const sf::Vector2f& position);
 
-	virtual void Update(float deltaTime);
+	void Update(float deltaTime) override;
+	void Render(sf::RenderWindow& window);
 
-	const AnimationPlayer& GetAnimator() const;
+	void SetPosition(const sf::Vector2f& position);
 
-	void SetPosition(float x, float y) override;
-	void SetPosition(const sf::Vector2f& position) override;
+	template<typename T>
+	T* GetComponent()
+	{
+		for (auto& c : m_components)
+		{
+			if (T* cast = dynamic_cast<T*>(c.get()))
+			{
+				return cast;
+			}
+		}
 
-	void SetOrientation(eOrientation orientation);
-	eOrientation GetCurrentOrientation() const;
+		return nullptr;
+	}
 
-	void Move(GridMovementComponent::eDirection direction);
+	template<typename T>
+	const T* GetComponent() const
+	{
+		for (const auto& c : m_components)
+		{
+			if (const T* cast = dynamic_cast<const T*>(c.get()))
+			{
+				return cast;
+			}
+		}
 
-	bool CanMove(GridMovementComponent::eDirection direction) const;
+		return nullptr;
+	}
 
-protected:
-	// Needs to be called in Update() in all children. TODO: is there a way to ensure this?
-	void UpdateInternal(float deltaTime);
-
-	const WorldDefinition* const m_world;
-	GridMovementComponent m_movement;
-
-	EntityAnimation m_animation;
+	template<typename T, typename ...Args>
+	T& AddComponent(Args&&... args)
+	{
+		auto component = std::make_unique<T>(std::forward<Args>(args)...);
+		T& ref = *component;
+		m_components.emplace_back(std::move(component));
+		return ref;
+	}
 
 private:
-	sf::Vector2f GetNewGridPosition(GridMovementComponent::eDirection direction) const;
+	std::vector<std::unique_ptr<IUpdateable>> m_components;
 
-	static EntityAnimation::eAnimationName GetWalkAnimation(eOrientation orientation);
-	static EntityAnimation::eAnimationName GetIdleAnimation(eOrientation orientation);
-	static EntityAnimation::eAnimationName GetSprintAnimation(eOrientation orientation);
 };
-
 #endif

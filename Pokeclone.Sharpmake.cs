@@ -67,6 +67,7 @@ public class PokeClone : Project
         conf.ProjectPath = $"build_{target.DevEnv}";
 
         conf.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
+        conf.Options.Add(Options.Vc.Compiler.RTTI.Enable);
 
         conf.AddPublicDependency<LuaProject>(target);
 

@@ -1,17 +1,16 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "GridMovementComponent.h"
-#include "Level.h"
-#include "WorldDefinition.h"
 #include "../Engine/Entity.h"
 #include "../Engine/Input/InputMapper.h"
+#include "../Engine/GridMovementComponent.h"
 
 class Player final : public Entity
 {
 public:
-	Player(const WorldDefinition* gameWorld);
+	Player();
 
 	void Update(float deltaTime) override;
+	void SetCanMoveCallback(const can_move_func& callback);
 
 private:
 	enum eInputs : uint8_t

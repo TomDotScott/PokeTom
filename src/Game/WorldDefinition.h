@@ -8,6 +8,8 @@
 #include <unordered_map>
 
 #include "Level.h"
+#include "../Engine/GridMovementComponent.h"
+
 
 class WorldDefinition
 {
@@ -37,6 +39,8 @@ public:
 	std::shared_ptr<Level> GetLevelAtPosition(const sf::Vector2f& position) const;
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
+
+	bool CanMoveTo(const Entity* entity, eDirection direction) const;
 
 private:
 	std::unordered_map<std::string, std::shared_ptr<Level>> m_levels;

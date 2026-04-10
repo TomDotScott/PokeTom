@@ -10,11 +10,10 @@
 #include "WorldDefinition.h"
 #include "../Engine/Event.h"
 #include "../Engine/ObjectPool.h"
-#include "../Engine/ScriptedEntity.h"
 #include "../Engine/Rendering/ScreenFader.h"
 #include "../Engine/UI/UiManager.h"
 
-class Game final : public Updateable
+class Game final : public IUpdateable
 {
 public:
 	Game();
@@ -33,8 +32,6 @@ private:
 
 	WorldDefinition m_world;
 	Player m_player;
-	ScriptedEntity m_man;
-
 	std::vector<std::shared_ptr<Entity>> m_entities;
 
 	const PortalTrigger* m_lastEnteredPortal;
@@ -49,7 +46,7 @@ private:
 	sf::FloatRect m_lastCameraRect;
 	float m_cameraRebuildThreshold;
 
-#if !BUILD_MASTER
+#if !BUILD_MASTER && 0
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)
 	{

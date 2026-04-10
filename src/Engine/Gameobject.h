@@ -1,6 +1,5 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
-#include <functional>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 
@@ -17,8 +16,8 @@ public:
 
 	const sf::Vector2f& GetPosition() const { return m_position; }
 	sf::Vector2f GetPosition() { return m_position; }
-	virtual void SetPosition(const sf::Vector2f& position);
-	virtual void SetPosition(float x, float y);
+	void SetPosition(const sf::Vector2f& position);
+	void SetPosition(float x, float y);
 
 	uint64_t GetID() const;
 
