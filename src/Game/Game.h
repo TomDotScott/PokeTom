@@ -32,6 +32,10 @@ private:
 
 	WorldDefinition m_world;
 	Player m_player;
+	Entity m_man;
+
+	std::vector<std::shared_ptr<Entity>> m_entities;
+
 	const PortalTrigger* m_lastEnteredPortal;
 
 	sf::Vector2f m_cameraPosition;

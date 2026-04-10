@@ -7,8 +7,7 @@
 #include "../Engine/Globals.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
-#include "../Engine/Animation/AnimDef.h"
-#include "../Engine/Input/Keyboard.h"
+#include "../Engine/CodeGen/Resources.hpp"
 
 static constexpr const char* START_LEVEL = "player_bedroom";
 
@@ -17,6 +16,8 @@ Game::Game() :
 	m_state(eGameState::Overworld),
 	m_world("WorldDefinition.xml"),
 	m_player(&m_world),
+	m_man{ &m_world, EntityAnimation{ GET_ANIMATION_PATH("NPC_MAN_1"), EntityAnimation::WALK_DOWN } },
+	m_entities(),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
@@ -26,6 +27,12 @@ Game::Game() :
 	UIMANAGER.Load("ui.xml");
 
 	OnTransitionEnd();
+
+	m_man.SetPosition(m_player.GetPosition() + sf::Vector2f{ 32.f, 0.f });
+
+	m_entities.reserve(256);
+	m_entities.emplace_back(&m_player);
+	m_entities.emplace_back(&m_man);
 }
 
 Game::~Game() = default;
@@ -48,7 +55,7 @@ void Game::Update(const float deltaTime)
 
 void Game::Render(sf::RenderWindow& window) const
 {
-	m_renderer.Render(window, m_player, m_world.GetLevelAtPosition(m_player.GetPosition())->GetEntityZIndex());
+	m_renderer.Render(window, m_entities, m_world.GetLevelAtPosition(m_player.GetPosition())->GetEntityZIndex());
 
 #if BUILD_DEBUG && 0
 	sf::RectangleShape player({ 32, 32 });
@@ -67,7 +74,7 @@ void Game::Render(sf::RenderWindow& window) const
 	window.setView({
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
-		});
+	});
 
 	if (m_screenFader.FadeInProgress())
 	{
@@ -98,8 +105,10 @@ void Game::UpdateChunks()
 {
 	const sf::Vector2f viewSize = m_worldBounds.size;
 	const sf::FloatRect camRect(
-		{ m_cameraPosition.x - viewSize.x * 0.5f,
-		  m_cameraPosition.y - viewSize.y * 0.5f },
+		{
+			m_cameraPosition.x - viewSize.x * 0.5f,
+			m_cameraPosition.y - viewSize.y * 0.5f
+		},
 		viewSize
 	);
 
@@ -138,9 +147,9 @@ void Game::UpdateChunks()
 				float minY = std::min(mergedBounds.position.y, r.position.y);
 
 				float maxX = std::max(mergedBounds.position.x + mergedBounds.size.x,
-					r.position.x + r.size.x);
+									  r.position.x + r.size.x);
 				float maxY = std::max(mergedBounds.position.y + mergedBounds.size.y,
-					r.position.y + r.size.y);
+									  r.position.y + r.size.y);
 
 				mergedBounds = sf::FloatRect(
 					sf::Vector2f(minX, minY),
@@ -162,7 +171,30 @@ void Game::UpdateChunks()
 
 void Game::UpdateOverworld(const float deltaTime)
 {
-	m_player.Update(deltaTime);
+	for (const auto& entity : m_entities)
+	{
+		entity->Update(deltaTime);
+	}
+
+	static auto manWalkDirection = GridMovementComponent::eDirection::South;
+
+	if (m_man.CanMove(manWalkDirection))
+	{
+		m_man.Move(manWalkDirection);
+	}
+	else
+	{
+		if (manWalkDirection == GridMovementComponent::eDirection::South)
+		{
+			manWalkDirection = GridMovementComponent::eDirection::North;
+		}
+		else
+		{
+			manWalkDirection = GridMovementComponent::eDirection::South;
+		}
+	}
+
+
 	CheckForPortals();
 }
 

@@ -102,7 +102,7 @@ void Entity::UpdateInternal(const float deltaTime)
 	m_position = m_movement.GetWorldPosition();
 
 	const eOrientation orientation = GetCurrentOrientation();
-	if (m_movement.IsMoving())
+	if (m_movement.WasMoving())
 	{
 		m_animation.AnimationName = m_movement.IsSprinting()
 										? GetSprintAnimation(orientation)
@@ -118,6 +118,26 @@ void Entity::UpdateInternal(const float deltaTime)
 }
 
 void Entity::Move(const GridMovementComponent::eDirection direction)
+{
+	if (CanMove(direction))
+	{
+		m_movement.Move(direction);
+	}
+	else
+	{
+		m_movement.SetDirection(direction);
+	}
+}
+
+bool Entity::CanMove(const GridMovementComponent::eDirection direction) const
+{
+	const sf::Vector2f newPosition = GetNewGridPosition(direction);
+
+	const auto& currentLevel = m_world->GetLevelAtPosition(newPosition);
+	return currentLevel != nullptr && currentLevel->CanMoveTo(newPosition);
+}
+
+sf::Vector2f Entity::GetNewGridPosition(const GridMovementComponent::eDirection direction) const
 {
 	sf::Vector2f moveDirection(0, 0);
 
@@ -139,22 +159,12 @@ void Entity::Move(const GridMovementComponent::eDirection direction)
 		break;
 	}
 
-	sf::Vector2f newPosition = GetPosition() + moveDirection * 32.f;
+	const sf::Vector2f newPosition = GetPosition() + moveDirection * 32.f;
 
-	newPosition = {
+	return {
 		std::round(newPosition.x / 32.f) * 32.f,
 		std::round(newPosition.y / 32.f) * 32.f
 	};
-
-	const auto& currentLevel = m_world->GetLevelAtPosition(newPosition);
-	if (currentLevel != nullptr && currentLevel->CanMoveTo(newPosition))
-	{
-		m_movement.Move(direction);
-	}
-	else
-	{
-		m_movement.SetDirection(direction);
-	}
 }
 
 EntityAnimation::eAnimationName Entity::GetWalkAnimation(eOrientation orientation)

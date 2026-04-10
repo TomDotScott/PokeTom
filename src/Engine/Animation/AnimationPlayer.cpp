@@ -9,7 +9,7 @@ AnimationPlayer::AnimationPlayer(const std::shared_ptr<AnimationDictionary>& dic
 {
 }
 
-void AnimationPlayer::PlayAnimation(const std::string_view& name, bool forceRestart)
+void AnimationPlayer::PlayAnimation(const std::string_view& name, const bool forceRestart)
 {
 	if (!forceRestart && name == m_currentAnimName)
 	{
@@ -42,6 +42,8 @@ void AnimationPlayer::Update(const float deltaTime)
 	m_frameTime -= duration;
 	m_frameIndex++;
 
+	//printf("AnimDict %s Changing Frame to %d\n", m_dictionary->GetName().c_str(), m_frameIndex);
+
 	if (m_frameIndex >= clip.m_Frames.size())
 	{
 		if (clip.m_IsLooping)
@@ -68,5 +70,5 @@ const AnimationFrame& AnimationPlayer::GetCurrentFrame() const
 
 const std::string& AnimationPlayer::GetDictionarySpritesheetResourceName() const
 {
-	return m_dictionary->GetSpriteSheetResourceName();
+	return m_dictionary->GetName();
 }

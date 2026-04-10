@@ -33,6 +33,9 @@ public:
 
 	bool IsMoving() const;
 
+	// Updates one frame behind IsMoving()
+	bool WasMoving() const;
+
 	void SetSprinting(bool isSprinting);
 	bool IsSprinting() const;
 
@@ -49,6 +52,10 @@ private:
 	float m_sprintSpeed;
 	bool m_isSprinting;
 	float m_progress;
+
+	// Updates one frame behind
+	bool m_wasMoving;
+
 	bool m_isMoving;
 
 	void StartMove(const sf::Vector2i& dir);

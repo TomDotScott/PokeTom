@@ -4,6 +4,7 @@
 #include <hoxml.h>
 #include <optional>
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 #include "Level.h"

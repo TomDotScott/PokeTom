@@ -14,9 +14,9 @@ const Animation& AnimationDictionary::GetClip(const std::string& name) const
 	return m_animationClips.at(name);
 }
 
-const std::string& AnimationDictionary::GetSpriteSheetResourceName() const
+const std::string& AnimationDictionary::GetName() const
 {
-	return m_spriteSheetResourceName;
+	return m_name;
 }
 
 bool AnimationDictionary::Init()
@@ -74,14 +74,12 @@ bool AnimationDictionary::Init()
 }
 
 AnimationDictionary::AnimationDictionary(std::filesystem::path filepath) :
-	m_filepath(std::move(filepath)),
-	m_spriteWidth(0),
-	m_spriteHeight(0)
+	m_filepath(std::move(filepath))
 {
 }
 
 bool AnimationDictionary::ParseAnimDict(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context,
-	const char* xml, const size_t xmlLength)
+										const char* xml, const size_t xmlLength)
 {
 	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
 	while (code != HOXML_END_OF_DOCUMENT)
@@ -123,7 +121,7 @@ bool AnimationDictionary::ParseAnimDict(const std::filesystem::path& parentFolde
 
 bool AnimationDictionary::ParseAnimation(hoxml_context_t*& context, const char* xml, const size_t xmlLength)
 {
-	Animation anim{};
+	Animation anim{ };
 
 	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
 	while (code != HOXML_END_OF_DOCUMENT)
@@ -170,31 +168,109 @@ bool AnimationDictionary::ParseAnimation(hoxml_context_t*& context, const char* 
 	return false;
 }
 
-bool AnimationDictionary::ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, const size_t xmlLength)
+bool AnimationDictionary::ParseImage(const std::filesystem::path& /*parentFolderPath*/, hoxml_context_t*& context, const char* xml, const size_t xmlLength)
 {
+	bool setSpritesheet = false;
+	bool setX = false;
+	bool setY = false;
+	bool setWidth = false;
+	bool setHeight = false;
+	bool hasColourMask = false;
+	unsigned colourMask = ~0U;
+	std::filesystem::path imagePath;
+
 	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
 	while (code != HOXML_END_OF_DOCUMENT)
 	{
 		if (code == HOXML_ATTRIBUTE && strcmp("source", context->attribute) == 0)
 		{
-			m_spriteSheetResourceName = context->value;
-			const auto path = GET_TEXTURE_PATH(m_spriteSheetResourceName);
+			const char* spriteSheetResourceName = context->value;
+			const auto path = GET_TEXTURE_PATH(spriteSheetResourceName);
 			if (!std::filesystem::exists(path))
 			{
 				std::cerr << "AnimationDictionary::ParseAnimDict: Texture with path " << path <<
-					"does not exist!\n";
+				"does not exist!\n";
 				return false;
 			}
 
-			if (!TEXTUREMANAGER.LoadTextureFromImage(context->value, path, 0x589058FF))
-			{
-				std::cerr << "AnimationDictionary::ParseAnimDict: TextureManager was unable to load texture with path " << path << "\n";
-				return false;
-			}
-
-			// TODO: Handle Width and Height
-			return true;
+			imagePath = path;
+			setSpritesheet = true;
 		}
+		else if (code == HOXML_ATTRIBUTE && strcmp("topLeftX", context->attribute) == 0)
+		{
+			m_spriteSheetRect.position.x = std::stoi(context->value);
+			setX = true;
+		}
+		else if (code == HOXML_ATTRIBUTE && strcmp("topLeftY", context->attribute) == 0)
+		{
+			m_spriteSheetRect.position.y = std::stoi(context->value);
+			setY = true;
+		}
+		else if (code == HOXML_ATTRIBUTE && strcmp("regionWidth", context->attribute) == 0)
+		{
+			m_spriteSheetRect.size.x = std::stoi(context->value);
+			setWidth = true;
+		}
+		else if (code == HOXML_ATTRIBUTE && strcmp("regionHeight", context->attribute) == 0)
+		{
+			m_spriteSheetRect.size.y = std::stoi(context->value);
+			setHeight = true;
+		}
+		else if (code == HOXML_ATTRIBUTE && strcmp("maskColour", context->attribute) == 0)
+		{
+			// Convert read colour from hex to an int
+			std::stringstream str;
+			str << context->value;
+			str >> std::hex >> colourMask;
+
+			hasColourMask = true;
+		}
+		else if (code == HOXML_ELEMENT_END)
+		{
+			// TODO: Should these default to 0,0?
+			if (!setX)
+			{
+				std::cerr << "No topLeftX set on the source of the Image!\n";
+				return false;
+			}
+
+			if (!setY)
+			{
+				std::cerr << "No topLeftY set on the source of the Image!\n";
+				return false;
+			}
+
+			// TODO: Should these two default to the width and height of the image?
+			if (!setWidth)
+			{
+				std::cerr << "No regionWidth set on the source of the Image!\n";
+				return false;
+			}
+
+			if (!setHeight)
+			{
+				std::cerr << "No regionHeight set on the source of the Image!\n";
+				return false;
+			}
+
+			if (!setSpritesheet)
+			{
+				std::cerr << "No spritesheet loaded!\n";
+				return false;
+			}
+
+			const bool success = hasColourMask
+									 ? TEXTUREMANAGER.LoadTextureFromImage(GetName(), imagePath, m_spriteSheetRect, colourMask)
+									 : TEXTUREMANAGER.LoadTextureFromImage(GetName(), imagePath, m_spriteSheetRect);
+
+			if (!success)
+			{
+				std::cerr << "AnimationDictionary::ParseImage: TextureManager was unable to load texture with path " << imagePath << "\n";
+			}
+
+			return success;
+		}
+
 
 		code = hoxml_parse(context, xml, xmlLength);
 	}
@@ -206,7 +282,7 @@ bool AnimationDictionary::ParseFrame(Animation& animation, hoxml_context_t*& con
 {
 	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
 
-	AnimationFrame frame{};
+	AnimationFrame frame{ };
 	bool fullyParsedFrame = false;
 	while (!fullyParsedFrame && code != HOXML_END_OF_DOCUMENT)
 	{
@@ -214,11 +290,11 @@ bool AnimationDictionary::ParseFrame(Animation& animation, hoxml_context_t*& con
 		{
 			if (strcmp("topLeftX", context->attribute) == 0)
 			{
-				frame.m_TopLeftX = std::stoi(context->value);
+				frame.m_TopLeftX = std::stoi(context->value) - m_spriteSheetRect.position.x;
 			}
 			else if (strcmp("topLeftY", context->attribute) == 0)
 			{
-				frame.m_TopLeftY = std::stoi(context->value);
+				frame.m_TopLeftY = std::stoi(context->value) - m_spriteSheetRect.position.y;
 			}
 			else if (strcmp("duration", context->attribute) == 0)
 			{
@@ -255,7 +331,7 @@ bool AnimationDictionary::ParseFrame(Animation& animation, hoxml_context_t*& con
 }
 
 bool AnimationDictionary::ParseAnimEnd(Animation& animation,
-	hoxml_context_t*& context, const char* xml, size_t xmlLength)
+									   hoxml_context_t*& context, const char* xml, size_t xmlLength)
 {
 	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
 

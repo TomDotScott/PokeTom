@@ -53,6 +53,8 @@ public:
 
 	void Move(GridMovementComponent::eDirection direction);
 
+	bool CanMove(GridMovementComponent::eDirection direction) const;
+
 protected:
 	// Needs to be called in Update() in all children. TODO: is there a way to ensure this?
 	void UpdateInternal(float deltaTime);
@@ -63,6 +65,8 @@ protected:
 	EntityAnimation m_animation;
 
 private:
+	sf::Vector2f GetNewGridPosition(GridMovementComponent::eDirection direction) const;
+
 	static EntityAnimation::eAnimationName GetWalkAnimation(eOrientation orientation);
 	static EntityAnimation::eAnimationName GetIdleAnimation(eOrientation orientation);
 	static EntityAnimation::eAnimationName GetSprintAnimation(eOrientation orientation);

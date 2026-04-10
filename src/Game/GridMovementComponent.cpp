@@ -64,6 +64,11 @@ GridMovementComponent::eDirection GridMovementComponent::GetPreviousDirection() 
 
 void GridMovementComponent::Update(const float deltaTime)
 {
+	if (m_isMoving != m_wasMoving)
+	{
+		m_wasMoving = m_isMoving;
+	}
+
 	if (!m_isMoving)
 	{
 		if (m_currentDirection != eDirection::None)
@@ -106,6 +111,11 @@ void GridMovementComponent::SetWorldPosition(const sf::Vector2f& pos)
 bool GridMovementComponent::IsMoving() const
 {
 	return m_isMoving;
+}
+
+bool GridMovementComponent::WasMoving() const
+{
+	return m_wasMoving;
 }
 
 void GridMovementComponent::SetSprinting(const bool isSprinting)

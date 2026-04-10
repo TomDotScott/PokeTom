@@ -11,7 +11,8 @@ public:
 
 	bool LoadTexture(std::string_view name, const std::filesystem::path& path);
 	bool LoadTexture(const std::string& name, const std::filesystem::path& path);
-	bool LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, uint32_t maskColour);
+	bool LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, sf::IntRect region);
+	bool LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, sf::IntRect region, uint32_t maskColour);
 
 	bool HasTextureLoaded(const std::string& name) const;
 	bool HasTextureLoaded(const std::filesystem::path& path) const;
@@ -30,6 +31,8 @@ private:
 	std::unordered_map<std::string, std::string> m_registeredPaths;
 
 	void RegisterPath(const std::filesystem::path& relativePath, const std::string& resourceName);
+
+	std::shared_ptr<sf::Image> LoadImage(const std::filesystem::path& path);
 
 	TextureManager();
 	~TextureManager() = default;

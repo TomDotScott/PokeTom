@@ -19,3 +19,5 @@ fonts:
 animations:
   - name: PLAYER_BOY
     source: animation/player_boy.xml
+  - name: NPC_MAN_1
+    source: animation/npc_man_1.xml

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <AnimDict version="0.1" name="player_movement">
-  <Image source="PLAYER_SPRITESHEET" width="760" height="480" />
+  <Image source="PLAYER_SPRITESHEET" topLeftX="4" topLeftY="4" regionWidth="204" regionHeight="128"
+    maskColour="589058FF" />
 
   <Animation name="idle_up" looping="true">
     <Frame topLeftX="4" topLeftY="4" duration="100" spriteWidth="32" spriteHeight="32"/>
