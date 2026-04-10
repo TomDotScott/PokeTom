@@ -15,8 +15,8 @@ static constexpr const char* START_LEVEL = "player_bedroom";
 Game::Game() :
 	Updateable(),
 	m_state(eGameState::Overworld),
-	m_player(),
 	m_world("WorldDefinition.xml"),
+	m_player(&m_world),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
@@ -162,7 +162,7 @@ void Game::UpdateChunks()
 
 void Game::UpdateOverworld(const float deltaTime)
 {
-	m_player.Update(deltaTime, m_world);
+	m_player.Update(deltaTime);
 	CheckForPortals();
 }
 

@@ -30,8 +30,8 @@ private:
 		Overworld
 	} m_state;
 
-	Player m_player;
 	WorldDefinition m_world;
+	Player m_player;
 	const PortalTrigger* m_lastEnteredPortal;
 
 	sf::Vector2f m_cameraPosition;

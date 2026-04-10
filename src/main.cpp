@@ -14,7 +14,7 @@
 
 #include "Engine/Asserts.h"
 
-GraphicSettings GRAPHIC_SETTINGS{};
+GraphicSettings GRAPHIC_SETTINGS{ };
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
 
 int main(int argc, char** argv)
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	double is_4_8 = lua["g"](2.4, 2.4);
 	ASSERT_MSG(is_4_8 == 4.8, "2.4 + 2.4 should be 4.8!");
 
-	/*
+
 	sf::RenderWindow window(
 #if !BUILD_MASTER
 		sf::VideoMode({ 768, 576 }),
@@ -64,11 +64,11 @@ int main(int argc, char** argv)
 
 	GRAPHIC_SETTINGS.SetScreenSize(window.getSize());
 
-	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(255);
 
 	Mouse::Get().SetRelativeWindow(&window);
 
-	Game game{};
+	Game game{ };
 
 	constexpr sf::Color clearColour(0x2B2B2BFF);
 
@@ -100,5 +100,4 @@ int main(int argc, char** argv)
 
 		window.display();
 	}
-	*/
 }

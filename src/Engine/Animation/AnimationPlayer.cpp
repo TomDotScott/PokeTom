@@ -9,7 +9,7 @@ AnimationPlayer::AnimationPlayer(const std::shared_ptr<AnimationDictionary>& dic
 {
 }
 
-void AnimationPlayer::PlayAnimation(const std::string& name, const bool forceRestart)
+void AnimationPlayer::PlayAnimation(const std::string_view& name, bool forceRestart)
 {
 	if (!forceRestart && name == m_currentAnimName)
 	{
