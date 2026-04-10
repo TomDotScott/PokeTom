@@ -176,25 +176,6 @@ void Game::UpdateOverworld(const float deltaTime)
 		entity->Update(deltaTime);
 	}
 
-	static auto manWalkDirection = GridMovementComponent::eDirection::South;
-
-	if (m_man.CanMove(manWalkDirection))
-	{
-		m_man.Move(manWalkDirection);
-	}
-	else
-	{
-		if (manWalkDirection == GridMovementComponent::eDirection::South)
-		{
-			manWalkDirection = GridMovementComponent::eDirection::North;
-		}
-		else
-		{
-			manWalkDirection = GridMovementComponent::eDirection::South;
-		}
-	}
-
-
 	CheckForPortals();
 }
 
