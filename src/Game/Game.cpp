@@ -3,6 +3,8 @@
 #include <iostream>
 #include <set>
 #include <SFML/Graphics.hpp>
+
+#include "../Engine/Asserts.h"
 #include "../Engine/TextureManager.h"
 #include "../Engine/Globals.h"
 #include "../Engine/GridMovementComponent.h"
@@ -11,12 +13,12 @@
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/CodeGen/Resources.hpp"
 
-static constexpr const char* START_LEVEL = "player_bedroom";
+static constexpr const char* START_LEVEL = "starter_town";
 
-Game::Game() :
+Game::Game(sol::state& lua) :
 	IUpdateable(),
 	m_state(eGameState::Overworld),
-	m_world("WorldDefinition.xml"),
+	m_world(lua, "WorldDefinition.xml"),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
@@ -176,6 +178,7 @@ void Game::UpdateChunks()
 
 void Game::UpdateOverworld(const float deltaTime)
 {
+	m_world.GetLevelAtPosition(m_entities.Get<Entity>(m_playerEntityID)->GetPosition())->OnUpdate(deltaTime);
 	m_entities.UpdateAll(deltaTime);
 	CheckForPortals();
 }
@@ -239,6 +242,8 @@ void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnP
 	const bool shouldSetPlayerPosition)
 {
 	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
+
+	ASSERT(level != nullptr);
 
 	if (shouldSetPlayerPosition)
 	{

@@ -1,5 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
+#include <sol/sol.hpp>
+
 #include "TileLogic.h"
 #include "Renderer.h"
 
@@ -14,7 +16,14 @@ public:
 		std::string m_West;
 	};
 
-	explicit Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
+	explicit Level(sol::state& lua, std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
+
+	// Update Level Lua script
+	bool OnUpdate(float deltaTime);
+
+	// Setup or remove Lua scripts and entities
+	bool OnActivate();
+	bool OnDeactivate();
 
 	const std::string& GetName() const;
 
@@ -47,6 +56,13 @@ private:
 	std::string m_name;
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
+
+	bool m_hasLevelScript;
+	sol::table m_self;
+	sol::environment m_environment;
+	sol::function m_onUpdate;
+	sol::function m_onActivate;
+	sol::function m_onDeactivate;
 
 	int m_entityZIndex;
 

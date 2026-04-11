@@ -2,7 +2,7 @@
 #define GAME_H
 #include <set>
 #include <SFML/Graphics/RectangleShape.hpp>
-
+#include <sol/sol.hpp>
 #include "Level.h"
 #include "Player.h"
 #include "Renderer.h"
@@ -17,7 +17,7 @@
 class Game final : public IUpdateable
 {
 public:
-	Game();
+	Game(sol::state& lua);
 	~Game() override;
 
 	void Update(float deltaTime) override;

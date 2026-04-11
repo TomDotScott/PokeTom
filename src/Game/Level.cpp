@@ -1,6 +1,8 @@
 #include "Level.h"
 
-Level::Level(std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
+#include "../Engine/Asserts.h"
+
+Level::Level(sol::state& lua, std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
 	m_name(std::move(name)),
 	m_mapData(mapData),
 	m_adjacentLevels(std::move(adjacentLevels)),
@@ -16,6 +18,86 @@ Level::Level(std::string name, const std::shared_ptr<MapData>& mapData, Adjacent
 			break;
 		}
 	}
+
+	if (m_mapData->m_LevelScript.empty())
+	{
+		m_hasLevelScript = false;
+	}
+	else
+	{
+		m_self = lua.create_table();
+
+		m_environment = sol::environment(lua, sol::create, lua.globals());
+
+		auto scriptPath = m_mapData->m_LevelScript.c_str();
+		auto result = lua.safe_script_file(m_mapData->m_LevelScript.generic_string(), m_environment);
+		ASSERT_MSG(result.valid(), "Script %ls was not loaded correctly!", scriptPath);
+
+		sol::function init = m_environment["init"];
+		if (init.valid())
+		{
+			init(m_self);
+		}
+
+		m_onUpdate = m_self["update"];
+		ASSERT_MSG(m_onUpdate.valid(), "update function is missing from script %ls!", scriptPath);
+
+		m_onActivate = m_self["onActivate"];
+		ASSERT_MSG(m_onActivate.valid(), "onActivate function is missing from script %ls!", scriptPath);
+
+		m_onDeactivate = m_self["onDeactivate"];
+		ASSERT_MSG(m_onDeactivate.valid(), "onDeactivate function is missing from script %ls!", scriptPath);
+	}
+}
+
+bool Level::OnActivate()
+{
+	if (m_hasLevelScript)
+	{
+		if (!m_onActivate.valid())
+		{
+			return false;
+		}
+
+		m_onActivate(m_self);
+	}
+
+	return true;
+}
+
+bool Level::OnDeactivate()
+{
+	if (m_hasLevelScript)
+	{
+		if (!m_onDeactivate.valid())
+		{
+			return false;
+		}
+
+		m_onDeactivate(m_self);
+	}
+
+	return true;
+}
+
+bool Level::OnUpdate(float deltaTime)
+{
+	if (m_hasLevelScript)
+	{
+		if (!m_onUpdate.valid())
+		{
+			return false;
+		}
+
+		auto x = m_onUpdate(m_self, deltaTime);
+		if (!x.valid())
+		{
+			sol::error err = x;
+			ASSERT_MSG(false, "Level script update error: %s", err.what());
+		}
+	}
+
+	return true;
 }
 
 const std::string& Level::GetName() const
@@ -130,7 +212,7 @@ const SpawnPointData& Level::GetSpawnPointData(const std::string& name) const
 {
 #if BUILD_DEBUG
 	// If the map isn't found, assume we are debug-teleporting to a place
-	if (m_mapData->m_SpawnPoints.find(name) == m_mapData->m_SpawnPoints.end())
+	if (!m_mapData->m_SpawnPoints.contains(name))
 	{
 		return m_mapData->m_SpawnPoints.begin()->second;
 	}

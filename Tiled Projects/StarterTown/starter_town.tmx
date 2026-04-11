@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="19">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="48" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="19">
  <editorsettings>
   <export target="../../data/tiled_export/starter_town.tmj" format="json"/>
  </editorsettings>
+ <properties>
+  <property name="LevelScript" type="file" value="../../scripts/levels/starter_town.lua"/>
+ </properties>
  <tileset firstgid="1" source="../../data/tiled_export/overworld.tsx"/>
  <tileset firstgid="1301" source="../../data/tiled_export/hgss.tsx"/>
  <tileset firstgid="6013" source="../../data/tiled_export/Characters.tsx"/>
@@ -29,11 +32,6 @@
  <layer id="9" name="AboveAll" width="48" height="36">
   <data encoding="base64" compression="zlib">
    eJzt1DEKgDAQRNFUC17NCwiiCIIIlt6/kEBaQ2CCWeJ/3VYO4WMI/Vms9YL+zD96U/qpj36goB8o6AcK+oGCfqCgHyha9DMO338zop/6+P9AQT9tXQ43RZOV3V772dKu1fL37nT/mXYdlr+99lPqftn/ADJtD5M=
-  </data>
- </layer>
- <layer id="8" name="NPC Spawns" width="48" height="36">
-  <data encoding="base64" compression="zlib">
-   eJztztEJABAUQFFboExjEbsZxWSG8Ap1zv+tmxK8qZfbBxBn5tsHAADwp9HO+lVjPgAA+MsGzVMCag==
   </data>
  </layer>
  <objectgroup id="10" name="Doors">

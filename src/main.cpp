@@ -6,13 +6,9 @@
 #include "Engine/Input/Keyboard.h"
 #include "Engine/Timer.h"
 #include "Game/Game.h"
-#include <iostream>
-#include <zlib.h>
 
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
-
-#include "Engine/Asserts.h"
 
 GraphicSettings GRAPHIC_SETTINGS{ };
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
@@ -39,7 +35,15 @@ int main(int argc, char** argv)
 
 	Mouse::Get().SetRelativeWindow(&window);
 
-	Game game{ };
+	sol::state lua;
+	lua.open_libraries(
+		sol::lib::base,
+		sol::lib::math,
+		sol::lib::string,
+		sol::lib::table
+	);
+
+	Game game{ lua };
 
 	constexpr sf::Color clearColour(0x2B2B2BFF);
 

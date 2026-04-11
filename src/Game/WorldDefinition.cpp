@@ -12,15 +12,15 @@
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
 
-WorldDefinition::WorldDefinition(const std::filesystem::path& worldDefinitionFilepath)
+WorldDefinition::WorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath)
 {
-	ParseWorldDefinition(worldDefinitionFilepath);
+	ParseWorldDefinition(lua, worldDefinitionFilepath);
 }
 
 std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const std::string& levelName, const std::string& portalName) const
 {
 	const auto& currentLevelPortals = m_levelPortals.at(levelName);
-	if (currentLevelPortals.find(portalName) == currentLevelPortals.end())
+	if (!currentLevelPortals.contains(portalName))
 	{
 		std::cerr << "WorldDefinition::OnPlayerEnterPortal - Portal with name " << portalName <<
 			" Does not exist in level " << levelName << "\n";
@@ -28,6 +28,16 @@ std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(con
 	}
 
 	const Portal& portalData = currentLevelPortals.at(portalName);
+
+	if (!GetLevel(levelName)->OnDeactivate())
+	{
+		std::cerr << "WorldDefinition::EnterPortal - OnDeactivate failed to be called from the level's script!\n";
+	}
+
+	if (!GetLevel(portalData.m_TargetLevel)->OnActivate())
+	{
+		std::cerr << "WorldDefinition::EnterPortal - OnActivate failed to be called from the level's script!\n";
+	}
 
 	return LevelTransition{
 		portalData.m_TargetLevel,
@@ -45,7 +55,7 @@ std::vector<std::shared_ptr<Level>> WorldDefinition::GetLevelsIntersectingRect(c
 {
 	std::vector<std::shared_ptr<Level>> intersectingLevels;
 
-	for (const auto& [_, level] : m_levels)
+	for (const auto& level : m_levels | std::views::values)
 	{
 		const auto levelBounds = level->GetBounds();
 
@@ -60,7 +70,7 @@ std::vector<std::shared_ptr<Level>> WorldDefinition::GetLevelsIntersectingRect(c
 
 std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
 {
-	if (m_levels.find(name) == m_levels.end())
+	if (!m_levels.contains(name))
 	{
 		return nullptr;
 	}
@@ -70,7 +80,7 @@ std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
 
 std::shared_ptr<Level> WorldDefinition::GetLevelAtPosition(const sf::Vector2f& position) const
 {
-	for (const auto& [_, level] : m_levels)
+	for (const auto& level : m_levels | std::views::values)
 	{
 		if (level->GetBounds().contains(position))
 		{
@@ -125,7 +135,7 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, const eDirection direction
 	return currentLevel != nullptr && currentLevel->CanMoveTo(newPosition);
 }
 
-bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDefinitionFilepath)
+bool WorldDefinition::ParseWorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath)
 {
 	std::string line, text;
 	std::ifstream in(worldDefinitionFilepath);
@@ -158,7 +168,7 @@ bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDef
 		if (code == HOXML_ELEMENT_BEGIN)
 		{
 			if (strcmp("Level", hoxml_context->tag) == 0
-				&& !ParseLevel(levels, portals, hoxml_context, content, content_length))
+				&& !ParseLevel(lua, levels, portals, hoxml_context, content, content_length))
 			{
 				return false;
 			}
@@ -287,8 +297,12 @@ bool WorldDefinition::ParseWorldDefinition(const std::filesystem::path& worldDef
 	return true;
 }
 
-bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr<Level>>& levels,
-	std::unordered_map<std::string, std::unordered_map<std::string, Portal>>& portals,
+bool WorldDefinition::ParseLevel(
+	sol::state& lua,
+	std::unordered_map<std::string,
+	std::shared_ptr<Level>>&levels,
+	std::unordered_map<std::string,
+	std::unordered_map<std::string, Portal>>&portals,
 	hoxml_context_t*& context,
 	const char* xml,
 	const size_t xmlLength)
@@ -385,7 +399,7 @@ bool WorldDefinition::ParseLevel(std::unordered_map<std::string, std::shared_ptr
 		return false;
 	}
 
-	levels[levelName] = std::make_shared<Level>(levelName, tileMapData, adjacentLevels);
+	levels[levelName] = std::make_shared<Level>(lua, levelName, tileMapData, adjacentLevels);
 	return true;
 }
 
