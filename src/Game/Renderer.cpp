@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "../Engine/Entity.h"
+#include "../Engine/EntityRegistry.h"
 #include "../Engine/Globals.h"
 #include "../Engine/TextureManager.h"
 #include "../Engine/Animation/AnimationComponent.h"
@@ -94,7 +95,7 @@ void Renderer::BuildBatches(const std::unordered_map<std::string, LevelRenderDat
 		});
 }
 
-void Renderer::Render(sf::RenderWindow& window, const std::vector<std::shared_ptr<Entity>>& entities, const int entityZIndex) const
+void Renderer::Render(sf::RenderWindow& window, const EntityRegistry& entities, const int entityZIndex) const
 {
 	window.setView(m_cameraView);
 
@@ -104,33 +105,7 @@ void Renderer::Render(sf::RenderWindow& window, const std::vector<std::shared_pt
 
 		if (layerBatcher.m_ZIndex == entityZIndex)
 		{
-			for (const auto& entity : entities)
-			{
-				const EntityAnimationComponent* animation = entity->GetComponent<EntityAnimationComponent>();
-				if (animation == nullptr)
-				{
-					continue;
-				}
-
-				// TODO: What a HORRIBLE line of code!
-				const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(animation->GetAnimator().GetDictionarySpritesheetResourceName());
-
-				// TODO: Come up with a proper way to render all the Entities in the level
-				// TODO: Make this generic and reusable - everything has walking animations
-				sf::Sprite playerSprite(animatedPlayerTexture);
-				const AnimationFrame& currentFrame = animation->GetAnimator().GetCurrentFrame();
-
-				playerSprite.setTextureRect({
-					{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
-					{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
-					});
-
-				playerSprite.setOrigin({ playerSprite.getLocalBounds().size.x / 2, playerSprite.getLocalBounds().size.y / 2 });
-				playerSprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
-
-				playerSprite.setScale({ 2, 2 });
-				window.draw(playerSprite);
-			}
+			entities.RenderAll(window);
 		}
 	}
 }

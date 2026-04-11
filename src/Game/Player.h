@@ -8,6 +8,7 @@ class Player final : public Entity
 {
 public:
 	Player();
+	Player(const sf::Vector2f& position);
 
 	void Update(float deltaTime) override;
 	void SetCanMoveCallback(const can_move_func& callback);

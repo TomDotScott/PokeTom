@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "TileLogic.h"
 #include "WorldDefinition.h"
+#include "../Engine/EntityRegistry.h"
 #include "../Engine/Event.h"
 #include "../Engine/ObjectPool.h"
 #include "../Engine/Rendering/ScreenFader.h"
@@ -24,6 +25,8 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
+	EntityRegistry m_entities;
+
 	enum class eGameState
 	{
 		FadingScreen,
@@ -31,8 +34,7 @@ private:
 	} m_state;
 
 	WorldDefinition m_world;
-	Player m_player;
-	std::vector<std::shared_ptr<Entity>> m_entities;
+	uint64_t m_playerEntityID;
 
 	const PortalTrigger* m_lastEnteredPortal;
 

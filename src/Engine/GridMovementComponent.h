@@ -16,7 +16,7 @@ enum class eDirection
 	East
 };
 
-typedef std::function<bool(eDirection dir)> can_move_func;
+typedef std::function<bool(Entity* entity, eDirection dir)> can_move_func;
 
 class GridMovementComponent : public IUpdateable
 {

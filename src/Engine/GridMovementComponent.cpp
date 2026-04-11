@@ -50,7 +50,7 @@ void GridMovementComponent::Move(const eDirection direction)
 
 	SetDirection(direction);
 
-	if (m_canMove && m_canMove(direction))
+	if (m_canMove && m_canMove(m_owningEntity, direction))
 	{
 		StartMove(dir);
 	}

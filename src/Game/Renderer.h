@@ -8,6 +8,7 @@
 #include "../Engine/Rendering/SpriteBatcher.h"
 #include "TileParser.h"
 
+class EntityRegistry;
 class Entity;
 class Player;
 
@@ -44,7 +45,7 @@ public:
 	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
 	void BuildBatches(const std::unordered_map<std::string, LevelRenderData>& visibleLevelRenderData);
-	void Render(sf::RenderWindow& window, const std::vector<std::shared_ptr<Entity>>& entities, int entityZIndex) const;
+	void Render(sf::RenderWindow& window, const EntityRegistry& entities, int entityZIndex) const;
 
 private:
 	std::vector<LayerBatcher> m_layerBatchers;

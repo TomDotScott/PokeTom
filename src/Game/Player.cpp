@@ -7,7 +7,9 @@
 #include "../Engine/Input/Keyboard.h"
 
 
-Player::Player()
+Player::Player() : Player(sf::Vector2f{ 0.f, 0.f }) {}
+
+Player::Player(const sf::Vector2f& position)
 {
 	AddComponent<GridMovementComponent>(this, 32.f, 3.f, 6.5f);
 	AddComponent<EntityAnimationComponent>(this, GET_ANIMATION_PATH("PLAYER_BOY"), EntityAnimationComponent::eAnimationName::IDLE_DOWN);
@@ -18,6 +20,8 @@ Player::Player()
 	m_mapper.Map(RIGHT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::D));
 
 	m_mapper.Map(SPRINT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::LShift));
+
+	SetPosition(position);
 }
 
 void Player::Update(const float deltaTime)
