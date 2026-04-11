@@ -56,6 +56,27 @@ void GridMovementComponent::Move(const eDirection direction)
 	}
 }
 
+void GridMovementComponent::SetDirection(const eOrientation orientation)
+{
+	m_previousDirection = m_currentDirection;
+
+	switch (orientation)
+	{
+	case eOrientation::Up:
+		m_currentDirection = eDirection::North;
+		break;
+	case eOrientation::Down:
+		m_currentDirection = eDirection::South;
+		break;
+	case eOrientation::Left:
+		m_currentDirection = eDirection::West;
+		break;
+	case eOrientation::Right:
+		m_currentDirection = eDirection::East;
+		break;
+	}
+}
+
 void GridMovementComponent::SetDirection(const eDirection direction)
 {
 	m_previousDirection = m_currentDirection;
@@ -126,6 +147,11 @@ bool GridMovementComponent::IsMoving() const
 bool GridMovementComponent::WasMoving() const
 {
 	return m_wasMoving;
+}
+
+void GridMovementComponent::StopMoving()
+{
+	m_isMoving = false;
 }
 
 void GridMovementComponent::SetSprinting(const bool isSprinting)

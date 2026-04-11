@@ -25,6 +25,7 @@ public:
 
 	void Move(eDirection direction);
 
+	void SetDirection(eOrientation orientation);
 	void SetDirection(eDirection direction);
 
 	eDirection GetCurrentDirection() const;
@@ -39,6 +40,8 @@ public:
 
 	// Updates one frame behind IsMoving()
 	bool WasMoving() const;
+
+	void StopMoving();
 
 	void SetSprinting(bool isSprinting);
 	bool IsSprinting() const;

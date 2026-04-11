@@ -27,7 +27,6 @@ void GameObject::OnDeactivate()
 void GameObject::SetPosition(const sf::Vector2f& position)
 {
 	m_position = position;
-	printf("%f    %f\n", m_position.x, m_position.y);
 }
 
 void GameObject::SetPosition(const float x, const float y)

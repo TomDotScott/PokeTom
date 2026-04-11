@@ -239,10 +239,12 @@ void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnP
 	{
 		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
 
+		GridMovementComponent* playerMovement = m_player.GetComponent<GridMovementComponent>();
+		playerMovement->StopMoving();
+		playerMovement->SetDirection(spawnPointData.m_Orientation);
 		m_player.SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition * 32));
 
-		m_player.GetComponent<EntityAnimationComponent>()->PlayAnimation(
-			EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
+		m_player.GetComponent<EntityAnimationComponent>()->PlayAnimation(EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
 
 		m_cameraPosition = m_player.GetPosition();
 
