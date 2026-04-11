@@ -10,13 +10,13 @@ UiPanel::UiPanel() :
 	SetLayer(eLayer::MIDGROUND);
 }
 
-void UiPanel::SetPosition(const sf::Vector2f& position)
+void UiPanel::SetElementPosition(const sf::Vector2f& position)
 {
 	UiElement::SetPosition(position);
 
 	if (m_sprite)
 	{
-		m_sprite->SetPosition(m_position);
+		m_sprite->SetElementPosition(m_position);
 	}
 
 	for (const auto& [text, offset] : m_text)
@@ -27,7 +27,7 @@ void UiPanel::SetPosition(const sf::Vector2f& position)
 			anchor = m_position + m_size / 2.f;
 		}
 
-		text->SetPosition(anchor + offset);
+		text->SetElementPosition(anchor + offset);
 	}
 }
 
@@ -101,7 +101,7 @@ bool UiPanel::ParseEndElement(hoxml_context_t*& context)
 {
 	if (strcmp("Panel", context->tag) == 0)
 	{
-		SetPosition(m_position);
+		SetElementPosition(m_position);
 
 		if (m_sprite)
 		{

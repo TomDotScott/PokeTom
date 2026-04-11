@@ -13,16 +13,16 @@ UiButton::UiButton() :
 	SetLayer(eLayer::FOREGROUND);
 }
 
-void UiButton::SetPosition(const sf::Vector2f& position)
+void UiButton::SetElementPosition(const sf::Vector2f& position)
 {
-	UiElement::SetPosition(position);
+	SetPosition(position);
 
-	m_sprite->SetPosition(position);
+	m_sprite->SetElementPosition(position);
 
 	if (m_offsetText.m_text) {
 		sf::Vector2f anchor = m_position;
 
-		m_offsetText.m_text->SetPosition(anchor + m_offsetText.m_offset);
+		m_offsetText.m_text->SetElementPosition(anchor + m_offsetText.m_offset);
 	}
 }
 

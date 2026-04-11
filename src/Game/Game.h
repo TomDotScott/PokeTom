@@ -46,13 +46,13 @@ private:
 	sf::FloatRect m_lastCameraRect;
 	float m_cameraRebuildThreshold;
 
-#if !BUILD_MASTER && 0
+#if !BUILD_MASTER
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)
 	{
 		if (auto* debugUi = UIMANAGER.GetUiText("DEBUG_TEXT"))
 		{
-			debugUi->SetPosition(position);
+			debugUi->SetElementPosition(position);
 			debugUi->SetTextSize(size);
 			debugUi->SetText(fmt, args...);
 

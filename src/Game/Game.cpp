@@ -96,7 +96,7 @@ void Game::Render(sf::RenderWindow& window) const
 	UIMANAGER.RenderForeground(window);
 	*/
 
-#if !BUILD_MASTER && 0
+#if !BUILD_MASTER
 	DrawText(window, sf::Vector2f{ 0, 10 }, 30, "%.1fFPS", Timer::Get().Fps());
 #endif
 }

@@ -43,7 +43,7 @@ public:
 
 	void SetTextSize(unsigned size);
 
-	void SetPosition(const sf::Vector2f& position) override;
+	void SetElementPosition(const sf::Vector2f& position) override;
 
 	eAlignment GetAlignment() const;
 	void SetAlignment(eAlignment alignment);

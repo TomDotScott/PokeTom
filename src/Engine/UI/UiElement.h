@@ -38,6 +38,7 @@ public:
 	std::string GetName() const;
 
 	virtual sf::Vector2f GetSize() const = 0;
+	virtual void SetElementPosition(const sf::Vector2f& position);
 
 	// TODO: It's getting to the point where a proper renderer class would be nice
 	const std::vector<const sf::Drawable*>& GetDrawablesList() const;
