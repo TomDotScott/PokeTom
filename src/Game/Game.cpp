@@ -15,8 +15,9 @@
 
 static constexpr const char* START_LEVEL = "starter_town";
 
-Game::Game(sol::state& lua) :
+Game::Game(sol::state& lua, EntityRegistry& entities) :
 	IUpdateable(),
+	m_entities(entities),
 	m_state(eGameState::Overworld),
 	m_world(lua, "WorldDefinition.xml"),
 	m_lastEnteredPortal(nullptr),
@@ -32,8 +33,6 @@ Game::Game(sol::state& lua) :
 		{
 			return m_world.CanMoveTo(ent, dir);
 		});
-
-	player->OnActivate();
 
 	UIMANAGER.Load("ui.xml");
 
@@ -272,13 +271,15 @@ void Game::TransitionLevel()
 
 void Game::OnTransitionEnd()
 {
+	Player* player = m_entities.Get<Player>(m_playerEntityID);
+
 	if (m_lastEnteredPortal == nullptr)
 	{
 		RespawnPlayer(START_LEVEL, "player_spawn", true);
+		m_world.GetLevelAtPosition(player->GetPosition())->OnActivate();
 		return;
 	}
 
-	Player* player = m_entities.Get<Player>(m_playerEntityID);
 
 	if (auto transition = m_world.EnterPortal(m_world.GetLevelAtPosition(player->GetPosition())->GetName(),
 		m_lastEnteredPortal->m_Name))

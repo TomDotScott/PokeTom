@@ -22,6 +22,9 @@ Player::Player(const sf::Vector2f& position)
 	m_mapper.Map(SPRINT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::LShift));
 
 	SetPosition(position);
+
+	// The player is active by default
+	OnActivate();
 }
 
 void Player::Update(const float deltaTime)

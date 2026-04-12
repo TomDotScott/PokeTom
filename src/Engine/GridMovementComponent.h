@@ -24,6 +24,7 @@ public:
 	GridMovementComponent(Entity* owner, float tileSize, float walkTilesPerSecond, float sprintTilesPerSecond);
 
 	void Move(eDirection direction);
+	bool CanMove(eDirection direction) const;
 
 	void SetDirection(eOrientation orientation);
 	void SetDirection(eDirection direction);

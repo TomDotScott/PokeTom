@@ -17,7 +17,7 @@
 class Game final : public IUpdateable
 {
 public:
-	Game(sol::state& lua);
+	Game(sol::state& lua, EntityRegistry& entities);
 	~Game() override;
 
 	void Update(float deltaTime) override;
@@ -25,7 +25,7 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
-	EntityRegistry m_entities;
+	EntityRegistry& m_entities;
 
 	enum class eGameState
 	{

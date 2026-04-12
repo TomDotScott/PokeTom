@@ -19,7 +19,7 @@ public:
 	void SetPosition(const sf::Vector2f& position);
 	void SetPosition(float x, float y);
 
-	uint64_t GetID() const;
+	uint32_t GetID() const;
 
 	bool IsActive() const { return m_isActive; }
 
@@ -28,7 +28,7 @@ protected:
 
 private:
 	bool m_isActive;
-	uint64_t m_id;
+	uint32_t m_id;
 };
 
 #endif

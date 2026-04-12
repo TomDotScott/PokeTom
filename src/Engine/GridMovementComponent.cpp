@@ -50,10 +50,15 @@ void GridMovementComponent::Move(const eDirection direction)
 
 	SetDirection(direction);
 
-	if (m_canMove && m_canMove(m_owningEntity, direction))
+	if (CanMove(direction))
 	{
 		StartMove(dir);
 	}
+}
+
+bool GridMovementComponent::CanMove(const eDirection direction) const
+{
+	return m_canMove && m_canMove(m_owningEntity, direction);
 }
 
 void GridMovementComponent::SetDirection(const eOrientation orientation)

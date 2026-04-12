@@ -4,7 +4,7 @@
 #include "GridMovementComponent.h"
 #include "Animation/AnimationComponent.h"
 
-Entity::Entity()
+Entity::Entity() : Entity(sf::Vector2f{})
 {
 }
 
