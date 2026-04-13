@@ -12,8 +12,9 @@ public:
 	Entity();
 	Entity(const sf::Vector2f& position);
 
+	~Entity();
+
 	void Update(float deltaTime) override;
-	void Render(sf::RenderWindow& window);
 
 	void SetPosition(const sf::Vector2f& position);
 
@@ -54,8 +55,15 @@ public:
 		return ref;
 	}
 
+	void OnActivate() override;
+	void OnDeactivate() override;
+
+	virtual void OnEntityDestroyed();
+
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
 
+	void OnEntityActivate();
+	void OnEntityDeactivate();
 };
 #endif

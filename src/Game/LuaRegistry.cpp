@@ -10,6 +10,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "WorldDefinition.h"
+#include "../Engine/Scripting/ScriptComponent.h"
 
 
 LuaRegistry::LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
@@ -23,19 +24,19 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 {
 	LUA_API_BEGIN(Entity, lua)
 		LUA_FUNC(Entity, Create,
-			[&entities](const float x, const float y) -> uint64_t {
+			[&entities](const float x, const float y) -> uint32_t {
 				const Entity& e = entities.Create<Entity>(sf::Vector2f{ x, y });
 				return e.GetID();
 			})
 
 		LUA_FUNC(Entity, Destroy,
-			[&entities](const uint64_t id)
+			[&entities](const uint32_t id)
 			{
 				entities.Destroy(id);
 			})
 
 		LUA_FUNC(Entity, SetActive,
-			[&entities](const uint64_t id, const bool active)
+			[&entities](const uint32_t id, const bool active)
 			{
 				auto* e = entities.Get<Entity>(id);
 				if (active)
@@ -49,7 +50,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, Move,
-			[&entities](const uint64_t id, const int direction)
+			[&entities](const uint32_t id, const int direction)
 			{
 				auto e = entities.Get<Entity>(id);
 				if (e == nullptr)
@@ -69,7 +70,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, CanMove,
-			[&entities](const uint64_t id, const int direction)
+			[&entities](const uint32_t id, const int direction)
 			{
 				auto e = entities.Get<Entity>(id);
 				if (e == nullptr)
@@ -88,7 +89,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, AddGridMovementComponent,
-			[&](const uint64_t id)
+			[&](const uint32_t id)
 			{
 				Entity* e = entities.Get<Entity>(id);
 				// TODO: Fix these magic numbers!
@@ -102,8 +103,8 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				});
 			})
 
-		LUA_FUNC(Entity, AddAnimationComponent,
-			[&entities](const uint64_t id, const std::string& animationPath, const std::string& initialAnimation)
+	LUA_FUNC(Entity, AddAnimationComponent,
+			[&entities](const uint32_t id, const std::string& animationPath, const int initialAnimation)
 			{
 				Entity* e = entities.Get<Entity>(id);
 
@@ -166,6 +167,26 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				// TODO: Fix these magic numbers!
 				e->AddComponent<EntityAnimationComponent>(e, animationPath, initialAnimName);
 			})
+
+	// TODO: Make this a script name or ID instead of a filepath
+	LUA_FUNC(Entity, AddScriptComponent,
+		[&](const uint32_t id, const std::string& scriptPath){
+			Entity* e = entities.Get<Entity>(id);
+
+			if (e == nullptr)
+			{
+				return;
+			}
+
+			auto& c = e->AddComponent<ScriptComponent>(e, lua, scriptPath);
+
+			// If the entity is already active in the scene, make sure the script onActivate is called
+			if (e->IsActive())
+			{
+				c.OnActivate();
+			}
+		})
+
 	LUA_API_END()
 }
 

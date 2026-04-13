@@ -15,6 +15,7 @@ function init(self)
 
         Entity.AddAnimationComponent(self.npcID1, "animation/npc_man_1.xml", AnimationName.IDLE_DOWN)
         Entity.AddGridMovementComponent(self.npcID1)
+        Entity.AddScriptComponent(self.npcID1, "../scripts/entities/test_script_1.lua")
     end
 
     self.onDeactivate = function(self)

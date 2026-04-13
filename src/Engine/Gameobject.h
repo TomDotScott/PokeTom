@@ -10,9 +10,9 @@ public:
 
 	virtual ~GameObject() = default;
 
-	void OnActivate();
+	virtual void OnActivate();
 
-	void OnDeactivate();
+	virtual void OnDeactivate();
 
 	const sf::Vector2f& GetPosition() const { return m_position; }
 	sf::Vector2f GetPosition() { return m_position; }

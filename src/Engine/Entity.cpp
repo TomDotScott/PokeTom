@@ -14,6 +14,11 @@ Entity::Entity(const sf::Vector2f& position) :
 {
 }
 
+Entity::~Entity()
+{
+	Entity::OnEntityDestroyed();
+}
+
 void Entity::Update(const float deltaTime)
 {
 	for (const auto& c : m_components)
@@ -35,5 +40,51 @@ void Entity::SetPosition(const sf::Vector2f& position)
 	if (GridMovementComponent* movement = GetComponent<GridMovementComponent>())
 	{
 		movement->SetWorldPosition(position);
+	}
+}
+
+void Entity::OnActivate()
+{
+	GameObject::OnActivate();
+
+	OnEntityActivate();
+}
+
+void Entity::OnDeactivate()
+{
+	GameObject::OnDeactivate();
+
+	OnEntityDeactivate();
+}
+
+void Entity::OnEntityDestroyed()
+{
+	IUpdateable::OnDestroyed();
+
+	for (const auto& c : m_components)
+	{
+		c->OnDestroyed();
+	}
+
+	m_components.clear();
+}
+
+void Entity::OnEntityActivate()
+{
+	IUpdateable::OnActivate();
+
+	for (const auto& c : m_components)
+	{
+		c->OnActivate();
+	}
+}
+
+void Entity::OnEntityDeactivate()
+{
+	IUpdateable::OnDeactivate();
+
+	for (const auto& c : m_components)
+	{
+		c->OnDeactivate();
 	}
 }
