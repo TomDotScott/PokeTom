@@ -15,11 +15,11 @@
 
 static constexpr const char* START_LEVEL = "starter_town";
 
-Game::Game(sol::state& lua, EntityRegistry& entities) :
+Game::Game(sol::state& lua) :
 	IUpdateable(),
-	m_entities(entities),
 	m_state(eGameState::Overworld),
 	m_world(lua, "WorldDefinition.xml"),
+	m_luaBindings(lua, m_world, m_entities),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
@@ -30,11 +30,13 @@ Game::Game(sol::state& lua, EntityRegistry& entities) :
 
 	Player* player = m_entities.Get<Player>(m_playerEntityID);
 	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
-		{
-			return m_world.CanMoveTo(ent, dir);
-		});
+	{
+		return m_world.CanMoveTo(ent, dir);
+	});
 
 	UIMANAGER.Load("ui.xml");
+
+	m_world.LoadLevelScripts(lua);
 
 	OnTransitionEnd();
 }
@@ -255,7 +257,8 @@ void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnP
 		playerMovement->SetDirection(spawnPointData.m_Orientation);
 		player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition * 32));
 
-		player->GetComponent<EntityAnimationComponent>()->PlayAnimation(EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
+		player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
+			EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
 
 		m_cameraPosition = player->GetPosition();
 

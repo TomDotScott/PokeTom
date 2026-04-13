@@ -10,7 +10,7 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
 
-#include "Engine/Scripting/LuaRegistry.h"
+#include "Game/LuaRegistry.h"
 
 GraphicSettings GRAPHIC_SETTINGS{ };
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
@@ -37,8 +37,6 @@ int main(int argc, char** argv)
 
 	Mouse::Get().SetRelativeWindow(&window);
 
-	EntityRegistry entityRegistry;
-
 	sol::state lua;
 	lua.open_libraries(
 		sol::lib::base,
@@ -48,9 +46,7 @@ int main(int argc, char** argv)
 	);
 
 	// Register all the Lua bindings
-	LuaRegistry luaRegistry{ lua, entityRegistry };
-
-	Game game{ lua, entityRegistry };
+	Game game{ lua };
 
 	constexpr sf::Color clearColour(0x2B2B2BFF);
 

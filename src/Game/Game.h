@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <sol/sol.hpp>
 #include "Level.h"
+#include "LuaRegistry.h"
 #include "Player.h"
 #include "Renderer.h"
 #include "TileLogic.h"
@@ -17,7 +18,7 @@
 class Game final : public IUpdateable
 {
 public:
-	Game(sol::state& lua, EntityRegistry& entities);
+	Game(sol::state& lua);
 	~Game() override;
 
 	void Update(float deltaTime) override;
@@ -25,7 +26,7 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
-	EntityRegistry& m_entities;
+	EntityRegistry m_entities;
 
 	enum class eGameState
 	{
@@ -34,6 +35,8 @@ private:
 	} m_state;
 
 	WorldDefinition m_world;
+	LuaRegistry m_luaBindings;
+
 	uint64_t m_playerEntityID;
 
 	const PortalTrigger* m_lastEnteredPortal;

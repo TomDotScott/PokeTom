@@ -7,14 +7,15 @@
 // Forward decs for the various APIs that will be exposed to the scripting
 // TODO: Add Input, Rendering, and other system code here
 class EntityRegistry;
+class WorldDefinition;
 
 class LuaRegistry
 {
 public:
-	LuaRegistry(sol::state& lua, EntityRegistry& entities);
+	LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities);
 
 private:
-	void RegisterEntityAPI(sol::state& lua, EntityRegistry& entities);
+	void RegisterEntityAPI(sol::state& lua, WorldDefinition& world, EntityRegistry& entities);
 	void RegisterDirections(sol::state& lua);
 	void RegisterAnimationNames(sol::state& lua);
 };

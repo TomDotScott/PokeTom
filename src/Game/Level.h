@@ -52,12 +52,16 @@ public:
 
 	sf::FloatRect GetBounds() const;
 
+	bool LoadLevelScript(sol::state& lua);
+
 private:
 	std::string m_name;
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
 
 	bool m_hasLevelScript;
+	bool m_levelScriptLoaded;
+	bool m_active;
 	sol::table m_self;
 	sol::environment m_environment;
 	sol::function m_onUpdate;

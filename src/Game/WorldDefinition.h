@@ -24,6 +24,7 @@ public:
 	};
 
 	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName) const;
+	void LoadLevelScripts(sol::state& lua);
 
 	struct Portal
 	{

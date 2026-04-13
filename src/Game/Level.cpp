@@ -6,6 +6,8 @@ Level::Level(sol::state& lua, std::string name, const std::shared_ptr<MapData>& 
 	m_name(std::move(name)),
 	m_mapData(mapData),
 	m_adjacentLevels(std::move(adjacentLevels)),
+	m_hasLevelScript(false),
+	m_levelScriptLoaded(false),
 	m_entityZIndex(0),
 	m_worldTileOrigin(0, 0),
 	m_tileLogic(m_mapData)
@@ -19,35 +21,7 @@ Level::Level(sol::state& lua, std::string name, const std::shared_ptr<MapData>& 
 		}
 	}
 
-	if (m_mapData->m_LevelScript.empty())
-	{
-		m_hasLevelScript = false;
-	}
-	else
-	{
-		m_self = lua.create_table();
-
-		m_environment = sol::environment(lua, sol::create, lua.globals());
-
-		auto scriptPath = m_mapData->m_LevelScript.c_str();
-		auto result = lua.safe_script_file(m_mapData->m_LevelScript.generic_string(), m_environment);
-		ASSERT_MSG(result.valid(), "Script %ls was not loaded correctly!", scriptPath);
-
-		sol::function init = m_environment["init"];
-		if (init.valid())
-		{
-			init(m_self);
-		}
-
-		m_onUpdate = m_self["update"];
-		ASSERT_MSG(m_onUpdate.valid(), "update function is missing from script %ls!", scriptPath);
-
-		m_onActivate = m_self["onActivate"];
-		ASSERT_MSG(m_onActivate.valid(), "onActivate function is missing from script %ls!", scriptPath);
-
-		m_onDeactivate = m_self["onDeactivate"];
-		ASSERT_MSG(m_onDeactivate.valid(), "onDeactivate function is missing from script %ls!", scriptPath);
-	}
+	m_hasLevelScript = !m_mapData->m_LevelScript.empty();
 }
 
 bool Level::OnActivate()
@@ -62,6 +36,7 @@ bool Level::OnActivate()
 		m_onActivate(m_self);
 	}
 
+	m_active = true;
 	return true;
 }
 
@@ -77,11 +52,17 @@ bool Level::OnDeactivate()
 		m_onDeactivate(m_self);
 	}
 
+	m_active = false;
 	return true;
 }
 
 bool Level::OnUpdate(float deltaTime)
 {
+	if (!m_active)
+	{
+		return true;
+	}
+
 	if (m_hasLevelScript)
 	{
 		if (!m_onUpdate.valid())
@@ -236,6 +217,62 @@ sf::FloatRect Level::GetBounds() const
 		static_cast<sf::Vector2f>(m_worldTileOrigin),
 		{ static_cast<float>(GetNumColumns()) * 32.f, static_cast<float>(GetNumRows()) * 32.f}
 	};
+}
+
+bool Level::LoadLevelScript(sol::state& lua)
+{
+	ASSERT(!m_levelScriptLoaded);
+
+	// TODO: Remove this eventually, I think every level will have a script!
+	if (!m_hasLevelScript)
+	{
+		return true;
+	}
+
+	m_self = lua.create_table();
+
+	m_environment = sol::environment(lua, sol::create, lua.globals());
+
+	const auto scriptPath = m_mapData->m_LevelScript.c_str();
+	const auto result = lua.safe_script_file(m_mapData->m_LevelScript.generic_string(), m_environment);
+	ASSERT_MSG(result.valid(), "Script %ls was not loaded correctly!", scriptPath);
+
+	if (!result.valid())
+	{
+		return false;
+	}
+
+	sol::function init = m_environment["init"];
+	if (init.valid())
+	{
+		init(m_self);
+	}
+
+	m_onUpdate = m_self["update"];
+	ASSERT_MSG(m_onUpdate.valid(), "update function is missing from script %ls!", scriptPath);
+
+	if (!m_onUpdate.valid())
+	{
+		return false;
+	}
+
+	m_onActivate = m_self["onActivate"];
+	ASSERT_MSG(m_onActivate.valid(), "onActivate function is missing from script %ls!", scriptPath);
+
+	if (!m_onActivate.valid())
+	{
+		return false;
+	}
+
+	m_onDeactivate = m_self["onDeactivate"];
+	ASSERT_MSG(m_onDeactivate.valid(), "onDeactivate function is missing from script %ls!", scriptPath);
+
+	if (!m_onDeactivate.valid())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 const sf::Vector2i& Level::GetWorldOrigin() const

@@ -45,8 +45,18 @@ std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(con
 	};
 }
 
+// TODO: This should be per-level not all at once but hey-ho it's late and I am a hackerman
+void WorldDefinition::LoadLevelScripts(sol::state& lua)
+{
+	for (const auto& level : m_levels | std::views::values)
+	{
+		// TODO: What should we do if a script fails?
+		level->LoadLevelScript(lua);
+	}
+}
+
 const WorldDefinition::Portal& WorldDefinition::GetPortalData(const std::string& levelName,
-	const std::string& portalName)
+                                                              const std::string& portalName)
 {
 	return m_levelPortals.at(levelName).at(portalName);
 }
@@ -98,6 +108,11 @@ const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const std::strin
 
 bool WorldDefinition::CanMoveTo(const Entity* entity, const eDirection direction) const
 {
+	if (entity ==nullptr)
+	{
+		return false;
+	}
+
 	const GridMovementComponent* entityMovement = entity->GetComponent<GridMovementComponent>();
 	if (entityMovement == nullptr)
 	{

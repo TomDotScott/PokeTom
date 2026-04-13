@@ -2,6 +2,8 @@ function init(self)
     self.npcID1 = 0
     self.currentDirectionNPC1 = Direction.North
 
+    self.directionTimer = 0
+
     self.onActivate = function(self)
         print("onActivate")
 
@@ -21,13 +23,28 @@ function init(self)
     end
 
     self.update = function(self, dt)
+        self.directionTimer = self.directionTimer + dt
+
+        if self.directionTimer > 2 then
+            self.currentDirectionNPC1 = math.random(0, 3)
+            self.directionTimer = 0
+        end
+
         if Entity.CanMove(self.npcID1, self.currentDirectionNPC1) then
             Entity.Move(self.npcID1, self.currentDirectionNPC1)
         else
             if self.currentDirectionNPC1 == Direction.North then
                 self.currentDirectionNPC1 = Direction.South
-            else
+            
+            elseif self.currentDirectionNPC1 == Direction.South then
                 self.currentDirectionNPC1 = Direction.North
+
+            elseif self.currentDirectionNPC1 == Direction.East then
+                self.currentDirectionNPC1 = Direction.West
+            
+            else
+                self.currentDirectionNPC1 = Direction.East
+
             end
         end
     end

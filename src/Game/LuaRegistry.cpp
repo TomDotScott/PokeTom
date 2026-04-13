@@ -2,26 +2,29 @@
 #pragma optimize("", off)
 #endif
 #include "LuaRegistry.h"
+#include "../Engine/EntityRegistry.h"
+#include "../Engine/Entity.h"
+#include "../Engine/GridMovementComponent.h"
+#include "../Engine/Animation/AnimationComponent.h"
+#include "../Engine/Scripting/LuaBindingMacros.h"
+#include <SFML/System/Vector2.hpp>
 
-#include "LuaBindingMacros.h"
-#include "../EntityRegistry.h"
-#include "../GridMovementComponent.h"
-#include "../Animation/AnimationComponent.h"
+#include "WorldDefinition.h"
 
 
-LuaRegistry::LuaRegistry(sol::state& lua, EntityRegistry& entities)
+LuaRegistry::LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
 {
-	RegisterEntityAPI(lua, entities);
+	RegisterEntityAPI(lua, world, entities);
 	RegisterDirections(lua);
 	RegisterAnimationNames(lua);
 }
 
-void LuaRegistry::RegisterEntityAPI(sol::state& lua, EntityRegistry& entities)
+void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
 {
 	LUA_API_BEGIN(Entity, lua)
 		LUA_FUNC(Entity, Create,
 			[&entities](const float x, const float y) -> uint64_t {
-				const Entity& e = entities.Create<Entity>(sf::Vector2f{x, y});
+				const Entity& e = entities.Create<Entity>(sf::Vector2f{ x, y });
 				return e.GetID();
 			})
 
@@ -38,7 +41,8 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, EntityRegistry& entities)
 				if (active)
 				{
 					e->OnActivate();
-				} else
+				}
+				else
 				{
 					e->OnDeactivate();
 				}
@@ -50,7 +54,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, EntityRegistry& entities)
 				auto e = entities.Get<Entity>(id);
 				if (e == nullptr)
 				{
-					// std::cerr << "Entity with ID " << id << " returned null!\n";
+					std::cerr << "Entity with ID " << id << " returned null!\n";
 					return;
 				}
 
@@ -84,7 +88,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, EntityRegistry& entities)
 			})
 
 		LUA_FUNC(Entity, AddGridMovementComponent,
-			[&entities](const uint64_t id)
+			[&](const uint64_t id)
 			{
 				Entity* e = entities.Get<Entity>(id);
 				// TODO: Fix these magic numbers!
@@ -92,8 +96,10 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, EntityRegistry& entities)
 
 				c.SetWorldPosition(e->GetPosition());
 
-				// TODO: Fix properly, for now let's just shut up the compiler
-				c.SetCanMoveCallback([](Entity* ent, eDirection dir) { return true; });
+				c.SetCanMoveCallback([&](Entity* ent, const eDirection dir)
+				{
+						return world.CanMoveTo(ent, dir);
+				});
 			})
 
 		LUA_FUNC(Entity, AddAnimationComponent,
@@ -160,7 +166,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, EntityRegistry& entities)
 				// TODO: Fix these magic numbers!
 				e->AddComponent<EntityAnimationComponent>(e, animationPath, initialAnimName);
 			})
-		LUA_API_END()
+	LUA_API_END()
 }
 
 void LuaRegistry::RegisterDirections(sol::state& lua)
