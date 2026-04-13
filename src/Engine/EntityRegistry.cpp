@@ -36,9 +36,26 @@ void EntityRegistry::UpdateAll(const float deltaTime)
 
 void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 {
+	std::vector<const Entity*> renderables;
+	renderables.reserve(m_entities.size());
+
 	for (const auto& entity : m_entities | std::views::values)
 	{
-		const EntityAnimationComponent* animation = entity->GetComponent<EntityAnimationComponent>();
+		if (entity->IsActive())
+		{
+			renderables.push_back(entity.get());
+		}
+	}
+
+	// Sort by Y position for correct draw order
+	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool{
+		return a->GetPosition().y < b->GetPosition().y;
+	});
+
+	for (const auto& entity : renderables)
+	{
+		// TODO: We should probably allow static, un-animated, entities!
+		const auto* animation = entity->GetComponent<EntityAnimationComponent>();
 		if (animation == nullptr)
 		{
 			continue;
@@ -56,7 +73,7 @@ void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 		playerSprite.setTextureRect({
 			{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
 			{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
-			});
+		});
 
 		playerSprite.setOrigin({ playerSprite.getLocalBounds().size.x / 2, playerSprite.getLocalBounds().size.y / 2 });
 		playerSprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
