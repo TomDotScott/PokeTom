@@ -65,20 +65,18 @@ void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 		const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(
 			animation->GetAnimator().GetDictionarySpritesheetResourceName());
 
-		// TODO: Come up with a proper way to render all the Entities in the level
-		// TODO: Make this generic and reusable - everything has walking animations
-		sf::Sprite playerSprite(animatedPlayerTexture);
+		sf::Sprite sprite(animatedPlayerTexture);
 		const AnimationFrame& currentFrame = animation->GetAnimator().GetCurrentFrame();
 
-		playerSprite.setTextureRect({
+		sprite.setTextureRect({
 			{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
 			{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
 		});
 
-		playerSprite.setOrigin({ playerSprite.getLocalBounds().size.x / 2, playerSprite.getLocalBounds().size.y / 2 });
-		playerSprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
+		sprite.setOrigin({ sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2 });
+		sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
 
-		playerSprite.setScale({ 2, 2 });
-		window.draw(playerSprite);
+		sprite.setScale({ 2, 2 });
+		window.draw(sprite);
 	}
 }
