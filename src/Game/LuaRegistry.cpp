@@ -108,61 +108,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			{
 				Entity* e = entities.Get<Entity>(id);
 
-				// TODO: This is horrible!
-				EntityAnimationComponent::eAnimationName initialAnimName;
-				if (initialAnimation == "IDLE_UP")
-				{
-					initialAnimName = EntityAnimationComponent::IDLE_UP;
-				}
-				else if (initialAnimation == "IDLE_DOWN")
-				{
-					initialAnimName = EntityAnimationComponent::IDLE_DOWN;
-				}
-				else if (initialAnimation == "IDLE_LEFT")
-				{
-					initialAnimName = EntityAnimationComponent::IDLE_LEFT;
-				}
-				else if (initialAnimation == "IDLE_RIGHT")
-				{
-					initialAnimName = EntityAnimationComponent::IDLE_RIGHT;
-				}
-				else if (initialAnimation == "WALK_UP")
-				{
-					initialAnimName = EntityAnimationComponent::WALK_UP;
-				}
-				else if (initialAnimation == "WALK_DOWN")
-				{
-					initialAnimName = EntityAnimationComponent::WALK_DOWN;
-				}
-				else if (initialAnimation == "WALK_LEFT")
-				{
-					initialAnimName = EntityAnimationComponent::WALK_LEFT;
-				}
-				else if (initialAnimation == "WALK_RIGHT")
-				{
-					initialAnimName = EntityAnimationComponent::WALK_RIGHT;
-				}
-				else if (initialAnimation == "RUN_UP")
-				{
-					initialAnimName = EntityAnimationComponent::RUN_UP;
-				}
-				else if (initialAnimation == "RUN_DOWN")
-				{
-					initialAnimName = EntityAnimationComponent::RUN_DOWN;
-				}
-				else if (initialAnimation == "RUN_LEFT")
-				{
-					initialAnimName = EntityAnimationComponent::RUN_LEFT;
-				}
-				else if (initialAnimation == "RUN_RIGHT")
-				{
-					initialAnimName = EntityAnimationComponent::RUN_RIGHT;
-				}
-				else
-				{
-					std::cerr << "Unable to map " << initialAnimation << " to the eAnimationName enum!\n!";
-					initialAnimName = EntityAnimationComponent::IDLE_DOWN;
-				}
+				const auto initialAnimName = static_cast<EntityAnimationComponent::eAnimationName>(initialAnimation);
 
 				// TODO: Fix these magic numbers!
 				e->AddComponent<EntityAnimationComponent>(e, animationPath, initialAnimName);
@@ -203,20 +149,20 @@ void LuaRegistry::RegisterDirections(sol::state& lua)
 void LuaRegistry::RegisterAnimationNames(sol::state& lua)
 {
 	LUA_API_BEGIN(AnimationName, lua)
-		LUA_CONST(AnimationName, IDLE_UP, "IDLE_UP")
-		LUA_CONST(AnimationName, IDLE_DOWN, "IDLE_DOWN")
-		LUA_CONST(AnimationName, IDLE_LEFT, "IDLE_LEFT")
-		LUA_CONST(AnimationName, IDLE_RIGHT, "IDLE_RIGHT")
+		LUA_CONST(AnimationName, IDLE_UP, static_cast<int>(EntityAnimationComponent::WALK_DOWN))
+		LUA_CONST(AnimationName, IDLE_DOWN, static_cast<int>(EntityAnimationComponent::IDLE_DOWN))
+		LUA_CONST(AnimationName, IDLE_LEFT, static_cast<int>(EntityAnimationComponent::IDLE_LEFT))
+		LUA_CONST(AnimationName, IDLE_RIGHT, static_cast<int>(EntityAnimationComponent::IDLE_RIGHT))
 
-		LUA_CONST(AnimationName, WALK_UP, "WALK_UP")
-		LUA_CONST(AnimationName, WALK_DOWN, "WALK_DOWN")
-		LUA_CONST(AnimationName, WALK_LEFT, "WALK_LEFT")
-		LUA_CONST(AnimationName, WALK_RIGHT, "WALK_RIGHT")
+		LUA_CONST(AnimationName, WALK_UP, static_cast<int>(EntityAnimationComponent::WALK_UP))
+		LUA_CONST(AnimationName, WALK_DOWN, static_cast<int>(EntityAnimationComponent::WALK_DOWN))
+		LUA_CONST(AnimationName, WALK_LEFT, static_cast<int>(EntityAnimationComponent::WALK_LEFT))
+		LUA_CONST(AnimationName, WALK_RIGHT, static_cast<int>(EntityAnimationComponent::WALK_RIGHT))
 
-		LUA_CONST(AnimationName, RUN_UP, "RUN_UP")
-		LUA_CONST(AnimationName, RUN_DOWN, "RUN_DOWN")
-		LUA_CONST(AnimationName, RUN_LEFT, "RUN_LEFT")
-		LUA_CONST(AnimationName, RUN_RIGHT, "RUN_RIGHT")
+		LUA_CONST(AnimationName, RUN_UP, static_cast<int>(EntityAnimationComponent::RUN_UP))
+		LUA_CONST(AnimationName, RUN_DOWN, static_cast<int>(EntityAnimationComponent::RUN_DOWN))
+		LUA_CONST(AnimationName, RUN_LEFT, static_cast<int>(EntityAnimationComponent::RUN_LEFT))
+		LUA_CONST(AnimationName, RUN_RIGHT, static_cast<int>(EntityAnimationComponent::RUN_RIGHT))
 
 	LUA_API_END()
 }
