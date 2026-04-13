@@ -9,7 +9,7 @@ class UiSprite : public UiElement
 public:
 	UiSprite();
 
-	void SetPosition(const sf::Vector2f& position) override;
+	void SetElementPosition(const sf::Vector2f& position) override;
 
 	void SetScale(const sf::Vector2f& scale) const;
 

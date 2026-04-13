@@ -10,7 +10,7 @@ class UiButton : public UiElement
 public:
 	UiButton();
 
-	void SetPosition(const sf::Vector2f& position) override;
+	void SetElementPosition(const sf::Vector2f& position) override;
 
 	void OnButtonPressed(const std::function<void()>& callback);
 

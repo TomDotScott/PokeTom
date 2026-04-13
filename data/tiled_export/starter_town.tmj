@@ -74,20 +74,6 @@
          "y":0
         }, 
         {
-         "compression":"zlib",
-         "data":"eJztztEJABAUQFFboExjEbsZxWSG8Ap1zv+tmxK8qZfbBxBn5tsHAADwp9HO+lVjPgAA+MsGzVMCag==",
-         "encoding":"base64",
-         "height":36,
-         "id":8,
-         "name":"NPC Spawns",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":48,
-         "x":0,
-         "y":0
-        }, 
-        {
          "draworder":"topdown",
          "id":10,
          "name":"Doors",
@@ -96,6 +82,7 @@
                  "height":32,
                  "id":12,
                  "name":"door_player_house",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"Orientation",
@@ -113,6 +100,7 @@
                  "height":32,
                  "id":14,
                  "name":"player_house_exit",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"Orientation",
@@ -130,6 +118,7 @@
                  "height":32,
                  "id":15,
                  "name":"lab_door",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"Orientation",
@@ -147,6 +136,7 @@
                  "height":32,
                  "id":16,
                  "name":"lab_exit",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"Orientation",
@@ -164,6 +154,7 @@
                  "height":32,
                  "id":17,
                  "name":"door_rival_house",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"Orientation",
@@ -181,6 +172,7 @@
                  "height":32,
                  "id":18,
                  "name":"rival_house_exit",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"Orientation",
@@ -203,8 +195,14 @@
  "nextlayerid":11,
  "nextobjectid":19,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"LevelScript",
+         "type":"file",
+         "value":"..\/scripts\/levels\/starter_town.lua"
+        }],
  "renderorder":"right-down",
- "tiledversion":"1.11.2",
+ "tiledversion":"1.12.1",
  "tileheight":32,
  "tilesets":[
         {

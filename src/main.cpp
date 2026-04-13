@@ -6,16 +6,17 @@
 #include "Engine/Input/Keyboard.h"
 #include "Engine/Timer.h"
 #include "Game/Game.h"
-#include <iostream>
-#include <zlib.h>
 
-GraphicSettings GRAPHIC_SETTINGS{};
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+
+#include "Game/LuaRegistry.h"
+
+GraphicSettings GRAPHIC_SETTINGS{ };
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
 
 int main(int argc, char** argv)
 {
-	std::cout << "zlib version: " << zlibVersion() << "\n";
-
 	sf::RenderWindow window(
 #if !BUILD_MASTER
 		sf::VideoMode({ 768, 576 }),
@@ -32,11 +33,20 @@ int main(int argc, char** argv)
 
 	GRAPHIC_SETTINGS.SetScreenSize(window.getSize());
 
-	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(255);
 
 	Mouse::Get().SetRelativeWindow(&window);
 
-	Game game{};
+	sol::state lua;
+	lua.open_libraries(
+		sol::lib::base,
+		sol::lib::math,
+		sol::lib::string,
+		sol::lib::table
+	);
+
+	// Register all the Lua bindings
+	Game game{ lua };
 
 	constexpr sf::Color clearColour(0x2B2B2BFF);
 
@@ -60,7 +70,7 @@ int main(int argc, char** argv)
 		Timer::Get().Update();
 
 		const float deltaTime = Timer::Get().DeltaTime();
-		UPDATEABLE_REGISTRY.UpdateAll(deltaTime);
+		game.Update(deltaTime);
 
 		window.clear(clearColour);
 

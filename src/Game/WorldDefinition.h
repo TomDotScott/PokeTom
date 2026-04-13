@@ -4,14 +4,20 @@
 #include <hoxml.h>
 #include <optional>
 #include <string>
+#include <vector>
 #include <unordered_map>
+#include <sol/sol.hpp>
 
 #include "Level.h"
+#include "../Engine/GridMovementComponent.h"
+
+
+class EntityRegistry;
 
 class WorldDefinition
 {
 public:
-	WorldDefinition(const std::filesystem::path& worldDefinitionFilepath);
+	WorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath);
 
 	struct LevelTransition
 	{
@@ -20,6 +26,7 @@ public:
 	};
 
 	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName) const;
+	void LoadLevelScripts(sol::state& lua);
 
 	struct Portal
 	{
@@ -37,6 +44,8 @@ public:
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
 
+	bool CanMoveTo(const Entity* entity, EntityRegistry& entities, eDirection direction) const;
+
 private:
 	std::unordered_map<std::string, std::shared_ptr<Level>> m_levels;
 
@@ -44,9 +53,9 @@ private:
 	// Value - Map of Portal Names to Portal data
 	std::unordered_map<std::string, std::unordered_map<std::string, Portal>> m_levelPortals;
 
-	bool ParseWorldDefinition(const std::filesystem::path& worldDefinitionFilepath);
+	bool ParseWorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath);
 
-	static bool ParseLevel(std::unordered_map<std::string, std::shared_ptr<Level>>& levels, std::unordered_map<std::string, std::unordered_map<std::string, Portal>>& portals, hoxml_context_t*& context, const char* xml, size_t xmlLength);
+	static bool ParseLevel(sol::state& lua, std::unordered_map<std::string, std::shared_ptr<Level>>& levels, std::unordered_map<std::string, std::unordered_map<std::string, Portal>>& portals, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 
 	static bool ParsePortal(const std::string& levelName, std::unordered_map<std::string, std::unordered_map<std::string, Portal>>& portals, hoxml_context_t*& context, const char* xml, size_t xmlLength);
 };

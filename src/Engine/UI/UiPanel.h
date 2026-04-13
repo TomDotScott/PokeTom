@@ -10,7 +10,7 @@ class UiPanel : public UiElement
 public:
 	UiPanel();
 
-	void SetPosition(const sf::Vector2f& position) override;
+	void SetElementPosition(const sf::Vector2f& position) override;
 
 	sf::Vector2f GetSize() const override;
 	void SetSize(const sf::Vector2f& size);

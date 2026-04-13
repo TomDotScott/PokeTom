@@ -68,10 +68,12 @@ public:
 	const std::vector<TileSet>& GetTileSets() const;
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
+	const std::filesystem::path& GetLevelScriptFilepath() const;
 
 
 private:
 	std::filesystem::path m_filePath;
+	std::filesystem::path m_levelScriptPath;
 	uint32_t m_height;
 	uint32_t m_width;
 	std::vector<Layer> m_layers;
@@ -83,6 +85,7 @@ private:
 
 	bool Init() override;
 	explicit TMJ(std::filesystem::path path);
+	bool ParsePropertiesArray(const nlohmann::basic_json<>& propertiesArray);
 	bool ParseLayersArray(const nlohmann::basic_json<>& layersArray);
 	bool ParseTileSets(const nlohmann::basic_json<>& tileSetsArray);
 	static bool ParseTileLayerType(const nlohmann::basic_json<>& layerObj, int zIndex, std::vector<Layer>& layers);

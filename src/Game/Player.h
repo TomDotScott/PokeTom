@@ -1,53 +1,19 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "GridMovementComponent.h"
-#include "Level.h"
-#include "WorldDefinition.h"
-#include "../Engine/Gameobject.h"
-#include "../Engine/Animation/AnimationPlayer.h"
+#include "../Engine/Entity.h"
 #include "../Engine/Input/InputMapper.h"
+#include "../Engine/GridMovementComponent.h"
 
-class Player final : public GameObject
+class Player final : public Entity
 {
 public:
 	Player();
+	Player(const sf::Vector2f& position);
 
-	void Update(float deltaTime, const WorldDefinition& gameWorld);
-
-	void SetPosition(float x, float y) override;
-	void SetPosition(const sf::Vector2f& position) override;
-
-	void SetOrientation(eOrientation);
-	eOrientation GetCurrentOrientation() const;
-
-	enum eAnimationState
-	{
-		IDLE_UP,
-		IDLE_DOWN,
-		IDLE_LEFT,
-		IDLE_RIGHT,
-
-		WALK_UP,
-		WALK_DOWN,
-		WALK_LEFT,
-		WALK_RIGHT,
-
-		RUN_UP,
-		RUN_DOWN,
-		RUN_LEFT,
-		RUN_RIGHT,
-	};
-	eAnimationState GetAnimationStateFromMovement() const;
-	static std::string GetAnimationName(eAnimationState state);
-
-	const AnimationPlayer& GetAnimator() const;
+	void Update(float deltaTime) override;
+	void SetCanMoveCallback(const can_move_func& callback);
 
 private:
-	GridMovementComponent m_movement;
-	eAnimationState m_animationState;
-
-	AnimationPlayer m_animationPlayer;
-
 	enum eInputs : uint8_t
 	{
 		UP,
@@ -57,11 +23,6 @@ private:
 		SPRINT
 	};
 	InputMapper m_mapper;
-
-	void Move(const WorldDefinition& gameWorld, GridMovementComponent::eDirection direction);
-	static eAnimationState GetWalkAnimationState(eOrientation orientation);
-	static eAnimationState GetIdleAnimationState(eOrientation orientation);
-	static eAnimationState GetSprintAnimationState(eOrientation orientation);
 };
 
 #endif

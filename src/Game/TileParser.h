@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Orientation.h"
+#include "../Engine/Orientation.h"
 #include "TileSheet.h"
 
 struct TileLayerData
@@ -46,6 +46,7 @@ struct MapData
 	std::unordered_map<std::string, PortalTrigger> m_Portals;
 	std::unordered_map<std::string, SpawnPointData> m_SpawnPoints;
 	std::unordered_map<std::string, std::shared_ptr<TileSheet>> m_TileSheets;
+	std::filesystem::path m_LevelScript;
 	uint32_t m_NumColumns;
 	uint32_t m_NumRows;
 };

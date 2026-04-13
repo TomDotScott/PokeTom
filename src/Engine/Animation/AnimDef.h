@@ -31,10 +31,10 @@ public:
 
 	const Animation& GetClip(const std::string& name) const;
 
-	const std::string& GetSpriteSheetResourceName() const;
-
 	// TODO: Get rid of this - I think we need a wrapper for the map below...
 	AnimationDictionary() = default;
+
+	const std::string& GetName() const;
 
 protected:
 	bool Init() override;
@@ -42,9 +42,7 @@ protected:
 private:
 	std::string m_name;
 	std::filesystem::path m_filepath;
-	std::string m_spriteSheetResourceName;
-	uint32_t m_spriteWidth;
-	uint32_t m_spriteHeight;
+	sf::IntRect m_spriteSheetRect;
 	std::unordered_map<std::string, Animation> m_animationClips;
 
 	AnimationDictionary(std::filesystem::path filepath);

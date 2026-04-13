@@ -4,7 +4,7 @@
 
 namespace
 {
-	uint64_t CURRENT_ID = 0;
+	uint32_t CURRENT_ID = 0;
 }
 
 GameObject::GameObject(const sf::Vector2f position) :
@@ -35,7 +35,7 @@ void GameObject::SetPosition(const float x, const float y)
 	m_position.y = y;
 }
 
-uint64_t GameObject::GetID() const
+uint32_t GameObject::GetID() const
 {
 	return m_id;
 }

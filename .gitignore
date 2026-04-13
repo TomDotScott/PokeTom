@@ -83,4 +83,11 @@ Properties/launchSettings.json
 # Ignore generated SFML folder
 build_sfmldb/
 Lib/SFML/
+
+# Ignore generated Lua folders
+Lib/lua/build_vs2022/
+Lib/sol2
+
+# Ignore all the auto-generated code
 src/Engine/CodeGen/
+

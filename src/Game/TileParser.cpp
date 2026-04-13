@@ -40,12 +40,6 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 	// Load each layer
 	for (const auto& layer : tmjParser->GetLayers())
 	{
-		// TODO: Create this!
-		if (layer.m_Name == "NPC Spawns")
-		{
-			continue;
-		}
-
 		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex, layer.m_IsPlayerLayer });
 	}
 
@@ -103,5 +97,6 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 		data.m_SpawnPoints[spawnPoint.m_Name] = spawnPointData;
 	}
 
+	data.m_LevelScript = tmjParser->GetLevelScriptFilepath();
 	return std::make_shared<MapData>(data);
 }

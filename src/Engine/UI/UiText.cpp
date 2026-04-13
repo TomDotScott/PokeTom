@@ -24,7 +24,7 @@ void UiText::SetTextSize(const unsigned size)
 	m_text.setCharacterSize(size);
 }
 
-void UiText::SetPosition(const sf::Vector2f& position)
+void UiText::SetElementPosition(const sf::Vector2f& position)
 {
 	GameObject::SetPosition(position);
 

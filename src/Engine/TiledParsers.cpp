@@ -93,6 +93,11 @@ uint32_t TMJ::GetNumRows() const
 	return m_height;
 }
 
+const std::filesystem::path& TMJ::GetLevelScriptFilepath() const
+{
+	return m_levelScriptPath;
+}
+
 bool TMJ::Init()
 {
 	if (!exists(m_filePath))
@@ -119,6 +124,12 @@ bool TMJ::Init()
 	{
 		std::cout << "Error: Failed to parse layers array! Dumping...\n" << layersArray << "\n";
 		return false;
+	}
+
+	const auto& levelPropertiesArray = json["properties"];
+	if (!ParsePropertiesArray(levelPropertiesArray))
+	{
+		std::cout << "Error: Failed to parse properties array! Scripting may not work for level: " << m_filePath << "\n";
 	}
 
 	const auto& tileSetsArray = json["tilesets"];
@@ -174,6 +185,42 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 	m_layers = layers;
 	m_portals = portals;
 	m_spawnPoints = spawnPoints;
+	return true;
+}
+
+bool TMJ::ParsePropertiesArray(const nlohmann::basic_json<>& propertiesArray)
+{
+	if (propertiesArray.type() != nlohmann::detail::value_t::array)
+	{
+		std::cout << "Error: typeof propertiesArray=" << propertiesArray.type_name() << "\n";
+		return false;
+	}
+
+	std::filesystem::path levelScriptPath;
+
+	for (const auto& elem : propertiesArray)
+	{
+		const auto& propertyName = elem["name"];
+		if (!propertyName.is_string())
+		{
+			return false;
+		}
+
+		const std::string propertyNameString = propertyName;
+
+		if (propertyNameString == "LevelScript")
+		{
+			levelScriptPath = std::string{ elem["value"] };
+			if (!exists(levelScriptPath))
+			{
+				std::cerr << "TMJ::ParsePropertiesArray: File at location " << levelScriptPath << " does not exist!\n";
+
+				return false;
+			}
+		}
+	}
+
+	m_levelScriptPath = levelScriptPath;
 	return true;
 }
 

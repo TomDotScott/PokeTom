@@ -16,8 +16,43 @@ if not "%~2"=="" (
     set BUILD_DIR=%CD%\build_sfmldb
 )
 
+set SOL2_DIR=%CD%\Lib\sol2
+set SOL2_SINGLE_HEADER=%CD%\Lib\sol2\single
+
 :: ----------------------
-:: Skip if already exists
+:: Skip cloning sol2 if already exists
+:: ----------------------
+if exist "%SOL2_DIR%" (
+    echo sol2 already cloned. Skipping git clone step.
+    goto :GENERATE_SOL2_HEADERS_STEP
+)
+
+echo ===============================
+echo Cloning sol2 repository...
+echo ===============================
+mkdir "%SOL2_DIR%"
+git clone --depth 1 https://github.com/ThePhD/sol2.git "%SOL2_DIR%"
+
+:: ----------------------
+:: Skip generating sol2 if already exists
+:: ----------------------
+:GENERATE_SOL2_HEADERS_STEP
+if exist "%SOL2_DIR%\single\single\include\sol" (
+    echo sol2 already cloned and built. Skipping python single.py
+    goto :SFML_STEP
+)
+
+echo ===============================
+echo Generating sol2 includes
+echo ===============================
+pushd %SOL2_SINGLE_HEADER%
+py -3 single.py
+popd
+
+:SFML_STEP
+
+:: ----------------------
+:: Skip Cloning and Building SFML if already exists
 :: ----------------------
 if exist "%SFML_DIR%\include\SFML" (
     echo SFML already cloned and built. Skipping setup.

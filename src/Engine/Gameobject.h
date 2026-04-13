@@ -1,6 +1,5 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
-#include <functional>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 
@@ -11,16 +10,16 @@ public:
 
 	virtual ~GameObject() = default;
 
-	void OnActivate();
+	virtual void OnActivate();
 
-	void OnDeactivate();
+	virtual void OnDeactivate();
 
 	const sf::Vector2f& GetPosition() const { return m_position; }
 	sf::Vector2f GetPosition() { return m_position; }
-	virtual void SetPosition(const sf::Vector2f& position);
-	virtual void SetPosition(float x, float y);
+	void SetPosition(const sf::Vector2f& position);
+	void SetPosition(float x, float y);
 
-	uint64_t GetID() const;
+	uint32_t GetID() const;
 
 	bool IsActive() const { return m_isActive; }
 
@@ -29,7 +28,7 @@ protected:
 
 private:
 	bool m_isActive;
-	uint64_t m_id;
+	uint32_t m_id;
 };
 
 #endif

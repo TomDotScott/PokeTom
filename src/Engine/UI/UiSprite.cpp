@@ -10,9 +10,9 @@ UiSprite::UiSprite() :
 {
 }
 
-void UiSprite::SetPosition(const sf::Vector2f& position)
+void UiSprite::SetElementPosition(const sf::Vector2f& position)
 {
-	GameObject::SetPosition(position);
+	SetPosition(position);
 
 	m_sprite->setPosition(m_position);
 }

@@ -2,21 +2,23 @@
 #define GAME_H
 #include <set>
 #include <SFML/Graphics/RectangleShape.hpp>
-
+#include <sol/sol.hpp>
 #include "Level.h"
+#include "LuaRegistry.h"
 #include "Player.h"
+#include "Renderer.h"
+#include "TileLogic.h"
+#include "WorldDefinition.h"
+#include "../Engine/EntityRegistry.h"
 #include "../Engine/Event.h"
-#include "../Engine/UI/UiManager.h"
 #include "../Engine/ObjectPool.h"
 #include "../Engine/Rendering/ScreenFader.h"
-#include "TileLogic.h"
-#include "Renderer.h"
-#include "WorldDefinition.h"
+#include "../Engine/UI/UiManager.h"
 
-class Game final : public Updateable
+class Game final : public IUpdateable
 {
 public:
-	Game();
+	Game(sol::state& lua);
 	~Game() override;
 
 	void Update(float deltaTime) override;
@@ -24,14 +26,19 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
+	EntityRegistry m_entities;
+
 	enum class eGameState
 	{
 		FadingScreen,
 		Overworld
 	} m_state;
 
-	Player m_player;
 	WorldDefinition m_world;
+	LuaRegistry m_luaBindings;
+
+	uint64_t m_playerEntityID;
+
 	const PortalTrigger* m_lastEnteredPortal;
 
 	sf::Vector2f m_cameraPosition;
@@ -50,7 +57,7 @@ private:
 	{
 		if (auto* debugUi = UIMANAGER.GetUiText("DEBUG_TEXT"))
 		{
-			debugUi->SetPosition(position);
+			debugUi->SetElementPosition(position);
 			debugUi->SetTextSize(size);
 			debugUi->SetText(fmt, args...);
 

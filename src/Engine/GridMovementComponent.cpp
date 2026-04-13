@@ -2,8 +2,13 @@
 
 #include <iostream>
 
-
-GridMovementComponent::GridMovementComponent(const float tileSize, const float walkTilesPerSecond, const float sprintTilesPerSecond) :
+GridMovementComponent::GridMovementComponent(
+	Entity* owner,
+	const float tileSize,
+	const float walkTilesPerSecond,
+	const float sprintTilesPerSecond
+) :
+	m_owningEntity(owner),
 	m_previousDirection(eDirection::None),
 	m_currentDirection(eDirection::None),
 	m_tileSize(tileSize),
@@ -11,6 +16,7 @@ GridMovementComponent::GridMovementComponent(const float tileSize, const float w
 	m_sprintSpeed(sprintTilesPerSecond),
 	m_isSprinting(false),
 	m_progress(0.f),
+	m_wasMoving(false),
 	m_isMoving(false)
 {
 }
@@ -43,7 +49,37 @@ void GridMovementComponent::Move(const eDirection direction)
 	}
 
 	SetDirection(direction);
-	StartMove(dir);
+
+	if (CanMove(direction))
+	{
+		StartMove(dir);
+	}
+}
+
+bool GridMovementComponent::CanMove(const eDirection direction) const
+{
+	return m_canMove && m_canMove(m_owningEntity, direction);
+}
+
+void GridMovementComponent::SetDirection(const eOrientation orientation)
+{
+	m_previousDirection = m_currentDirection;
+
+	switch (orientation)
+	{
+	case eOrientation::Up:
+		m_currentDirection = eDirection::North;
+		break;
+	case eOrientation::Down:
+		m_currentDirection = eDirection::South;
+		break;
+	case eOrientation::Left:
+		m_currentDirection = eDirection::West;
+		break;
+	case eOrientation::Right:
+		m_currentDirection = eDirection::East;
+		break;
+	}
 }
 
 void GridMovementComponent::SetDirection(const eDirection direction)
@@ -52,18 +88,23 @@ void GridMovementComponent::SetDirection(const eDirection direction)
 	m_currentDirection = direction;
 }
 
-GridMovementComponent::eDirection GridMovementComponent::GetCurrentDirection() const
+eDirection GridMovementComponent::GetCurrentDirection() const
 {
 	return m_currentDirection;
 }
 
-GridMovementComponent::eDirection GridMovementComponent::GetPreviousDirection() const
+eDirection GridMovementComponent::GetPreviousDirection() const
 {
 	return m_previousDirection;
 }
 
 void GridMovementComponent::Update(const float deltaTime)
 {
+	if (m_isMoving != m_wasMoving)
+	{
+		m_wasMoving = m_isMoving;
+	}
+
 	if (!m_isMoving)
 	{
 		if (m_currentDirection != eDirection::None)
@@ -108,6 +149,16 @@ bool GridMovementComponent::IsMoving() const
 	return m_isMoving;
 }
 
+bool GridMovementComponent::WasMoving() const
+{
+	return m_wasMoving;
+}
+
+void GridMovementComponent::StopMoving()
+{
+	m_isMoving = false;
+}
+
 void GridMovementComponent::SetSprinting(const bool isSprinting)
 {
 	m_isSprinting = isSprinting;
@@ -116,6 +167,26 @@ void GridMovementComponent::SetSprinting(const bool isSprinting)
 bool GridMovementComponent::IsSprinting() const
 {
 	return m_isSprinting;
+}
+
+eOrientation GridMovementComponent::GetCurrentOrientation() const
+{
+	if (IsMoving())
+	{
+		return GetOrientationFromDirection(GetCurrentDirection());
+	}
+
+	if (GetPreviousDirection() == eDirection::None)
+	{
+		return GetOrientationFromDirection(GetCurrentDirection());
+	}
+
+	return GetOrientationFromDirection(GetPreviousDirection());
+}
+
+void GridMovementComponent::SetCanMoveCallback(can_move_func callback)
+{
+	m_canMove = std::move(callback);
 }
 
 void GridMovementComponent::StartMove(const sf::Vector2i& dir)

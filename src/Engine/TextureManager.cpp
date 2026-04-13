@@ -18,24 +18,48 @@ TextureManager& TextureManager::Get()
 	return *textureManager;
 }
 
-bool TextureManager::LoadTextureFromImage(const std::string& name, const std::filesystem::path& path,
-	const uint32_t maskColour)
+std::shared_ptr<sf::Image> TextureManager::LoadImage(const std::filesystem::path& path)
 {
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "The file " << path << " does not exist\n";
-		return false;
+		return nullptr;
 	}
 
 	sf::Image image;
 	if (!image.loadFromFile(path))
 	{
 		std::cerr << "Unable to load texture into sf::Image from path " << path << "\n";
+		return nullptr;
 	}
 
-	image.createMaskFromColor(sf::Color{ maskColour });
+	return std::make_shared<sf::Image>(image);
+}
 
-	m_textures[name] = sf::Texture(image);
+bool TextureManager::LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, const sf::IntRect region)
+{
+	const std::shared_ptr<sf::Image> image = LoadImage(path);
+	if (image == nullptr)
+	{
+		return false;
+	}
+
+	m_textures[name] = sf::Texture(*image, false, region);
+	RegisterPath(path, name);
+	return true;
+}
+
+bool TextureManager::LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, const sf::IntRect region, const uint32_t maskColour)
+{
+	const std::shared_ptr<sf::Image> image = LoadImage(path);
+	if (image == nullptr)
+	{
+		return false;
+	}
+
+	image->createMaskFromColor(sf::Color{ maskColour });
+
+	m_textures[name] = sf::Texture(*image, false, region);
 	RegisterPath(path, name);
 	return true;
 }

@@ -3,27 +3,40 @@
 #include <iostream>
 #include <set>
 #include <SFML/Graphics.hpp>
+
+#include "../Engine/Asserts.h"
 #include "../Engine/TextureManager.h"
 #include "../Engine/Globals.h"
+#include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
-#include "../Engine/Animation/AnimDef.h"
-#include "../Engine/Input/Keyboard.h"
+#include "../Engine/Animation/AnimationComponent.h"
+#include "../Engine/CodeGen/Resources.hpp"
 
 static constexpr const char* START_LEVEL = "player_bedroom";
 
-Game::Game() :
-	Updateable(),
+Game::Game(sol::state& lua) :
+	IUpdateable(),
 	m_state(eGameState::Overworld),
-	m_player(),
-	m_world("WorldDefinition.xml"),
+	m_world(lua, "WorldDefinition.xml"),
+	m_luaBindings(lua, m_world, m_entities),
 	m_lastEnteredPortal(nullptr),
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
 	m_cameraRebuildThreshold(10.f * 32.f)
 {
+	m_playerEntityID = m_entities.Create<Player>().GetID();
+
+	Player* player = m_entities.Get<Player>(m_playerEntityID);
+	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
+	{
+		return m_world.CanMoveTo(ent, m_entities, dir);
+	});
+
 	UIMANAGER.Load("ui.xml");
+
+	m_world.LoadLevelScripts(lua);
 
 	OnTransitionEnd();
 }
@@ -48,7 +61,9 @@ void Game::Update(const float deltaTime)
 
 void Game::Render(sf::RenderWindow& window) const
 {
-	m_renderer.Render(window, m_player, m_world.GetLevelAtPosition(m_player.GetPosition())->GetEntityZIndex());
+	const Player* player = m_entities.Get<Player>(m_playerEntityID);
+
+	m_renderer.Render(window, m_entities, m_world.GetLevelAtPosition(player->GetPosition())->GetEntityZIndex());
 
 #if BUILD_DEBUG && 0
 	sf::RectangleShape player({ 32, 32 });
@@ -98,8 +113,10 @@ void Game::UpdateChunks()
 {
 	const sf::Vector2f viewSize = m_worldBounds.size;
 	const sf::FloatRect camRect(
-		{ m_cameraPosition.x - viewSize.x * 0.5f,
-		  m_cameraPosition.y - viewSize.y * 0.5f },
+		{
+			m_cameraPosition.x - viewSize.x * 0.5f,
+			m_cameraPosition.y - viewSize.y * 0.5f
+		},
 		viewSize
 	);
 
@@ -162,20 +179,25 @@ void Game::UpdateChunks()
 
 void Game::UpdateOverworld(const float deltaTime)
 {
-	m_player.Update(deltaTime, m_world);
+	m_world.GetLevelAtPosition(m_entities.Get<Entity>(m_playerEntityID)->GetPosition())->OnUpdate(deltaTime);
+	m_entities.UpdateAll(deltaTime);
 	CheckForPortals();
 }
 
 void Game::UpdateCamera(const float deltaTime)
 {
-	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, m_player.GetPosition(), m_cameraVelocity, 0.25, deltaTime);
+	Player* player = m_entities.Get<Player>(m_playerEntityID);
+
+	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, player->GetPosition(), m_cameraVelocity, 0.25, deltaTime);
 
 	m_renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
 }
 
 void Game::CheckForPortals()
 {
-	const auto currentLevel = m_world.GetLevelAtPosition(m_player.GetPosition());
+	Player* player = m_entities.Get<Player>(m_playerEntityID);
+
+	const auto currentLevel = m_world.GetLevelAtPosition(player->GetPosition());
 
 	if (currentLevel == nullptr)
 	{
@@ -184,13 +206,15 @@ void Game::CheckForPortals()
 	}
 
 	// If the player is on a door in the right orientation, start a level transition
-	const PortalTrigger* portal = currentLevel->GetPortalAtPosition(m_player.GetPosition());
+	const PortalTrigger* portal = currentLevel->GetPortalAtPosition(player->GetPosition());
 
-	if (portal != nullptr && portal->AllowsOrientation(m_player.GetCurrentOrientation()))
+	GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
+	if (portal != nullptr && portal->AllowsOrientation(playerMovement->GetCurrentOrientation()))
 	{
 		m_lastEnteredPortal = portal;
 
-		std::cout << "Transitioning to " << m_world.GetPortalData(currentLevel->GetName(), portal->m_Name).m_TargetLevel << "\n";
+		std::cout << "Transitioning to " << m_world.GetPortalData(currentLevel->GetName(), portal->m_Name).m_TargetLevel
+			<< "\n";
 
 		TransitionLevel();
 	}
@@ -215,18 +239,28 @@ void Game::UpdateScreenFade(const float deltaTime)
 	}
 }
 
-void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnPointName, const bool shouldSetPlayerPosition)
+void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnPointName,
+	const bool shouldSetPlayerPosition)
 {
 	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
+
+	ASSERT(level != nullptr);
 
 	if (shouldSetPlayerPosition)
 	{
 		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
 
-		m_player.SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition * 32));
-		m_player.SetOrientation(spawnPointData.m_Orientation);
+		Player* player = m_entities.Get<Player>(m_playerEntityID);
 
-		m_cameraPosition = m_player.GetPosition();
+		GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
+		playerMovement->StopMoving();
+		playerMovement->SetDirection(spawnPointData.m_Orientation);
+		player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition * 32));
+
+		player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
+			EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
+
+		m_cameraPosition = player->GetPosition();
 
 		m_worldBounds = level->GetBounds();
 	}
@@ -240,13 +274,18 @@ void Game::TransitionLevel()
 
 void Game::OnTransitionEnd()
 {
+	Player* player = m_entities.Get<Player>(m_playerEntityID);
+
 	if (m_lastEnteredPortal == nullptr)
 	{
 		RespawnPlayer(START_LEVEL, "player_spawn", true);
+		m_world.GetLevelAtPosition(player->GetPosition())->OnActivate();
 		return;
 	}
 
-	if (auto transition = m_world.EnterPortal(m_world.GetLevelAtPosition(m_player.GetPosition())->GetName(), m_lastEnteredPortal->m_Name))
+
+	if (auto transition = m_world.EnterPortal(m_world.GetLevelAtPosition(player->GetPosition())->GetName(),
+		m_lastEnteredPortal->m_Name))
 	{
 		RespawnPlayer(transition->m_NewLevelName, transition->m_SpawnPointName, true);
 	}

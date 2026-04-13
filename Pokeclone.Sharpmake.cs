@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Sharpmake;
 
@@ -65,7 +66,10 @@ public class PokeClone : Project
     {
         conf.ProjectPath = $"build_{target.DevEnv}";
 
-        conf.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
+        conf.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP20);
+        conf.Options.Add(Options.Vc.Compiler.RTTI.Enable);
+
+        conf.AddPublicDependency<LuaProject>(target);
 
         // SFML Paths
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "SFML", "include"));
@@ -106,6 +110,11 @@ public class PokeClone : Project
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "hoxml"));
 
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "magic_enum"));
+
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "lua", "lua-5.4.8", "src"));
+        conf.LibraryPaths.Add(Path.Combine(Constants.LIBS_PATH, "lua", $"build_{target.DevEnv}", "output", target.Platform.ToString(), target.Optimization.ToString()));
+
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "sol2", "single", "single", "include"));
 
         if (target.Optimization == Optimization.Debug)
         {
@@ -167,6 +176,7 @@ public class PokeCloneSolution : Solution
     {
         conf.SolutionPath = "[solution.SharpmakeCsPath]";
 
+        conf.AddProject<LuaProject>(target);
         conf.AddProject<PokeClone>(target);
     }
 }

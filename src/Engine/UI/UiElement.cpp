@@ -56,6 +56,11 @@ std::string UiElement::GetName() const
 	return m_name;
 }
 
+void UiElement::SetElementPosition(const sf::Vector2f& position)
+{
+	SetPosition(position);
+}
+
 const std::vector<const sf::Drawable*>& UiElement::GetDrawablesList() const
 {
 	return m_drawables;
