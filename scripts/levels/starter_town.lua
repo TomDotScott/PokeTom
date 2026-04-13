@@ -1,51 +1,79 @@
 function init(self)
-    self.npcID1 = 0
-    self.currentDirectionNPC1 = Direction.North
+    self.npcIDs = {}
+    self.npcDirections = {}
 
     self.directionTimer = 0
+    self.newNPCTimer = 0
+
+    self.spawnNPC = function(self, x, y)
+        print("spawnNPC")
+
+        local npcID = Entity.Create(x, y)
+
+        print("Created entity with ID" .. npcID)
+
+        Entity.SetActive(npcID, true)
+
+        print(npcID)
+
+        Entity.AddAnimationComponent(npcID, "animation/npc_man_1.xml", AnimationName.IDLE_DOWN)
+        Entity.AddGridMovementComponent(npcID)
+        Entity.AddScriptComponent(npcID, "../scripts/entities/test_script_1.lua")
+
+        table.insert(self.npcIDs, npcID)
+        table.insert(self.npcDirections, Direction.North)
+    end
 
     self.onActivate = function(self)
         print("onActivate")
 
-        self.npcID1 = Entity.Create(736.0, 384.0)
-
-        Entity.SetActive(self.npcID1, true)
-
-        print(self.npcID1)
-
-        Entity.AddAnimationComponent(self.npcID1, "animation/npc_man_1.xml", AnimationName.IDLE_DOWN)
-        Entity.AddGridMovementComponent(self.npcID1)
-        Entity.AddScriptComponent(self.npcID1, "../scripts/entities/test_script_1.lua")
+        self:spawnNPC(736.0, 384.0)
     end
 
     self.onDeactivate = function(self)
         print("onDeactivate")
-        Entity.Destroy(self.npcID1)
+
+        for i, v in ipairs(self.npcIDs) do
+            Entity.Destroy(v)
+        end
     end
 
     self.update = function(self, dt)
         self.directionTimer = self.directionTimer + dt
+        self.newNPCTimer = self.newNPCTimer + dt
 
-        if self.directionTimer > 2 then
-            self.currentDirectionNPC1 = math.random(0, 3)
+        if self.directionTimer > 1 then
+            for i, v in ipairs(self.npcIDs) do
+                self.npcDirections[i] = math.random(0, 3)
+            end
+
             self.directionTimer = 0
         end
 
-        if Entity.CanMove(self.npcID1, self.currentDirectionNPC1) then
-            Entity.Move(self.npcID1, self.currentDirectionNPC1)
-        else
-            if self.currentDirectionNPC1 == Direction.North then
-                self.currentDirectionNPC1 = Direction.South
-            
-            elseif self.currentDirectionNPC1 == Direction.South then
-                self.currentDirectionNPC1 = Direction.North
+        if self.newNPCTimer > 5 then
+            for i = 1, 3 do
+                self:spawnNPC(736.0, 384.0)
+            end
+            self.newNPCTimer = 0
+        end
 
-            elseif self.currentDirectionNPC1 == Direction.East then
-                self.currentDirectionNPC1 = Direction.West
-            
+        for i, v in ipairs(self.npcIDs) do
+            if Entity.CanMove(v, self.npcDirections[i]) then
+                Entity.Move(v, self.npcDirections[i])
             else
-                self.currentDirectionNPC1 = Direction.East
+                if self.npcDirections[i] == Direction.North then
+                    self.npcDirections[i] = Direction.South
 
+                elseif self.npcDirections[i] == Direction.South then
+                    self.npcDirections[i] = Direction.North
+
+                elseif self.npcDirections[i] == Direction.East then
+                    self.npcDirections[i] = Direction.West
+
+                else
+                    self.npcDirections[i] = Direction.East
+
+                end
             end
         end
     end

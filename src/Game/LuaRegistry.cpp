@@ -2,14 +2,16 @@
 #pragma optimize("", off)
 #endif
 #include "LuaRegistry.h"
-#include "../Engine/EntityRegistry.h"
-#include "../Engine/Entity.h"
-#include "../Engine/GridMovementComponent.h"
-#include "../Engine/Animation/AnimationComponent.h"
-#include "../Engine/Scripting/LuaBindingMacros.h"
+
+#include <iostream>
 #include <SFML/System/Vector2.hpp>
 
 #include "WorldDefinition.h"
+#include "../Engine/Entity.h"
+#include "../Engine/EntityRegistry.h"
+#include "../Engine/GridMovementComponent.h"
+#include "../Engine/Animation/AnimationComponent.h"
+#include "../Engine/Scripting/LuaBindingMacros.h"
 #include "../Engine/Scripting/ScriptComponent.h"
 
 
@@ -99,7 +101,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 
 				c.SetCanMoveCallback([&](Entity* ent, const eDirection dir)
 				{
-						return world.CanMoveTo(ent, dir);
+						return world.CanMoveTo(ent, entities, dir);
 				});
 			})
 

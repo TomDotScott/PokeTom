@@ -12,6 +12,8 @@
 #include "../Engine/GridMovementComponent.h"
 
 
+class EntityRegistry;
+
 class WorldDefinition
 {
 public:
@@ -42,7 +44,7 @@ public:
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
 
-	bool CanMoveTo(const Entity* entity, eDirection direction) const;
+	bool CanMoveTo(const Entity* entity, EntityRegistry& entities, eDirection direction) const;
 
 private:
 	std::unordered_map<std::string, std::shared_ptr<Level>> m_levels;

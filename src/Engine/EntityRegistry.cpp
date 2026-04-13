@@ -6,7 +6,7 @@
 #include "TextureManager.h"
 #include "Animation/AnimationComponent.h"
 
-void EntityRegistry::Destroy(const uint64_t id)
+void EntityRegistry::Destroy(const uint32_t id)
 {
 	Entity* ent = Get<Entity>(id);
 
@@ -79,4 +79,24 @@ void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 		sprite.setScale({ 2, 2 });
 		window.draw(sprite);
 	}
+}
+
+bool EntityRegistry::AnyEntitiesAtPosition(const sf::Vector2f& position)
+{
+	// TODO: This is going to get slow in the future!
+	for (const auto& entity : m_entities | std::views::values)
+	{
+		if (!entity->IsActive())
+		{
+			continue;
+		}
+
+		const sf::Vector2f& entityPosition = entity->GetPosition();
+		if ((entityPosition - position).lengthSquared() < 32.f * 32.f)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

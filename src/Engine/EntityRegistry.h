@@ -17,7 +17,7 @@ public:
 
 
 	template<typename T>
-	T* Get(const uint64_t id) const
+	T* Get(const uint32_t id) const
 		requires (std::is_base_of_v<Entity, T>)
 	{
 		if (!m_entities.contains(id))
@@ -29,13 +29,14 @@ public:
 	}
 
 
-	void Destroy(uint64_t id);
+	void Destroy(uint32_t id);
 
 	void UpdateAll(float deltaTime);
 	void RenderAll(sf::RenderWindow& window) const;
+	bool AnyEntitiesAtPosition(const sf::Vector2f& position);
 
 private:
-	std::unordered_map<uint64_t, std::unique_ptr<Entity>> m_entities;
+	std::unordered_map<uint32_t, std::unique_ptr<Entity>> m_entities;
 };
 
 #endif

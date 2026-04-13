@@ -13,7 +13,7 @@
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/CodeGen/Resources.hpp"
 
-static constexpr const char* START_LEVEL = "starter_town";
+static constexpr const char* START_LEVEL = "player_bedroom";
 
 Game::Game(sol::state& lua) :
 	IUpdateable(),
@@ -31,7 +31,7 @@ Game::Game(sol::state& lua) :
 	Player* player = m_entities.Get<Player>(m_playerEntityID);
 	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
 	{
-		return m_world.CanMoveTo(ent, dir);
+		return m_world.CanMoveTo(ent, m_entities, dir);
 	});
 
 	UIMANAGER.Load("ui.xml");

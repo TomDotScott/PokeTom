@@ -8,6 +8,7 @@
 #include "Level.h"
 #include "TileParser.h"
 #include "../Engine/Entity.h"
+#include "../Engine/EntityRegistry.h"
 
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
@@ -106,9 +107,9 @@ const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const std::strin
 	return GetLevel(levelName)->GetAdjacentLevels();
 }
 
-bool WorldDefinition::CanMoveTo(const Entity* entity, const eDirection direction) const
+bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, const eDirection direction) const
 {
-	if (entity ==nullptr)
+	if (entity == nullptr)
 	{
 		return false;
 	}
@@ -145,6 +146,12 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, const eDirection direction
 		std::round(newPosition.x / 32.f) * 32.f,
 		std::round(newPosition.y / 32.f) * 32.f
 	};
+
+	// Check if the entity would be overlapping anyone
+	if (entities.AnyEntitiesAtPosition(newPosition))
+	{
+		return false;
+	}
 
 	const auto& currentLevel = GetLevelAtPosition(newPosition);
 	return currentLevel != nullptr && currentLevel->CanMoveTo(newPosition);
