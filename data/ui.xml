@@ -13,4 +13,19 @@
     <size>10</size>
     <font>DEFAULT</font>
   </Text>
+
+  <Panel>
+    <name>DIALOGUE_PANEL</name>
+    <position x="0" y="477"/>
+    <size x="768" y="128"/>
+    <Text>
+      <name>DIALOGUE_TEXT</name>
+      <string>[DEFAULT TEXT HERE]</string>
+      <alignment>centre</alignment>
+      <colour>000000FF</colour>
+      <position x="0" y="0"/>
+      <size>40</size>
+      <font>DEFAULT</font>
+    </Text>
+  </Panel>
 </ui>

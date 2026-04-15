@@ -13,7 +13,7 @@
 #include "../Engine/TextureManager.h"
 #include "../Engine/Timer.h"
 
-static constexpr const char* START_LEVEL = "starter_town";
+static constexpr const char* START_LEVEL = "player_bedroom";
 
 Game::Game(sol::state& lua) :
 	IUpdateable(),
@@ -111,7 +111,7 @@ void Game::Render(sf::RenderWindow& window) const
 		window.draw(screenFade);
 	}
 
-	/* TODO: Integrate UI into the Renderer
+	// TODO: Integrate UI into the Renderer
 	// Draw the background items first
 	UIMANAGER.RenderBackground(window);
 
@@ -120,7 +120,7 @@ void Game::Render(sf::RenderWindow& window) const
 
 	// Then, in front of everything, the foreground stuff
 	UIMANAGER.RenderForeground(window);
-	*/
+	
 
 #if !BUILD_MASTER
 	DrawText(window, sf::Vector2f{ 0, 10 }, 30, "%.1fFPS", Timer::Get().Fps());
