@@ -9,12 +9,16 @@
 #include "TileParser.h"
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
+#include "../Engine/XML/XmlDocument.h"
 
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
 
 WorldDefinition::WorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath)
 {
+	XmlDocument xml;
+	xml.Load(worldDefinitionFilepath);
+
 	ParseWorldDefinition(lua, worldDefinitionFilepath);
 }
 
