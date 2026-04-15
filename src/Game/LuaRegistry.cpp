@@ -6,7 +6,9 @@
 #include <iostream>
 #include <SFML/System/Vector2.hpp>
 
+#include "Player.h"
 #include "WorldDefinition.h"
+#include "../Engine/Asserts.h"
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
 #include "../Engine/GridMovementComponent.h"
@@ -51,10 +53,61 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				}
 			})
 
+		LUA_FUNC(Entity, TurnToFace,
+			[&entities](const uint32_t entityID, const uint32_t facingEntityID) {
+				auto* e = entities.Get<Entity>(entityID);
+
+				if (!e->IsActive())
+				{
+					return;
+				}
+
+				auto* other = entities.Get<Entity>(facingEntityID);
+				if (!other)
+				{
+					ASSERT(false);
+					return;
+				}
+
+				const auto omc = other->GetComponent<GridMovementComponent>();
+				const auto mc = e->GetComponent<GridMovementComponent>();
+
+				if (omc == nullptr || mc == nullptr)
+				{
+					return;
+				}
+
+				const eDirection otherDirection = omc->GetCurrentDirection() == eDirection::None ? omc->GetPreviousDirection() : omc->GetCurrentDirection();
+
+				eDirection newDirection = eDirection::None;
+				if (otherDirection == eDirection::East)
+				{
+					newDirection = eDirection::West;
+				}
+				else if (otherDirection == eDirection::West)
+				{
+					newDirection = eDirection::East;
+				}
+				else if (otherDirection == eDirection::North)
+				{
+					newDirection = eDirection::South;
+				}
+				else if (otherDirection == eDirection::South)
+				{
+					newDirection = eDirection::North;
+				}
+				else
+				{
+					ASSERT(false);
+				}
+
+				mc->SetDirection(newDirection);
+			})
+
 		LUA_FUNC(Entity, Move,
 			[&entities](const uint32_t id, const int direction)
 			{
-				auto e = entities.Get<Entity>(id);
+				const auto e = entities.Get<Entity>(id);
 				if (e == nullptr)
 				{
 					std::cerr << "Entity with ID " << id << " returned null!\n";
@@ -100,12 +153,12 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				c.SetWorldPosition(e->GetPosition());
 
 				c.SetCanMoveCallback([&](Entity* ent, const eDirection dir)
-				{
+					{
 						return world.CanMoveTo(ent, entities, dir);
-				});
+					});
 			})
 
-	LUA_FUNC(Entity, AddAnimationComponent,
+		LUA_FUNC(Entity, AddAnimationComponent,
 			[&entities](const uint32_t id, const std::string& animationPath, const int initialAnimation)
 			{
 				Entity* e = entities.Get<Entity>(id);
@@ -116,24 +169,25 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				e->AddComponent<EntityAnimationComponent>(e, animationPath, initialAnimName);
 			})
 
-	// TODO: Make this a script name or ID instead of a filepath
-	LUA_FUNC(Entity, AddScriptComponent,
-		[&](const uint32_t id, const std::string& scriptPath){
-			Entity* e = entities.Get<Entity>(id);
-
-			if (e == nullptr)
+		// TODO: Make this a script name or ID instead of a filepath
+		LUA_FUNC(Entity, AddScriptComponent,
+			[&](const uint32_t id, const std::string& scriptPath)
 			{
-				return;
-			}
+				Entity* e = entities.Get<Entity>(id);
 
-			auto& c = e->AddComponent<ScriptComponent>(e, lua, scriptPath);
+				if (e == nullptr)
+				{
+					return;
+				}
 
-			// If the entity is already active in the scene, make sure the script onActivate is called
-			if (e->IsActive())
-			{
-				c.OnActivate();
-			}
-		})
+				auto& c = e->AddComponent<ScriptComponent>(e, lua, scriptPath);
+
+				// If the entity is already active in the scene, make sure the script onActivate is called
+				if (e->IsActive())
+				{
+					c.OnActivate();
+				}
+			})
 
 	LUA_API_END()
 }

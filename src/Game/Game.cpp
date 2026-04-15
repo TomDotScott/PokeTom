@@ -4,16 +4,16 @@
 #include <set>
 #include <SFML/Graphics.hpp>
 
+#include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Asserts.h"
-#include "../Engine/TextureManager.h"
+#include "../Engine/CodeGen/Resources.hpp"
 #include "../Engine/Globals.h"
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
+#include "../Engine/TextureManager.h"
 #include "../Engine/Timer.h"
-#include "../Engine/Animation/AnimationComponent.h"
-#include "../Engine/CodeGen/Resources.hpp"
 
-static constexpr const char* START_LEVEL = "player_bedroom";
+static constexpr const char* START_LEVEL = "starter_town";
 
 Game::Game(sol::state& lua) :
 	IUpdateable(),

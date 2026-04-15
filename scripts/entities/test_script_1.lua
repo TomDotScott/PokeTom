@@ -19,6 +19,9 @@ function init(self)
 
     self.onPlayerInteract = function(self)
         print("Hello, what a wonderful world this is!")
+
+        -- TODO: I need to make a way to get the player ID from the scripts... 
+        Entity.TurnToFace(self.LOCAL_ENTITY_ID, 1)
     end
 
     self.update = function(self, dt)
