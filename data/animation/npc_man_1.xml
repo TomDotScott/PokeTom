@@ -13,11 +13,11 @@
   </Animation>
 
   <Animation name="idle_left" looping="true">
-    <Frame topLeftX="4" topLeftY="224" duration="100" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="0" topLeftY="224" duration="100" spriteWidth="32" spriteHeight="32" />
   </Animation>
 
   <Animation name="idle_right" looping="true">
-    <Frame topLeftX="4" topLeftY="256" duration="100" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="0" topLeftY="256" duration="100" spriteWidth="32" spriteHeight="32" />
   </Animation>
 
   <Animation name="walk_up" looping="true">
