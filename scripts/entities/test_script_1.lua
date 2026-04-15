@@ -17,6 +17,10 @@ function init(self)
         self.firstUpdateSinceActive = true;
     end
 
+    self.onPlayerInteract = function(self)
+        print("Hello, what a wonderful world this is!")
+    end
+
     self.update = function(self, dt)
         if self.firstUpdateSinceActive then
             print("Entity script successfully updated!")

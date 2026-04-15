@@ -13,6 +13,8 @@ public:
 	void Update(float deltaTime) override;
 	void SetCanMoveCallback(const can_move_func& callback);
 
+	void AddOnInteractPressedCallback(const std::function<void()>& callback);
+
 private:
 	enum eInputs : uint8_t
 	{
@@ -20,7 +22,8 @@ private:
 		DOWN,
 		LEFT,
 		RIGHT,
-		SPRINT
+		SPRINT,
+		INTERACT,
 	};
 	InputMapper m_mapper;
 };

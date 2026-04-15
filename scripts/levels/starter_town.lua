@@ -51,30 +51,30 @@ function init(self)
         end
 
         if self.newNPCTimer > 5 then
-            for i = 1, 3 do
-                self:spawnNPC(736.0, 384.0)
-            end
+            -- for i = 1, 3 do
+            --     self:spawnNPC(736.0, 384.0)
+            -- end
             self.newNPCTimer = 0
         end
 
-        for i, v in ipairs(self.npcIDs) do
-            if Entity.CanMove(v, self.npcDirections[i]) then
-                Entity.Move(v, self.npcDirections[i])
-            else
-                if self.npcDirections[i] == Direction.North then
-                    self.npcDirections[i] = Direction.South
+        -- for i, v in ipairs(self.npcIDs) do
+        --     if Entity.CanMove(v, self.npcDirections[i]) then
+        --         Entity.Move(v, self.npcDirections[i])
+        --     else
+        --         if self.npcDirections[i] == Direction.North then
+        --             self.npcDirections[i] = Direction.South
 
-                elseif self.npcDirections[i] == Direction.South then
-                    self.npcDirections[i] = Direction.North
+        --         elseif self.npcDirections[i] == Direction.South then
+        --             self.npcDirections[i] = Direction.North
 
-                elseif self.npcDirections[i] == Direction.East then
-                    self.npcDirections[i] = Direction.West
+        --         elseif self.npcDirections[i] == Direction.East then
+        --             self.npcDirections[i] = Direction.West
 
-                else
-                    self.npcDirections[i] = Direction.East
+        --         else
+        --             self.npcDirections[i] = Direction.East
 
-                end
-            end
-        end
+        --         end
+        --     end
+        -- end
     end
 end

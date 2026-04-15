@@ -57,6 +57,7 @@ public:
 
 	void OnActivate() override;
 	void OnDeactivate() override;
+	void OnPlayerInteractPressed() override;
 
 	virtual void OnEntityDestroyed();
 

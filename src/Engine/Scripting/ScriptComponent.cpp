@@ -39,6 +39,8 @@ ScriptComponent::ScriptComponent(Entity* owner, sol::state& lua, const std::stri
 	m_onDestroyed = m_self["onDestroyed"];
 	ASSERT_MSG(m_onDestroyed.valid(), "onDestroy function is missing from script %s!", scriptPath.c_str());
 
+	m_onPlayerInteract = m_self["onPlayerInteract"];
+	ASSERT_MSG(m_onPlayerInteract.valid(), "onPlayerInteract function is missing from script %s!", scriptPath.c_str());
 
 	m_onCreated(m_self);
 }
@@ -99,5 +101,23 @@ void ScriptComponent::OnDestroyed()
 	{
 		const sol::error err = res;
 		ASSERT_MSG(false, "OnDestroyed script error: %s", err.what());
+	}
+}
+
+void ScriptComponent::OnPlayerInteractPressed()
+{
+	IUpdateable::OnPlayerInteractPressed();
+
+	// Entities may not necessarily have interact behaviour with the player
+	if (!m_onPlayerInteract.valid())
+	{
+		return;
+	}
+
+	const auto res = m_onPlayerInteract(m_self);
+	if (!res.valid())
+	{
+		const sol::error err = res;
+		ASSERT_MSG(false, "OnPlayerInteract script error: %s", err.what());
 	}
 }

@@ -17,6 +17,8 @@ public:
 
 	void OnDestroyed() override;
 
+	void OnPlayerInteractPressed() override;
+
 private:
 	Entity* m_owner;
 	sol::table m_self;
@@ -29,6 +31,8 @@ private:
 
 	sol::function m_onActivate;
 	sol::function m_onDeactivate;
+
+	sol::function m_onPlayerInteract;
 };
 
 #endif

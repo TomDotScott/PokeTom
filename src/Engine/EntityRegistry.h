@@ -33,7 +33,11 @@ public:
 
 	void UpdateAll(float deltaTime);
 	void RenderAll(sf::RenderWindow& window) const;
-	bool AnyEntitiesAtPosition(const sf::Vector2f& position);
+
+	// Returns ~0 if no entity is at the position, otherwise returns the Entity ID
+	uint32_t GetEntityAtPosition(const sf::Vector2f& position);
+
+	void OnInteractPressed(uint32_t id);
 
 private:
 	std::unordered_map<uint32_t, std::unique_ptr<Entity>> m_entities;

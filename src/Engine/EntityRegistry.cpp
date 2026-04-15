@@ -81,9 +81,10 @@ void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 	}
 }
 
-bool EntityRegistry::AnyEntitiesAtPosition(const sf::Vector2f& position)
+uint32_t EntityRegistry::GetEntityAtPosition(const sf::Vector2f& position)
 {
 	// TODO: This is going to get slow in the future!
+	// Some sort of octree maybe?
 	for (const auto& entity : m_entities | std::views::values)
 	{
 		if (!entity->IsActive())
@@ -94,9 +95,9 @@ bool EntityRegistry::AnyEntitiesAtPosition(const sf::Vector2f& position)
 		const sf::Vector2f& entityPosition = entity->GetPosition();
 		if ((entityPosition - position).lengthSquared() < 32.f * 32.f)
 		{
-			return true;
+			return entity->GetID();
 		}
 	}
 
-	return false;
+	return ~0U;
 }

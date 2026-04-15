@@ -148,7 +148,7 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, 
 	};
 
 	// Check if the entity would be overlapping anyone
-	if (entities.AnyEntitiesAtPosition(newPosition))
+	if (entities.GetEntityAtPosition(newPosition) != ~0U)
 	{
 		return false;
 	}

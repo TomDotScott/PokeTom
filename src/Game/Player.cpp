@@ -21,6 +21,8 @@ Player::Player(const sf::Vector2f& position)
 
 	m_mapper.Map(SPRINT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::LShift));
 
+	m_mapper.Map(INTERACT, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::E));
+
 	SetPosition(position);
 
 	// The player is active by default
@@ -63,4 +65,9 @@ void Player::Update(const float deltaTime)
 void Player::SetCanMoveCallback(const can_move_func& callback)
 {
 	GetComponent<GridMovementComponent>()->SetCanMoveCallback(callback);
+}
+
+void Player::AddOnInteractPressedCallback(const std::function<void()>& callback)
+{
+	m_mapper.OnButtonPressed(INTERACT, callback);
 }

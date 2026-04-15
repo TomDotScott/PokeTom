@@ -32,6 +32,9 @@ public:
 	eDirection GetCurrentDirection() const;
 	eDirection GetPreviousDirection() const;
 
+	// Returns the position + tileSize in the direction the entity is currently facing
+	sf::Vector2f GetNextPosition() const;
+
 	void Update(float deltaTime) override;
 
 	const sf::Vector2f& GetWorldPosition() const;
@@ -73,7 +76,7 @@ private:
 
 	can_move_func m_canMove;
 
-	void StartMove(const sf::Vector2i& dir);
+	void StartMove(const sf::Vector2f& dir);
 };
 
 inline eOrientation GetOrientationFromDirection(const eDirection direction)

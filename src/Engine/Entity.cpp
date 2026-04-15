@@ -69,6 +69,16 @@ void Entity::OnEntityDestroyed()
 	m_components.clear();
 }
 
+void Entity::OnPlayerInteractPressed()
+{
+	IUpdateable::OnPlayerInteractPressed();
+
+	for (const auto& c : m_components)
+	{
+		c->OnPlayerInteractPressed();
+	}
+}
+
 void Entity::OnEntityActivate()
 {
 	IUpdateable::OnActivate();

@@ -34,6 +34,24 @@ Game::Game(sol::state& lua) :
 		return m_world.CanMoveTo(ent, m_entities, dir);
 	});
 
+	player->AddOnInteractPressedCallback([this]() {
+		// See if there are any entities near the player
+		Player* p = m_entities.Get<Player>(m_playerEntityID);
+
+		const GridMovementComponent* playerMovement = p->GetComponent<GridMovementComponent>();
+		const sf::Vector2f nextPlayerPos = playerMovement->GetNextPosition();
+
+		const uint32_t entityID = m_entities.GetEntityAtPosition(nextPlayerPos);
+		if (entityID == ~0U)
+		{
+			// TODO: Play a sound or something here
+			return;
+		}
+
+		const auto& entity = m_entities.Get<Entity>(entityID);
+		entity->OnPlayerInteractPressed();
+	});
+
 	UIMANAGER.Load("ui.xml");
 
 	m_world.LoadLevelScripts(lua);

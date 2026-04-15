@@ -18,6 +18,10 @@ public:
 	virtual void OnDestroyed()
 	{
 	}
+
+	virtual void OnPlayerInteractPressed()
+	{
+	}
 };
 
 #endif // UPDATEABLE_H
