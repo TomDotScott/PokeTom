@@ -1,7 +1,5 @@
 #include "AnimDef.h"
 
-#include <fstream>
-#include <hoxml.h>
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 

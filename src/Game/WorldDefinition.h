@@ -1,7 +1,6 @@
 #ifndef WORLDDEFINITION_H
 #define WORLDDEFINITION_H
 #include <filesystem>
-#include <hoxml.h>
 #include <optional>
 #include <string>
 #include <unordered_map>
