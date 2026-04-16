@@ -5,11 +5,13 @@
 #include "../Engine/Globals.h"
 #include <base64.h>
 
+#include "XML/XmlDocument.h"
+
 namespace
 {
 	std::string DecompressZlib(const std::string& compressed)
 	{
-		z_stream stream{};
+		z_stream stream{ };
 		stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(compressed.data()));
 		stream.avail_in = compressed.size();
 
@@ -30,7 +32,8 @@ namespace
 				throw std::runtime_error("inflate failed");
 			}
 			out.append(buffer, sizeof(buffer) - stream.avail_out);
-		} while (status != Z_STREAM_END);
+		}
+		while (status != Z_STREAM_END);
 
 		inflateEnd(&stream);
 		return out;
@@ -46,10 +49,10 @@ namespace
 		{
 			const auto b = reinterpret_cast<const unsigned char*>(bytes.data() + i * 4);
 			tiles[i] =
-				static_cast<uint32_t>(b[0]) |
-				static_cast<uint32_t>(b[1]) << 8 |
-				static_cast<uint32_t>(b[2]) << 16 |
-				static_cast<uint32_t>(b[3]) << 24;
+			static_cast<uint32_t>(b[0]) |
+			static_cast<uint32_t>(b[1]) << 8 |
+			static_cast<uint32_t>(b[2]) << 16 |
+			static_cast<uint32_t>(b[3]) << 24;
 		}
 
 		return tiles;
@@ -303,7 +306,7 @@ bool TMJ::ParsePortals(const nlohmann::basic_json<>& doorsLayerObj, std::vector<
 		x,
 		y,
 		orientation
-		});
+	});
 
 	return true;
 }
@@ -353,7 +356,7 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 		if (parsedProperties >= 1)
 		{
 			std::cerr << "TMJ::ParseSpawnPoint: Parsed " << parsedProperties << "properties on spawnPoint " <<
-				spawnPointName << ". Check the TMJ file!\n";
+			spawnPointName << ". Check the TMJ file!\n";
 			return false;
 		}
 
@@ -362,7 +365,7 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 			std::string{ propertyName } != "Orientation")
 		{
 			std::cerr << "TMJ::ParseSpawnPoint: Failed to parse property " << propertyName << " on spawnPoint " <<
-				spawnPointName << "\n";
+			spawnPointName << "\n";
 			return false;
 		}
 
@@ -370,7 +373,7 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 		if (!orientation.is_string())
 		{
 			std::cerr << "TMJ::ParseSpawnPoint: Orientation value is not a string on spawnPoint " << spawnPointName <<
-				"\n";
+			"\n";
 			return false;
 		}
 
@@ -389,6 +392,56 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 	}
 
 	spawnPoints.emplace_back(spawnPoint);
+	return true;
+}
+
+bool TSX::TileSet::IsValid() const
+{
+	if (m_Name.empty())
+	{
+		return false;
+	}
+
+	if (m_TileWidth == ~0U)
+	{
+		return false;
+	}
+
+	if (m_TileHeight == ~0U)
+	{
+		return false;
+	}
+
+	if (m_TileCount == ~0U)
+	{
+		return false;
+	}
+
+	if (m_NumColumns == ~0U)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool TSX::Image::IsValid() const
+{
+	if (m_Source.empty())
+	{
+		return false;
+	}
+
+	if (m_Width == ~0U)
+	{
+		return false;
+	}
+
+	if (m_Height == ~0U)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -427,12 +480,10 @@ bool TMJ::ParseTileSets(const nlohmann::basic_json<>& tileSetsArray)
 		tileSets.emplace_back(tileSet);
 	}
 
-	std::sort(tileSets.begin(),
-		tileSets.end(),
-		[](const TileSet& a, const TileSet& b)
-		{
-			return a.m_FirstGid > b.m_FirstGid;
-		}
+	std::ranges::sort(tileSets,
+					  [](const TileSet& a, const TileSet& b){
+						  return a.m_FirstGid > b.m_FirstGid;
+					  }
 	);
 	m_tileSets = tileSets;
 	return true;
@@ -503,7 +554,7 @@ bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int z
 }
 
 bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Portal>& portals,
-	std::vector<SpawnPoint>& spawnPoints)
+							   std::vector<SpawnPoint>& spawnPoints)
 {
 	const auto& objectsArray = objLayerObj["objects"];
 	if (!objectsArray.is_array())
@@ -570,290 +621,127 @@ TSX::TSX(std::filesystem::path path) :
 
 bool TSX::Init()
 {
-	std::string line, text;
-	std::ifstream in(m_filePath);
-	while (std::getline(in, line))
-	{
-		text += line + "\n";
-	}
-
-	if (text.empty())
+	XmlDocument doc;
+	doc.Load(m_filePath);
+	const bool res = LoadFromXML(*doc.Root().Child("tileset"));
+	if (!res)
 	{
 		return false;
 	}
 
-	const char* content = text.c_str();
-
-	const size_t content_length = strlen(content);
-
-	hoxml_context_t* hoxml_context = new hoxml_context_t();
-	const auto buffer = static_cast<char*>(malloc(content_length * 2));
-
-	hoxml_init(hoxml_context, buffer, content_length * 2);
-
-	// Loop until the "end of document" code is returned
-	hoxml_code_t code = hoxml_parse(hoxml_context, content, content_length);
-	while (code != HOXML_END_OF_DOCUMENT)
-	{
-		if (code == HOXML_ELEMENT_BEGIN)
-		{
-			if (strcmp("tileset", hoxml_context->tag) == 0)
-			{
-				if (!ParseTileSet(m_filePath.parent_path(), hoxml_context, content, content_length))
-				{
-					return false;
-				}
-			}
-		}
-		if (code == HOXML_ERROR_TAG_MISMATCH)
-		{
-			printf("TSX::Init: Start tag did not match end tag on line %u\n", hoxml_context->line);
-			return false;
-		}
-
-		code = hoxml_parse(hoxml_context, content, content_length);
-	}
-
-	delete hoxml_context;
-	free(buffer);
 	return true;
 }
 
-bool TSX::ParseTileSet(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml,
-	size_t xmlLength)
+bool TSX::LoadFromXML(const XmlNode& node)
 {
-	TileSet tileSet{};
-	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
-	do
+	const TileSet tileSet{
+		.m_Name = node.Attr("name", std::string{ }),
+		.m_TileWidth = node.Attr("tilewidth", ~0U),
+		.m_TileHeight = node.Attr("tileheight", ~0U),
+		.m_TileCount = node.Attr("tilecount", ~0U),
+		.m_NumColumns = node.Attr("columns", ~0U)
+	};
+
+	if (!tileSet.IsValid())
 	{
-		if (code == HOXML_ELEMENT_BEGIN)
-		{
-			if (strcmp("image", context->tag) == 0)
-			{
-				if (!ParseImage(parentFolderPath, context, xml, xmlLength))
-				{
-					std::cout << "TSX::ParseTileSet: Failed to load Image tag!\n";
-					return false;
-				}
-			}
-			else if (strcmp("tile", context->tag) == 0)
-			{
-				if (!ParseTile(context, xml, xmlLength))
-				{
-					std::cout << "TSX::ParseTileSet: Failed to load Tile tag!\n";
-					return false;
-				}
-			}
-		}
-		else if (code == HOXML_ELEMENT_END)
-		{
-			if (strcmp("tileset", context->tag) == 0)
-			{
-				m_tileSet = tileSet;
-				return true;
-			}
-		}
-		else if (code == HOXML_ATTRIBUTE)
-		{
-			if (strcmp("name", context->attribute) == 0)
-			{
-				tileSet.m_Name = context->value;
-			}
-			else if (strcmp("tilewidth", context->attribute) == 0)
-			{
-				tileSet.m_TileWidth = std::stoi(context->value);
-			}
-			else if (strcmp("tileheight", context->attribute) == 0)
-			{
-				tileSet.m_TileHeight = std::stoi(context->value);
-			}
-			else if (strcmp("tilecount", context->attribute) == 0)
-			{
-				tileSet.m_TileCount = std::stoi(context->value);
-				m_tiles.reserve(tileSet.m_TileCount);
-			}
-			else if (strcmp("columns", context->attribute) == 0)
-			{
-				tileSet.m_NumColumns = std::stoi(context->value);
-			}
-		}
+		return false;
+	}
 
-		code = hoxml_parse(context, xml, xmlLength);
-	} while (code != HOXML_END_OF_DOCUMENT);
-
-	std::cout << "TSX::ParseTileSet: Reached the end of the file without closing the tileset tag!\n";
-	return false;
-}
-
-bool TSX::ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml,
-	size_t xmlLength)
-{
-	Image image{};
-	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
-	do
+	const XmlNode* imageNode = node.Child("image");
+	if (imageNode == nullptr)
 	{
-		if (code == HOXML_ELEMENT_END)
-		{
-			if (strcmp("image", context->tag) == 0)
-			{
-				m_image = image;
-				return true;
-			}
-		}
-		else if (code == HOXML_ATTRIBUTE)
-		{
-			if (strcmp("source", context->attribute) == 0)
-			{
-				const auto combinedPaths = (std::filesystem::current_path() / "data" / context->value).lexically_normal();
+		return false;
+	}
 
-				if (std::filesystem::exists(combinedPaths))
-				{
-					image.m_Source = combinedPaths;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else if (strcmp("width", context->attribute) == 0)
-			{
-				image.m_Width = std::stoi(context->value);
-			}
-			else if (strcmp("height", context->attribute) == 0)
-			{
-				image.m_Height = std::stoi(context->value);
-			}
-		}
+	Image image{
+		.m_Source = imageNode->Attr("source", std::string{ }),
+		.m_Height = imageNode->Attr("height", ~0U),
+		.m_Width = imageNode->Attr("width", ~0U)
+	};
 
-		code = hoxml_parse(context, xml, xmlLength);
-	} while (code != HOXML_END_OF_DOCUMENT);
-
-	std::cout << "TSX::ParseImage: Reached the end of the file without closing the image tag!\n";
-	return false;
-}
-
-bool TSX::ParseProperties(Tile& tile, hoxml_context_t*& context, const char* xml, size_t xmlLength)
-{
-	std::vector<Tile::Property> properties;
-	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
-	do
+	const auto cp = std::filesystem::current_path();
+	const auto combinedPaths = (cp / "data" / image.m_Source).lexically_normal();
+	if (!std::filesystem::exists(combinedPaths))
 	{
-		if (code == HOXML_ELEMENT_BEGIN)
-		{
-			if (strcmp("properties", context->tag) == 0)
-			{
-				Tile::Property currentProperty{};
-				while (code != HOXML_END_OF_DOCUMENT)
-				{
-					if (code == HOXML_ATTRIBUTE)
-					{
-						// Just in case the "properties" element has some attributes
-						if (strcmp("properties", context->tag) == 0)
-						{
-							continue;
-						}
+		return false;
+	}
 
-						if (strcmp("name", context->attribute) == 0)
-						{
-							currentProperty.m_Name = context->value;
-						}
-						else if (strcmp("type", context->attribute) == 0)
-						{
-							if (strcmp("bool", context->value) == 0)
-							{
-								currentProperty.m_Type = Tile::Property::eType::Bool;
-							}
-							else if (strcmp("int", context->value) == 0)
-							{
-								currentProperty.m_Type = Tile::Property::eType::Int;
-							}
-							else if (strcmp("float", context->value) == 0)
-							{
-								currentProperty.m_Type = Tile::Property::eType::Float;
-							}
-						}
-						else if (strcmp("value", context->attribute) == 0)
-						{
-							// TODO: Assert that the type has been set properly first!
-							switch (currentProperty.m_Type)
-							{
-							case Tile::Property::eType::Bool:
-								currentProperty.m_Value.m_bValue = strcmp("true", context->value) == 0;
-								break;
-							case Tile::Property::eType::Int:
-								currentProperty.m_Value.m_iValue = std::stoi(context->value);
-								break;
-							case Tile::Property::eType::Float:
-								currentProperty.m_Value.m_fValue = std::stof(context->value);
-								break;
-							default:
-								std::cout << "TSX::ParseProperties: UNHANDLED TYPE\n";
-								return false;
-							}
-						}
-					}
-					else if (code == HOXML_ELEMENT_END)
-					{
-						if (strcmp("properties", context->tag) == 0)
-						{
-							tile.m_Properties = properties;
-							return true;
-						}
-						if (strcmp("property", context->tag) == 0)
-						{
-							properties.push_back(currentProperty);
-							currentProperty = {};
-						}
-					}
+	image.m_Source = combinedPaths;
 
-					code = hoxml_parse(context, xml, xmlLength);
-				}
-			}
-		}
-
-		code = hoxml_parse(context, xml, xmlLength);
-	} while (code != HOXML_END_OF_DOCUMENT);
-
-	std::cout << "TSX::ParseProperties: Reached the end of the file without closing the image tag!\n";
-	return false;
-}
-
-bool TSX::ParseTile(hoxml_context_t*& context, const char* xml, size_t xmlLength)
-{
-	Tile tile{};
-	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
-	do
+	if (!image.IsValid())
 	{
-		if (code == HOXML_ELEMENT_BEGIN)
+		return false;
+	}
+
+	const auto tiles = node.Children("tile");
+	m_tiles.clear();
+	m_tiles.reserve(tiles.size());
+	for (const auto& tileNode : tiles)
+	{
+		Tile tile;
+
+		tile.m_ID = tileNode->Attr("id", ~0U);
+		if (tile.m_ID == ~0U)
 		{
-			if (strcmp("properties", context->tag) == 0)
-			{
-				if (!ParseProperties(tile, context, xml, xmlLength))
-				{
-					std::cout << "TSX::ParseTile: Failed to load properties list!\n";
-					return false;
-				}
-			}
-		}
-		else if (code == HOXML_ELEMENT_END)
-		{
-			if (strcmp("tile", context->tag) == 0)
-			{
-				m_tiles.emplace_back(tile);
-				return true;
-			}
-		}
-		else if (code == HOXML_ATTRIBUTE)
-		{
-			if (strcmp("id", context->attribute) == 0)
-			{
-				tile.m_ID = std::stoi(context->value);
-			}
+			return false;
 		}
 
-		code = hoxml_parse(context, xml, xmlLength);
-	} while (code != HOXML_END_OF_DOCUMENT);
+		const auto tileProperties = tileNode->Child("properties")->Children("property");
 
-	std::cout << "TSX::ParseImage: Reached the end of the file without closing the image tag!\n";
-	return false;
+		tile.m_Properties.clear();
+		tile.m_Properties.reserve(tileProperties.size());
+
+		for (const auto& tileProperty : tileProperties)
+		{
+			const std::string propertyName = tileProperty->Attr("name", std::string{ });
+			if (propertyName.empty())
+			{
+				return false;
+			}
+
+			const std::string propertyType = tileProperty->Attr("type", std::string{ });
+			if (propertyType.empty())
+			{
+				return false;
+			}
+
+			const std::string propertyValue = tileProperty->Attr("value", std::string{ });
+			if (propertyValue.empty())
+			{
+				return false;
+			}
+
+			Tile::Property prop;
+			prop.m_Name = propertyName;
+
+			if (propertyType == "float")
+			{
+				prop.m_Type = Tile::Property::eType::Float;
+				prop.m_Value.m_fValue = tileProperty->Attr("value", 0.f);
+			}
+			else if (propertyType == "int")
+			{
+				prop.m_Type = Tile::Property::eType::Int;
+				prop.m_Value.m_iValue = tileProperty->Attr("value", 0);
+			}
+			else if (propertyType == "bool")
+			{
+				prop.m_Type = Tile::Property::eType::Bool;
+				prop.m_Value.m_bValue = tileProperty->Attr("value", false);
+			}
+			else
+			{
+				std::cerr << "Unknown property type " << propertyType << "\n";
+				return false;
+			}
+
+			tile.m_Properties.emplace_back(prop);
+		}
+
+		m_tiles.emplace_back(tile);
+	}
+
+	m_tileSet = tileSet;
+	m_image = image;
+	return true;
 }
