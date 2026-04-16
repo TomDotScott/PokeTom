@@ -26,6 +26,24 @@ int XmlNode::Attr(const std::string_view& key, const int fallback) const
 	}
 }
 
+unsigned XmlNode::Attr(const std::string_view& key, const unsigned fallback) const
+{
+	const auto it = m_Attributes.find(std::string{ key });
+	if (it == m_Attributes.end())
+	{
+		return fallback;
+	}
+
+	try
+	{
+		return std::stoul(it->second);
+	}
+	catch (...)
+	{
+		return fallback;
+	}
+}
+
 float XmlNode::Attr(const std::string_view& key, const float fallback) const
 {
 	const auto it = m_Attributes.find(std::string{ key });
