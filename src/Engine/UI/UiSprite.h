@@ -15,6 +15,8 @@ public:
 
 	sf::Vector2f GetSize() const override;
 
+	bool LoadFromXML(const XmlNode& node) override;
+
 private:
 	sf::Sprite* m_sprite;
 
@@ -24,8 +26,7 @@ private:
 	// The scale of the sprite from the xml file
 	sf::Vector2f m_scaleFactorFromXml;
 
-	bool ParseEndElement(hoxml_context_t*& context) override;
-	bool ParseAttribute(hoxml_context_t*& context) override;
+	bool LoadTexture(const std::filesystem::path& filePath);
 };
 
 #endif

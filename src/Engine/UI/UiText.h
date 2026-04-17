@@ -50,6 +50,8 @@ public:
 
 	sf::Vector2f GetSize() const override;
 
+	bool LoadFromXML(const XmlNode& node) override;
+
 private:
 	std::string m_string;
 	sf::Text m_text;
@@ -57,14 +59,12 @@ private:
 	UiElement* m_parent;
 
 	void CalculateAlignmentBounds();
-
-	bool ParseEndElement(hoxml_context_t*& context) override;
 };
 
 // TODO: This could probably be an extension of the UiText class!
 struct OffsetUiText
 {
-	UiText* m_text = nullptr;
+	std::unique_ptr<UiText> m_text = nullptr;
 	sf::Vector2f m_offset = VECTOR2F_ZERO;
 };
 #endif

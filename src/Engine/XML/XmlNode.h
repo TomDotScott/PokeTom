@@ -13,9 +13,10 @@ struct XmlNode
 	unsigned Attr(const std::string_view& key, unsigned fallback = 0U) const;
 	float Attr(const std::string_view& key, float fallback = 0.0f) const;
 	bool Attr(const std::string_view& key, bool fallback = false) const;
-	sf::Vector2f Attr(const std::string_view& xKey, const std::string_view& yKey) const;
+	sf::Vector2f Attr(const std::string_view& xKey, const std::string_view& yKey, sf::Vector2f fallback = {}) const;
 
 	const XmlNode* Child(const std::string_view& tag) const;
+	std::vector<const XmlNode*> Children() const;
 	std::vector<const XmlNode*> Children(const std::string_view& tag) const;
 	bool HasChild(const std::string_view& tag) const;
 

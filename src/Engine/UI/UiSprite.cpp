@@ -1,4 +1,7 @@
 #include "UiSprite.h"
+
+#include <iostream>
+
 #include "../Globals.h"
 #include "../TextureManager.h"
 
@@ -28,100 +31,93 @@ sf::Vector2f UiSprite::GetSize() const
 	return m_sprite->getGlobalBounds().size;
 }
 
-bool UiSprite::ParseEndElement(hoxml_context_t*& context)
+bool UiSprite::LoadFromXML(const XmlNode& node)
 {
-	if (!context)
+	if (UiElement::LoadFromXML(node))
 	{
 		return false;
 	}
 
-	if (context->tag && strcmp("Sprite", context->tag) == 0)
-	{
-		if (!m_sprite)
-		{
-			printf(" Closing tag found and no sprite was assigned to %s!\n", GetName().c_str());
-			return false;
-		}
-		m_sprite->setPosition(m_position);
-
-		SetScale(m_scaleFactorFromXml);
-
-		AddDrawable(m_sprite);
-
-		// When we have finished assigning the sprite, we can return true!
-		return true;
-	}
-
-	if (context->content == nullptr || OnlyWhitespace(context->content))
+	const auto* textureNode = node.Child("Texture");
+	if (textureNode == nullptr)
 	{
 		return false;
 	}
 
-	if (strcmp("layer", context->tag) == 0)
+	if (!LoadTexture(textureNode->m_Content))
 	{
-		if (strcmp("foreground", context->content) == 0)
+		return false;
+	}
+
+	const auto* scaleNode = node.Child("scale");
+	if (scaleNode != nullptr)
+	{
+		m_scaleFactorFromXml = scaleNode->Attr("x", "y", { 1, 1 });
+	}
+
+	const auto* layerNode = node.Child("layer");
+	if (layerNode == nullptr)
+	{
+		std::cerr << "UiSprite::LoadFromXML - Warning, no layer provided for UiSprite " << GetName() <<
+			"! Setting to foreground";
+		SetLayer(eLayer::FOREGROUND);
+	}
+	else
+	{
+		if (layerNode->m_Content == "foreground")
 		{
 			SetLayer(eLayer::FOREGROUND);
 		}
-		else if (strcmp("midground", context->content) == 0)
+		else if (layerNode->m_Content == "midground")
 		{
 			SetLayer(eLayer::MIDGROUND);
 		}
-		else if (strcmp("background", context->content) == 0)
+		else if (layerNode->m_Content == "background")
 		{
 			SetLayer(eLayer::BACKGROUND);
 		}
 		else
 		{
-			printf(" Unknown layer: %s!\n", context->content);
-		}
-
-		return false;
-	}
-
-	if (strcmp("texture", context->tag) == 0)
-	{
-		const std::filesystem::path filePath = std::filesystem::u8path(context->content);
-
-		// Grab the texture name
-		if (!std::filesystem::exists(filePath))
-		{
-			printf(" Texture: %s does not exist!\n", context->content);
+			std::cerr << "UiSprite::LoadFromXML - Unknown layer provided for UiSprite " << GetName() <<
+				layerNode->m_Content << "\n";
 			return false;
 		}
-
-		const std::string textureName = filePath.stem().string();
-
-		// Load the texture into the TextureManager
-		if (!TEXTUREMANAGER.LoadTexture(textureName, filePath))
-		{
-			printf(" Sprite: Failed to load texture: %s", context->content);
-			return false;
-		}
-
-		const sf::Texture* texture = TEXTUREMANAGER.GetTexture(textureName);
-
-		const sf::Vector2f scaleFactor = {
-			static_cast<float>(texture->getSize().x) / TRANSFORMED_SCALAR(texture->getSize().x),
-			static_cast<float>(texture->getSize().y) / TRANSFORMED_SCALAR(texture->getSize().y)
-		};
-
-		m_screenScaleFactor = { 1.f / scaleFactor.x, 1.f / scaleFactor.y };
-
-		m_sprite = new sf::Sprite(*texture);
-
-		return false;
 	}
 
-	return UiElement::ParseEndElement(context);
+	m_sprite->setPosition(m_position);
+	SetScale(m_scaleFactorFromXml);
+	AddDrawable(m_sprite);
+	return true;
 }
 
-bool UiSprite::ParseAttribute(hoxml_context_t*& context)
+bool UiSprite::LoadTexture(const std::filesystem::path& filePath)
 {
-	if (strcmp("scale", context->tag) == 0)
+	// Grab the texture name
+	if (!exists(filePath))
 	{
-		return ParseVectorAttribute(context, m_scaleFactorFromXml);
+		printf(" Texture: %ls does not exist!\n", filePath.c_str());
+		return false;
 	}
 
-	return UiElement::ParseAttribute(context);
+	const std::string textureName = filePath.stem().string();
+
+	// Load the texture into the TextureManager
+	if (!TEXTUREMANAGER.LoadTexture(textureName, filePath))
+	{
+		printf(" Sprite: Failed to load texture: %ls", filePath.c_str());
+		return false;
+	}
+
+	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(textureName);
+
+	const sf::Vector2f scaleFactor = {
+		static_cast<float>(texture->getSize().x) / TRANSFORMED_SCALAR(texture->getSize().x),
+		static_cast<float>(texture->getSize().y) / TRANSFORMED_SCALAR(texture->getSize().y)
+	};
+
+	m_screenScaleFactor = { 1.f / scaleFactor.x, 1.f / scaleFactor.y };
+
+	m_sprite = new sf::Sprite(*texture);
+
+	return false;
 }

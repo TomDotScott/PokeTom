@@ -1,5 +1,7 @@
 #include "UiPanel.h"
 
+#include <iostream>
+
 #include "UiManager.h"
 #include "../Globals.h"
 
@@ -23,7 +25,8 @@ void UiPanel::SetElementPosition(const sf::Vector2f& position)
 	{
 		sf::Vector2f anchor = m_position;
 
-		if (text->GetAlignment() == UiText::eAlignment::Centre) {
+		if (text->GetAlignment() == UiText::eAlignment::Centre)
+		{
 			anchor = m_position + m_size / 2.f;
 		}
 
@@ -47,80 +50,74 @@ UiText* UiPanel::GetUiText(const std::string& name)
 	{
 		if (uiText->GetName() == name)
 		{
-			return uiText;
+			return uiText.get();
 		}
 	}
 	return nullptr;
 }
 
-bool UiPanel::ParseAttribute(hoxml_context_t*& context)
+bool UiPanel::LoadFromXML(const XmlNode& node)
 {
-	if (strcmp("size", context->tag) == 0)
+	if (!UiElement::LoadFromXML(node))
 	{
-		if (!ParseVectorAttribute(context, m_size))
-		{
-			printf(" UiPanel: Error loading the size on line %u\n", context->line);
-			return true;
-		}
+		return false;
 	}
-	return UiElement::ParseAttribute(context);
-}
 
-bool UiPanel::ParseBeginElement(hoxml_context_t*& context)
-{
-	auto [xmlText, xmlLength] = UIMANAGER.GetLastXmlDetails();
-
-	if (strcmp("Sprite", context->tag) == 0)
+	const auto* sizeNode = node.Child("size");
+	if (sizeNode == nullptr)
 	{
-		m_sprite = new UiSprite();
-		if (!m_sprite->Load(context, xmlText, xmlLength))
-		{
-			printf(" UiPanel: Error loading sprite on line %u\n", context->line);
-			// return true;
-		}
+		std::cerr << "UiPanel::LoadFromXML - No size provided for element " << GetName() << "\n";
+		return false;
 	}
-	else if (strcmp("Text", context->tag) == 0)
+
+	m_size = sizeNode->Attr("x", "y", sf::Vector2f{ 69, 69 });
+
+	const auto textChildren = node.Children("Text");
+	m_text.reserve(textChildren.size());
+
+	for (const auto& c : textChildren)
 	{
 		OffsetUiText& newText = m_text.emplace_back();
 
-		newText.m_text = new UiText(this);
+		newText.m_text = std::make_unique<UiText>(this);
 
-		if (!newText.m_text->Load(context, xmlText, xmlLength))
+		if (!newText.m_text->LoadFromXML(*c))
 		{
-			printf(" UiPanel: Error loading Text on line %u\n", context->line);
-			return true;
+			printf(" UiPanel: Error loading Text");
+			return false;
 		}
 
 		newText.m_offset = newText.m_text->GetPosition();
 	}
 
-	return UiElement::ParseBeginElement(context);
-}
-
-bool UiPanel::ParseEndElement(hoxml_context_t*& context)
-{
-	if (strcmp("Panel", context->tag) == 0)
+	const auto* spriteNode = node.Child("Sprite");
+	if (spriteNode != nullptr)
 	{
-		SetElementPosition(m_position);
-
-		if (m_sprite)
+		m_sprite = std::make_unique<UiSprite>();
+		if (!m_sprite->LoadFromXML(*spriteNode))
 		{
-			for (const sf::Drawable* drawable : m_sprite->GetDrawablesList())
-			{
-				AddDrawable(drawable);
-			}
+			std::cerr << "UiPanel: Error loading sprite in panel " << GetName() << "\n";
+			return false;
 		}
-
-		for (const auto& [text, offset] : m_text)
-		{
-			for (const sf::Drawable* drawable : text->GetDrawablesList())
-			{
-				AddDrawable(drawable);
-			}
-		}
-
-		return true;
 	}
 
-	return UiElement::ParseEndElement(context);
+	SetElementPosition(m_position);
+
+	if (m_sprite)
+	{
+		for (const sf::Drawable* drawable : m_sprite->GetDrawablesList())
+		{
+			AddDrawable(drawable);
+		}
+	}
+
+	for (const auto& [text, offset] : m_text)
+	{
+		for (const sf::Drawable* drawable : text->GetDrawablesList())
+		{
+			AddDrawable(drawable);
+		}
+	}
+
+	return true;
 }

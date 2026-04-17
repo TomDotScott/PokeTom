@@ -10,7 +10,7 @@
 #include "UiText.h"
 #include "../Input/InputMapper.h"
 
-class UiManager
+class UiManager : public ISerialisable
 {
 public:
 	static UiManager& Get();
@@ -35,31 +35,21 @@ public:
 	void DrawDebugText(sf::RenderWindow& window) const;
 #endif
 
-	struct LastXmlDetails
-	{
-		// This pointer CAN be null
-		const char* text;
-		size_t length;
-	};
-
-	LastXmlDetails GetLastXmlDetails() const;
-
 private:
 	UiManager();
 
-	std::unordered_map<std::string, sf::Font*> m_fonts;
+	std::unordered_map<std::string, std::unique_ptr<sf::Font>> m_fonts;
 
 	std::unordered_map<std::string, UiElement*> m_uiElements;
 	std::set<std::string> m_backgroundElements;
 	std::set<std::string> m_midgroundElements;
 	std::set<std::string> m_foregroundElements;
 
-	LastXmlDetails m_lastXmlDetails;
-
 	InputMapper m_defaultUIInputs;
 
-	bool LoadElement(hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool LoadFont(hoxml_context_t*& context, const char* xml, size_t xmlLength);
+	bool LoadFromXML(const XmlNode& node) override;
+	bool LoadElement(const XmlNode& node);
+	bool LoadFont(const XmlNode& node);
 	void RenderLayer(sf::RenderWindow& window, const std::set<std::string>& layerUIElementIDs) const;
 
 	void OnLeftClickPressed();

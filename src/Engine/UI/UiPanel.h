@@ -18,15 +18,13 @@ public:
 	UiText* GetUiText(const std::string& name);
 
 private:
-	UiSprite* m_sprite;
+	std::unique_ptr<UiSprite> m_sprite;
 
 	std::vector<OffsetUiText> m_text;
 
 	sf::Vector2f m_size;
 
-	bool ParseAttribute(hoxml_context_t*& context) override;
-	bool ParseBeginElement(hoxml_context_t*& context) override;
-	bool ParseEndElement(hoxml_context_t*& context) override;
+	bool LoadFromXML(const XmlNode& node) override;
 };
 
 #endif

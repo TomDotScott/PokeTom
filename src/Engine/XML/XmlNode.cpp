@@ -90,11 +90,20 @@ bool XmlNode::Attr(const std::string_view& key, const bool fallback) const
 	return fallback;
 }
 
-sf::Vector2f XmlNode::Attr(const std::string_view& xKey, const std::string_view& yKey) const
+sf::Vector2f XmlNode::Attr(const std::string_view& xKey, const std::string_view& yKey, sf::Vector2f fallback) const
 {
+	constexpr float MAX_FLOAT = std::numeric_limits<float>::max();
+	const float x = Attr(xKey, MAX_FLOAT);
+	const float y = Attr(yKey, MAX_FLOAT);
+
+	if (x == MAX_FLOAT || y == MAX_FLOAT)
+	{
+		return fallback;
+	}
+
 	return {
-		Attr(xKey, 0.f),
-		Attr(yKey, 0.f)
+		x,
+		y
 	};
 }
 
@@ -111,9 +120,24 @@ const XmlNode* XmlNode::Child(const std::string_view& tag) const
 	return nullptr;
 }
 
+std::vector<const XmlNode*> XmlNode::Children() const
+{
+	std::vector<const XmlNode*> res;
+	res.reserve(m_Children.size());
+
+	for (const auto& c : m_Children)
+	{
+		res.emplace_back(&c);
+	}
+
+	return res;
+}
+
 std::vector<const XmlNode*> XmlNode::Children(const std::string_view& tag) const
 {
 	std::vector<const XmlNode*> res;
+	res.reserve(m_Children.size());
+
 	for (const auto& child : m_Children)
 	{
 		if (child.m_Tag == tag)

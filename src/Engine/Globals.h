@@ -4,8 +4,6 @@
 #include <sstream>
 #include <SFML/System/Vector2.hpp>
 
-#define HOXML_IMPLEMENTATION
-
 #define RENDER_SPRITES 1
 
 namespace sf
