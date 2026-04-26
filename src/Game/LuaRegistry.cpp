@@ -6,6 +6,7 @@
 #include <iostream>
 #include <SFML/System/Vector2.hpp>
 
+#include "DialogueBox.h"
 #include "Player.h"
 #include "WorldDefinition.h"
 #include "../Engine/Asserts.h"
@@ -20,6 +21,7 @@
 LuaRegistry::LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
 {
 	RegisterEntityAPI(lua, world, entities);
+	RegisterDialogueAPI(lua);
 	RegisterDirections(lua);
 	RegisterAnimationNames(lua);
 }
@@ -189,6 +191,27 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				}
 			})
 
+	LUA_API_END()
+}
+
+void LuaRegistry::RegisterDialogueAPI(sol::state& lua)
+{
+	LUA_API_BEGIN(Dialogue, lua)
+		LUA_FUNC(Dialogue, Show,
+			[]() -> void {
+				DialogueBox::SetVisible(true);
+			})
+
+		LUA_FUNC(Dialogue, SetText,
+			[](const std::string& text) -> void {
+				// TODO: Figure out how tf I am going to do formatted text here!
+				DialogueBox::SetText(text.c_str());
+			})
+
+		LUA_FUNC(Dialogue, Hide,
+			[]() -> void {
+				DialogueBox::SetVisible(false);
+			})
 	LUA_API_END()
 }
 

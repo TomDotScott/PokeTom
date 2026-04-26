@@ -1,7 +1,5 @@
 #include "Gameobject.h"
 
-#include "Globals.h"
-
 namespace
 {
 	uint32_t CURRENT_ID = 0;

@@ -11,6 +11,7 @@
 #include "UiButton.h"
 #include "UiPanel.h"
 #include "UiSprite.h"
+#include "../Asserts.h"
 #include "../CodeGen/Resources.hpp"
 #include "../XML/XmlDocument.h"
 
@@ -200,17 +201,25 @@ void UiManager::RenderLayer(sf::RenderWindow& window, const std::set<std::string
 #if RENDER_SPRITES
 	for (const auto& elementName : layerUIElementIDs)
 	{
-#if BUILD_DEBUG
-		if (m_uiElements.at(elementName)->GetType() == UiElement::eType::Panel)
+		UiElement* uiElement = m_uiElements.at(elementName);
+		ASSERT(uiElement != nullptr);
+
+		if (!uiElement->IsActive())
 		{
-			sf::RectangleShape debugRect(m_uiElements.at(elementName)->GetSize());
-			debugRect.setPosition(m_uiElements.at(elementName)->GetPosition());
+			continue;
+		}
+
+#if BUILD_DEBUG
+		if (uiElement->GetType() == UiElement::eType::Panel)
+		{
+			sf::RectangleShape debugRect(uiElement->GetSize());
+			debugRect.setPosition(uiElement->GetPosition());
 			debugRect.setFillColor(sf::Color::Magenta);
 			window.draw(debugRect);
 		}
 #endif
 
-		for (const auto* drawable : m_uiElements.at(elementName)->GetDrawablesList())
+		for (const auto* drawable : uiElement->GetDrawablesList())
 		{
 			window.draw(*drawable);
 		}

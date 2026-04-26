@@ -16,6 +16,7 @@ public:
 
 private:
 	void RegisterEntityAPI(sol::state& lua, WorldDefinition& world, EntityRegistry& entities);
+	void RegisterDialogueAPI(sol::state& lua);
 	void RegisterDirections(sol::state& lua);
 	void RegisterAnimationNames(sol::state& lua);
 };
