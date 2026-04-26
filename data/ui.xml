@@ -1,31 +1,37 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <ui>
-  <Font>
-    <!-- Taken from https://github.com/tonsky/FiraCode -->
-    <name>DEFAULT</name>
-    <path>fonts/FiraCode-Regular.ttf</path>
-  </Font>
   <Text>
     <name>DEBUG_TEXT</name>
     <string>Testy McTestFace</string>
     <colour>FF0000FF</colour>
-    <position x="425" y="135"/>
+    <position x="425" y="135" />
     <size>10</size>
     <font>DEFAULT</font>
   </Text>
 
   <Panel>
     <name>DIALOGUE_PANEL</name>
-    <position x="0" y="477"/>
-    <size x="768" y="128"/>
+    <position x="0" y="477" />
+    <size x="768" y="128" />
     <Text>
       <name>DIALOGUE_TEXT</name>
-      <string>[DEFAULT TEXT HERE]</string>
-      <alignment>centre</alignment>
+      <string>This is a very long and
+--hopefully--multi-line string
+So that I can see what dialogue will look like!!!
+</string>
+      <alignment>left</alignment>
       <colour>000000FF</colour>
-      <position x="0" y="0"/>
-      <size>40</size>
+      <position x="145" y="45" />
+      <size>15</size>
       <font>DEFAULT</font>
     </Text>
+    <Sprite>
+      <name>DIALOGUE_BOX</name>
+      <position x="132" y="0" />
+      <scale x="2" y="2" />
+      <texture>DIALOGUE_BOX</texture>
+      <layer>background</layer>
+    </Sprite>
   </Panel>
 </ui>
