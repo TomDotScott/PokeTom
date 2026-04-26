@@ -4,9 +4,10 @@
 
 #include "../Globals.h"
 
-UiElement::UiElement(const eType type) :
+UiElement::UiElement(const eType type, UiElement* parent) :
 	m_layer(eLayer::NONE),
-	m_type(type)
+	m_type(type),
+	m_parent(parent)
 {
 	m_drawables.reserve(10);
 }
@@ -33,7 +34,29 @@ std::string UiElement::GetName() const
 
 void UiElement::SetElementPosition(const sf::Vector2f& position)
 {
-	SetPosition(position);
+	m_absolutePosition = position;
+
+	const sf::Vector2f offset{ m_parent->CalculateOffsetFromParents() };
+	SetPosition(position + offset);
+}
+
+sf::Vector2f UiElement::GetAbsolutePosition() const
+{
+	return m_absolutePosition;
+}
+
+sf::Vector2f UiElement::CalculateOffsetFromParents() const
+{
+	sf::Vector2f offset{ 0.f, 0.f };
+
+	const UiElement* current = m_parent;
+	while (current != nullptr)
+	{
+		offset += m_parent->GetAbsolutePosition();
+		current = m_parent->m_parent;
+	}
+
+	return offset;
 }
 
 const std::vector<const sf::Drawable*>& UiElement::GetDrawablesList() const
@@ -71,4 +94,9 @@ bool UiElement::LoadFromXML(const XmlNode& node)
 
 	SetElementPosition(positionNode->Attr("x", "y", sf::Vector2f{}));
 	return true;
+}
+
+void UiElement::SetParent(UiElement* parent)
+{
+	m_parent = parent;
 }

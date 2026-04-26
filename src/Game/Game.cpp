@@ -52,7 +52,7 @@ Game::Game(sol::state& lua) :
 		entity->OnPlayerInteractPressed();
 	});
 
-	UIMANAGER.Load("ui.xml");
+	ASSERT_MSG(UIMANAGER.Load("ui.xml"), "UI Failed to initialise from XML!");
 
 	m_world.LoadLevelScripts(lua);
 

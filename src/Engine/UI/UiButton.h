@@ -8,9 +8,10 @@
 class UiButton : public UiElement
 {
 public:
-	UiButton();
+	UiButton(UiElement* parent = nullptr);
 
 	void SetElementPosition(const sf::Vector2f& position) override;
+	void RecalculatePositionAfterParentMoved() override;
 
 	void OnButtonPressed(const std::function<void()>& callback);
 
@@ -28,7 +29,7 @@ private:
 	std::unique_ptr<UiSprite> m_sprite;
 
 	// Optional, the m_text pointer may be null
-	OffsetUiText m_offsetText;
+	std::unique_ptr<UiText> m_text;
 
 	Event<> m_pressedEvent;
 

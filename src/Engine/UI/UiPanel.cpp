@@ -3,35 +3,28 @@
 #include <iostream>
 
 #include "UiManager.h"
-#include "../Globals.h"
 
 UiPanel::UiPanel() :
-	UiElement(eType::Panel),
-	m_sprite(nullptr)
+	UiElement(eType::Panel)
 {
 	SetLayer(eLayer::MIDGROUND);
 }
 
 void UiPanel::SetElementPosition(const sf::Vector2f& position)
 {
-	UiElement::SetPosition(position);
+	m_absolutePosition = position;
 
-	if (m_sprite)
+	UiElement::SetPosition(position + CalculateOffsetFromParents());
+
+	for (const std::unique_ptr<UiElement>& child : m_children)
 	{
-		m_sprite->SetElementPosition(m_position);
+		child->RecalculatePositionAfterParentMoved();
 	}
+}
 
-	for (const auto& [text, offset] : m_text)
-	{
-		sf::Vector2f anchor = m_position;
-
-		if (text->GetAlignment() == UiText::eAlignment::Centre)
-		{
-			anchor = m_position + m_size / 2.f;
-		}
-
-		text->SetElementPosition(anchor + offset);
-	}
+void UiPanel::RecalculatePositionAfterParentMoved()
+{
+	SetElementPosition(m_absolutePosition);
 }
 
 sf::Vector2f UiPanel::GetSize() const
@@ -44,13 +37,14 @@ void UiPanel::SetSize(const sf::Vector2f& size)
 	m_size = size;
 }
 
-UiText* UiPanel::GetUiText(const std::string& name)
+UiElement* UiPanel::GetChild(const std::string& name) const
 {
-	for (auto& [uiText, offsetPosition] : m_text)
+	for (auto& child : m_children)
 	{
-		if (uiText->GetName() == name)
+		if (child->GetName() == name)
 		{
-			return uiText.get();
+			// TODO: Returning a pointer to an element in a vector is not always the best idea...
+			return child.get();
 		}
 	}
 	return nullptr;
@@ -72,52 +66,52 @@ bool UiPanel::LoadFromXML(const XmlNode& node)
 
 	m_size = sizeNode->Attr("x", "y", sf::Vector2f{ 69, 69 });
 
-	const auto textChildren = node.Children("Text");
-	m_text.reserve(textChildren.size());
+	// TODO: Make this support any arbitrary children
+	const auto spriteNodes = node.Children("Sprite");
+	for (const auto& c : spriteNodes)
+	{
+		if (c == nullptr)
+		{
+			continue;
+		}
 
+		// This is a kinda hideous line of code
+		UiSprite* newSprite = dynamic_cast<UiSprite*>(m_children.emplace_back(std::make_unique<UiSprite>(this)).get());
+		if (!newSprite->LoadFromXML(*c))
+		{
+			std::cerr << "UiPanel: Error loading sprite in panel " << GetName() << "\n";
+			return false;
+		}
+
+		for (const sf::Drawable* drawable : newSprite->GetDrawablesList())
+		{
+			AddDrawable(drawable);
+		}
+	}
+
+	const auto textChildren = node.Children("Text");
 	for (const auto& c : textChildren)
 	{
-		OffsetUiText& newText = m_text.emplace_back();
+		if (c == nullptr)
+		{
+			continue;
+		}
 
-		newText.m_text = std::make_unique<UiText>(this);
+		// This is a kinda hideous line of code
+		UiText* newText = dynamic_cast<UiText*>(m_children.emplace_back(std::make_unique<UiText>(this)).get());
 
-		if (!newText.m_text->LoadFromXML(*c))
+		if (!newText->LoadFromXML(*c))
 		{
 			printf(" UiPanel: Error loading Text");
 			return false;
 		}
 
-		newText.m_offset = newText.m_text->GetPosition();
-	}
-
-	const auto* spriteNode = node.Child("Sprite");
-	if (spriteNode != nullptr)
-	{
-		m_sprite = std::make_unique<UiSprite>();
-		if (!m_sprite->LoadFromXML(*spriteNode))
+		for (const sf::Drawable* drawable : newText->GetDrawablesList())
 		{
-			std::cerr << "UiPanel: Error loading sprite in panel " << GetName() << "\n";
-			return false;
+			AddDrawable(drawable);
 		}
 	}
 
 	SetElementPosition(m_position);
-
-	if (m_sprite)
-	{
-		for (const sf::Drawable* drawable : m_sprite->GetDrawablesList())
-		{
-			AddDrawable(drawable);
-		}
-	}
-
-	for (const auto& [text, offset] : m_text)
-	{
-		for (const sf::Drawable* drawable : text->GetDrawablesList())
-		{
-			AddDrawable(drawable);
-		}
-	}
-
 	return true;
 }

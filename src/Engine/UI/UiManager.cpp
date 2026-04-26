@@ -11,6 +11,7 @@
 #include "UiButton.h"
 #include "UiPanel.h"
 #include "UiSprite.h"
+#include "../CodeGen/Resources.hpp"
 #include "../XML/XmlDocument.h"
 
 UiElement* UiManager::GetUiElement(const std::string& name) const
@@ -74,6 +75,25 @@ UiManager& UiManager::Get()
 
 bool UiManager::Load(const std::filesystem::path& path)
 {
+	// HACKY, needs a proper system but oh well! Load all the fonts from Resources.cpp
+	for (const auto& [resourceID, resourcePath] : fonts_resources)
+	{
+		if (!std::filesystem::exists(resourcePath))
+		{
+			std::cerr << "UiManager::Load: failed to load font " << resourceID << " as path " << resourcePath << " does not exist!\n";
+			return false;
+		}
+
+		if (const auto id = std::string{ resourceID }; !m_fonts.contains(id))
+		{
+#if BUILD_DEBUG
+			std::cout << "UiManager::LoadFont: Loading font \""<< id << "\", path=\"" << resourcePath<< "\"\n";
+#endif
+
+			m_fonts[id] = std::make_unique<sf::Font>(resourcePath);
+		}
+	}
+
 	XmlDocument doc;
 	doc.Load(path);
 	return LoadFromXML(*doc.Root().Child("ui"));
@@ -153,35 +173,6 @@ bool UiManager::LoadElement(const XmlNode& node)
 	return true;
 }
 
-bool UiManager::LoadFont(const XmlNode& node)
-{
-	const auto* nameNode = node.Child("name");
-	if (nameNode == nullptr)
-	{
-		return false;
-	}
-
-	const std::string name = nameNode->m_Content;
-
-	const auto* pathNode = node.Child("path");
-	if (pathNode == nullptr)
-	{
-		return false;
-	}
-	const std::filesystem::path path = pathNode->m_Content;
-
-	if (!m_fonts.contains(name))
-	{
-#if BUILD_DEBUG
-		printf(" UiManager::LoadFont: Loading font \"%s\", path=\"%ls\"\n", name.c_str(), path.c_str());
-#endif
-
-		m_fonts[name] = std::make_unique<sf::Font>(path);
-	}
-
-	return true;
-}
-
 void UiManager::Update()
 {
 	m_defaultUIInputs.Update();
@@ -195,20 +186,9 @@ bool UiManager::LoadFromXML(const XmlNode& node)
 	const auto children = node.Children();
 	for (const auto& c : children)
 	{
-		if (c->m_Tag == "Font")
+		if (!LoadElement(*c))
 		{
-			if (!LoadFont(*c))
-			{
-				std::cerr << "UiManager::LoadFromXML - Failed to load font " << c->m_Content << "\n";
-				return false;
-			}
-		}
-		else
-		{
-			if (!LoadElement(*c))
-			{
-				std::cerr << "UiManager::LoadFromXML - Failed to load element\n";
-			}
+			std::cerr << "UiManager::LoadFromXML - Failed to load element\n";
 		}
 	}
 

@@ -49,7 +49,6 @@ private:
 
 	bool LoadFromXML(const XmlNode& node) override;
 	bool LoadElement(const XmlNode& node);
-	bool LoadFont(const XmlNode& node);
 	void RenderLayer(sf::RenderWindow& window, const std::set<std::string>& layerUIElementIDs) const;
 
 	void OnLeftClickPressed();

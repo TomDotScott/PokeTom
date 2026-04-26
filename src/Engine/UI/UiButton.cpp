@@ -1,10 +1,14 @@
 #include "UiButton.h"
 
-#include "UiManager.h"
+#include <iostream>
 
-UiButton::UiButton() :
-	UiElement(eType::Button),
-	m_sprite(nullptr)
+#include "UiManager.h"
+#include "../Asserts.h"
+
+UiButton::UiButton(UiElement* parent) :
+	UiElement(eType::Button, parent),
+	m_sprite(nullptr),
+	m_text(nullptr)
 {
 	// Always render on top
 	SetLayer(eLayer::FOREGROUND);
@@ -12,16 +16,21 @@ UiButton::UiButton() :
 
 void UiButton::SetElementPosition(const sf::Vector2f& position)
 {
+	m_absolutePosition = position;
 	SetPosition(position);
 
-	m_sprite->SetElementPosition(position);
+	ASSERT(m_sprite != nullptr);
+	m_sprite->RecalculatePositionAfterParentMoved();
 
-	if (m_offsetText.m_text)
+	if (m_text != nullptr)
 	{
-		const sf::Vector2f anchor = m_position;
-
-		m_offsetText.m_text->SetElementPosition(anchor + m_offsetText.m_offset);
+		m_text->RecalculatePositionAfterParentMoved();
 	}
+}
+
+void UiButton::RecalculatePositionAfterParentMoved()
+{
+	SetElementPosition(m_absolutePosition);
 }
 
 void UiButton::OnButtonPressed(const std::function<void()>& callback)
@@ -46,7 +55,7 @@ sf::Vector2f UiButton::GetSize() const
 
 UiText* UiButton::GetText() const
 {
-	return m_offsetText.m_text.get();
+	return m_text.get();
 }
 
 bool UiButton::LoadFromXML(const XmlNode& node)
@@ -59,10 +68,11 @@ bool UiButton::LoadFromXML(const XmlNode& node)
 	const auto* spriteNode = node.Child("Sprite");
 	if (spriteNode == nullptr)
 	{
+		std::cerr << "UiButton::LoadFromXML - No sprite provided!";
 		return false;
 	}
 
-	m_sprite = std::make_unique<UiSprite>();
+	m_sprite = std::make_unique<UiSprite>(this);
 	m_sprite->LoadFromXML(*spriteNode);
 
 	for (const sf::Drawable* const drawable : m_sprite->GetDrawablesList())
@@ -72,12 +82,10 @@ bool UiButton::LoadFromXML(const XmlNode& node)
 
 	if (const auto* textNode = node.Child("Text"); textNode != nullptr)
 	{
-		m_offsetText.m_text = std::make_unique<UiText>();
-		m_offsetText.m_text->LoadFromXML(*textNode);
+		m_text = std::make_unique<UiText>();
+		m_text->LoadFromXML(*textNode);
 
-		m_offsetText.m_offset = m_offsetText.m_text->GetPosition();
-
-		for (const sf::Drawable* const drawable : m_offsetText.m_text->GetDrawablesList())
+		for (const sf::Drawable* const drawable : m_text->GetDrawablesList())
 		{
 			AddDrawable(drawable);
 		}

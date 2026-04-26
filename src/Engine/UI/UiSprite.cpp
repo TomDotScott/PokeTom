@@ -4,9 +4,10 @@
 
 #include "../Globals.h"
 #include "../TextureManager.h"
+#include "../CodeGen/Resources.hpp"
 
-UiSprite::UiSprite() :
-	UiElement(eType::Sprite),
+UiSprite::UiSprite(UiElement* parent) :
+	UiElement(eType::Sprite, parent),
 	m_sprite(nullptr),
 	m_screenScaleFactor(1.f, 1.f),
 	m_scaleFactorFromXml(1.f, 1.f)
@@ -15,9 +16,19 @@ UiSprite::UiSprite() :
 
 void UiSprite::SetElementPosition(const sf::Vector2f& position)
 {
-	SetPosition(position);
+	m_absolutePosition = position;
 
-	m_sprite->setPosition(m_position);
+	SetPosition(position + CalculateOffsetFromParents());
+
+	RecalculatePositionAfterParentMoved();
+}
+
+void UiSprite::RecalculatePositionAfterParentMoved()
+{
+	if (m_sprite)
+	{
+		m_sprite->setPosition(m_absolutePosition + CalculateOffsetFromParents());
+	}
 }
 
 void UiSprite::SetScale(const sf::Vector2f& scale) const
@@ -33,7 +44,7 @@ sf::Vector2f UiSprite::GetSize() const
 
 bool UiSprite::LoadFromXML(const XmlNode& node)
 {
-	if (UiElement::LoadFromXML(node))
+	if (!UiElement::LoadFromXML(node))
 	{
 		return false;
 	}
@@ -90,25 +101,23 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 	return true;
 }
 
-bool UiSprite::LoadTexture(const std::filesystem::path& filePath)
+bool UiSprite::LoadTexture(const std::string& resourceID)
 {
-	// Grab the texture name
-	if (!exists(filePath))
+	const auto texturePath = GET_TEXTURE_PATH(resourceID);
+	if (!std::filesystem::exists(texturePath))
 	{
-		printf(" Texture: %ls does not exist!\n", filePath.c_str());
+		std::cerr << "Path: " << texturePath << " does not exist!\n";
 		return false;
 	}
-
-	const std::string textureName = filePath.stem().string();
 
 	// Load the texture into the TextureManager
-	if (!TEXTUREMANAGER.LoadTexture(textureName, filePath))
+	if (!TEXTUREMANAGER.LoadTexture(resourceID, texturePath))
 	{
-		printf(" Sprite: Failed to load texture: %ls", filePath.c_str());
+		std::cerr << "Failed to load texture: " << texturePath << "\n";
 		return false;
 	}
 
-	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(textureName);
+	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(resourceID);
 
 	const sf::Vector2f scaleFactor = {
 		static_cast<float>(texture->getSize().x) / TRANSFORMED_SCALAR(texture->getSize().x),
@@ -118,6 +127,5 @@ bool UiSprite::LoadTexture(const std::filesystem::path& filePath)
 	m_screenScaleFactor = { 1.f / scaleFactor.x, 1.f / scaleFactor.y };
 
 	m_sprite = new sf::Sprite(*texture);
-
-	return false;
+	return true;
 }
