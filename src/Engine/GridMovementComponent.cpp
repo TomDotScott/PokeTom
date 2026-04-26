@@ -11,6 +11,7 @@ GridMovementComponent::GridMovementComponent(
 	m_owningEntity(owner),
 	m_previousDirection(eDirection::None),
 	m_currentDirection(eDirection::None),
+	m_movingDirection(eDirection::None),
 	m_tileSize(tileSize),
 	m_speed(walkTilesPerSecond),
 	m_sprintSpeed(sprintTilesPerSecond),
@@ -177,12 +178,17 @@ bool GridMovementComponent::IsSprinting() const
 
 eOrientation GridMovementComponent::GetCurrentOrientation() const
 {
-	if (IsMoving() || GetPreviousDirection() == eDirection::None)
+	if (IsMoving())
 	{
-		return GetOrientationFromDirection(GetCurrentDirection());
+		return GetOrientationFromDirection(m_movingDirection);
 	}
 
-	return GetOrientationFromDirection(GetPreviousDirection());
+	if (m_currentDirection != eDirection::None)
+	{
+		return GetOrientationFromDirection(m_currentDirection);
+	}
+
+	return GetOrientationFromDirection(m_previousDirection);
 }
 
 void GridMovementComponent::SetCanMoveCallback(can_move_func callback)
@@ -195,5 +201,6 @@ void GridMovementComponent::StartMove(const sf::Vector2f& dir)
 	m_isMoving = true;
 	m_progress = 0.f;
 	m_startPos = m_worldPos;
+	m_movingDirection = m_currentDirection;
 	m_endPos = dir;
 }
