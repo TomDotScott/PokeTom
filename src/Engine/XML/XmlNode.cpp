@@ -109,9 +109,20 @@ sf::Vector2f XmlNode::Attr(const std::string_view& xKey, const std::string_view&
 
 const XmlNode* XmlNode::Child(const std::string_view& tag) const
 {
+	auto toLower = [](const unsigned char c) { return std::tolower(c); };
+
+	std::string tagToLower{ tag };
+	std::ranges::transform(tagToLower, tagToLower.begin(),
+	                       toLower);
+
 	for (const auto& child : m_Children)
 	{
-		if (child.m_Tag == tag)
+		std::string lowerName{ child.m_Tag };
+		std::ranges::transform(lowerName, lowerName.begin(),
+		                       toLower);
+
+
+		if (lowerName == tagToLower)
 		{
 			return &child;
 		}
@@ -135,12 +146,22 @@ std::vector<const XmlNode*> XmlNode::Children() const
 
 std::vector<const XmlNode*> XmlNode::Children(const std::string_view& tag) const
 {
+	auto toLower = [](const unsigned char c) { return std::tolower(c); };
+
+	std::string lowerSearchTag{ tag };
+	std::ranges::transform(lowerSearchTag, lowerSearchTag.begin(),
+		toLower);
+
 	std::vector<const XmlNode*> res;
 	res.reserve(m_Children.size());
 
 	for (const auto& child : m_Children)
 	{
-		if (child.m_Tag == tag)
+		std::string currentTagLower{ child.m_Tag };
+		std::ranges::transform(currentTagLower, currentTagLower.begin(),
+			toLower);
+
+		if (lowerSearchTag == currentTagLower)
 		{
 			res.emplace_back(&child);
 		}
