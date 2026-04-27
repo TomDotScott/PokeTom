@@ -2,7 +2,7 @@
 
 #include "../Engine/Asserts.h"
 #include "../Engine/Stringtable.h"
-#include "../Engine/XML/XmlDocument.h"
+#include "../Engine/Parsers/XML/XmlDocument.h"
 
 
 DialogueManager* DialogueManager::Get()

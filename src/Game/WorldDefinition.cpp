@@ -8,7 +8,7 @@
 #include "TileParser.h"
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
-#include "../Engine/XML/XmlDocument.h"
+#include "../Engine/Parsers/XML/Document.h"
 
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 

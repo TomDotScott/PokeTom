@@ -2,8 +2,7 @@
 
 #include <fstream>
 #include <iostream>
-
-#include "../Asserts.h"
+#include "../../Asserts.h"
 
 bool CsvDocument::Load(const std::filesystem::path& path, const char delimiter)
 {

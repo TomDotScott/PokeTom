@@ -6,7 +6,7 @@
 #include "../Globals.h"
 #include "../TextureManager.h"
 #include "../CodeGen/Resources.hpp"
-#include "../XML/XmlDocument.h"
+#include "../Parsers/XML/XmlDocument.h"
 
 const Animation& AnimationDictionary::GetClip(const std::string& name) const
 {

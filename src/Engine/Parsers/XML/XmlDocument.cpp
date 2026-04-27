@@ -1,10 +1,11 @@
 #include "XmlDocument.h"
-
 #include <fstream>
 #define HOXML_IMPLEMENTATION
+
 #include <hoxml.h>
 #include <iostream>
 #include <stack>
+#include "XmlNode.h"
 
 namespace
 {

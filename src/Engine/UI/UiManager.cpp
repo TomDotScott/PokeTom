@@ -13,7 +13,7 @@
 #include "UiSprite.h"
 #include "../Asserts.h"
 #include "../CodeGen/Resources.hpp"
-#include "../XML/XmlDocument.h"
+#include "../Parsers/XML/XmlDocument.h"
 
 UiElement* UiManager::GetUiElement(const std::string& name) const
 {

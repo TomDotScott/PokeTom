@@ -1,7 +1,7 @@
 #ifndef ISERIALISABLE_H
 #define ISERIALISABLE_H
 
-#include "XML/XmlNode.h"
+#include "Parsers/XML/XmlNode.h"
 
 class ISerialisable
 {

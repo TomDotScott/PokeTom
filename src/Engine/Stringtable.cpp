@@ -1,7 +1,8 @@
 #include "Stringtable.h"
 
 #include "Asserts.h"
-#include "CSV/CsvDocument.h"
+#include "Parsers/CSV/CsvDocument.h"
+#include "Language.h"
 
 
 StringTable* StringTable::Get()
