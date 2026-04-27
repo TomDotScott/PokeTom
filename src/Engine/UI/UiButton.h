@@ -8,9 +8,10 @@
 class UiButton : public UiElement
 {
 public:
-	UiButton();
+	UiButton(UiElement* parent = nullptr);
 
 	void SetElementPosition(const sf::Vector2f& position) override;
+	void RecalculatePositionAfterParentMoved() override;
 
 	void OnButtonPressed(const std::function<void()>& callback);
 
@@ -25,15 +26,14 @@ public:
 
 private:
 	// Required!
-	UiSprite* m_sprite;
+	std::unique_ptr<UiSprite> m_sprite;
 
 	// Optional, the m_text pointer may be null
-	OffsetUiText m_offsetText;
+	std::unique_ptr<UiText> m_text;
 
 	Event<> m_pressedEvent;
 
-	bool ParseBeginElement(hoxml_context_t*& context) override;
-	bool ParseEndElement(hoxml_context_t*& context) override;
+	bool LoadFromXML(const XmlNode& node) override;
 };
 
 #endif

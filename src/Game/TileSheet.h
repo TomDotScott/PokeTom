@@ -3,11 +3,8 @@
 #include <cstdint>
 #include <filesystem>
 #include <unordered_map>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Texture.hpp>
 
-#include "../Engine/TiledParsers.h"
-#include "../Engine/Rendering/SpriteBatcher.h"
+#include "../Engine/Parsers/Tiled/TiledParsers.h"
 
 class TileSheet
 {

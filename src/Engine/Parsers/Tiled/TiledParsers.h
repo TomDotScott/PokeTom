@@ -3,9 +3,10 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include "Factory.h"
 #include <json.hpp>
-#include <hoxml.h>
+#include "../../Factory.h"
+#include "../../ISerialisable.h"
+
 
 class TMJ final : public Factory<TMJ>
 {
@@ -95,7 +96,7 @@ private:
 };
 
 
-class TSX final : public Factory<TSX>
+class TSX final : public Factory<TSX>, public ISerialisable
 {
 	friend class Factory<TSX>;
 
@@ -107,6 +108,8 @@ public:
 		uint32_t m_TileHeight;
 		uint32_t m_TileCount;
 		uint32_t m_NumColumns;
+
+		bool IsValid() const;
 	};
 
 	struct Image
@@ -114,6 +117,8 @@ public:
 		std::filesystem::path m_Source;
 		uint32_t m_Height;
 		uint32_t m_Width;
+
+		bool IsValid() const;
 	};
 
 	struct Tile
@@ -154,10 +159,7 @@ private:
 
 	explicit TSX(std::filesystem::path path);
 	bool Init() override;
-	bool ParseTileSet(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool ParseProperties(Tile& tile, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool ParseTile(hoxml_context_t*& context, const char* xml, size_t xmlLength);
+	bool LoadFromXML(const XmlNode& node) override;
 };
 
 #endif

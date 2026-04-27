@@ -1,13 +1,14 @@
 #include "UiButton.h"
 
-#include "UiManager.h"
-#include "../Globals.h"
-#include "../TextureManager.h"
-#include "../Input/Mouse.h"
+#include <iostream>
 
-UiButton::UiButton() :
-	UiElement(eType::Button),
-	m_sprite(nullptr)
+#include "UiManager.h"
+#include "../Asserts.h"
+
+UiButton::UiButton(UiElement* parent) :
+	UiElement(eType::Button, parent),
+	m_sprite(nullptr),
+	m_text(nullptr)
 {
 	// Always render on top
 	SetLayer(eLayer::FOREGROUND);
@@ -15,15 +16,21 @@ UiButton::UiButton() :
 
 void UiButton::SetElementPosition(const sf::Vector2f& position)
 {
+	m_absolutePosition = position;
 	SetPosition(position);
 
-	m_sprite->SetElementPosition(position);
+	ASSERT(m_sprite != nullptr);
+	m_sprite->RecalculatePositionAfterParentMoved();
 
-	if (m_offsetText.m_text) {
-		sf::Vector2f anchor = m_position;
-
-		m_offsetText.m_text->SetElementPosition(anchor + m_offsetText.m_offset);
+	if (m_text != nullptr)
+	{
+		m_text->RecalculatePositionAfterParentMoved();
 	}
+}
+
+void UiButton::RecalculatePositionAfterParentMoved()
+{
+	SetElementPosition(m_absolutePosition);
 }
 
 void UiButton::OnButtonPressed(const std::function<void()>& callback)
@@ -48,76 +55,41 @@ sf::Vector2f UiButton::GetSize() const
 
 UiText* UiButton::GetText() const
 {
-	return m_offsetText.m_text;
+	return m_text.get();
 }
 
-bool UiButton::ParseBeginElement(hoxml_context_t*& context)
+bool UiButton::LoadFromXML(const XmlNode& node)
 {
-	auto [xmlText, xmlLength] = UIMANAGER.GetLastXmlDetails();
-
-	if (strcmp("Sprite", context->tag) == 0)
-	{
-		m_sprite = new UiSprite();
-		if (!m_sprite->Load(context, xmlText, xmlLength))
-		{
-			printf(" UiPanel: Error loading sprite on line %u\n", context->line);
-			return true;
-		}
-	}
-	if (strcmp("Text", context->tag) == 0)
-	{
-		m_offsetText.m_text = new UiText(this);
-
-		if (!m_offsetText.m_text->Load(context, xmlText, xmlLength))
-		{
-			printf(" UiPanel: Error loading Text on line %u\n", context->line);
-			return true;
-		}
-
-		m_offsetText.m_offset = m_offsetText.m_text->GetPosition();
-	}
-
-	return UiElement::ParseBeginElement(context);
-}
-
-bool UiButton::ParseEndElement(hoxml_context_t*& context)
-{
-	if (!context)
+	if (!UiElement::LoadFromXML(node))
 	{
 		return false;
 	}
 
-	if (context->tag && strcmp("Button", context->tag) == 0)
+	const auto* spriteNode = node.Child("Sprite");
+	if (spriteNode == nullptr)
 	{
-		if (!m_sprite)
-		{
-			printf(" Closing tag found and no sprite was assigned to %s!\n", GetName().c_str());
-			return false;
-		}
+		std::cerr << "UiButton::LoadFromXML - No sprite provided!";
+		return false;
+	}
 
-		for (const sf::Drawable* const drawable : m_sprite->GetDrawablesList())
+	m_sprite = std::make_unique<UiSprite>(this);
+	m_sprite->LoadFromXML(*spriteNode);
+
+	for (const sf::Drawable* const drawable : m_sprite->GetDrawablesList())
+	{
+		AddDrawable(drawable);
+	}
+
+	if (const auto* textNode = node.Child("Text"); textNode != nullptr)
+	{
+		m_text = std::make_unique<UiText>();
+		m_text->LoadFromXML(*textNode);
+
+		for (const sf::Drawable* const drawable : m_text->GetDrawablesList())
 		{
 			AddDrawable(drawable);
 		}
-
-		if (m_offsetText.m_text)
-		{
-			for (const sf::Drawable* const drawable : m_offsetText.m_text->GetDrawablesList())
-			{
-				AddDrawable(drawable);
-			}
-		}
-
-		SetPosition(m_position);
-
-		// When we have finished assigning the sprite, we can return true!
-		return true;
 	}
 
-	if (context->content == nullptr || OnlyWhitespace(context->content))
-	{
-		return false;
-	}
-
-	return UiElement::ParseEndElement(context);
+	return true;
 }

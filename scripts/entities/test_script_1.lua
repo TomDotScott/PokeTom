@@ -1,4 +1,12 @@
 function init(self)
+    --TODO: Dialogue will be refactored into a component attached to the entity and have logic self-contained within its script
+    self.dialogueOption = 1
+    self.dialogueText = {
+        "What a wonderful day it is outside",
+        "I wonder how many time you can press this button",
+        "Sometimes I think that I am sentient"
+    }
+
     self.onCreated = function(self)
         print("ScriptComponent constructed! Do ctor stuff here... EntityID="..self.LOCAL_ENTITY_ID)
         self.firstUpdateSinceActive = true;
@@ -18,7 +26,14 @@ function init(self)
     end
 
     self.onPlayerInteract = function(self)
-        print("Hello, what a wonderful world this is!")
+        if self.dialogueOption <= #self.dialogueText then
+            Dialogue.Show()
+            Dialogue.SetText(self.dialogueText[self.dialogueOption])
+            self.dialogueOption = self.dialogueOption + 1
+        else 
+            Dialogue.Hide()
+            self.dialogueOption = 1
+        end
 
         -- TODO: I need to make a way to get the player ID from the scripts... 
         Entity.TurnToFace(self.LOCAL_ENTITY_ID, 1)

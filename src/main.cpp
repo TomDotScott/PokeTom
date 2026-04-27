@@ -10,10 +10,15 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
 
+#include "Engine/Language.h"
+#include "Engine/Stringtable.h"
+#include "Game/DialogueManager.h"
 #include "Game/LuaRegistry.h"
 
 GraphicSettings GRAPHIC_SETTINGS{ };
 RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
+
+eLanguage CHOSEN_LANGUAGE = eLanguage::English;
 
 int main(int argc, char** argv)
 {
@@ -44,6 +49,10 @@ int main(int argc, char** argv)
 		sol::lib::string,
 		sol::lib::table
 	);
+
+	// Ensure that the dialogue system is all loaded
+	StringTable::Get();
+	DialogueManager::Get();
 
 	// Register all the Lua bindings
 	Game game{ lua };

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DialogueTree>
+  <Dialogue name="PLAYER_BEDROOM_TV">
+    <text id="PLAYER_BEDROOM_TV" />
+  </Dialogue>
+
+  <Dialogue name="PLAYER_BEDROOM_LAPTOP">
+    <text id="PLAYER_BEDROOM_LAPTOP_1" />
+    <text id="PLAYER_BEDROOM_LAPTOP_2" />
+  </Dialogue>
+</DialogueTree>

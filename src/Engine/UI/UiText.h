@@ -3,11 +3,11 @@
 #include <SFML/Graphics/Text.hpp>
 
 #include "UiElement.h"
-#include "../Globals.h"
 
 class UiText final : public UiElement
 {
 public:
+	// TODO: Fix this up properly!
 	enum class eAlignment : uint8_t
 	{
 		Left = 0,
@@ -30,13 +30,6 @@ public:
 
 		m_string = &buffer[0];
 		m_text.setString(m_string);
-
-		// TODO: Right alignment
-		if (m_alignment == eAlignment::Centre)
-		{
-			CalculateAlignmentBounds();
-			m_text.setPosition(m_position);
-		}
 	}
 
 	const char* GetText() const;
@@ -44,27 +37,19 @@ public:
 	void SetTextSize(unsigned size);
 
 	void SetElementPosition(const sf::Vector2f& position) override;
+	void RecalculatePositionAfterParentMoved() override;
 
 	eAlignment GetAlignment() const;
 	void SetAlignment(eAlignment alignment);
 
 	sf::Vector2f GetSize() const override;
 
+	bool LoadFromXML(const XmlNode& node) override;
+
 private:
 	std::string m_string;
 	sf::Text m_text;
 	eAlignment m_alignment;
-	UiElement* m_parent;
-
-	void CalculateAlignmentBounds();
-
-	bool ParseEndElement(hoxml_context_t*& context) override;
 };
 
-// TODO: This could probably be an extension of the UiText class!
-struct OffsetUiText
-{
-	UiText* m_text = nullptr;
-	sf::Vector2f m_offset = VECTOR2F_ZERO;
-};
 #endif

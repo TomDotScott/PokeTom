@@ -7,13 +7,16 @@
 class UiSprite : public UiElement
 {
 public:
-	UiSprite();
+	UiSprite(UiElement* parent = nullptr);
 
 	void SetElementPosition(const sf::Vector2f& position) override;
+	void RecalculatePositionAfterParentMoved() override;
 
 	void SetScale(const sf::Vector2f& scale) const;
 
 	sf::Vector2f GetSize() const override;
+
+	bool LoadFromXML(const XmlNode& node) override;
 
 private:
 	sf::Sprite* m_sprite;
@@ -24,8 +27,7 @@ private:
 	// The scale of the sprite from the xml file
 	sf::Vector2f m_scaleFactorFromXml;
 
-	bool ParseEndElement(hoxml_context_t*& context) override;
-	bool ParseAttribute(hoxml_context_t*& context) override;
+	bool LoadTexture(const std::string& resourceID);
 };
 
 #endif

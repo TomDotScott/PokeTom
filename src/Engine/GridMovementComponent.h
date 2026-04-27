@@ -62,6 +62,7 @@ private:
 
 	eDirection m_previousDirection;
 	eDirection m_currentDirection;
+	eDirection m_movingDirection;
 
 	float m_tileSize;
 	float m_speed;

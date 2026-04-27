@@ -91,7 +91,7 @@ bool TextureManager::LoadTexture(const std::string_view name, const std::filesys
 
 bool TextureManager::LoadTexture(const std::string& name, const std::filesystem::path& path)
 {
-	if (m_textures.find(name) != m_textures.end())
+	if (m_textures.contains(name))
 	{
 		printf("A texture with the name: %s already exists!\n", name.c_str());
 		return true;

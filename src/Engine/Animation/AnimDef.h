@@ -1,11 +1,11 @@
 #ifndef ANIMDEF_H
 #define ANIMDEF_H
-#include <hoxml.h>
 #include <string>
 #include <unordered_map>
 #include <SFML/Graphics/Texture.hpp>
 
 #include "../Factory.h"
+#include "../ISerialisable.h"
 
 struct AnimationFrame
 {
@@ -24,7 +24,7 @@ struct Animation
 	std::string m_OnAnimEnd;
 };
 
-class AnimationDictionary : public Factory<AnimationDictionary>
+class AnimationDictionary : public Factory<AnimationDictionary>, public ISerialisable
 {
 public:
 	friend class Factory<AnimationDictionary>;
@@ -46,13 +46,8 @@ private:
 	std::unordered_map<std::string, Animation> m_animationClips;
 
 	AnimationDictionary(std::filesystem::path filepath);
-	bool ParseAnimDict(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool ParseAnimation(hoxml_context_t*& context, const char* xml, size_t xmlLength);
 
-	// Parses the <Image/> tag from the animation XML. Loads the referenced resource into the TEXTUREMANAGER
-	bool ParseImage(const std::filesystem::path& parentFolderPath, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool ParseFrame(Animation& animation, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-	bool ParseAnimEnd(Animation& animation, hoxml_context_t*& context, const char* xml, size_t xmlLength);
+	bool LoadFromXML(const XmlNode& node) override;
 };
 
 static inline std::unordered_map<std::string, AnimationDictionary> ANIMATION_DICTIONARIES;

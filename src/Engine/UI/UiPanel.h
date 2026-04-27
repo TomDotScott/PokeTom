@@ -11,22 +11,19 @@ public:
 	UiPanel();
 
 	void SetElementPosition(const sf::Vector2f& position) override;
+	void RecalculatePositionAfterParentMoved() override;
 
 	sf::Vector2f GetSize() const override;
 	void SetSize(const sf::Vector2f& size);
 
-	UiText* GetUiText(const std::string& name);
+	UiElement* GetChild(const std::string& name) const;
 
 private:
-	UiSprite* m_sprite;
-
-	std::vector<OffsetUiText> m_text;
+	std::vector<std::unique_ptr<UiElement>> m_children;
 
 	sf::Vector2f m_size;
 
-	bool ParseAttribute(hoxml_context_t*& context) override;
-	bool ParseBeginElement(hoxml_context_t*& context) override;
-	bool ParseEndElement(hoxml_context_t*& context) override;
+	bool LoadFromXML(const XmlNode& node) override;
 };
 
 #endif

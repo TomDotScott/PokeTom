@@ -4,8 +4,6 @@
 #include <sstream>
 #include <SFML/System/Vector2.hpp>
 
-#define HOXML_IMPLEMENTATION
-
 #define RENDER_SPRITES 1
 
 namespace sf
@@ -67,7 +65,7 @@ extern bool OnlyWhitespace(const char* chr);
 // I don't like how this is needed for sf::Text to compile
 extern sf::Font DEFAULT_FONT;
 
-constexpr static sf::Vector2u REFERENCE_SCREEN_SIZE{ 1280, 720 };
+constexpr static sf::Vector2u REFERENCE_SCREEN_SIZE{ 768, 540 };
 extern GraphicSettings GRAPHIC_SETTINGS;
 extern RandomRangeGenerator RNG;
 

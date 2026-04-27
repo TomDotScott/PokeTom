@@ -1,39 +1,15 @@
 #include "UiElement.h"
+
+#include <iostream>
+
 #include "../Globals.h"
 
-UiElement::UiElement(const eType type) :
+UiElement::UiElement(const eType type, UiElement* parent) :
 	m_layer(eLayer::NONE),
-	m_type(type)
+	m_type(type),
+	m_parent(parent)
 {
 	m_drawables.reserve(10);
-}
-
-bool UiElement::Load(hoxml_context_t*& context, const char* xml, const size_t xmlLength)
-{
-	// We have come from UiManager::Load so let's assume that we are on a HOXML_ELEMENT_BEGIN at the moment
-	hoxml_code_t code = HOXML_ELEMENT_BEGIN;
-	do
-	{
-		if (code == HOXML_ELEMENT_BEGIN)
-		{
-			ParseBeginElement(context);
-		}
-		else if (code == HOXML_ELEMENT_END)
-		{
-			if (ParseEndElement(context))
-			{
-				return true;
-			}
-		}
-		else if (code == HOXML_ATTRIBUTE)
-		{
-			ParseAttribute(context);
-		}
-
-		code = hoxml_parse(context, xml, xmlLength);
-	} while (code != HOXML_END_OF_DOCUMENT);
-
-	return true;
 }
 
 UiElement::eLayer UiElement::GetLayer() const
@@ -58,7 +34,29 @@ std::string UiElement::GetName() const
 
 void UiElement::SetElementPosition(const sf::Vector2f& position)
 {
-	SetPosition(position);
+	m_absolutePosition = position;
+
+	const sf::Vector2f offset{ m_parent->CalculateOffsetFromParents() };
+	SetPosition(position + offset);
+}
+
+sf::Vector2f UiElement::GetAbsolutePosition() const
+{
+	return m_absolutePosition;
+}
+
+sf::Vector2f UiElement::CalculateOffsetFromParents() const
+{
+	sf::Vector2f offset{ 0.f, 0.f };
+
+	const UiElement* current = m_parent;
+	while (current != nullptr)
+	{
+		offset += m_parent->GetAbsolutePosition();
+		current = m_parent->m_parent;
+	}
+
+	return offset;
 }
 
 const std::vector<const sf::Drawable*>& UiElement::GetDrawablesList() const
@@ -71,69 +69,34 @@ void UiElement::AddDrawable(const sf::Drawable* drawable)
 	m_drawables.emplace_back(drawable);
 }
 
-bool UiElement::ParseBeginElement(hoxml_context_t*& context)
+bool UiElement::LoadFromXML(const XmlNode& node)
 {
-	if (!context)
+	const auto* nameNode = node.Child("name");
+	if (nameNode == nullptr)
 	{
+		std::cerr << "UiElement::LoadFromXML - No <name/> tag on the UiElement!\n";
 		return false;
 	}
 
-	return false;
+	m_name = nameNode->m_Content;
+	if (m_name.empty())
+	{
+		std::cerr << "UiElement::LoadFromXML - <name/> value was empty!\n";
+		return false;
+	}
+
+	const auto* positionNode = node.Child("position");
+	if (positionNode == nullptr)
+	{
+		std::cerr << "UiElement::LoadFromXML - No <position/> tag on the UiElement!\n";
+		return false;
+	}
+
+	SetElementPosition(positionNode->Attr("x", "y", sf::Vector2f{}));
+	return true;
 }
 
-bool UiElement::ParseEndElement(hoxml_context_t*& context)
+void UiElement::SetParent(UiElement* parent)
 {
-	if (!context)
-	{
-		return false;
-	}
-
-	// Every UiElement has a name
-	if (strcmp("name", context->tag) == 0)
-	{
-		m_name = context->content;
-		return false;
-	}
-
-#if BUILD_DEBUG
-	printf(" UiElement: Closed %s\n", context->tag);
-#endif
-	return false;
-}
-
-bool UiElement::ParseAttribute(hoxml_context_t*& context)
-{
-	if (!context || !context->attribute || !context->tag || !context->value)
-	{
-		return false;
-	}
-
-	// Every UiElement has a position
-	if (strcmp("position", context->tag) == 0)
-	{
-		return ParseVectorAttribute(context, m_position);
-	}
-
-#if BUILD_DEBUG
-	printf(" UiElement: Attribute \"%s\" of <%s> has value: %s\n", context->attribute, context->tag, context->value);
-#endif
-	return false;
-}
-
-bool UiElement::ParseVectorAttribute(hoxml_context_t*& context, sf::Vector2f& vector)
-{
-	if (strcmp("x", context->attribute) == 0)
-	{
-		vector.x = TRANSFORMED_SCALAR(std::stof(context->value));
-		return true;
-	}
-
-	if (strcmp("y", context->attribute) == 0)
-	{
-		vector.y = TRANSFORMED_SCALAR(std::stof(context->value));
-		return true;
-	}
-
-	printf(" Sprite: Unknown parameter in <%s/>\n", context->tag);
-	return false;
+	m_parent = parent;
 }

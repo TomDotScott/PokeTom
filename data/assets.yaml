@@ -11,9 +11,11 @@ textures:
     source: sprites/interiors.png
   - name: OVERWORLD_SPRITESHEET
     source: sprites/overworld_tileset.png
+  - name: DIALOGUE_BOX
+    source: sprites/dialogue_box.png
 
 fonts:
-  - name: FIRA_CODE
+  - name: DEFAULT
     source: fonts/FiraCode-Regular.ttf
 
 animations:

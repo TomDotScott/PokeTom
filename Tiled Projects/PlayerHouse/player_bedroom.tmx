@@ -3,6 +3,9 @@
  <editorsettings>
   <export target="../../data/tiled_export/player_bedroom.tmj" format="json"/>
  </editorsettings>
+ <properties>
+  <property name="LevelScript" type="file" value="../../scripts/levels/player_bedroom.lua"/>
+ </properties>
  <tileset firstgid="1" source="../../data/tiled_export/interiors.tsx"/>
  <layer id="1" name="Background" width="12" height="10">
   <data encoding="base64" compression="zlib">

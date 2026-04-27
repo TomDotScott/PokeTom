@@ -1,20 +1,21 @@
 #ifndef WORLDDEFINITION_H
 #define WORLDDEFINITION_H
 #include <filesystem>
-#include <hoxml.h>
 #include <optional>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 #include <sol/sol.hpp>
 
 #include "Level.h"
 #include "../Engine/GridMovementComponent.h"
+#include "../Engine/ISerialisable.h"
 
+static constexpr const char* START_LEVEL = "player_bedroom";
 
 class EntityRegistry;
 
-class WorldDefinition
+class WorldDefinition : public ISerialisable
 {
 public:
 	WorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath);
@@ -25,7 +26,7 @@ public:
 		std::string m_SpawnPointName;
 	};
 
-	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName) const;
+	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName);
 	void LoadLevelScripts(sol::state& lua);
 
 	struct Portal
@@ -40,11 +41,14 @@ public:
 	std::vector<std::shared_ptr<Level>> GetLevelsIntersectingRect(const sf::FloatRect& rect) const;
 
 	std::shared_ptr<Level> GetLevel(const std::string& name) const;
+	std::shared_ptr<Level> LastTransitionedToLevel() const;
 	std::shared_ptr<Level> GetLevelAtPosition(const sf::Vector2f& position) const;
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
 
 	bool CanMoveTo(const Entity* entity, EntityRegistry& entities, eDirection direction) const;
+	void SortLevels();
+	bool LoadFromXML(const XmlNode& node) override;
 
 private:
 	std::unordered_map<std::string, std::shared_ptr<Level>> m_levels;
@@ -53,11 +57,9 @@ private:
 	// Value - Map of Portal Names to Portal data
 	std::unordered_map<std::string, std::unordered_map<std::string, Portal>> m_levelPortals;
 
-	bool ParseWorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath);
+	sol::state* m_lua;
 
-	static bool ParseLevel(sol::state& lua, std::unordered_map<std::string, std::shared_ptr<Level>>& levels, std::unordered_map<std::string, std::unordered_map<std::string, Portal>>& portals, hoxml_context_t*& context, const char* xml, size_t xmlLength);
-
-	static bool ParsePortal(const std::string& levelName, std::unordered_map<std::string, std::unordered_map<std::string, Portal>>& portals, hoxml_context_t*& context, const char* xml, size_t xmlLength);
+	std::string m_lastTransitionedLevel;
 };
 
 #endif // WORLDDEFINITION_H
