@@ -11,6 +11,7 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/ISerialisable.h"
 
+static constexpr const char* START_LEVEL = "player_bedroom";
 
 class EntityRegistry;
 
@@ -25,7 +26,7 @@ public:
 		std::string m_SpawnPointName;
 	};
 
-	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName) const;
+	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName);
 	void LoadLevelScripts(sol::state& lua);
 
 	struct Portal
@@ -40,6 +41,7 @@ public:
 	std::vector<std::shared_ptr<Level>> GetLevelsIntersectingRect(const sf::FloatRect& rect) const;
 
 	std::shared_ptr<Level> GetLevel(const std::string& name) const;
+	std::shared_ptr<Level> LastTransitionedToLevel() const;
 	std::shared_ptr<Level> GetLevelAtPosition(const sf::Vector2f& position) const;
 
 	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
@@ -56,6 +58,8 @@ private:
 	std::unordered_map<std::string, std::unordered_map<std::string, Portal>> m_levelPortals;
 
 	sol::state* m_lua;
+
+	std::string m_lastTransitionedLevel;
 };
 
 #endif // WORLDDEFINITION_H

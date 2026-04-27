@@ -13,8 +13,6 @@
 #include "../Engine/TextureManager.h"
 #include "../Engine/Timer.h"
 
-static constexpr const char* START_LEVEL = "player_bedroom";
-
 Game::Game(sol::state& lua) :
 	IUpdateable(),
 	m_state(eGameState::Overworld),

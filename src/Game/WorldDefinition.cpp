@@ -23,7 +23,7 @@ WorldDefinition::WorldDefinition(sol::state& lua, const std::filesystem::path& w
 }
 
 std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(
-	const std::string& levelName, const std::string& portalName) const
+	const std::string& levelName, const std::string& portalName)
 {
 	const auto& currentLevelPortals = m_levelPortals.at(levelName);
 	if (!currentLevelPortals.contains(portalName))
@@ -34,6 +34,7 @@ std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(
 	}
 
 	const Portal& portalData = currentLevelPortals.at(portalName);
+	m_lastTransitionedLevel = portalData.m_TargetLevel;
 
 	if (!GetLevel(levelName)->OnDeactivate())
 	{
@@ -44,6 +45,7 @@ std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(
 	{
 		std::cerr << "WorldDefinition::EnterPortal - OnActivate failed to be called from the level's script!\n";
 	}
+
 
 	return LevelTransition{
 		portalData.m_TargetLevel,
@@ -92,6 +94,16 @@ std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
 	}
 
 	return m_levels.at(name);
+}
+
+std::shared_ptr<Level> WorldDefinition::LastTransitionedToLevel() const
+{
+	if (m_lastTransitionedLevel.empty())
+	{
+		return GetLevel(START_LEVEL);
+	}
+
+	return GetLevel(m_lastTransitionedLevel);
 }
 
 std::shared_ptr<Level> WorldDefinition::GetLevelAtPosition(const sf::Vector2f& position) const

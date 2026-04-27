@@ -26,7 +26,7 @@ Player::Player(const sf::Vector2f& position)
 	SetPosition(position);
 
 	// The player is active by default
-	OnActivate();
+	Entity::OnActivate();
 }
 
 void Player::Update(const float deltaTime)
