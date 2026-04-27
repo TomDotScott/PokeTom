@@ -19,6 +19,8 @@ public:
 	}
 
 	static void SetVisible(bool visible);
+
+	static bool IsVisible();
 };
 
 #endif
