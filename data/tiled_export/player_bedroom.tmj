@@ -138,6 +138,12 @@
  "nextlayerid":10,
  "nextobjectid":5,
  "orientation":"orthogonal",
+ "properties": [
+        {
+         "name":"LevelScript",
+         "type":"file",
+         "value":"..\/scripts\/levels\/player_bedroom.lua"
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
  "tileheight":32,

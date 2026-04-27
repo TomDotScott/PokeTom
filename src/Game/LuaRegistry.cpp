@@ -7,6 +7,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "DialogueBox.h"
+#include "DialogueComponent.h"
 #include "Player.h"
 #include "WorldDefinition.h"
 #include "../Engine/Asserts.h"
@@ -30,8 +31,13 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 {
 	LUA_API_BEGIN(Entity, lua)
 		LUA_FUNC(Entity, Create,
-			[&entities](const float x, const float y) -> uint32_t {
-				const Entity& e = entities.Create<Entity>(sf::Vector2f{ x, y });
+			[&](const float x, const float y) -> uint32_t {
+				// TODO: I need a reliable way to get the player!
+				const std::shared_ptr<Level> level = world.LastTransitionedToLevel();
+
+				ASSERT(level != nullptr);
+
+				const Entity& e = entities.Create<Entity>(static_cast<sf::Vector2f>(level->GetWorldOrigin()) + sf::Vector2f{ x, y });
 				return e.GetID();
 			})
 
@@ -191,6 +197,26 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				}
 			})
 
+		LUA_FUNC(Entity, AddDialogueComponent,
+			[&entities](const uint32_t id, const std::string& dialogueID, bool shouldLoop, float loopTimer)
+			{
+				printf("Adding Dialogue Component! %d %s %s %f\n", id, dialogueID.c_str(), shouldLoop ? "true" : "false", loopTimer);
+
+				Entity* e = entities.Get<Entity>(id);
+
+				if (e == nullptr)
+				{
+					return;
+				}
+
+				auto& c = e->AddComponent<DialogueComponent>(e, dialogueID, shouldLoop, loopTimer);
+
+				if (e->IsActive())
+				{
+					c.OnActivate();
+				}
+			})
+
 	LUA_API_END()
 }
 
@@ -212,7 +238,7 @@ void LuaRegistry::RegisterDialogueAPI(sol::state& lua)
 			[]() -> void {
 				DialogueBox::SetVisible(false);
 			})
-	LUA_API_END()
+		LUA_API_END()
 }
 
 void LuaRegistry::RegisterDirections(sol::state& lua)
@@ -222,7 +248,7 @@ void LuaRegistry::RegisterDirections(sol::state& lua)
 		LUA_CONST(Direction, South, static_cast<int>(eDirection::South))
 		LUA_CONST(Direction, East, static_cast<int>(eDirection::East))
 		LUA_CONST(Direction, West, static_cast<int>(eDirection::West))
-	LUA_API_END()
+		LUA_API_END()
 }
 
 void LuaRegistry::RegisterAnimationNames(sol::state& lua)
@@ -243,5 +269,5 @@ void LuaRegistry::RegisterAnimationNames(sol::state& lua)
 		LUA_CONST(AnimationName, RUN_LEFT, static_cast<int>(EntityAnimationComponent::RUN_LEFT))
 		LUA_CONST(AnimationName, RUN_RIGHT, static_cast<int>(EntityAnimationComponent::RUN_RIGHT))
 
-	LUA_API_END()
+		LUA_API_END()
 }
