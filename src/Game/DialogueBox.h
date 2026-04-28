@@ -21,6 +21,10 @@ public:
 	static void SetVisible(bool visible);
 
 	static bool IsVisible();
+
+	// TODO: This should be configurable somewhere; this will change from language to language
+	static constexpr int MAX_CHARS = 52;
+	static constexpr int MAX_LINES = 3;
 };
 
 #endif
