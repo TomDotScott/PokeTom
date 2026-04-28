@@ -26,7 +26,7 @@ function init(self)
         -- TODO: I need to make a way to get the player ID from the scripts... 
         Entity.TurnToFace(self.LOCAL_ENTITY_ID, 1)
 
-        self.moving = not Entity.HasDialogueLeft(self.LOCAL_ENTITY_ID)
+        self.moving = not Entity.HasDialogueLeft(self.LOCAL_ENTITY_ID) and not Dialogue.IsVisible()
     end
 
     self.update = function(self, dt)

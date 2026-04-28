@@ -258,6 +258,11 @@ void LuaRegistry::RegisterDialogueAPI(sol::state& lua)
 				DialogueBox::SetText(text.c_str());
 			})
 
+		LUA_FUNC(Dialogue, IsVisible,
+			[]() -> bool {
+				return DialogueBox::IsVisible();
+			})
+
 		LUA_FUNC(Dialogue, Hide,
 			[]() -> void {
 				DialogueBox::SetVisible(false);

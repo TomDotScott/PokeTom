@@ -1,5 +1,6 @@
 #include "Player.h"
 
+#include "DialogueBox.h"
 #include "../Engine/Asserts.h"
 #include "../Engine/CodeGen/Resources.hpp"
 #include "../Engine/Globals.h"
@@ -29,11 +30,8 @@ Player::Player(const sf::Vector2f& position)
 	Entity::OnActivate();
 }
 
-void Player::Update(const float deltaTime)
+void Player::Move()
 {
-	// Update inputs
-	m_mapper.Update();
-
 	GridMovementComponent* movement = GetComponent<GridMovementComponent>();
 	ASSERT_MSG(movement != nullptr, "No GridMovementComponent attached to the Player!");
 
@@ -58,6 +56,16 @@ void Player::Update(const float deltaTime)
 	}
 
 	movement->SetSprinting(m_mapper.IsButtonDown(SPRINT));
+}
+
+void Player::Update(const float deltaTime)
+{
+	// Update inputs
+	m_mapper.Update();
+
+	if (!DialogueBox::IsVisible()) {
+		Move();
+	}
 
 	Entity::Update(deltaTime);
 }

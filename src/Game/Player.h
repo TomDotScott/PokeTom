@@ -26,6 +26,8 @@ private:
 		INTERACT,
 	};
 	InputMapper m_mapper;
+
+	void Move();
 };
 
 #endif
