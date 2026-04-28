@@ -34,6 +34,13 @@ bool Level::OnActivate()
 		}
 
 		m_onActivate(m_self);
+
+		auto x = m_onActivate(m_self);
+		if (!x.valid())
+		{
+			sol::error err = x;
+			ASSERT_MSG(false, "Level script OnActivate error: %s", err.what());
+		}
 	}
 
 	m_active = true;
@@ -49,7 +56,12 @@ bool Level::OnDeactivate()
 			return false;
 		}
 
-		m_onDeactivate(m_self);
+		auto x = m_onDeactivate(m_self);
+		if (!x.valid())
+		{
+			sol::error err = x;
+			ASSERT_MSG(false, "Level script OnDeactivate error: %s", err.what());
+		}
 	}
 
 	m_active = false;

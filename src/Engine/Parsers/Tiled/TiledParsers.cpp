@@ -3,7 +3,7 @@
 #include <iostream>
 #include "zlib.h"
 #include <base64.h>
-#include "../XML/Document.h"
+#include "../XML/XmlDocument.h"
 
 
 namespace

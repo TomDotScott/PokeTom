@@ -37,7 +37,7 @@ Game::Game(sol::state& lua) :
 		Player* p = m_entities.Get<Player>(m_playerEntityID);
 
 		const GridMovementComponent* playerMovement = p->GetComponent<GridMovementComponent>();
-		const sf::Vector2f nextPlayerPos = playerMovement->GetNextPosition();
+		const sf::Vector2f nextPlayerPos = playerMovement->GetNextPosition(playerMovement->GetCurrentDirection());
 
 		const uint32_t entityID = m_entities.GetEntityAtPosition(nextPlayerPos);
 		if (entityID == ~0U)

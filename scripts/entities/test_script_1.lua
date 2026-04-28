@@ -1,11 +1,8 @@
 function init(self)
-    --TODO: Dialogue will be refactored into a component attached to the entity and have logic self-contained within its script
-    self.dialogueOption = 1
-    self.dialogueText = {
-        "What a wonderful day it is outside",
-        "I wonder how many time you can press this button",
-        "Sometimes I think that I am sentient"
-    }
+    self.directionTimer = 0
+    self.moving = true
+    self.direction = Direction.North
+    self.randomDuration = 1
 
     self.onCreated = function(self)
         print("ScriptComponent constructed! Do ctor stuff here... EntityID="..self.LOCAL_ENTITY_ID)
@@ -26,23 +23,38 @@ function init(self)
     end
 
     self.onPlayerInteract = function(self)
-        if self.dialogueOption <= #self.dialogueText then
-            Dialogue.Show()
-            Dialogue.SetText(self.dialogueText[self.dialogueOption])
-            self.dialogueOption = self.dialogueOption + 1
-        else 
-            Dialogue.Hide()
-            self.dialogueOption = 1
-        end
-
         -- TODO: I need to make a way to get the player ID from the scripts... 
         Entity.TurnToFace(self.LOCAL_ENTITY_ID, 1)
+
+        self.moving = not Entity.HasDialogueLeft(self.LOCAL_ENTITY_ID)
     end
 
     self.update = function(self, dt)
-        if self.firstUpdateSinceActive then
-            print("Entity script successfully updated!")
-            self.firstUpdateSinceActive = false
+        if self.moving == false then
+            return
         end
+
+        self.directionTimer = self.directionTimer + dt
+        if self.directionTimer > self.randomDuration then
+            if Entity.CanMove(self.LOCAL_ENTITY_ID, self.direction) then
+                Entity.Move(self.LOCAL_ENTITY_ID, self.direction)
+            end
+
+            if self.direction == Direction.North then
+                self.direction = Direction.East
+
+            elseif self.direction == Direction.East then
+                self.direction = Direction.South
+
+            elseif self.direction == Direction.South then
+                self.direction = Direction.West
+
+            else
+                self.direction = Direction.North
+            end
+        
+            self.randomDuration = math.random(1, 5)
+            self.directionTimer = 0
+        end    
     end
 end

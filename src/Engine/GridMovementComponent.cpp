@@ -33,7 +33,7 @@ void GridMovementComponent::Move(const eDirection direction)
 
 	if (CanMove(direction))
 	{
-		StartMove(GetNextPosition());
+		StartMove(GetNextPosition(m_currentDirection));
 	}
 }
 
@@ -79,11 +79,11 @@ eDirection GridMovementComponent::GetPreviousDirection() const
 	return m_previousDirection;
 }
 
-sf::Vector2f GridMovementComponent::GetNextPosition() const
+sf::Vector2f GridMovementComponent::GetNextPosition(eDirection direction) const
 {
 	sf::Vector2f dir(0, 0);
 
-	switch (m_currentDirection == eDirection::None ? m_previousDirection : m_currentDirection)
+	switch (direction == eDirection::None ? m_previousDirection : direction)
 	{
 	case eDirection::North:
 		dir += { 0, -1 };

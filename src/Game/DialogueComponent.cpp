@@ -54,7 +54,7 @@ void DialogueComponent::OnPlayerInteractPressed()
 		DialogueBox::SetVisible(true);
 	}
 
-	if (m_dialogueIndex > DIALOGUEMANAGER->GetNumLines(m_dialogueID) - 1)
+	if (!HasDialogueLeft())
 	{
 		m_canSpeak = false;
 		DialogueBox::SetVisible(false);
@@ -72,4 +72,9 @@ void DialogueComponent::OnPlayerInteractPressed()
 const std::string& DialogueComponent::GetNextLine() const
 {
 	return DIALOGUEMANAGER->GetLine(m_dialogueID, m_dialogueIndex);
+}
+
+bool DialogueComponent::HasDialogueLeft() const
+{
+	return m_dialogueIndex < DIALOGUEMANAGER->GetNumLines(m_dialogueID);
 }

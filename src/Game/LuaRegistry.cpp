@@ -217,6 +217,30 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				}
 			})
 
+		LUA_FUNC(Entity, HasDialogueLeft,
+			[&entities](const uint32_t id) -> bool
+			{
+				Entity* e = entities.Get<Entity>(id);
+
+				if (e == nullptr)
+				{
+					return false;
+				}
+
+				if (!e->IsActive())
+				{
+					return false;
+				}
+
+				const auto* c = e->GetComponent<DialogueComponent>();
+				if (c == nullptr)
+				{
+					return false;
+				}
+
+				return c->HasDialogueLeft();
+			})
+
 	LUA_API_END()
 }
 

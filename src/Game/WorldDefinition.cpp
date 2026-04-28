@@ -8,7 +8,7 @@
 #include "TileParser.h"
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
-#include "../Engine/Parsers/XML/Document.h"
+#include "../Engine/Parsers/XML/XmlDocument.h"
 
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
@@ -137,7 +137,7 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, 
 		return false;
 	}
 
-	sf::Vector2f newPosition = entityMovement->GetNextPosition();
+	sf::Vector2f newPosition = entityMovement->GetNextPosition(direction);
 
 	newPosition = {
 		std::round(newPosition.x / 32.f) * 32.f,

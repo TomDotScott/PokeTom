@@ -15,6 +15,8 @@ public:
 
 	const std::string& GetNextLine() const;
 
+	bool HasDialogueLeft() const;
+
 private:
 	Entity* m_owner;
 	std::string m_dialogueID;

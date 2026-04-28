@@ -8,4 +8,10 @@
     <text id="PLAYER_BEDROOM_LAPTOP_1" />
     <text id="PLAYER_BEDROOM_LAPTOP_2" />
   </Dialogue>
+
+  <Dialogue name="STARTER_TOWN_MAN_1">
+    <text id="STARTER_TOWN_MAN_1_1" />
+    <text id="STARTER_TOWN_MAN_1_2" />
+    <text id="STARTER_TOWN_MAN_1_3" />
+  </Dialogue>
 </DialogueTree>

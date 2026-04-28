@@ -32,8 +32,8 @@ public:
 	eDirection GetCurrentDirection() const;
 	eDirection GetPreviousDirection() const;
 
-	// Returns the position + tileSize in the direction the entity is currently facing
-	sf::Vector2f GetNextPosition() const;
+	// Returns the position + tileSize in a direction
+	sf::Vector2f GetNextPosition(eDirection direction) const;
 
 	void Update(float deltaTime) override;
 
