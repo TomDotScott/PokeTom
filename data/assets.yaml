@@ -27,3 +27,5 @@ animations:
     source: animation/female_cyclist.xml
   - name: MALE_FISHERMAN
     source: animation/male_fisherman.xml
+  - name: CHILD_1
+    source: animation/child_1.xml

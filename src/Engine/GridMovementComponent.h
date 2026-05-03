@@ -12,8 +12,8 @@ enum class eDirection
 	None = -1,
 	North,
 	South,
+	East,
 	West,
-	East
 };
 
 typedef std::function<bool(Entity* entity, eDirection dir)> can_move_func;

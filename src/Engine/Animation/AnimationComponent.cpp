@@ -13,6 +13,7 @@ EntityAnimationComponent::EntityAnimationComponent(
 	m_animationName{ initialAnimation },
 	m_player{ AnimationDictionary::Create(GET_ANIMATION_PATH(animDictResourceName)) }
 {
+	m_player.PlayAnimation(GetAnimationName(m_animationName), true);
 }
 
 void EntityAnimationComponent::Update(const float deltaTime)

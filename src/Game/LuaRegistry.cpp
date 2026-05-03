@@ -255,6 +255,21 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				return c->HasDialogueLeft();
 			})
 
+		LUA_FUNC(Entity, CanEntityBeInteractedWith,
+			[&entities](const uint32_t id) -> bool
+			{
+				Entity* e = entities.Get<Entity>(id);
+
+				if (e == nullptr)
+				{
+					return false;
+				}
+
+				// TODO: There might be more scenarios? Item pickups etc
+				const auto* c = e->GetComponent<DialogueComponent>();
+				return c != nullptr;
+			})
+
 		LUA_FUNC(Entity, GetPosition,
 			[&entities](const uint32_t id) -> SimpleVector
 			{

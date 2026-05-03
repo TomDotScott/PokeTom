@@ -3,6 +3,9 @@ function init(self)
     self.lampPost1 = -1
     self.cyclist1 = -1
     self.fisherman1 = -1
+    self.monster1 = -1
+    self.monster2 = -1
+    self.child1 = -1
 
     --- func desc
     ---@param xPosition number
@@ -112,6 +115,17 @@ function init(self)
             },
             nil
         )
+
+        self.child1 = self:spawnNPC(
+            11 * 32,
+            7 * 32,
+            {
+                dictName="CHILD_1",
+                initialAnim=AnimationName.IDLE_DOWN
+            },
+            nil,
+            "move_random"
+        )
     end
 
     self.onDeactivate = function(self)
@@ -121,11 +135,17 @@ function init(self)
         Entity.Destroy(self.lampPost1)
         Entity.Destroy(self.cyclist1)
         Entity.Destroy(self.fisherman1)
+        Entity.Destroy(self.monster1)
+        Entity.Destroy(self.monster2)
+        Entity.Destroy(self.child1)
 
         self.man1 = -1
         self.lampPost1 = -1
         self.cyclist1 = -1
         self.fisherman1 = -1
+        self.monster1 = -1
+        self.monster2 = -1
+        self.child1 = -1
     end
 
     self.update = function(self, dt)
