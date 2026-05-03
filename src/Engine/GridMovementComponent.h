@@ -32,6 +32,9 @@ public:
 	eDirection GetCurrentDirection() const;
 	eDirection GetPreviousDirection() const;
 
+	void SetCycling(bool isCycling);
+	bool IsCycling() const;
+
 	// Returns the position + tileSize in a direction
 	sf::Vector2f GetNextPosition(eDirection direction) const;
 
@@ -74,6 +77,8 @@ private:
 	bool m_wasMoving;
 
 	bool m_isMoving;
+
+	bool m_isCycling;
 
 	can_move_func m_canMove;
 

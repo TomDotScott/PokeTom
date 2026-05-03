@@ -18,7 +18,8 @@ GridMovementComponent::GridMovementComponent(
 	m_isSprinting(false),
 	m_progress(0.f),
 	m_wasMoving(false),
-	m_isMoving(false)
+	m_isMoving(false),
+	m_isCycling(false)
 {
 }
 
@@ -79,6 +80,16 @@ eDirection GridMovementComponent::GetPreviousDirection() const
 	return m_previousDirection;
 }
 
+void GridMovementComponent::SetCycling(const bool isCycling)
+{
+	m_isCycling = isCycling;
+}
+
+bool GridMovementComponent::IsCycling() const
+{
+	return m_isCycling;
+}
+
 sf::Vector2f GridMovementComponent::GetNextPosition(eDirection direction) const
 {
 	sf::Vector2f dir(0, 0);
@@ -127,6 +138,11 @@ void GridMovementComponent::Update(const float deltaTime)
 	if (m_isSprinting)
 	{
 		speed = m_sprintSpeed;
+	}
+
+	if (m_isCycling)
+	{
+		speed = m_sprintSpeed * 1.1f;
 	}
 
 	m_progress += speed * deltaTime;

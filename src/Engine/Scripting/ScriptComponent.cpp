@@ -121,3 +121,8 @@ void ScriptComponent::OnPlayerInteractPressed()
 		ASSERT_MSG(false, "OnPlayerInteract script error: %s", err.what());
 	}
 }
+
+void ScriptComponent::SetVariableValue(const std::string& variableName, const std::string& variableValue)
+{
+	m_self[variableName] = variableValue;
+}

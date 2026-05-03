@@ -18,9 +18,21 @@
 #include "../Engine/Scripting/LuaBindingMacros.h"
 #include "../Engine/Scripting/ScriptComponent.h"
 
+struct SimpleVector {
+	float x;
+	float y;
+
+	static void RegisterLua(sol::state& lua) {
+		lua.new_usertype<SimpleVector>("SimpleVector",
+			"x", &SimpleVector::x,
+			"y", &SimpleVector::y
+		);
+	}
+};
 
 LuaRegistry::LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
 {
+	SimpleVector::RegisterLua(lua);
 	RegisterEntityAPI(lua, world, entities);
 	RegisterDialogueAPI(lua);
 	RegisterDirections(lua);
@@ -152,7 +164,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, AddGridMovementComponent,
-			[&](const uint32_t id)
+			[&](const uint32_t id, const bool isCycling)
 			{
 				Entity* e = entities.Get<Entity>(id);
 				// TODO: Fix these magic numbers!
@@ -164,6 +176,8 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 					{
 						return world.CanMoveTo(ent, entities, dir);
 					});
+
+				c.SetCycling(isCycling);
 			})
 
 		LUA_FUNC(Entity, AddAnimationComponent,
@@ -241,6 +255,38 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 				return c->HasDialogueLeft();
 			})
 
+		LUA_FUNC(Entity, GetPosition,
+			[&entities](const uint32_t id) -> SimpleVector
+			{
+				Entity* e = entities.Get<Entity>(id);
+				if (e == nullptr)
+				{
+					std::cerr << "Entity::GET_POSITION: Entity with ID " << id << " does not exist, returning {0, 0}\n";
+					return SimpleVector(0.f, 0.f );
+				}
+
+				const auto entityPosition = e->GetPosition();
+				return SimpleVector( entityPosition.x, entityPosition.y);
+			})
+
+		LUA_FUNC(Entity, SetScriptValue,
+			[&entities](const uint32_t id, const std::string& variableName, const std::string& variableValue)
+			{
+				Entity* e = entities.Get<Entity>(id);
+				if (e == nullptr)
+				{
+					return;
+				}
+
+				ScriptComponent* c = e->GetComponent<ScriptComponent>();
+				if (c == nullptr)
+				{
+					return;
+				}
+
+				c->SetVariableValue(variableName, variableValue);
+			})
+
 	LUA_API_END()
 }
 
@@ -267,7 +313,7 @@ void LuaRegistry::RegisterDialogueAPI(sol::state& lua)
 			[]() -> void {
 				DialogueBox::SetVisible(false);
 			})
-		LUA_API_END()
+	LUA_API_END()
 }
 
 void LuaRegistry::RegisterDirections(sol::state& lua)
@@ -277,7 +323,7 @@ void LuaRegistry::RegisterDirections(sol::state& lua)
 		LUA_CONST(Direction, South, static_cast<int>(eDirection::South))
 		LUA_CONST(Direction, East, static_cast<int>(eDirection::East))
 		LUA_CONST(Direction, West, static_cast<int>(eDirection::West))
-		LUA_API_END()
+	LUA_API_END()
 }
 
 void LuaRegistry::RegisterAnimationNames(sol::state& lua)
@@ -298,5 +344,10 @@ void LuaRegistry::RegisterAnimationNames(sol::state& lua)
 		LUA_CONST(AnimationName, RUN_LEFT, static_cast<int>(EntityAnimationComponent::RUN_LEFT))
 		LUA_CONST(AnimationName, RUN_RIGHT, static_cast<int>(EntityAnimationComponent::RUN_RIGHT))
 
-		LUA_API_END()
+		LUA_CONST(AnimationName, CYCLE_UP, static_cast<int>(EntityAnimationComponent::CYCLE_UP))
+		LUA_CONST(AnimationName, CYCLE_DOWN, static_cast<int>(EntityAnimationComponent::CYCLE_DOWN))
+		LUA_CONST(AnimationName, CYCLE_LEFT, static_cast<int>(EntityAnimationComponent::CYCLE_LEFT))
+		LUA_CONST(AnimationName, CYCLE_RIGHT, static_cast<int>(EntityAnimationComponent::CYCLE_RIGHT))
+
+	LUA_API_END()
 }

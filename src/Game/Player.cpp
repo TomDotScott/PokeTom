@@ -13,7 +13,7 @@ Player::Player() : Player(sf::Vector2f{ 0.f, 0.f }) {}
 Player::Player(const sf::Vector2f& position)
 {
 	AddComponent<GridMovementComponent>(this, 32.f, 3.f, 6.5f);
-	AddComponent<EntityAnimationComponent>(this, GET_ANIMATION_PATH("PLAYER_BOY"), EntityAnimationComponent::eAnimationName::IDLE_DOWN);
+	AddComponent<EntityAnimationComponent>(this, "PLAYER_BOY", EntityAnimationComponent::eAnimationName::IDLE_DOWN);
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AnimDict version="0.1" name="female_cyclist_movement">
+  <Image
+    source="OVERWORLD_ENTITIES"
+    topLeftX="256"
+    topLeftY="288"
+    regionWidth="64"
+    regionHeight="128"
+    maskColour="378F57FF"
+  />
+
+  <Animation name="cycle_up" looping="true">
+    <Frame topLeftX="256" topLeftY="288" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="288" topLeftY="288" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="256" topLeftY="288" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="288" topLeftY="288" duration="200" spriteWidth="32" spriteHeight="32" flippedHorizontal="TRUE"/>
+  </Animation>
+
+  <Animation name="cycle_down" looping="true">
+    <Frame topLeftX="256" topLeftY="320" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="288" topLeftY="320" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="256" topLeftY="320" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="288" topLeftY="320" duration="200" spriteWidth="32" spriteHeight="32" flippedHorizontal="TRUE"/>
+  </Animation>
+
+  <Animation name="cycle_left" looping="true">
+    <Frame topLeftX="256" topLeftY="352" duration="200" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="288" topLeftY="352" duration="200" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="cycle_right" looping="true">
+    <Frame topLeftX="256" topLeftY="352" duration="200" spriteWidth="32" spriteHeight="32" flippedHorizontal="TRUE"/>
+    <Frame topLeftX="288" topLeftY="352" duration="200" spriteWidth="32" spriteHeight="32" flippedHorizontal="TRUE"/>
+  </Animation>
+</AnimDict>

@@ -14,6 +14,8 @@ struct AnimationFrame
 	uint32_t m_DurationMS;
 	uint32_t m_SpriteWidth;
 	uint32_t m_SpriteHeight;
+	bool m_SpriteFlippedHorizontal = false;
+	bool m_SpriteFlippedVertical = false;
 };
 
 struct Animation

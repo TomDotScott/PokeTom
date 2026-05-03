@@ -83,7 +83,19 @@ void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 		sprite.setOrigin({ sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2 });
 		sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
 
-		sprite.setScale({ 2, 2 });
+		sf::Vector2f spriteScale = { 2.f, 2.f };
+		if (currentFrame.m_SpriteFlippedHorizontal)
+		{
+			spriteScale.x *= -1;
+		}
+
+		if (currentFrame.m_SpriteFlippedVertical)
+		{
+			spriteScale.y *= -1;
+		}
+
+		sprite.setScale(spriteScale);
+
 		window.draw(sprite);
 	}
 }

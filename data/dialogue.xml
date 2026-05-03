@@ -18,4 +18,8 @@
   <Dialogue name="STARTER_TOWN_PROFESSOR_SIGN">
     <text id="STARTER_TOWN_PROFESSOR_SIGN" />
   </Dialogue>
+
+  <Dialogue name="STARTER_TOWN_CYCLIST">
+    <text id="STARTER_TOWN_CYCLIST" />
+  </Dialogue>
 </DialogueTree>

@@ -23,3 +23,5 @@ animations:
     source: animation/player_boy.xml
   - name: NPC_MAN_1
     source: animation/npc_man_1.xml
+  - name: FEMALE_CYCLIST
+    source: animation/female_cyclist.xml

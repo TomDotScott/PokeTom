@@ -2,15 +2,16 @@
 #include "../Entity.h"
 #include "../Asserts.h"
 #include "../GridMovementComponent.h"
+#include "../CodeGen/Resources.hpp"
 
 EntityAnimationComponent::EntityAnimationComponent(
 	Entity* owner,
-	const std::string_view& animationPath,
+	const std::string_view& animDictResourceName,
 	const eAnimationName initialAnimation
 ) :
 	m_owningEntity(owner),
 	m_animationName{ initialAnimation },
-	m_player{ AnimationDictionary::Create(animationPath) }
+	m_player{ AnimationDictionary::Create(GET_ANIMATION_PATH(animDictResourceName)) }
 {
 }
 
@@ -20,7 +21,11 @@ void EntityAnimationComponent::Update(const float deltaTime)
 	ASSERT_MSG(movement != nullptr, "Entity does not have GridMovementComponent attached!");
 
 	const eOrientation orientation = movement->GetCurrentOrientation();
-	if (movement->WasMoving())
+	if (movement->IsCycling())
+	{
+		PlayAnimation(GetCycleAnimation(orientation), false);
+	}
+	else if (movement->WasMoving())
 	{
 		PlayAnimation(movement->IsSprinting()
 			? GetSprintAnimation(orientation)
@@ -74,6 +79,14 @@ std::string_view EntityAnimationComponent::GetAnimationName(const eAnimationName
 		return "run_left";
 	case RUN_RIGHT:
 		return "run_right";
+	case CYCLE_UP:
+		return "cycle_up";
+	case CYCLE_DOWN:
+		return "cycle_down";
+	case CYCLE_LEFT:
+		return "cycle_left";
+	case CYCLE_RIGHT:
+		return "cycle_right";
 	}
 
 	return "UNKNOWN";
@@ -94,6 +107,23 @@ EntityAnimationComponent::eAnimationName EntityAnimationComponent::GetWalkAnimat
 	}
 
 	return WALK_DOWN;
+}
+
+EntityAnimationComponent::eAnimationName EntityAnimationComponent::GetCycleAnimation(const eOrientation orientation)
+{
+	switch (orientation)
+	{
+	case eOrientation::Up:
+		return CYCLE_UP;
+	case eOrientation::Down:
+		return CYCLE_DOWN;
+	case eOrientation::Left:
+		return CYCLE_LEFT;
+	case eOrientation::Right:
+		return CYCLE_RIGHT;
+	}
+
+	return CYCLE_DOWN;
 }
 
 EntityAnimationComponent::eAnimationName EntityAnimationComponent::GetIdleAnimation(const eOrientation orientation)

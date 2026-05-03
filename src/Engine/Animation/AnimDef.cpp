@@ -118,7 +118,9 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 				frameNode->Attr("topLeftY", 0U) - m_spriteSheetRect.position.y,
 				frameNode->Attr("duration", 0U),
 				frameNode->Attr("spriteWidth", 0U),
-				frameNode->Attr("spriteHeight", 0U)
+				frameNode->Attr("spriteHeight", 0U),
+				frameNode->Attr("flippedHorizontal", false),
+				frameNode->Attr("flippedVertical", false)
 			);
 		}
 

@@ -19,6 +19,8 @@ public:
 
 	void OnPlayerInteractPressed() override;
 
+	void SetVariableValue(const std::string& variableName, const std::string& variableValue);
+
 private:
 	Entity* m_owner;
 	sol::table m_self;
