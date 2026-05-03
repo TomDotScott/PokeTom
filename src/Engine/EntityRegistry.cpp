@@ -8,6 +8,11 @@
 
 void EntityRegistry::Destroy(const uint32_t id)
 {
+	if (!m_entities.contains(id))
+	{
+		return;
+	}
+
 	Entity* ent = Get<Entity>(id);
 
 	if (ent == nullptr)
@@ -19,6 +24,8 @@ void EntityRegistry::Destroy(const uint32_t id)
 	{
 		ent->OnDeactivate();
 	}
+
+	m_entities.at(id).reset(nullptr);
 
 	m_entities.erase(id);
 }

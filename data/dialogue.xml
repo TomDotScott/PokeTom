@@ -10,8 +10,12 @@
   </Dialogue>
 
   <Dialogue name="STARTER_TOWN_MAN_1">
-    <text id="STARTER_TOWN_MAN_1_1" />
     <text id="STARTER_TOWN_MAN_1_2" />
+    <text id="STARTER_TOWN_MAN_1_1" />
     <text id="STARTER_TOWN_MAN_1_3" />
+  </Dialogue>
+
+  <Dialogue name="STARTER_TOWN_PROFESSOR_SIGN">
+    <text id="STARTER_TOWN_PROFESSOR_SIGN" />
   </Dialogue>
 </DialogueTree>

@@ -191,9 +191,104 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":12,
+         "name":"NPCs",
+         "objects":[
+                {
+                 "height":32,
+                 "id":20,
+                 "name":"MAN 1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Walk in 1x1 Square",
+                 "visible":true,
+                 "width":32,
+                 "x":736,
+                 "y":480
+                }, 
+                {
+                 "height":32,
+                 "id":22,
+                 "name":"CHILD 1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Random movement",
+                 "visible":true,
+                 "width":32,
+                 "x":352,
+                 "y":224
+                }, 
+                {
+                 "height":32,
+                 "id":23,
+                 "name":"POKEMON 1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Random movement",
+                 "visible":true,
+                 "width":32,
+                 "x":1120,
+                 "y":352
+                }, 
+                {
+                 "height":32,
+                 "id":25,
+                 "name":"FISHERMAN 1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Stand Still with Dialogue",
+                 "visible":true,
+                 "width":32,
+                 "x":992,
+                 "y":704
+                }, 
+                {
+                 "height":32,
+                 "id":27,
+                 "name":"POKEMON 2",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Random Movement",
+                 "visible":true,
+                 "width":32,
+                 "x":448,
+                 "y":672
+                }, 
+                {
+                 "height":64,
+                 "id":28,
+                 "name":"SIGNPOST 1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Dialogue",
+                 "visible":true,
+                 "width":32,
+                 "x":544,
+                 "y":864
+                }, 
+                {
+                 "height":32,
+                 "id":29,
+                 "name":"Cyclist 1",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"Walk in 7x8 Rectangle",
+                 "visible":true,
+                 "width":32,
+                 "x":896,
+                 "y":640
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":11,
- "nextobjectid":19,
+ "nextlayerid":13,
+ "nextobjectid":30,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -5,20 +5,19 @@ function init(self)
     self.randomDuration = 1
 
     self.onCreated = function(self)
-        print("ScriptComponent constructed! Do ctor stuff here... EntityID="..self.LOCAL_ENTITY_ID)
-        self.firstUpdateSinceActive = true;
+        print("Constructed! EntityID="..self.LOCAL_ENTITY_ID)
     end
 
     self.onDestroyed = function(self)
-        print("ScriptComponent destroyed! Do cleanup stuff here...")
+        print("Destroyed!")
     end
 
     self.onActivate = function(self)
-        print("Owning entity set to active! Initialise any functions and get ready to update!")
+        print("Owning entity set to active!")
     end
 
     self.onDeactivate = function(self)
-        print("Owning entity set to unactive! No longer need to update")
+        print("Owning entity set to unactive!")
         self.firstUpdateSinceActive = true;
     end
 
