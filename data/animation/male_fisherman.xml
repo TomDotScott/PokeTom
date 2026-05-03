@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AnimDict version="0.1" name="male_fisherman">
+  <Image
+    source="OVERWORLD_ENTITIES"
+    topLeftX="160"
+    topLeftY="544"
+    regionWidth="64"
+    regionHeight="128"
+    maskColour="6EB364FF"
+  />
+
+  <Animation name="idle_down" looping="true">
+    <Frame topLeftX="160" topLeftY="576" duration="20000" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+</AnimDict>

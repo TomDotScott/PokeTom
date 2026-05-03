@@ -2,6 +2,7 @@ function init(self)
     self.man1 = -1
     self.lampPost1 = -1
     self.cyclist1 = -1
+    self.fisherman1 = -1
 
     --- func desc
     ---@param xPosition number
@@ -96,6 +97,21 @@ function init(self)
 
         Entity.SetScriptValue(self.cyclist1, "squareWidth", "7")
         Entity.SetScriptValue(self.cyclist1, "squareHeight", "8")
+
+        self.fisherman1 = self:spawnNPC(
+            31 * 32,
+            22 * 32,
+            {
+                dictName="MALE_FISHERMAN",
+                initialAnim=AnimationName.IDLE_DOWN
+            },
+            {
+                dialogueID="STARTER_TOWN_FISHERMAN",
+                cooldownTime=10,
+                isLooping=true
+            },
+            nil
+        )
     end
 
     self.onDeactivate = function(self)
@@ -104,10 +120,12 @@ function init(self)
         Entity.Destroy(self.man1)
         Entity.Destroy(self.lampPost1)
         Entity.Destroy(self.cyclist1)
+        Entity.Destroy(self.fisherman1)
 
         self.man1 = -1
         self.lampPost1 = -1
         self.cyclist1 = -1
+        self.fisherman1 = -1
     end
 
     self.update = function(self, dt)

@@ -25,3 +25,5 @@ animations:
     source: animation/npc_man_1.xml
   - name: FEMALE_CYCLIST
     source: animation/female_cyclist.xml
+  - name: MALE_FISHERMAN
+    source: animation/male_fisherman.xml

@@ -22,4 +22,8 @@
   <Dialogue name="STARTER_TOWN_CYCLIST">
     <text id="STARTER_TOWN_CYCLIST" />
   </Dialogue>
+
+  <Dialogue name="STARTER_TOWN_FISHERMAN">
+    <text id="STARTER_TOWN_FISHERMAN" />
+  </Dialogue>
 </DialogueTree>
