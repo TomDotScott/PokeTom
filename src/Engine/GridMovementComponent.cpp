@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "Asserts.h"
+#include "Animation/AnimationComponent.h"
+
 GridMovementComponent::GridMovementComponent(
 	Entity* owner,
 	const float tileSize,
@@ -90,7 +93,7 @@ bool GridMovementComponent::IsCycling() const
 	return m_isCycling;
 }
 
-sf::Vector2f GridMovementComponent::GetNextPosition(eDirection direction) const
+sf::Vector2f GridMovementComponent::GetNextPosition(const eDirection direction) const
 {
 	sf::Vector2f dir(0, 0);
 
@@ -131,6 +134,7 @@ void GridMovementComponent::Update(const float deltaTime)
 			m_currentDirection = eDirection::None;
 		}
 
+		UpdateMovementAnimations();
 		return;
 	}
 
@@ -155,6 +159,7 @@ void GridMovementComponent::Update(const float deltaTime)
 	}
 
 	m_worldPos = m_startPos + (m_endPos - m_startPos) * m_progress;
+	UpdateMovementAnimations();
 }
 
 const sf::Vector2f& GridMovementComponent::GetWorldPosition() const
@@ -220,3 +225,29 @@ void GridMovementComponent::StartMove(const sf::Vector2f& dir)
 	m_movingDirection = m_currentDirection;
 	m_endPos = dir;
 }
+
+void GridMovementComponent::UpdateMovementAnimations() const
+{
+	EntityAnimationComponent* animationComponent = m_owningEntity->GetComponent<EntityAnimationComponent>();
+	if (animationComponent == nullptr)
+	{
+		return;
+	}
+
+	const eOrientation orientation = GetCurrentOrientation();
+	if (IsCycling())
+	{
+		animationComponent->PlayAnimation(EntityAnimationComponent::GetCycleAnimation(orientation), false);
+	}
+	else if (WasMoving())
+	{
+		animationComponent->PlayAnimation(IsSprinting()
+			? EntityAnimationComponent::GetSprintAnimation(orientation)
+			: EntityAnimationComponent::GetWalkAnimation(orientation), false);
+	}
+	else
+	{
+		animationComponent->PlayAnimation(EntityAnimationComponent::GetIdleAnimation(orientation), false);
+	}
+}
+

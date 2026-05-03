@@ -83,6 +83,7 @@ private:
 	can_move_func m_canMove;
 
 	void StartMove(const sf::Vector2f& dir);
+	void UpdateMovementAnimations() const;
 };
 
 inline eOrientation GetOrientationFromDirection(const eDirection direction)

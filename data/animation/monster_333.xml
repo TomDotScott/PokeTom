@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AnimDict version="0.1" name="swablu_animations">
+  <Image source="OVERWORLD_MONSTERS" topLeftX="320" topLeftY="3168" regionWidth="64" regionHeight="96" maskColour="D0A0D0FF"/>
+
+  <Animation name="walk_down" looping="true">
+    <Frame topLeftX="320" topLeftY="3200" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="352" topLeftY="3200" duration="250" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+</AnimDict>

@@ -18,6 +18,11 @@ const std::string& AnimationDictionary::GetName() const
 	return m_name;
 }
 
+bool AnimationDictionary::HasClip(const std::string& name) const
+{
+	return m_animationClips.contains(name);
+}
+
 bool AnimationDictionary::Init()
 {
 	XmlDocument doc;

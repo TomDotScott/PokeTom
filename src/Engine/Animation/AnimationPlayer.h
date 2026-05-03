@@ -13,6 +13,7 @@ public:
 	void Update(float deltaTime);
 	const AnimationFrame& GetCurrentFrame() const;
 	const std::string& GetDictionarySpritesheetResourceName() const;
+	bool CanPlayAnimation(const std::string_view& name) const;
 
 private:
 	std::shared_ptr<AnimationDictionary> m_dictionary;

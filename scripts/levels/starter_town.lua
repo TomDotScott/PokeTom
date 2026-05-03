@@ -10,10 +10,11 @@ function init(self)
     --- func desc
     ---@param xPosition number
     ---@param yPosition number
+    ---@param gridMovementConfig { isCycling: boolean } | nil
     ---@param animationConfig { dictName: string, initialAnim: number } | nil
     ---@param dialogueConfig { dialogueID: string, isLooping: boolean | nil, cooldownTime: number | nil } | nil
     ---@param scriptName string | nil
-    self.spawnNPC = function(self, xPosition, yPosition, animationConfig, dialogueConfig, scriptName)
+    self.spawnNPC = function(self, xPosition, yPosition, gridMovementConfig, animationConfig, dialogueConfig, scriptName)
         print("spawnNPC")
 
         local id = Entity.Create(xPosition, yPosition)
@@ -22,11 +23,12 @@ function init(self)
 
         Entity.SetActive(id, true)
 
+        if gridMovementConfig ~= nil then
+            Entity.AddGridMovementComponent(id, gridMovementConfig.isCycling)
+        end
+
         if animationConfig ~= nil then
             print("Adding animation to Entity "..id.." with the dict="..animationConfig.dictName.." and initial anim "..animationConfig.initialAnim)
-            local isCycling = animationConfig.initialAnim & 0xF000 > 0
-            print("isCycling="..tostring(isCycling))
-            Entity.AddGridMovementComponent(id, isCycling)
             Entity.AddAnimationComponent(id, animationConfig.dictName, animationConfig.initialAnim)
         end
 
@@ -61,6 +63,9 @@ function init(self)
             23 * 32,
             15 * 32,
             {
+                isCycling=false
+            },
+            {
                 dictName="NPC_MAN_1",
                 initialAnim=AnimationName.IDLE_DOWN
             },
@@ -75,6 +80,7 @@ function init(self)
             17 * 32,
             28 * 32,
             nil,
+            nil,
             {
                 dialogueID="STARTER_TOWN_PROFESSOR_SIGN",
                 cooldownTime=0,
@@ -86,6 +92,9 @@ function init(self)
         self.cyclist1 = self:spawnNPC(
             28 * 32,
             20 * 32,
+            {
+                isCycling=true
+            },
             {
                 dictName="FEMALE_CYCLIST",
                 initialAnim=AnimationName.CYCLE_DOWN
@@ -104,6 +113,7 @@ function init(self)
         self.fisherman1 = self:spawnNPC(
             31 * 32,
             22 * 32,
+            nil,
             {
                 dictName="MALE_FISHERMAN",
                 initialAnim=AnimationName.IDLE_DOWN
@@ -120,11 +130,40 @@ function init(self)
             11 * 32,
             7 * 32,
             {
+                isCycling=false
+            },
+            {
                 dictName="CHILD_1",
                 initialAnim=AnimationName.IDLE_DOWN
             },
             nil,
             "move_random"
+        )
+
+        self.monster1 = self:spawnNPC(
+            14 * 32,
+            21 * 32,
+            {
+                isCycling=false
+            },
+            {
+                dictName="MONSTER_403_ANIMATIONS",
+                initialAnim=AnimationName.WALK_UP
+            },
+            nil,
+            "move_random"
+        )
+
+        self.monster2 = self:spawnNPC(
+            35 * 32,
+            11 * 32,
+            nil,
+            {
+                dictName="MONSTER_333_ANIMATIONS",
+                initialAnim=AnimationName.WALK_DOWN
+            },
+            nil,
+            nil
         )
     end
 

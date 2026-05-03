@@ -37,6 +37,7 @@ public:
 	AnimationDictionary() = default;
 
 	const std::string& GetName() const;
+	bool HasClip(const std::string& name) const;
 
 protected:
 	bool Init() override;

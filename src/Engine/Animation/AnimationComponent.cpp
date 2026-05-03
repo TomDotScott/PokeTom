@@ -1,7 +1,5 @@
 #include "AnimationComponent.h"
 #include "../Entity.h"
-#include "../Asserts.h"
-#include "../GridMovementComponent.h"
 #include "../CodeGen/Resources.hpp"
 
 EntityAnimationComponent::EntityAnimationComponent(
@@ -18,26 +16,6 @@ EntityAnimationComponent::EntityAnimationComponent(
 
 void EntityAnimationComponent::Update(const float deltaTime)
 {
-	const GridMovementComponent* movement = m_owningEntity->GetComponent<GridMovementComponent>();
-	ASSERT_MSG(movement != nullptr, "Entity does not have GridMovementComponent attached!");
-
-	const eOrientation orientation = movement->GetCurrentOrientation();
-	if (movement->IsCycling())
-	{
-		PlayAnimation(GetCycleAnimation(orientation), false);
-	}
-	else if (movement->WasMoving())
-	{
-		PlayAnimation(movement->IsSprinting()
-			? GetSprintAnimation(orientation)
-			: GetWalkAnimation(orientation), false);
-	}
-	else
-	{
-		PlayAnimation(GetIdleAnimation(orientation), false);
-	}
-
-
 	m_player.Update(deltaTime);
 }
 

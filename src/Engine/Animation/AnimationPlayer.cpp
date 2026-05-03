@@ -11,6 +11,11 @@ AnimationPlayer::AnimationPlayer(const std::shared_ptr<AnimationDictionary>& dic
 
 void AnimationPlayer::PlayAnimation(const std::string_view& name, const bool forceRestart)
 {
+	if (!m_dictionary->HasClip(std::string{ name }))
+	{
+		return;
+	}
+
 	if (!forceRestart && name == m_currentAnimName)
 	{
 		return;
