@@ -33,8 +33,6 @@ bool Level::OnActivate()
 			return false;
 		}
 
-		m_onActivate(m_self);
-
 		auto x = m_onActivate(m_self);
 		if (!x.valid())
 		{
