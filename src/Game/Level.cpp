@@ -116,6 +116,16 @@ uint32_t Level::GetNumRows() const
 	return m_mapData->m_NumRows;
 }
 
+uint32_t Level::GetTileWidth() const
+{
+	return m_mapData->m_TileWidth;
+}
+
+uint32_t Level::GetTileHeight() const
+{
+	return m_mapData->m_TileHeight;
+}
+
 int Level::GetEntityZIndex() const
 {
 	return m_entityZIndex;
@@ -155,7 +165,7 @@ bool Level::CanMoveTo(const sf::Vector2f& worldSpacePosition) const
 		}
 
 		// Find which TileSheet this ID belongs to
-		for (const auto& [sheetName, tileSheet] : m_mapData->m_TileSheets)
+		for (const auto& tileSheet : m_mapData->m_TileSheets | std::views::values)
 		{
 			if (globalTileID < tileSheet->GetFirstGID())
 			{
@@ -184,7 +194,7 @@ bool Level::CanMoveTo(const sf::Vector2f& worldSpacePosition) const
 const PortalTrigger* Level::GetPortalAtPosition(const sf::Vector2f worldSpacePosition) const
 {
 	const sf::Vector2i gridPosition = GetGridPositionFromWorldPosition(worldSpacePosition);
-	for (const auto& [_, portalData] : m_mapData->m_Portals)
+	for (const auto& portalData : m_mapData->m_Portals | std::views::values)
 	{
 		const bool xEqual = gridPosition.x == portalData.m_GridPosition.x || gridPosition.x == portalData.m_GridPosition.x + (portalData.m_Size.x - 1);
 
@@ -225,7 +235,10 @@ sf::FloatRect Level::GetBounds() const
 {
 	return {
 		static_cast<sf::Vector2f>(m_worldTileOrigin),
-		{ static_cast<float>(GetNumColumns()) * 32.f, static_cast<float>(GetNumRows()) * 32.f}
+		{
+			static_cast<float>(GetNumColumns() * GetTileWidth()),
+			static_cast<float>(GetNumRows() * GetTileHeight())
+		}
 	};
 }
 
@@ -293,10 +306,8 @@ const sf::Vector2i& Level::GetWorldOrigin() const
 sf::Vector2i Level::GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const
 {
 	const sf::Vector2i localPosition = static_cast<sf::Vector2i>(worldSpacePosition) - m_worldTileOrigin;
-
-	// Floor/truncate to get integer tile coordinates
-	const int gx = static_cast<int>(std::floor(localPosition.x / 32.f));
-	const int gy = static_cast<int>(std::floor(localPosition.y / 32.f));
+	const int gx = localPosition.x / static_cast<int>(GetTileWidth());
+	const int gy = localPosition.y / static_cast<int>(GetTileHeight());
 	return { gx, gy };
 }
 

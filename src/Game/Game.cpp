@@ -22,8 +22,11 @@ Game::Game(sol::state& lua) :
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
-	m_cameraRebuildThreshold(10.f * 32.f)
+	m_cameraRebuildThreshold()
 {
+	const std::shared_ptr<Level> startLevel = m_world.GetLevel(START_LEVEL);
+	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
+
 	m_playerEntityID = m_entities.Create<Player>().GetID();
 
 	Player* player = m_entities.Get<Player>(m_playerEntityID);
@@ -80,20 +83,6 @@ void Game::Render(sf::RenderWindow& window) const
 	const Player* player = m_entities.Get<Player>(m_playerEntityID);
 
 	m_renderer.Render(window, m_entities, m_world.GetLevelAtPosition(player->GetPosition())->GetEntityZIndex());
-
-#if BUILD_DEBUG && 0
-	sf::RectangleShape player({ 32, 32 });
-	player.setFillColor({ 0, 0, 255, 128 });
-	player.setPosition(m_player.GetPosition());
-	window.draw(player);
-
-	sf::CircleShape cameraReticle(10);
-	player.setOrigin({ cameraReticle.getLocalBounds().size.x / 2.f, cameraReticle.getLocalBounds().size.y / 2.f });
-	cameraReticle.setFillColor({ 255, 255, 255, 128 });
-	cameraReticle.setPosition(m_cameraPosition);
-	window.draw(cameraReticle);
-#endif
-
 
 	window.setView({
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
@@ -271,7 +260,8 @@ void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnP
 		GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
 		playerMovement->StopMoving();
 		playerMovement->SetDirection(spawnPointData.m_Orientation);
-		player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition * 32));
+		player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition *
+			static_cast<int>(level->GetTileWidth())));
 
 		player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
 			EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);

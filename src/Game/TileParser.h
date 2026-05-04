@@ -49,6 +49,8 @@ struct MapData
 	std::filesystem::path m_LevelScript;
 	uint32_t m_NumColumns;
 	uint32_t m_NumRows;
+	uint32_t m_TileHeight;
+	uint32_t m_TileWidth;
 };
 
 class TileParser

@@ -22,8 +22,12 @@ struct SimpleVector {
 	float x;
 	float y;
 
+	SimpleVector() : x(0.f), y(0.f) {};
+	SimpleVector(const float x, const float y) : x(x), y(y){};
+
 	static void RegisterLua(sol::state& lua) {
 		lua.new_usertype<SimpleVector>("SimpleVector",
+			sol::constructors<SimpleVector(), SimpleVector(float, float)>(),
 			"x", &SimpleVector::x,
 			"y", &SimpleVector::y
 		);
@@ -43,13 +47,27 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 {
 	LUA_API_BEGIN(Entity, lua)
 		LUA_FUNC(Entity, Create,
-			[&](const float x, const float y) -> uint32_t {
+			[&](const SimpleVector position, const SimpleVector sizeInTiles) -> uint32_t {
 				// TODO: I need a reliable way to get the player!
 				const std::shared_ptr<Level> level = world.LastTransitionedToLevel();
 
 				ASSERT(level != nullptr);
 
-				const Entity& e = entities.Create<Entity>(static_cast<sf::Vector2f>(level->GetWorldOrigin()) + sf::Vector2f{ x, y });
+				sf::Vector2f levelOrigin = static_cast<sf::Vector2f>(level->GetWorldOrigin());
+				const float tileWidth = static_cast<float>(level->GetTileWidth());
+				const float tileHeight = static_cast<float>(level->GetTileHeight());
+
+				sf::Vector2f entityPosition(
+					levelOrigin.x + position.x * tileWidth,
+					levelOrigin.y + position.y * tileHeight
+				);
+
+				sf::Vector2f entitySize(
+					sizeInTiles.x * tileWidth,
+					sizeInTiles.y * tileHeight
+				);
+
+				const Entity& e = entities.Create<Entity>(entityPosition, entitySize);
 				return e.GetID();
 			})
 

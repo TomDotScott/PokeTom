@@ -69,6 +69,8 @@ public:
 	const std::vector<TileSet>& GetTileSets() const;
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
+	uint32_t GetTileHeight() const;
+	uint32_t GetTileWidth() const;
 	const std::filesystem::path& GetLevelScriptFilepath() const;
 
 
@@ -77,6 +79,8 @@ private:
 	std::filesystem::path m_levelScriptPath;
 	uint32_t m_height;
 	uint32_t m_width;
+	uint32_t m_tileWidth;
+	uint32_t m_tileHeight;
 	std::vector<Layer> m_layers;
 	std::vector<Portal> m_portals;
 	std::vector<SpawnPoint> m_spawnPoints;

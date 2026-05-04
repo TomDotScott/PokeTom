@@ -37,6 +37,9 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 	data.m_NumColumns = tmjParser->GetNumColumns();
 	data.m_NumRows = tmjParser->GetNumRows();
 
+	data.m_TileWidth = tmjParser->GetTileWidth();
+	data.m_TileHeight = tmjParser->GetTileHeight();
+
 	// Load each layer
 	for (const auto& layer : tmjParser->GetLayers())
 	{
@@ -67,15 +70,15 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 		}
 
 		PortalTrigger portalData{
-			portal.m_Name,
-			orientation,
-			{
-				static_cast<int>(portal.m_Width) / 32,
-				static_cast<int>(portal.m_Height) / 32
+			.m_Name= portal.m_Name,
+			.m_AllowedOrientations= orientation,
+			.m_Size= {
+				static_cast<int>(portal.m_Width / data.m_TileWidth),
+				static_cast<int>(portal.m_Height / data.m_TileHeight)
 			},
-			{
-				static_cast<int>(portal.m_X) / 32,
-				static_cast<int>(portal.m_Y) / 32
+			.m_GridPosition= {
+				static_cast<int>(portal.m_X / data.m_TileWidth),
+				static_cast<int>(portal.m_Y / data.m_TileHeight)
 			}
 		};
 
@@ -83,18 +86,18 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 	}
 
 	const auto& spawnPoints = tmjParser->GetSpawnPoints();
-	for (const auto& spawnPoint : spawnPoints)
+	for (const auto& [name, x, y, orientation] : spawnPoints)
 	{
 		const SpawnPointData spawnPointData{
-			spawnPoint.m_Name,
-			StringToOrientation(spawnPoint.m_Orientation),
-			{
-				static_cast<int>(spawnPoint.m_X) / 32,
-				static_cast<int>(spawnPoint.m_Y) / 32
+			.m_Name= name,
+			.m_Orientation= StringToOrientation(orientation),
+			.m_GridPosition= {
+				static_cast<int>(x / data.m_TileWidth),
+				static_cast<int>(y / data.m_TileHeight)
 			},
 		};
 
-		data.m_SpawnPoints[spawnPoint.m_Name] = spawnPointData;
+		data.m_SpawnPoints[name] = spawnPointData;
 	}
 
 	data.m_LevelScript = tmjParser->GetLevelScriptFilepath();

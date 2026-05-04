@@ -1,16 +1,15 @@
 #include "Entity.h"
-
-#include "Asserts.h"
 #include "GridMovementComponent.h"
 #include "Animation/AnimationComponent.h"
 
-Entity::Entity() : Entity(sf::Vector2f{})
+Entity::Entity() : Entity(sf::Vector2f{}, sf::Vector2f{})
 {
 }
 
-Entity::Entity(const sf::Vector2f& position) :
+Entity::Entity(const sf::Vector2f& position, const sf::Vector2f& size) :
 	GameObject(position),
-	IUpdateable()
+	IUpdateable(),
+	m_size(size)
 {
 }
 
@@ -61,12 +60,23 @@ void Entity::OnEntityDestroyed()
 {
 	IUpdateable::OnDestroyed();
 
-	for (const auto& c : m_components)
+	for (auto& c : m_components)
 	{
 		c->OnDestroyed();
+		c.reset(nullptr);
 	}
 
 	m_components.clear();
+}
+
+sf::Vector2f Entity::GetSize()
+{
+	return m_size;
+}
+
+const sf::Vector2f& Entity::GetSize() const
+{
+	return m_size;
 }
 
 void Entity::OnPlayerInteractPressed()

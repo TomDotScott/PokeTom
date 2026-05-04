@@ -33,6 +33,9 @@ public:
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
 
+	uint32_t GetTileWidth() const;
+	uint32_t GetTileHeight() const;
+
 	int GetEntityZIndex() const;
 
 	bool IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const;

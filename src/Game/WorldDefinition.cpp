@@ -137,12 +137,7 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, 
 		return false;
 	}
 
-	sf::Vector2f newPosition = entityMovement->GetNextPosition(direction);
-
-	newPosition = {
-		std::round(newPosition.x / 32.f) * 32.f,
-		std::round(newPosition.y / 32.f) * 32.f
-	};
+	const sf::Vector2f newPosition = entityMovement->GetNextPosition(direction);
 
 	// Check if the entity would be overlapping anyone
 	if (entities.GetEntityAtPosition(newPosition) != ~0U)
@@ -249,10 +244,14 @@ void WorldDefinition::SortLevels()
 	for (const auto& [levelName, origin] : origins)
 	{
 		const auto& levelPtr = m_levels.at(levelName);
-		maxExtentStart.x = std::max<int>(origin.x * 32 + static_cast<int>(levelPtr->GetNumColumns()) * 32,
-		                                 maxExtentStart.x);
-		maxExtentStart.y = std::max<int>(origin.y * 32 + static_cast<int>(levelPtr->GetNumRows()) * 32,
-		                                 maxExtentStart.y);
+		const uint32_t levelTileWidth = levelPtr->GetTileWidth();
+		const uint32_t levelTileHeight = levelPtr->GetTileHeight();
+
+		const int extentX = origin.x * levelTileWidth + static_cast<int>(levelPtr->GetNumColumns() * levelTileWidth);
+		const int extentY = origin.y * levelTileHeight + static_cast<int>(levelPtr->GetNumRows() * levelTileHeight);
+
+		maxExtentStart.x = std::max<int>(extentX, maxExtentStart.x);
+		maxExtentStart.y = std::max<int>(extentY, maxExtentStart.y);
 	}
 	maxExtentStart.x += 3200;
 
@@ -260,12 +259,12 @@ void WorldDefinition::SortLevels()
 	{
 		if (const auto it = origins.find(levelName); it != origins.end())
 		{
-			levelPtr->SetWorldOrigin(it->second * 32);
+			levelPtr->SetWorldOrigin(it->second * static_cast<int>(levelPtr->GetTileWidth()));
 		}
 		else
 		{
 			levelPtr->SetWorldOrigin(maxExtentStart);
-			maxExtentStart.y += static_cast<int>(levelPtr->GetNumRows()) * 32 * 2;
+			maxExtentStart.y += static_cast<int>(levelPtr->GetNumRows()) * levelPtr->GetTileWidth() * 2;
 		}
 	}
 }

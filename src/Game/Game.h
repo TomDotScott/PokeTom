@@ -37,7 +37,7 @@ private:
 	WorldDefinition m_world;
 	LuaRegistry m_luaBindings;
 
-	uint64_t m_playerEntityID;
+	uint32_t m_playerEntityID;
 
 	const PortalTrigger* m_lastEnteredPortal;
 

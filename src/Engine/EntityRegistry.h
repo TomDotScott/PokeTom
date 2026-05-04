@@ -5,16 +5,15 @@
 class EntityRegistry
 {
 public:
-	template <typename T>
-	T& Create(const sf::Vector2f& position = {})
+	template <typename T, typename... Args>
+	T& Create(Args&&... args)
 		requires (std::is_base_of_v<Entity, T>)
 	{
-		auto entity = std::make_unique<T>(position);
-		T& ref = *entity.get();
+		auto entity = std::make_unique<T>(std::forward<Args>(args)...);
+		T& ref = *entity;
 		m_entities.emplace(entity->GetID(), std::move(entity));
 		return ref;
 	}
-
 
 	template<typename T>
 	T* Get(const uint32_t id) const

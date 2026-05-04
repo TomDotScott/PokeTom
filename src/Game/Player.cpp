@@ -8,9 +8,12 @@
 #include "../Engine/Input/Keyboard.h"
 
 
-Player::Player() : Player(sf::Vector2f{ 0.f, 0.f }) {}
+Player::Player() : Player(sf::Vector2f{ 0.f, 0.f })
+{
+}
 
-Player::Player(const sf::Vector2f& position)
+Player::Player(const sf::Vector2f& position) :
+	Entity(position, { 1.f, 1.f })
 {
 	AddComponent<GridMovementComponent>(this, 32.f, 3.f, 6.5f);
 	AddComponent<EntityAnimationComponent>(this, "PLAYER_BOY", EntityAnimationComponent::eAnimationName::IDLE_DOWN);
@@ -63,7 +66,8 @@ void Player::Update(const float deltaTime)
 	// Update inputs
 	m_mapper.Update();
 
-	if (!DialogueBox::IsVisible()) {
+	if (!DialogueBox::IsVisible())
+	{
 		Move();
 	}
 

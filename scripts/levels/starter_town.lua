@@ -17,7 +17,7 @@ function init(self)
     self.spawnNPC = function(self, xPosition, yPosition, gridMovementConfig, animationConfig, dialogueConfig, scriptName)
         print("spawnNPC")
 
-        local id = Entity.Create(xPosition, yPosition)
+        local id = Entity.Create(SimpleVector.new(xPosition, yPosition), SimpleVector.new(1, 1))
 
         print("Created entity with ID"..id)
 
@@ -60,8 +60,8 @@ function init(self)
 
         print("Entity IDs=".." "..self.man1.." "..self.lampPost1.." "..self.cyclist1.." "..self.fisherman1.." "..self.monster1.." "..self.monster2.." "..self.child1)
         self.man1 = self:spawnNPC(
-            23 * 32,
-            15 * 32,
+            23,
+            15,
             {
                 isCycling=false
             },
@@ -77,8 +77,8 @@ function init(self)
         )
 
         self.lampPost1 = self:spawnNPC(
-            17 * 32,
-            28 * 32,
+            17,
+            28,
             nil,
             nil,
             {
@@ -90,8 +90,8 @@ function init(self)
         )
 
         self.cyclist1 = self:spawnNPC(
-            28 * 32,
-            20 * 32,
+            28,
+            20,
             {
                 isCycling=true
             },
@@ -111,8 +111,8 @@ function init(self)
         Entity.SetScriptValue(self.cyclist1, "squareHeight", "8")
 
         self.fisherman1 = self:spawnNPC(
-            31 * 32,
-            22 * 32,
+            31,
+            22,
             nil,
             {
                 dictName="MALE_FISHERMAN",
@@ -127,8 +127,8 @@ function init(self)
         )
 
         self.child1 = self:spawnNPC(
-            11 * 32,
-            7 * 32,
+            11,
+            7,
             {
                 isCycling=false
             },
@@ -141,8 +141,8 @@ function init(self)
         )
 
         self.monster1 = self:spawnNPC(
-            14 * 32,
-            21 * 32,
+            14,
+            21,
             {
                 isCycling=false
             },
@@ -155,8 +155,8 @@ function init(self)
         )
 
         self.monster2 = self:spawnNPC(
-            35 * 32,
-            11 * 32,
+            35,
+            11,
             nil,
             {
                 dictName="MONSTER_333_ANIMATIONS",

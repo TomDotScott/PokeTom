@@ -1,6 +1,9 @@
 #include "EntityRegistry.h"
 
 #include <ranges>
+#if BUILD_DEBUG
+#include <SFML/Graphics/RectangleShape.hpp>
+#endif
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "TextureManager.h"
@@ -61,6 +64,13 @@ void EntityRegistry::RenderAll(sf::RenderWindow& window) const
 
 	for (const auto& entity : renderables)
 	{
+#if BUILD_DEBUG
+		sf::RectangleShape entityBox{ entity->GetSize() };
+		entityBox.setFillColor(sf::Color::Magenta);
+		entityBox.setPosition(entity->GetPosition());
+		window.draw(entityBox);
+#endif
+
 		// TODO: We should probably allow static, un-animated, entities!
 		const auto* animation = entity->GetComponent<EntityAnimationComponent>();
 		if (animation == nullptr)
@@ -111,8 +121,15 @@ uint32_t EntityRegistry::GetEntityAtPosition(const sf::Vector2f& position)
 			continue;
 		}
 
-		const sf::Vector2f& entityPosition = entity->GetPosition();
-		if ((entityPosition - position).lengthSquared() < 32.f * 32.f)
+		const sf::Vector2f& entitySize = entity->GetSize();
+
+		const sf::Vector2f& entityTL = entity->GetPosition();
+		sf::Vector2f entityBR = entityTL + entitySize;
+
+		if (position.x >= entityTL.x
+			&& position.y >= entityTL.y
+			&& position.x < entityBR.x
+			&& position.y < entityBR.y)
 		{
 			return entity->GetID();
 		}

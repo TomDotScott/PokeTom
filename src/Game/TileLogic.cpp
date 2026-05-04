@@ -27,13 +27,13 @@ TileLogic::TileLogic(const std::shared_ptr<MapData>& mapData)
 
 				if (const TileSheet::TileDefinition* definition = sheet->GetTileDefinition(localID - 1)) {
 					TileInstance instance{
-						{
-							static_cast<float>((i % mapData->m_NumColumns) * 32),
-							static_cast<float>((i / mapData->m_NumColumns) * 32)
+						.m_Position= {
+							static_cast<float>((i % mapData->m_NumColumns) * mapData->m_TileWidth),
+							static_cast<float>((i / mapData->m_NumColumns) * mapData->m_TileHeight)
 						},
-						definition,
-						sheet.get(),
-						layer.m_Name
+						.m_Definition= definition,
+						.m_ParentSheet= sheet.get(),
+						.m_LayerName= layer.m_Name
 					};
 
 					m_tiles.push_back(instance);

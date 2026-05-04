@@ -10,9 +10,9 @@ class Entity : public GameObject, public IUpdateable
 {
 public:
 	Entity();
-	Entity(const sf::Vector2f& position);
+	Entity(const sf::Vector2f& position, const sf::Vector2f& size);
 
-	~Entity();
+	~Entity() override;
 
 	void Update(float deltaTime) override;
 
@@ -61,8 +61,12 @@ public:
 
 	virtual void OnEntityDestroyed();
 
+	sf::Vector2f GetSize();
+	const sf::Vector2f& GetSize() const;
+
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
+	sf::Vector2f m_size;
 
 	void OnEntityActivate();
 	void OnEntityDeactivate();

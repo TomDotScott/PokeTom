@@ -95,6 +95,16 @@ uint32_t TMJ::GetNumRows() const
 	return m_height;
 }
 
+uint32_t TMJ::GetTileHeight() const
+{
+	return m_tileHeight;
+}
+
+uint32_t TMJ::GetTileWidth() const
+{
+	return m_tileWidth;
+}
+
 const std::filesystem::path& TMJ::GetLevelScriptFilepath() const
 {
 	return m_levelScriptPath;
@@ -120,6 +130,9 @@ bool TMJ::Init()
 
 	m_height = json["height"];
 	m_width = json["width"];
+
+	m_tileHeight = json["tileheight"];
+	m_tileWidth = json["tilewidth"];
 
 	const auto& layersArray = json["layers"];
 	if (!ParseLayersArray(layersArray))
