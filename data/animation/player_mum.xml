@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<AnimDict version="0.1" name="player_mum">
+  <Image source="OVERWORLD_ENTITIES" topLeftX="704" topLeftY="0" regionWidth="96" regionHeight="128" maskColour="559262FF"/>
+
+  <Animation name="idle_up" looping="true">
+    <Frame topLeftX="704" topLeftY="0" duration="100" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="idle_down" looping="true">
+    <Frame topLeftX="704" topLeftY="32" duration="100" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="idle_left" looping="true">
+    <Frame topLeftX="704" topLeftY="64" duration="100" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="idle_right" looping="true">
+    <Frame topLeftX="704" topLeftY="64" duration="100" spriteWidth="32" spriteHeight="32"/>
+  </Animation>
+
+  <Animation name="walk_up" looping="true">
+    <Frame topLeftX="704" topLeftY="0" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="736" topLeftY="0" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="704" topLeftY="0" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="768" topLeftY="0" duration="250" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="walk_down" looping="true">
+    <Frame topLeftX="704" topLeftY="32" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="736" topLeftY="32" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="704" topLeftY="32" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="768" topLeftY="32" duration="250" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="walk_left" looping="true">
+    <Frame topLeftX="704" topLeftY="64" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="736" topLeftY="64" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="704" topLeftY="64" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="768" topLeftY="64" duration="250" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+
+  <Animation name="walk_right" looping="true">
+    <Frame topLeftX="704" topLeftY="96" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="736" topLeftY="96" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="704" topLeftY="96" duration="250" spriteWidth="32" spriteHeight="32" />
+    <Frame topLeftX="768" topLeftY="96" duration="250" spriteWidth="32" spriteHeight="32" />
+  </Animation>
+</AnimDict>

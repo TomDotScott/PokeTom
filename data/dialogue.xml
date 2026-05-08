@@ -26,4 +26,12 @@
   <Dialogue name="STARTER_TOWN_FISHERMAN">
     <text id="STARTER_TOWN_FISHERMAN" />
   </Dialogue>
+
+  <Dialogue name="GENERIC_TV_1">
+    <text id="GENERIC_TV_1" />
+  </Dialogue>
+
+  <Dialogue name="PLAYER_MUM">
+    <text id="PLAYER_MUM_1" />
+  </Dialogue>
 </DialogueTree>

@@ -10,6 +10,14 @@ function init(self)
 
     self.currentDirection = Direction.East
 
+    self.walkDuration = 0
+    self.pauseDuration = 0
+    self.timer = 0
+
+    self.WALKING_STATE = "WALKING_STATE"
+    self.IDLE_STATE = "IDLE_STATE"
+    self.state = self.WALKING_STATE
+
     self.onCreated = function(self)
         print("Constructed! EntityID="..self.LOCAL_ENTITY_ID)
         self.initialPosition = Entity.GetPosition(self.LOCAL_ENTITY_ID)
@@ -40,7 +48,22 @@ function init(self)
         if self.moving == false then
             return
         end
-        
+
+        self.timer = self.timer + dt
+        if self.state == self.IDLE_STATE then
+            if self.timer > tonumber(self.pauseDuration) then
+                self.state = self.WALKING_STATE
+                self.timer = 0
+            else
+                return
+            end
+        else
+            if self.timer > tonumber(self.walkDuration) then
+                self.state = self.IDLE_STATE
+                self.timer = 0
+            end
+        end
+
         --@type {x= number, y= number}
         local currentPosition = Entity.GetPosition(self.LOCAL_ENTITY_ID)
 

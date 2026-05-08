@@ -23,6 +23,8 @@ fonts:
 animations:
   - name: PLAYER_BOY
     source: animation/player_boy.xml
+  - name: PLAYER_MUM
+    source: animation/player_mum.xml
   - name: NPC_MAN_1
     source: animation/npc_man_1.xml
   - name: FEMALE_CYCLIST

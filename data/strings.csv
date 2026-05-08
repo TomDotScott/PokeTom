@@ -10,5 +10,6 @@ STARTER_TOWN_PROFESSOR_SIGN,DIALOGUE,"{PROFESSOR_NAME}'s Laboratory. Open 7am-4p
 PLAYER_BEDROOM_TV,DIALOGUE,"It looks like an episode of an old Japanese anime is on the TV.","","","",""
 PLAYER_BEDROOM_LAPTOP_1,DIALOGUE,"There's a sticky note on the display... "{PLAYER_NAME}--remember to Press {PAUSE_BUTTON} to open your diary"","","","",""
 PLAYER_BEDROOM_LAPTOP_2,DIALOGUE,"It's an email from your friend {RIVAL_NAME}: Be careful of entering the tall grass, I met my {MONSTER_506} that way, but there are much more dangerous creatures out there...","","","",""
+PLAYER_MUM_1,DIALOGUE,"Morning, {PLAYER_NAME}! I was speaking to {PROFESSOR_NAME} and he wants to see you in his lab. Don't be long, I want you back in time for dinner at 18:30.","","","",""
 GENERIC_TV_1,DIALOGUE,"BREAKING NEWS: Kanto Gym Leader arrested for harrassment charges, his {MONSTER_95} is going to be put to sleep as there is nobody left to care for it.","","","",""
 GENERIC_TV_2,DIALOGUE,"Weather: Trainers in {STARTER_TOWN} have been using {MOVE_RAIN_DANCE} so expect light showers this evening.","","","",""
