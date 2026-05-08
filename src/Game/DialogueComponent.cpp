@@ -96,7 +96,7 @@ void DialogueComponent::OnPlayerInteractPressed()
 	++m_pageIndex;
 }
 
-const std::string& DialogueComponent::GetNextLine() const
+std::string DialogueComponent::GetNextLine() const
 {
 	return DIALOGUEMANAGER->GetLine(m_dialogueID, m_dialogueIndex);
 }

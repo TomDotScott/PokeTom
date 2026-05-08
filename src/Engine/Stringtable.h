@@ -12,7 +12,11 @@ public:
 	static StringTable* Get();
 	friend class Factory;
 
-	const std::string& GetString(const std::string& group, const std::string& stringID) const;
+	bool Exists(const std::string& group, const std::string& stringID) const;
+
+	void AddCustomString(const std::string& group, const std::string& stringID, const std::string& value);
+	std::string GetString(const std::string& stringID) const;
+	std::string GetString(const std::string& group, const std::string& stringID) const;
 
 private:
 	// KEY - group, VALUE - { KEY - ID, VALUE - String }

@@ -6,11 +6,10 @@
 
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Asserts.h"
-#include "../Engine/CodeGen/Resources.hpp"
+#include "../Engine/Stringtable.h"
 #include "../Engine/Globals.h"
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
-#include "../Engine/TextureManager.h"
 #include "../Engine/Timer.h"
 
 Game::Game(sol::state& lua) :
@@ -24,6 +23,10 @@ Game::Game(sol::state& lua) :
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
 	m_cameraRebuildThreshold()
 {
+	// TODO: Make this a variable, loaded at startup
+	StringTable::Get()->AddCustomString("CHARACTER", "PLAYER_NAME", "Tom");
+	StringTable::Get()->AddCustomString("CHARACTER", "RIVAL_NAME", "Ben");
+
 	const std::shared_ptr<Level> startLevel = m_world.GetLevel(START_LEVEL);
 	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
 

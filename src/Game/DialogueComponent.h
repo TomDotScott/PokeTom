@@ -14,7 +14,7 @@ public:
 	void Update(float deltaTime) override;
 	void OnPlayerInteractPressed() override;
 
-	const std::string& GetNextLine() const;
+	std::string GetNextLine() const;
 
 	bool HasDialogueLeft() const;
 

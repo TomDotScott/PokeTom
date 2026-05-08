@@ -13,3 +13,4 @@ PLAYER_BEDROOM_LAPTOP_2,DIALOGUE,"It's an email from your friend {RIVAL_NAME}: B
 PLAYER_MUM_1,DIALOGUE,"Morning, {PLAYER_NAME}! I was speaking to {PROFESSOR_NAME} and he wants to see you in his lab. Don't be long, I want you back in time for dinner at 18:30.","","","",""
 GENERIC_TV_1,DIALOGUE,"BREAKING NEWS: Kanto Gym Leader arrested for harrassment charges, his {MONSTER_95} is going to be put to sleep as there is nobody left to care for it.","","","",""
 GENERIC_TV_2,DIALOGUE,"Weather: Trainers in {STARTER_TOWN} have been using {MOVE_RAIN_DANCE} so expect light showers this evening.","","","",""
+PAUSE_BUTTON,UI,"ESCAPE","","","",""

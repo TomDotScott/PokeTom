@@ -17,17 +17,21 @@ DialogueManager* DialogueManager::Get()
 	return manager.get();
 }
 
-const std::string& DialogueManager::GetLine(const std::string& dialogueID, const uint8_t index) const
+std::string DialogueManager::GetLine(const std::string& dialogueID, const uint8_t index) const
 {
 	ASSERT(m_dialogueTree.contains(dialogueID));
 
 	const std::vector<std::string>& dialogue = m_dialogueTree.at(dialogueID);
+
 	ASSERT_MSG(index < dialogue.size());
 
-	return dialogue[index];
+	const std::string& stringID = dialogue[index];
+	ASSERT(STRINGTABLE->Exists("DIALOGUE", stringID));
+
+	return STRINGTABLE->GetString("DIALOGUE", stringID);
 }
 
-uint8_t DialogueManager::GetNumLines(const std::string& dialogueID) const
+size_t DialogueManager::GetNumLines(const std::string& dialogueID) const
 {
 	ASSERT(m_dialogueTree.contains(dialogueID));
 	return m_dialogueTree.at(dialogueID).size();
@@ -87,13 +91,7 @@ bool DialogueManager::LoadFromXML(const XmlNode& node)
 				return false;
 			}
 
-			if (STRINGTABLE->GetString("DIALOGUE", id).empty())
-			{
-				ASSERT_MSG(false, "String with ID %s not present in the DIALOGUE stringtable!", id.c_str());
-				return false;
-			}
-
-			treeLines.emplace_back(STRINGTABLE->GetString("DIALOGUE", id));
+			treeLines.emplace_back(id);
 		}
 
 		dialogueTree[treeName] = treeLines;

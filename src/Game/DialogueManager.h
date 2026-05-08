@@ -9,8 +9,8 @@ public:
 	static DialogueManager* Get();
 	friend class Factory;
 
-	const std::string& GetLine(const std::string& dialogueID, uint8_t index) const;
-	uint8_t GetNumLines(const std::string& dialogueID) const;
+	std::string GetLine(const std::string& dialogueID, uint8_t index) const;
+	size_t GetNumLines(const std::string& dialogueID) const;
 
 private:
 	std::unordered_map<std::string, std::vector<std::string>> m_dialogueTree;
