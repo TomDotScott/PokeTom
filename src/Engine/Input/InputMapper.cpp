@@ -76,7 +76,7 @@ void InputMapper::Update()
 void InputMapper::Map(const int inputId, const eInputType type, const int button)
 {
 	// If it already exists, we want to map to the secondary input
-	if (m_inputs.find(inputId) != m_inputs.end())
+	if (m_inputs.contains(inputId))
 	{
 		m_inputs.at(inputId).SecondaryInput = InputValue(type, button);
 	}
@@ -87,6 +87,12 @@ void InputMapper::Map(const int inputId, const eInputType type, const int button
 
 		m_inputs.at(inputId).PrimaryInput = InputValue(type, button);
 	}
+}
+
+void InputMapper::Map(const int inputId, const eInputType type, const int button, const int secondaryButton)
+{
+	Map(inputId, type, button);
+	Map(inputId, type, secondaryButton);
 }
 
 bool InputMapper::IsButtonDown(const int inputID) const

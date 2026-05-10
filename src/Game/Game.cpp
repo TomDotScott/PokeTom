@@ -4,6 +4,7 @@
 #include <set>
 #include <SFML/Graphics.hpp>
 
+#include "BattleState.h"
 #include "GameEvents.h"
 #include "OverworldState.h"
 #include "../Engine/Animation/AnimationComponent.h"
@@ -30,12 +31,6 @@ Game::Game(sol::state& lua) :
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
 
 	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>().GetID();
-
-	game_events::OnScreenFadeTriggered.On([this]()
-	{
-		m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
-	});
-
 
 	Player* player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
 	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
@@ -67,6 +62,22 @@ Game::Game(sol::state& lua) :
 	m_context.m_World.LoadLevelScripts(lua);
 
 	m_currentState = std::make_unique<OverworldState>(m_context);
+
+
+	game_events::OnScreenFadeTriggered.On([this]()
+	{
+		m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
+	});
+
+	game_events::OnBattleStart.On([this](BattleContext battleContext)
+	{
+		RequestTransition(std::make_unique<BattleState>(m_context, battleContext));
+	});
+
+	game_events::OnBattleEnd.On([this]()
+	{
+		RequestTransition(std::make_unique<OverworldState>(m_context));
+	});
 }
 
 Game::~Game() = default;

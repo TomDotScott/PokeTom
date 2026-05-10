@@ -13,6 +13,7 @@ public:
 	void Update();
 
 	void Map(int inputId, eInputType type, int button);
+	void Map(int inputId, eInputType type, int button, int secondaryButton);
 
 	bool IsButtonDown(int inputID) const;
 	bool IsButtonPressed(int inputID) const;

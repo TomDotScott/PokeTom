@@ -40,8 +40,12 @@ public:
 
 	bool IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const;
 	bool CanMoveTo(const sf::Vector2f& worldSpacePosition) const;
+
 	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
+
 	sf::Vector2i GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const;
+
+	const TileSheet::TileDefinition* GetTileAtPosition(const sf::Vector2f& worldSpacePosition, unsigned tileFlags = TileSheet::TileDefinition::None) const;
 
 	const SpawnPointData& GetSpawnPointData(const hash_type& name) const;
 

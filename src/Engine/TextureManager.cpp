@@ -85,7 +85,7 @@ const hash_type& TextureManager::GetTextureNameFromPath(const std::filesystem::p
 	return m_registeredPaths.at(path.string());
 }
 
-bool TextureManager::LoadTexture(hash_type name, const std::filesystem::path& path)
+bool TextureManager::LoadTexture(const hash_type name, const std::filesystem::path& path)
 {
 	if (m_textures.contains(name))
 	{

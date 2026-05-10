@@ -24,9 +24,14 @@ private:
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;
 
+	size_t m_onScreenFadedEventID;
+
+	RandomRangeGenerator m_rng;
+
 	void UpdateChunks();
 	void UpdateCamera(float deltaTime);
 	void CheckForPortals(Entity* player, const Level* currentLevel);
+	void CheckForTallGrass(Entity* player, const Level* currentLevel);
 	void OnLevelEntered();
 	void RespawnPlayer(const hash_type& levelName, const hash_type& spawnPointName, bool shouldSetPlayerPosition);
 };

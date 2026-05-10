@@ -14,14 +14,15 @@ OverworldState::OverworldState(GameContext& ctx) :
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
 	m_cameraRebuildThreshold(),
 	m_lastEnteredPortalID(std::nullopt),
-	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre)
+	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
+	m_rng(0, 100)
 {
 	const std::shared_ptr<Level> startLevel = m_ctx.m_World.GetLevel(HASH(START_LEVEL));
 	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
 
 	OnLevelEntered();
 
-	game_events::OnScreenFaded.On([this]() { OnLevelEntered(); });
+	m_onScreenFadedEventID = game_events::OnScreenFaded.On([this]() { OnLevelEntered(); });
 }
 
 void OverworldState::OnEnter()
@@ -33,6 +34,7 @@ void OverworldState::OnEnter()
 
 void OverworldState::OnExit()
 {
+	game_events::OnScreenFaded.Off(m_onScreenFadedEventID);
 }
 
 void OverworldState::Update(const float deltaTime)
@@ -46,6 +48,7 @@ void OverworldState::Update(const float deltaTime)
 	m_ctx.m_Entities.UpdateAll(deltaTime);
 
 	CheckForPortals(player, level.get());
+	CheckForTallGrass(player, level.get());
 
 	UpdateChunks();
 	UpdateCamera(deltaTime);
@@ -155,6 +158,21 @@ void OverworldState::CheckForPortals(Entity* player, const Level* currentLevel)
 		                                          m_TargetLevel << "\n";
 
 		game_events::OnScreenFadeTriggered.Fire();
+	}
+}
+
+void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel)
+{
+	if (currentLevel->GetTileAtPosition(player->GetPosition(), TileSheet::TileDefinition::IsGrass))
+	{
+		// TODO: Have custom odds per level
+		if (m_rng.Next() < 25)
+		{
+			game_events::OnBattleStart.Fire({
+				.m_PlayerEntityID = m_ctx.m_PlayerEntityID,
+				.m_OpponentEntityID = ~0U
+			});
+		}
 	}
 }
 
