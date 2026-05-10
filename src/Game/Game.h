@@ -1,17 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
-#include <set>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <sol/sol.hpp>
-#include "Level.h"
+
+#include "GameContext.h"
 #include "LuaRegistry.h"
 #include "Player.h"
-#include "Renderer.h"
-#include "TileLogic.h"
-#include "WorldDefinition.h"
-#include "../Engine/EntityRegistry.h"
-#include "../Engine/Event.h"
-#include "../Engine/ObjectPool.h"
+#include "../Engine/IGameState.h"
 #include "../Engine/Rendering/ScreenFader.h"
 #include "../Engine/UI/UiManager.h"
 
@@ -26,30 +21,13 @@ public:
 	void Render(sf::RenderWindow& window) const;
 
 private:
-	EntityRegistry m_entities;
+	GameContext m_context;
 
-	enum class eGameState
-	{
-		FadingScreen,
-		Overworld
-	} m_state;
+	std::unique_ptr<IGameState> m_currentState;
+	std::unique_ptr<IGameState> m_pendingState;
 
-	WorldDefinition m_world;
 	LuaRegistry m_luaBindings;
-
-	uint32_t m_playerEntityID;
-
-	const PortalTrigger* m_lastEnteredPortal;
-
-	sf::Vector2f m_cameraPosition;
-	sf::Vector2f m_cameraVelocity;
-
-	Renderer m_renderer;
 	ScreenFader m_screenFader;
-
-	sf::FloatRect m_worldBounds;
-	sf::FloatRect m_lastCameraRect;
-	float m_cameraRebuildThreshold;
 
 #if !BUILD_MASTER
 	template<typename... Args>
@@ -66,17 +44,8 @@ private:
 	}
 #endif
 
-	void UpdateChunks();
-	void UpdateOverworld(float deltaTime);
-	void UpdateCamera(float deltaTime);
-	void CheckForPortals();
-
 	void UpdateScreenFade(float deltaTime);
-
-	void RespawnPlayer(const hash_type& levelName, const std::string& spawnPointName, bool shouldSetPlayerPosition);
-
-	void TransitionLevel();
-	void OnTransitionEnd();
+	void RequestTransition(std::unique_ptr<IGameState> next);
 };
 
 

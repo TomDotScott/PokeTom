@@ -4,8 +4,11 @@
 #include <set>
 #include <SFML/Graphics.hpp>
 
+#include "GameEvents.h"
+#include "OverworldState.h"
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Asserts.h"
+#include "../Engine/EntityRegistry.h"
 #include "../Engine/Stringtable.h"
 #include "../Engine/Globals.h"
 #include "../Engine/GridMovementComponent.h"
@@ -14,83 +17,80 @@
 
 Game::Game(sol::state& lua) :
 	IUpdateable(),
-	m_state(eGameState::Overworld),
-	m_world(lua, "WorldDefinition.xml"),
-	m_luaBindings(lua, m_world, m_entities),
-	m_lastEnteredPortal(nullptr),
-	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
-	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
-	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
-	m_cameraRebuildThreshold()
+	m_context({
+		.m_Entities = EntityRegistry(),
+		.m_World = WorldDefinition(lua, "WorldDefinition.xml"),
+		.m_Renderer = Renderer(),
+		.m_PlayerEntityID = 0x69
+	}),
+	m_luaBindings(lua, m_context.m_World, m_context.m_Entities)
 {
 	// TODO: Make this a variable, loaded at startup
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
 
-	const std::shared_ptr<Level> startLevel = m_world.GetLevel(HASH(START_LEVEL));
-	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
+	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>().GetID();
 
-	m_playerEntityID = m_entities.Create<Player>().GetID();
-
-	Player* player = m_entities.Get<Player>(m_playerEntityID);
-	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
+	game_events::OnScreenFadeTriggered.On([this]()
 	{
-		return m_world.CanMoveTo(ent, m_entities, dir);
+		m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
 	});
 
-	player->AddOnInteractPressedCallback([this]() {
+
+	Player* player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
+	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
+	{
+		return m_context.m_World.CanMoveTo(ent, m_context.m_Entities, dir);
+	});
+
+	player->AddOnInteractPressedCallback([this]()
+	{
 		// See if there are any entities near the player
-		Player* p = m_entities.Get<Player>(m_playerEntityID);
+		Player* p = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
 
 		const GridMovementComponent* playerMovement = p->GetComponent<GridMovementComponent>();
 		const sf::Vector2f nextPlayerPos = playerMovement->GetNextPosition(playerMovement->GetCurrentDirection());
 
-		const uint32_t entityID = m_entities.GetEntityAtPosition(nextPlayerPos);
+		const uint32_t entityID = m_context.m_Entities.GetEntityAtPosition(nextPlayerPos);
 		if (entityID == ~0U)
 		{
 			// TODO: Play a sound or something here
 			return;
 		}
 
-		const auto& entity = m_entities.Get<Entity>(entityID);
+		const auto& entity = m_context.m_Entities.Get<Entity>(entityID);
 		entity->OnPlayerInteractPressed();
 	});
 
 	ASSERT_MSG(UIMANAGER.Load("ui.xml"), "UI Failed to initialise from XML!");
 
-	m_world.LoadLevelScripts(lua);
+	m_context.m_World.LoadLevelScripts(lua);
 
-	OnTransitionEnd();
+	m_currentState = std::make_unique<OverworldState>(m_context);
 }
 
 Game::~Game() = default;
 
 void Game::Update(const float deltaTime)
 {
-	switch (m_state)
+	if (m_screenFader.FadeInProgress())
 	{
-	case eGameState::FadingScreen:
 		UpdateScreenFade(deltaTime);
-		break;
-	case eGameState::Overworld:
-		UpdateOverworld(deltaTime);
-		break;
 	}
-
-	UpdateChunks();
-	UpdateCamera(deltaTime);
+	else
+	{
+		m_currentState->Update(deltaTime);
+	}
 }
 
 void Game::Render(sf::RenderWindow& window) const
 {
-	const Player* player = m_entities.Get<Player>(m_playerEntityID);
-
-	m_renderer.Render(window, m_entities, m_world.GetLevelAtPosition(player->GetPosition())->GetEntityZIndex());
+	m_currentState->Render(window);
 
 	window.setView({
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
-		});
+	});
 
 	if (m_screenFader.FadeInProgress())
 	{
@@ -110,122 +110,19 @@ void Game::Render(sf::RenderWindow& window) const
 
 	// Then, in front of everything, the foreground stuff
 	UIMANAGER.RenderForeground(window);
-	
+
 
 #if !BUILD_MASTER
 	DrawText(window, sf::Vector2f{ 0, 10 }, 30, "%.1fFPS", Timer::Get().Fps());
 #endif
 }
 
-void Game::UpdateChunks()
+void Game::RequestTransition(std::unique_ptr<IGameState> next)
 {
-	const sf::Vector2f viewSize = m_worldBounds.size;
-	const sf::FloatRect camRect(
-		{
-			m_cameraPosition.x - viewSize.x * 0.5f,
-			m_cameraPosition.y - viewSize.y * 0.5f
-		},
-		viewSize
-	);
+	m_pendingState = std::move(next);
+	m_currentState->OnExit();
 
-	if (m_lastCameraRect.size.lengthSquared() == 0.f ||
-		(camRect.position - m_lastCameraRect.position).lengthSquared() >
-		m_cameraRebuildThreshold * m_cameraRebuildThreshold)
-	{
-		const auto visibleLevels = m_world.GetLevelsIntersectingRect(camRect);
-
-		std::unordered_map<hash_type, LevelRenderData> renderData;
-
-		sf::FloatRect mergedBounds;
-		bool first = true;
-
-		for (const auto& level : visibleLevels)
-		{
-			const auto& levelName = level->GetName();
-			renderData[levelName] = LevelRenderData();
-
-			auto& levelRenderData = renderData.at(levelName);
-
-			levelRenderData.m_TileRenderData = level->GetRenderData();
-			levelRenderData.m_TileLayerData = level->GetLayers();
-
-			sf::FloatRect r = level->GetBounds();
-
-			if (first)
-			{
-				mergedBounds = r;
-				first = false;
-			}
-			else
-			{
-				// Union the rectangles
-				float minX = std::min(mergedBounds.position.x, r.position.x);
-				float minY = std::min(mergedBounds.position.y, r.position.y);
-
-				float maxX = std::max(mergedBounds.position.x + mergedBounds.size.x,
-					r.position.x + r.size.x);
-				float maxY = std::max(mergedBounds.position.y + mergedBounds.size.y,
-					r.position.y + r.size.y);
-
-				mergedBounds = sf::FloatRect(
-					sf::Vector2f(minX, minY),
-					sf::Vector2f(maxX - minX, maxY - minY)
-				);
-			}
-		}
-
-		// Update renderer data
-		m_renderer.BuildBatches(renderData);
-
-		// Update world boundary the camera clamps inside
-		m_worldBounds = mergedBounds;
-
-		m_lastCameraRect = camRect;
-	}
-}
-
-
-void Game::UpdateOverworld(const float deltaTime)
-{
-	m_world.GetLevelAtPosition(m_entities.Get<Entity>(m_playerEntityID)->GetPosition())->OnUpdate(deltaTime);
-	m_entities.UpdateAll(deltaTime);
-	CheckForPortals();
-}
-
-void Game::UpdateCamera(const float deltaTime)
-{
-	Player* player = m_entities.Get<Player>(m_playerEntityID);
-
-	m_cameraPosition = maths::SmoothDamp(m_cameraPosition, player->GetPosition(), m_cameraVelocity, 0.25, deltaTime);
-
-	m_renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
-}
-
-void Game::CheckForPortals()
-{
-	Player* player = m_entities.Get<Player>(m_playerEntityID);
-
-	const auto currentLevel = m_world.GetLevelAtPosition(player->GetPosition());
-
-	if (currentLevel == nullptr)
-	{
-		std::cerr << "Game::CheckForPortals - currentLevel is a nullptr!\n";
-		return;
-	}
-
-	// If the player is on a door in the right orientation, start a level transition
-	const PortalTrigger* portal = currentLevel->GetPortalAtPosition(player->GetPosition());
-
-	GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
-	if (portal != nullptr && portal->AllowsOrientation(playerMovement->GetCurrentOrientation()))
-	{
-		m_lastEnteredPortal = portal;
-
-		std::cout << "Transitioning to " << m_world.GetPortalData(currentLevel->GetName(), portal->m_Name).m_TargetLevel
-			<< "\n";
-
-		TransitionLevel();
-	}
+	game_events::OnScreenFadeTriggered.Fire();
 }
 
 void Game::UpdateScreenFade(const float deltaTime)
@@ -237,71 +134,14 @@ void Game::UpdateScreenFade(const float deltaTime)
 		// If we have finished the fade out, fade back in again
 		if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeOut)
 		{
-			OnTransitionEnd();
+			if (m_pendingState)
+			{
+				m_currentState = std::move(m_pendingState);
+				m_currentState->OnEnter();
+			}
+
 			m_screenFader.StartFade(ScreenFader::FadeType::FadeIn, 1.f, 0.5f);
-		}
-		else if (m_screenFader.GetCurrentFadeType() == ScreenFader::FadeType::FadeIn)
-		{
-			m_state = eGameState::Overworld;
+			game_events::OnScreenFaded.Fire();
 		}
 	}
-}
-
-void Game::RespawnPlayer(const hash_type& levelName, const std::string& spawnPointName,
-	const bool shouldSetPlayerPosition)
-{
-	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
-
-	ASSERT(level != nullptr);
-
-	if (shouldSetPlayerPosition)
-	{
-		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
-
-		Player* player = m_entities.Get<Player>(m_playerEntityID);
-
-		GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
-		playerMovement->StopMoving();
-		playerMovement->SetDirection(spawnPointData.m_Orientation);
-		player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition *
-			static_cast<int>(level->GetTileWidth())));
-
-		player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
-			EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
-
-		m_cameraPosition = player->GetPosition();
-
-		m_worldBounds = level->GetBounds();
-	}
-}
-
-void Game::TransitionLevel()
-{
-	m_state = eGameState::FadingScreen;
-	m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
-}
-
-void Game::OnTransitionEnd()
-{
-	Player* player = m_entities.Get<Player>(m_playerEntityID);
-
-	if (m_lastEnteredPortal == nullptr)
-	{
-		RespawnPlayer(HASH(START_LEVEL), "player_spawn", true);
-		m_world.GetLevelAtPosition(player->GetPosition())->OnActivate();
-		return;
-	}
-
-
-	if (auto transition = m_world.EnterPortal(m_world.GetLevelAtPosition(player->GetPosition())->GetName(),
-		m_lastEnteredPortal->m_Name))
-	{
-		RespawnPlayer(transition->m_NewLevelName, transition->m_SpawnPointName, true);
-	}
-	else
-	{
-		std::cerr << "Game::OnTransitionEnd - Failed to transition to portal!\n";
-	}
-
-	m_lastEnteredPortal = nullptr;
 }
