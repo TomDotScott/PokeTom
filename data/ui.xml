@@ -34,4 +34,17 @@ So that I can see what dialogue will look like!!!
       <layer>background</layer>
     </Sprite>
   </Panel>
+
+  <Panel>
+    <name>BATTLE_HUD</name>
+    <position x="0" y="0" />
+    <size x="768" y="128" />
+    <Sprite>
+      <name>OPTIONS</name>
+      <position x="0" y="0" />
+      <scale x="3.2" y="3.2" />
+      <texture topLeftX="146" topLeftY="4" spriteWidth="120" spriteHeight="48">BATTLE_HUD</texture>
+      <layer>midground</layer>
+    </Sprite>
+  </Panel>
 </ui>

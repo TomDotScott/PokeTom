@@ -14,7 +14,9 @@ textures:
   - name: OVERWORLD_MONSTERS
     source: sprites/monsters/overworld.png
   - name: DIALOGUE_BOX
-    source: sprites/dialogue_box.png
+    source: sprites/ui/dialogue_box.png
+  - name: BATTLE_HUD
+    source: sprites/ui/battle_hud.png
 
 fonts:
   - name: DEFAULT

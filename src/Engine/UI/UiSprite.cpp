@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "../Asserts.h"
 #include "../Globals.h"
 #include "../TextureManager.h"
 #include "../CodeGen/Resources.hpp"
@@ -60,6 +61,19 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 		return false;
 	}
 
+	sf::IntRect spriteBounds = {{0, 0}, sf::Vector2<int>(m_sprite->getTexture().getSize())};
+	const auto topLeftX = textureNode->Attr("topLeftX", ~0U);
+	const auto topLeftY = textureNode->Attr("topLeftY", ~0U);
+	const auto width = textureNode->Attr("spriteWidth", ~0U);
+	const auto height = textureNode->Attr("spriteHeight", ~0U);
+	if (topLeftX ^ topLeftY ^ width ^ height)
+	{
+		spriteBounds.position = sf::Vector2i{ static_cast<int>(topLeftX), static_cast<int>(topLeftY) };
+		spriteBounds.size = sf::Vector2i{ static_cast<int>(width), static_cast<int>(height) };
+	}
+
+	m_sprite->setTextureRect(spriteBounds);
+
 	const auto* scaleNode = node.Child("scale");
 	if (scaleNode != nullptr)
 	{
@@ -94,6 +108,8 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 			return false;
 		}
 	}
+
+	ASSERT(m_sprite);
 
 	m_sprite->setPosition(m_position);
 	SetScale(m_scaleFactorFromXml);

@@ -143,9 +143,8 @@ bool UiManager::LoadElement(const XmlNode& node)
 
 	if (m_uiElements.contains(currentElement->GetName()))
 	{
-		delete currentElement;
-
 		printf(" UiManager: UI Element with name %s already exists!\n", currentElement->GetName().c_str());
+		delete currentElement;
 		return false;
 	}
 
