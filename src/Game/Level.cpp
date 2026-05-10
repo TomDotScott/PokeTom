@@ -209,7 +209,7 @@ const PortalTrigger* Level::GetPortalAtPosition(const sf::Vector2f worldSpacePos
 	return nullptr;
 }
 
-const SpawnPointData& Level::GetSpawnPointData(const std::string& name) const
+const SpawnPointData& Level::GetSpawnPointData(const hash_type& name) const
 {
 #if BUILD_DEBUG
 	// If the map isn't found, assume we are debug-teleporting to a place

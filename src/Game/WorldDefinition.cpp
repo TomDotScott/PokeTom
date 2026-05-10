@@ -23,7 +23,7 @@ WorldDefinition::WorldDefinition(sol::state& lua, const std::filesystem::path& w
 	WorldDefinition::LoadFromXML(*xml.Root().Child(std::string{ "WorldDefinition" }));
 }
 
-std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const hash_type& levelName, const std::string& portalName)
+std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const hash_type& levelName, const hash_type& portalName)
 {
 	const auto& currentLevelPortals = m_levelPortals.at(levelName);
 	if (!currentLevelPortals.contains(portalName))
@@ -63,8 +63,7 @@ void WorldDefinition::LoadLevelScripts(sol::state& lua)
 	}
 }
 
-const WorldDefinition::Portal& WorldDefinition::GetPortalData(const hash_type& levelName,
-                                                              const std::string& portalName)
+const WorldDefinition::Portal& WorldDefinition::GetPortalData(const hash_type& levelName, const hash_type& portalName)
 {
 	return m_levelPortals.at(levelName).at(portalName);
 }
@@ -323,30 +322,25 @@ bool WorldDefinition::LoadFromXML(const XmlNode& node)
 
 		for (const auto& portal : portals)
 		{
-			std::string targetLevel = portal->Attr("targetLevel", std::string{ "" });
+			const std::string targetLevel = portal->Attr("targetLevel", std::string{ "" });
+			if (targetLevel.empty())
+			{
+				std::cerr << "WorldDefinition::ParsePortal - Failed to parse targetLevel for Portal in level " <<
+					levelID <<
+						". Check the WorldDefinition XML and try again\n";
+				return false;
+			}
 
-			Portal p{
-				.m_Name = portal->Attr("id", std::string{ "" }),
-				.m_TargetLevel = targetLevel.empty() ? DEFAULT_HASH : HASH(targetLevel),
-				.m_TargetSpawnPoint = portal->Attr("targetSpawnPoint", std::string{ "" })
-			};
-
-			if (p.m_Name.empty())
+			const std::string portalID = portal->Attr("id", std::string{ "" });
+			if (portalID.empty())
 			{
 				std::cerr << "WorldDefinition::ParsePortal - Failed to parse id for Portal in level " << levelID <<
 					". Check the WorldDefinition XML and try again\n";
 				return false;
 			}
 
-			if (p.m_TargetLevel == DEFAULT_HASH)
-			{
-				std::cerr << "WorldDefinition::ParsePortal - Failed to parse targetLevel for Portal in level " <<
-					levelID <<
-					". Check the WorldDefinition XML and try again\n";
-				return false;
-			}
-
-			if (p.m_TargetSpawnPoint.empty())
+			const std::string targetID = portal->Attr("targetSpawnPoint", std::string{ "" });
+			if (targetID.empty())
 			{
 				std::cerr << "WorldDefinition::ParsePortal - Failed to parse targetSpawnPoint for Portal in level " <<
 					levelID
@@ -354,7 +348,15 @@ bool WorldDefinition::LoadFromXML(const XmlNode& node)
 				return false;
 			}
 
-			m_levelPortals[levelHash][p.m_Name] = p;
+			hash_type nameHash = HASH(portalID);
+
+			Portal p{
+				.m_Name = nameHash,
+				.m_TargetLevel = targetLevel.empty() ? DEFAULT_HASH : HASH(targetLevel),
+				.m_TargetSpawnPoint = HASH(targetID)
+			};
+
+			m_levelPortals[levelHash][nameHash] = p;
 		}
 	}
 

@@ -43,7 +43,7 @@ public:
 	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
 	sf::Vector2i GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const;
 
-	const SpawnPointData& GetSpawnPointData(const std::string& name) const;
+	const SpawnPointData& GetSpawnPointData(const hash_type& name) const;
 
 	const AdjacentLevels& GetAdjacentLevels() const;
 

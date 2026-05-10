@@ -23,20 +23,20 @@ public:
 	struct LevelTransition
 	{
 		hash_type m_NewLevelName;
-		std::string m_SpawnPointName;
+		hash_type m_SpawnPointName;
 	};
 
-	std::optional<LevelTransition> EnterPortal(const hash_type& levelName, const std::string& portalName);
+	std::optional<LevelTransition> EnterPortal(const hash_type& levelName, const hash_type& portalName);
 	void LoadLevelScripts(sol::state& lua);
 
 	struct Portal
 	{
-		std::string m_Name;
+		hash_type m_Name;
 		hash_type m_TargetLevel;
-		std::string m_TargetSpawnPoint;
+		hash_type m_TargetSpawnPoint;
 	};
 
-	const Portal& GetPortalData(const hash_type& levelName, const std::string& portalName);
+	const Portal& GetPortalData(const hash_type& levelName, const hash_type& portalName);
 
 	std::vector<std::shared_ptr<Level>> GetLevelsIntersectingRect(const sf::FloatRect& rect) const;
 
@@ -55,7 +55,7 @@ private:
 
 	// Key - LevelName
 	// Value - Map of Portal Names to Portal data
-	std::unordered_map<hash_type, std::unordered_map<std::string, Portal>> m_levelPortals;
+	std::unordered_map<hash_type, std::unordered_map<hash_type, Portal>> m_levelPortals;
 
 	sol::state* m_lua;
 

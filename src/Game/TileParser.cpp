@@ -31,7 +31,7 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 		}
 
 		const auto tileSheet = std::make_shared<TileSheet>(tsx, tileset.m_FirstGid);
-		data.m_TileSheets[tsx->GetTileSetInfo().m_Name] = tileSheet;
+		data.m_TileSheets[HASH(tsx->GetTileSetInfo().m_Name)] = tileSheet;
 	}
 
 	data.m_NumColumns = tmjParser->GetNumColumns();
@@ -75,8 +75,9 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 			orientation |= static_cast<uint32_t>(o);
 		}
 
+		auto nameHash = HASH(portal.m_Name);
 		PortalTrigger portalData{
-			.m_Name= portal.m_Name,
+			.m_Name= nameHash,
 			.m_AllowedOrientations= orientation,
 			.m_Size= {
 				static_cast<int>(portal.m_Width / data.m_TileWidth),
@@ -88,14 +89,15 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 			}
 		};
 
-		data.m_Portals[portal.m_Name] = portalData;
+		data.m_Portals[nameHash] = portalData;
 	}
 
 	const auto& spawnPoints = tmjParser->GetSpawnPoints();
 	for (const auto& [name, x, y, orientation] : spawnPoints)
 	{
+		auto hashName = HASH(name);
 		const SpawnPointData spawnPointData{
-			.m_Name= name,
+			.m_Name= hashName,
 			.m_Orientation= StringToOrientation(orientation),
 			.m_GridPosition= {
 				static_cast<int>(x / data.m_TileWidth),
@@ -103,7 +105,7 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 			},
 		};
 
-		data.m_SpawnPoints[name] = spawnPointData;
+		data.m_SpawnPoints[hashName] = spawnPointData;
 	}
 
 	data.m_LevelScript = tmjParser->GetLevelScriptFilepath();

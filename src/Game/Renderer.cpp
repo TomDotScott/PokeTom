@@ -6,7 +6,6 @@
 #include "../Engine/EntityRegistry.h"
 #include "../Engine/Globals.h"
 #include "../Engine/TextureManager.h"
-#include "../Engine/Animation/AnimationComponent.h"
 
 Renderer::Renderer() :
 	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
@@ -78,7 +77,7 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 		{
 			const std::vector<TileLayerData>& tileLayerData = renderData.m_TileLayerData;
 
-			const auto& layerData = std::find_if(renderData.m_TileLayerData.begin(), renderData.m_TileLayerData.end(), [&](const TileLayerData& a) {
+			const auto& layerData = std::ranges::find_if(renderData.m_TileLayerData, [&](const TileLayerData& a) {
 				return generateLayerName(levelName, a.m_Name) == layerName;
 				});
 
@@ -96,7 +95,7 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 		}
 	}
 
-	std::sort(m_layerBatchers.begin(), m_layerBatchers.end(), [](const LayerBatcher& a, const LayerBatcher& b) {
+	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b) {
 		return a.m_ZIndex < b.m_ZIndex;
 		});
 }

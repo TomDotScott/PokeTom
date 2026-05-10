@@ -21,7 +21,7 @@ struct PortalTrigger
 {
 	bool AllowsOrientation(eOrientation orientation) const;
 
-	std::string m_Name;
+	hash_type m_Name;
 
 	// The orientations the player can be in, in order to use the door
 	// a bitmask of the values in eOrientation
@@ -32,7 +32,7 @@ struct PortalTrigger
 
 struct SpawnPointData
 {
-	std::string m_Name;
+	hash_type m_Name;
 
 	// The orientation that the player spawns in when the level is transitioned to
 	// from a door
@@ -44,9 +44,9 @@ struct SpawnPointData
 struct MapData
 {
 	std::vector<TileLayerData> m_Layers;
-	std::unordered_map<std::string, PortalTrigger> m_Portals;
-	std::unordered_map<std::string, SpawnPointData> m_SpawnPoints;
-	std::unordered_map<std::string, std::shared_ptr<TileSheet>> m_TileSheets;
+	std::unordered_map<hash_type, PortalTrigger> m_Portals;
+	std::unordered_map<hash_type, SpawnPointData> m_SpawnPoints;
+	std::unordered_map<hash_type, std::shared_ptr<TileSheet>> m_TileSheets;
 	std::filesystem::path m_LevelScript;
 	uint32_t m_NumColumns;
 	uint32_t m_NumRows;
