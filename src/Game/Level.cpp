@@ -2,10 +2,10 @@
 
 #include "../Engine/Asserts.h"
 
-Level::Level(sol::state& lua, std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels) :
-	m_name(std::move(name)),
+Level::Level(sol::state& lua, const hash_type name, const std::shared_ptr<MapData>& mapData, const AdjacentLevels adjacentLevels) :
+	m_name(name),
 	m_mapData(mapData),
-	m_adjacentLevels(std::move(adjacentLevels)),
+	m_adjacentLevels(adjacentLevels),
 	m_hasLevelScript(false),
 	m_levelScriptLoaded(false),
 	m_entityZIndex(0),
@@ -91,7 +91,7 @@ bool Level::OnUpdate(float deltaTime)
 	return true;
 }
 
-const std::string& Level::GetName() const
+const hash_type& Level::GetName() const
 {
 	return m_name;
 }

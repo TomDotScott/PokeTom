@@ -51,7 +51,7 @@ private:
 	eAnimationName m_animationName;
 	AnimationPlayer m_player;
 
-	static std::string_view GetAnimationName(eAnimationName state);
+	static hash_type GetAnimationName(eAnimationName state);
 };
 
 #endif

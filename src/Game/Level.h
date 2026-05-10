@@ -10,13 +10,13 @@ class Level
 public:
 	struct AdjacentLevels
 	{
-		std::string m_North;
-		std::string m_South;
-		std::string m_East;
-		std::string m_West;
+		hash_type m_North;
+		hash_type m_South;
+		hash_type m_East;
+		hash_type m_West;
 	};
 
-	explicit Level(sol::state& lua, std::string name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
+	explicit Level(sol::state& lua, hash_type name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
 
 	// Update Level Lua script
 	bool OnUpdate(float deltaTime);
@@ -25,7 +25,7 @@ public:
 	bool OnActivate();
 	bool OnDeactivate();
 
-	const std::string& GetName() const;
+	const hash_type& GetName() const;
 
 	std::vector<TileRenderData> GetRenderData() const;
 	std::vector<TileLayerData> GetLayers() const;
@@ -58,7 +58,7 @@ public:
 	bool LoadLevelScript(sol::state& lua);
 
 private:
-	std::string m_name;
+	hash_type m_name;
 	std::shared_ptr<MapData> m_mapData;
 	AdjacentLevels m_adjacentLevels;
 

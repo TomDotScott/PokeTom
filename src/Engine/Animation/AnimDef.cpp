@@ -8,17 +8,17 @@
 #include "../CodeGen/Resources.hpp"
 #include "../Parsers/XML/XmlDocument.h"
 
-const Animation& AnimationDictionary::GetClip(const std::string& name) const
+const Animation& AnimationDictionary::GetClip(const hash_type& name) const
 {
 	return m_animationClips.at(name);
 }
 
-const std::string& AnimationDictionary::GetName() const
+const hash_type& AnimationDictionary::GetName() const
 {
 	return m_name;
 }
 
-bool AnimationDictionary::HasClip(const std::string& name) const
+bool AnimationDictionary::HasClip(const hash_type& name) const
 {
 	return m_animationClips.contains(name);
 }
@@ -47,11 +47,13 @@ AnimationDictionary::AnimationDictionary(std::filesystem::path filepath) :
 
 bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 {
-	m_name = node.Attr("name", std::string{ "" });
-	if (m_name.empty())
+	const std::string name = node.Attr("name", std::string{ "" });
+	if (name.empty())
 	{
 		return false;
 	}
+
+	m_name = HASH(name);
 
 	// Load the Texture so we can calculate the correct offsets for the animation frames
 	const auto imageTag = node.Child("Image");
@@ -109,7 +111,13 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 	{
 		Animation anim;
 
-		anim.m_Name = animation->Attr("name", std::string{ "" });
+		const std::string animName = animation->Attr("name", std::string{ "" });
+		if (animName.empty())
+		{
+			return false;
+		}
+
+		anim.m_Name = HASH(animName);
 		anim.m_IsLooping = animation->Attr("looping", false);
 
 		const auto frameNodes = animation->Children("Frame");
@@ -131,15 +139,13 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 
 		anim.m_Frames = frames;
 
-		const auto onAnimEnd = animation->Child("OnEnd");
-		if (onAnimEnd != nullptr)
-		{
-			anim.m_OnAnimEnd = onAnimEnd->Attr("animName", std::string{ "" });
-		}
+		anim.m_HasOnAnimEnd = false;
+		anim.m_OnAnimEnd = HASH("INVALID_ANIMATION_NAME");
 
-		if (anim.m_Name.empty())
+		if (const auto onAnimEnd = animation->Child("OnEnd"))
 		{
-			return false;
+			anim.m_HasOnAnimEnd = true;
+			anim.m_OnAnimEnd = HASH(onAnimEnd->Attr("animName", std::string{ "" }));
 		}
 
 		m_animationClips[anim.m_Name] = anim;

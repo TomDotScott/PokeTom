@@ -4,22 +4,23 @@
 #include <unordered_map>
 #include <SFML/Graphics/Texture.hpp>
 
+#include "Hash.h"
+
 class TextureManager
 {
 public:
 	static TextureManager& Get();
 
-	bool LoadTexture(std::string_view name, const std::filesystem::path& path);
-	bool LoadTexture(const std::string& name, const std::filesystem::path& path);
-	bool LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, sf::IntRect region);
-	bool LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, sf::IntRect region, uint32_t maskColour);
+	bool LoadTexture(hash_type name, const std::filesystem::path& path);
+	bool LoadTextureFromImage(hash_type name, const std::filesystem::path& path, sf::IntRect region);
+	bool LoadTextureFromImage(hash_type name, const std::filesystem::path& path, sf::IntRect region, uint32_t maskColour);
 
-	bool HasTextureLoaded(const std::string& name) const;
+	bool HasTextureLoaded(hash_type name) const;
 	bool HasTextureLoaded(const std::filesystem::path& path) const;
 
-	const std::string& GetTextureNameFromPath(const std::filesystem::path& path) const;
+	const hash_type& GetTextureNameFromPath(const std::filesystem::path& path) const;
 
-	const sf::Texture* GetTexture(const std::string& name) const;
+	const sf::Texture* GetTexture(hash_type name) const;
 
 	TextureManager(const TextureManager&) = delete;
 	TextureManager& operator=(const TextureManager&) = delete;
@@ -27,10 +28,13 @@ public:
 	TextureManager& operator=(TextureManager&&) = delete;
 
 private:
-	std::unordered_map<std::string, sf::Texture> m_textures;
-	std::unordered_map<std::string, std::string> m_registeredPaths;
+	// Key = Texture ID, Value = Texture
+	std::unordered_map<hash_type, sf::Texture> m_textures;
 
-	void RegisterPath(const std::filesystem::path& relativePath, const std::string& resourceName);
+	// Key = Texture Path, Value = Texture ID
+	std::unordered_map<std::string, hash_type > m_registeredPaths;
+
+	void RegisterPath(const std::filesystem::path& relativePath, hash_type resourceName);
 
 	std::shared_ptr<sf::Image> LoadImage(const std::filesystem::path& path);
 

@@ -2,8 +2,8 @@
 
 #include "../TextureManager.h"
 
-SpriteBatcher::SpriteBatcher(std::string masterTextureResourceName) :
-	m_masterTextureResourceName(std::move(masterTextureResourceName))
+SpriteBatcher::SpriteBatcher(const hash_type masterTextureResourceName) :
+	m_masterTextureResourceName(masterTextureResourceName)
 {
 }
 

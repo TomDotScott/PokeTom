@@ -7,16 +7,17 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <memory>
 #include <string>
+#include "../Hash.h"
 
 class SpriteBatcher final : public sf::Drawable
 {
 public:
 	SpriteBatcher() = default;
-	SpriteBatcher(std::string masterTextureResourceName);
+	SpriteBatcher(hash_type masterTextureResourceName);
 	void BatchSprites(const std::vector<sf::Sprite>& sprites);
 
 private:
-	std::string m_masterTextureResourceName;
+	hash_type m_masterTextureResourceName;
 	std::vector<sf::Vertex> m_vertices{};
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

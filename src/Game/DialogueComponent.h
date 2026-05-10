@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "../Engine/Hash.h"
 #include "../Engine/IUpdateable.h"
 
 class Entity;
@@ -10,7 +11,7 @@ class Entity;
 class DialogueComponent : public IUpdateable
 {
 public:
-	DialogueComponent(Entity* owner, std::string dialogueID, bool loop, float loopTimer);
+	DialogueComponent(Entity* owner, hash_type dialogueID, bool loop, float loopTimer);
 	void Update(float deltaTime) override;
 	void OnPlayerInteractPressed() override;
 
@@ -20,7 +21,7 @@ public:
 
 private:
 	Entity* m_owner;
-	std::string m_dialogueID;
+	hash_type m_dialogueID;
 	bool m_canSpeak;
 	bool m_loopDialogue;
 	float m_loopCountdown;

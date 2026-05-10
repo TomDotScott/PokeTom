@@ -43,7 +43,13 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 	// Load each layer
 	for (const auto& layer : tmjParser->GetLayers())
 	{
-		data.m_Layers.push_back({ layer.m_Name, layer.m_Data, layer.m_ZIndex, layer.m_IsPlayerLayer });
+		data.m_Layers.push_back({
+			.m_Name = HASH(layer.m_Name),
+			.m_LevelData = layer.m_Data,
+			.m_ZIndex = layer.m_ZIndex,
+			.m_IsPlayerLayer =
+			layer.m_IsPlayerLayer
+		});
 	}
 
 	const auto& doors = tmjParser->GetPortals();

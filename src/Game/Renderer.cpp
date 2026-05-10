@@ -46,15 +46,21 @@ void Renderer::SetCameraCentre(sf::Vector2f position, const sf::FloatRect worldB
 }
 
 
-void Renderer::BuildBatches(const std::unordered_map<std::string, LevelRenderData>& visibleLevelRenderData)
+void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>& visibleLevelRenderData)
 {
 	m_layerBatchers.clear();
 
+#if BUILD_DEBUG
 	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string {
 		return levelName + "#" + layerName;
 		};
+#else
+	const auto generateLayerName = [](const hash_type& levelName, const hash_type& layerName) -> hash_type {
+		return levelName ^ layerName;
+		};
+#endif
 
-	std::unordered_map<std::string, std::unordered_map<std::string, std::vector<sf::Sprite>>> buckets;
+	std::unordered_map<hash_type, std::unordered_map<hash_type, std::vector<sf::Sprite>>> buckets;
 	for (const auto& [levelName, renderData] : visibleLevelRenderData)
 	{
 		for (const auto& tile : renderData.m_TileRenderData)

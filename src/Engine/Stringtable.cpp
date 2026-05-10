@@ -18,7 +18,7 @@ StringTable* StringTable::Get()
 	return st.get();
 }
 
-bool StringTable::Exists(const std::string& group, const std::string& stringID) const
+bool StringTable::Exists(const hash_type& group, const hash_type& stringID) const
 {
 	if (!m_strings.contains(group))
 	{
@@ -28,15 +28,19 @@ bool StringTable::Exists(const std::string& group, const std::string& stringID) 
 	return m_strings.at(group).contains(stringID);
 }
 
-void StringTable::AddCustomString(const std::string& group, const std::string& stringID, const std::string& value)
+void StringTable::AddCustomString(const hash_type& group, const hash_type& stringID, const std::string& value)
 {
 	ASSERT(m_strings.contains(group));
+#if BUILD_DEBUG
 	ASSERT_MSG(!m_strings.at(group).contains(stringID), "String %s already exists in the stringtable group %s!", stringID.c_str(), group.c_str());
+#else
+	ASSERT_MSG(!m_strings.at(group).contains(stringID), "String with hash %u already exists in the stringtable!", stringID);
+#endif
 
 	m_strings[group][stringID] = value;
 }
 
-std::string StringTable::GetString(const std::string& stringID) const
+std::string StringTable::GetString(const hash_type& stringID) const
 {
 	// If the group is empty, find the first string that matches the ID
 	for (const auto& groupContents : m_strings | std::views::values)
@@ -47,11 +51,16 @@ std::string StringTable::GetString(const std::string& stringID) const
 		}
 	}
 
+#if BUILD_DEBUG
 	ASSERT_MSG(false, "String with ID: %s is not present anywhere in the stringtable!", stringID.c_str());
 	return "@NO_STRING@_" + stringID;
+#else
+	ASSERT(false);
+	return "@NO_STRING@_" + std::to_string(stringID);
+#endif
 }
 
-std::string StringTable::GetString(const std::string& group, const std::string& stringID) const
+std::string StringTable::GetString(const hash_type& group, const hash_type& stringID) const
 {
 #if BUILD_DEBUG
 	if (!Exists(group, stringID))
@@ -61,7 +70,7 @@ std::string StringTable::GetString(const std::string& group, const std::string& 
 	}
 #endif
 
-	ASSERT(!group.empty() && Exists(group, stringID));
+	ASSERT(Exists(group, stringID));
 
 	const std::string& s = m_strings.at(group).at(stringID);
 
@@ -84,7 +93,7 @@ std::string StringTable::GetString(const std::string& group, const std::string& 
 
 		std::string captured = match[1].str();
 
-		result += GetString(captured);
+		result += GetString(HASH(captured));
 
 		lastPos = match.position() + match.length();
 	}
@@ -109,8 +118,8 @@ bool StringTable::Load(const eLanguage language)
 
 	for (const auto& row : doc.Rows())
 	{
-		const std::string groupName = row.m_Fields.at("group");
-		std::string stringID = row.m_Fields.at("id");
+		hash_type groupName = HASH(row.m_Fields.at("group"));
+		hash_type stringID = HASH(row.m_Fields.at("id"));
 
 		m_strings[groupName][stringID] = row.m_Fields.at(languageCode);
 	}

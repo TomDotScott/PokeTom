@@ -6,11 +6,12 @@
 #include <vector>
 
 #include "../Engine/Orientation.h"
+#include "../Engine/Hash.h"
 #include "TileSheet.h"
 
 struct TileLayerData
 {
-	std::string m_Name;
+	hash_type m_Name;
 	std::vector<uint32_t> m_LevelData;
 	int m_ZIndex;
 	bool m_IsPlayerLayer;

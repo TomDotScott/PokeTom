@@ -14,7 +14,8 @@ constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
 
 WorldDefinition::WorldDefinition(sol::state& lua, const std::filesystem::path& worldDefinitionFilepath) :
-	m_lua(&lua)
+	m_lua(&lua),
+	m_lastTransitionedLevel(DEFAULT_HASH)
 {
 	XmlDocument xml;
 	xml.Load(worldDefinitionFilepath);
@@ -22,8 +23,7 @@ WorldDefinition::WorldDefinition(sol::state& lua, const std::filesystem::path& w
 	WorldDefinition::LoadFromXML(*xml.Root().Child(std::string{ "WorldDefinition" }));
 }
 
-std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(
-	const std::string& levelName, const std::string& portalName)
+std::optional<WorldDefinition::LevelTransition> WorldDefinition::EnterPortal(const hash_type& levelName, const std::string& portalName)
 {
 	const auto& currentLevelPortals = m_levelPortals.at(levelName);
 	if (!currentLevelPortals.contains(portalName))
@@ -63,7 +63,7 @@ void WorldDefinition::LoadLevelScripts(sol::state& lua)
 	}
 }
 
-const WorldDefinition::Portal& WorldDefinition::GetPortalData(const std::string& levelName,
+const WorldDefinition::Portal& WorldDefinition::GetPortalData(const hash_type& levelName,
                                                               const std::string& portalName)
 {
 	return m_levelPortals.at(levelName).at(portalName);
@@ -86,7 +86,7 @@ std::vector<std::shared_ptr<Level>> WorldDefinition::GetLevelsIntersectingRect(c
 	return intersectingLevels;
 }
 
-std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
+std::shared_ptr<Level> WorldDefinition::GetLevel(const hash_type& name) const
 {
 	if (!m_levels.contains(name))
 	{
@@ -98,9 +98,9 @@ std::shared_ptr<Level> WorldDefinition::GetLevel(const std::string& name) const
 
 std::shared_ptr<Level> WorldDefinition::LastTransitionedToLevel() const
 {
-	if (m_lastTransitionedLevel.empty())
+	if (m_lastTransitionedLevel == DEFAULT_HASH)
 	{
-		return GetLevel(START_LEVEL);
+		return GetLevel(HASH(START_LEVEL));
 	}
 
 	return GetLevel(m_lastTransitionedLevel);
@@ -119,7 +119,7 @@ std::shared_ptr<Level> WorldDefinition::GetLevelAtPosition(const sf::Vector2f& p
 	return nullptr;
 }
 
-const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const std::string& levelName) const
+const Level::AdjacentLevels& WorldDefinition::GetAdjacentLevels(const hash_type& levelName) const
 {
 	return GetLevel(levelName)->GetAdjacentLevels();
 }
@@ -152,7 +152,7 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, 
 void WorldDefinition::SortLevels()
 {
 	// If the provided starting level doesn't exist, pick the first parsed level as root
-	std::string root = OVERWORLD_ROOT_LEVEL;
+	hash_type root = HASH(OVERWORLD_ROOT_LEVEL);
 	if (!m_levels.contains(root))
 	{
 		root = m_levels.begin()->first;
@@ -161,15 +161,15 @@ void WorldDefinition::SortLevels()
 	}
 
 	// BFS to determine the offsets of each of the levels (in tiles)
-	std::unordered_map<std::string, sf::Vector2i> origins;
-	std::queue<std::string> levelQueue;
+	std::unordered_map<hash_type, sf::Vector2i> origins;
+	std::queue<hash_type> levelQueue;
 
 	origins[root] = { 0, 0 };
 	levelQueue.push(root);
 
 	while (!levelQueue.empty())
 	{
-		const std::string current = levelQueue.front();
+		const hash_type current = levelQueue.front();
 		levelQueue.pop();
 
 		const auto& currentLevel = m_levels.at(current);
@@ -178,14 +178,9 @@ void WorldDefinition::SortLevels()
 		const int curCols = static_cast<int>(currentLevel->GetNumColumns());
 		const int curRows = static_cast<int>(currentLevel->GetNumRows());
 
-		auto tryAssignNeighbor = [&](const std::string& neighbourName,
+		auto tryAssignNeighbor = [&](const hash_type& neighbourName,
 		                             const std::function<sf::Vector2i()>& computeOrigin)
 		{
-			if (neighbourName.empty())
-			{
-				return;
-			}
-
 			if (!m_levels.contains(neighbourName))
 			{
 				return;
@@ -275,7 +270,13 @@ bool WorldDefinition::LoadFromXML(const XmlNode& node)
 
 	for (const auto& level : levels)
 	{
-		const std::string levelName = level->Attr("id", std::string{ "" });
+		const std::string levelID = level->Attr("id", std::string{ "" });
+		if (levelID.empty())
+		{
+			return false;
+		}
+
+		const hash_type levelHash = HASH(levelID);
 
 		const std::filesystem::path tmjPath = level->Attr("tmj", std::string{ "" });
 		if (tmjPath.empty() || !exists(tmjPath))
@@ -296,24 +297,24 @@ bool WorldDefinition::LoadFromXML(const XmlNode& node)
 		Level::AdjacentLevels adjacentLevels{};
 		if (const std::string northLevel = level->Attr("north", std::string{ "" }); !northLevel.empty())
 		{
-			adjacentLevels.m_North = northLevel;
+			adjacentLevels.m_North = HASH(northLevel);
 		}
 		if (const std::string southLevel = level->Attr("south", std::string{ "" }); !southLevel.empty())
 		{
-			adjacentLevels.m_North = southLevel;
+			adjacentLevels.m_South = HASH(southLevel);
 		}
 		if (const std::string eastLevel = level->Attr("east", std::string{ "" }); !eastLevel.empty())
 		{
-			adjacentLevels.m_North = eastLevel;
+			adjacentLevels.m_East = HASH(eastLevel);
 		}
 		if (const std::string westLevel = level->Attr("west", std::string{ "" }); !westLevel.empty())
 		{
-			adjacentLevels.m_North = westLevel;
+			adjacentLevels.m_West = HASH(westLevel);
 		}
 
-		m_levels[levelName] = std::make_shared<Level>(
+		m_levels[levelHash] = std::make_shared<Level>(
 			*m_lua,
-			levelName,
+			levelHash,
 			tileMapData,
 			adjacentLevels
 		);
@@ -322,23 +323,25 @@ bool WorldDefinition::LoadFromXML(const XmlNode& node)
 
 		for (const auto& portal : portals)
 		{
+			std::string targetLevel = portal->Attr("targetLevel", std::string{ "" });
+
 			Portal p{
 				.m_Name = portal->Attr("id", std::string{ "" }),
-				.m_TargetLevel = portal->Attr("targetLevel", std::string{ "" }),
+				.m_TargetLevel = targetLevel.empty() ? DEFAULT_HASH : HASH(targetLevel),
 				.m_TargetSpawnPoint = portal->Attr("targetSpawnPoint", std::string{ "" })
 			};
 
 			if (p.m_Name.empty())
 			{
-				std::cerr << "WorldDefinition::ParsePortal - Failed to parse id for Portal in level " << levelName <<
+				std::cerr << "WorldDefinition::ParsePortal - Failed to parse id for Portal in level " << levelID <<
 					". Check the WorldDefinition XML and try again\n";
 				return false;
 			}
 
-			if (p.m_TargetLevel.empty())
+			if (p.m_TargetLevel == DEFAULT_HASH)
 			{
 				std::cerr << "WorldDefinition::ParsePortal - Failed to parse targetLevel for Portal in level " <<
-					levelName <<
+					levelID <<
 					". Check the WorldDefinition XML and try again\n";
 				return false;
 			}
@@ -346,12 +349,12 @@ bool WorldDefinition::LoadFromXML(const XmlNode& node)
 			if (p.m_TargetSpawnPoint.empty())
 			{
 				std::cerr << "WorldDefinition::ParsePortal - Failed to parse targetSpawnPoint for Portal in level " <<
-					levelName
+					levelID
 					<< ". Check the WorldDefinition XML and try again\n";
 				return false;
 			}
 
-			m_levelPortals[levelName][p.m_Name] = p;
+			m_levelPortals[levelHash][p.m_Name] = p;
 		}
 	}
 

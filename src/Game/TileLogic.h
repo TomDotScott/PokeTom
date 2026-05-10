@@ -15,11 +15,11 @@ public:
 		sf::Vector2f m_Position;
 		const TileSheet::TileDefinition* m_Definition;
 		const TileSheet* m_ParentSheet;
-		std::string m_LayerName;
+		hash_type m_LayerName;
 	};
 
 private:
-	std::unordered_map<std::string, int> m_zIndexes;
+	std::unordered_map<hash_type, int> m_zIndexes;
 	std::vector<TileLayerData> m_layers;
 	std::vector<TileInstance> m_tiles;
 };

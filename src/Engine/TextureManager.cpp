@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Image.hpp>
 
+#include "Asserts.h"
 #include "CodeGen/Resources.hpp"
 
 
@@ -36,7 +37,7 @@ std::shared_ptr<sf::Image> TextureManager::LoadImage(const std::filesystem::path
 	return std::make_shared<sf::Image>(image);
 }
 
-bool TextureManager::LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, const sf::IntRect region)
+bool TextureManager::LoadTextureFromImage(hash_type name, const std::filesystem::path& path, const sf::IntRect region)
 {
 	const std::shared_ptr<sf::Image> image = LoadImage(path);
 	if (image == nullptr)
@@ -49,7 +50,7 @@ bool TextureManager::LoadTextureFromImage(const std::string& name, const std::fi
 	return true;
 }
 
-bool TextureManager::LoadTextureFromImage(const std::string& name, const std::filesystem::path& path, const sf::IntRect region, const uint32_t maskColour)
+bool TextureManager::LoadTextureFromImage(hash_type name, const std::filesystem::path& path, const sf::IntRect region, const uint32_t maskColour)
 {
 	const std::shared_ptr<sf::Image> image = LoadImage(path);
 	if (image == nullptr)
@@ -64,17 +65,17 @@ bool TextureManager::LoadTextureFromImage(const std::string& name, const std::fi
 	return true;
 }
 
-bool TextureManager::HasTextureLoaded(const std::string& name) const
+bool TextureManager::HasTextureLoaded(hash_type name) const
 {
-	return m_textures.find(name) != m_textures.end();
+	return m_textures.contains(name);
 }
 
 bool TextureManager::HasTextureLoaded(const std::filesystem::path& path) const
 {
-	return m_registeredPaths.find(path.string()) != m_registeredPaths.end();
+	return m_registeredPaths.contains(path.string());
 }
 
-const std::string& TextureManager::GetTextureNameFromPath(const std::filesystem::path& path) const
+const hash_type& TextureManager::GetTextureNameFromPath(const std::filesystem::path& path) const
 {
 	if (!HasTextureLoaded(path))
 	{
@@ -84,16 +85,10 @@ const std::string& TextureManager::GetTextureNameFromPath(const std::filesystem:
 	return m_registeredPaths.at(path.string());
 }
 
-bool TextureManager::LoadTexture(const std::string_view name, const std::filesystem::path& path)
-{
-	return LoadTexture(std::string{ name }, path);
-}
-
-bool TextureManager::LoadTexture(const std::string& name, const std::filesystem::path& path)
+bool TextureManager::LoadTexture(hash_type name, const std::filesystem::path& path)
 {
 	if (m_textures.contains(name))
 	{
-		printf("A texture with the name: %s already exists!\n", name.c_str());
 		return true;
 	}
 
@@ -108,18 +103,13 @@ bool TextureManager::LoadTexture(const std::string& name, const std::filesystem:
 	return true;
 }
 
-const sf::Texture* TextureManager::GetTexture(const std::string& name) const
+const sf::Texture* TextureManager::GetTexture(hash_type name) const
 {
-	if (m_textures.find(name) == m_textures.end())
-	{
-		printf("Texture %s does not exist\n", name.c_str());
-		return nullptr;
-	}
-
+	ASSERT(m_textures.contains(name));
 	return &m_textures.at(name);
 }
 
-void TextureManager::RegisterPath(const std::filesystem::path& relativePath, const std::string& resourceName)
+void TextureManager::RegisterPath(const std::filesystem::path& relativePath, hash_type resourceName)
 {
 	const auto combinedPaths = (std::filesystem::current_path() / relativePath).lexically_normal();
 	m_registeredPaths[combinedPaths.string()] = resourceName;
@@ -129,7 +119,7 @@ TextureManager::TextureManager()
 {
 	for (const auto& [resourceID, resourcePath] : textures_resources)
 	{
-		if (!LoadTexture(resourceID, resourcePath))
+		if (!LoadTexture(static_cast<hash_type>(HASH(resourceID)), resourcePath))
 		{
 			std::cout << "TextureManager::TextureManager - Failed to load texture " << resourceID << " at path " << resourcePath << "\n";
 		}

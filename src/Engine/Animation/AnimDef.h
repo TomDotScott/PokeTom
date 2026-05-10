@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Texture.hpp>
 
 #include "../Factory.h"
+#include "../Hash.h"
 #include "../ISerialisable.h"
 
 struct AnimationFrame
@@ -20,10 +21,11 @@ struct AnimationFrame
 
 struct Animation
 {
-	std::string m_Name;
+	hash_type m_Name;
 	bool m_IsLooping;
 	std::vector<AnimationFrame> m_Frames;
-	std::string m_OnAnimEnd;
+	bool m_HasOnAnimEnd;
+	hash_type m_OnAnimEnd;
 };
 
 class AnimationDictionary : public Factory<AnimationDictionary>, public ISerialisable
@@ -31,28 +33,28 @@ class AnimationDictionary : public Factory<AnimationDictionary>, public ISeriali
 public:
 	friend class Factory<AnimationDictionary>;
 
-	const Animation& GetClip(const std::string& name) const;
+	const Animation& GetClip(const hash_type& name) const;
 
 	// TODO: Get rid of this - I think we need a wrapper for the map below...
 	AnimationDictionary() = default;
 
-	const std::string& GetName() const;
-	bool HasClip(const std::string& name) const;
+	const hash_type& GetName() const;
+	bool HasClip(const hash_type& name) const;
 
 protected:
 	bool Init() override;
 
 private:
-	std::string m_name;
+	hash_type m_name;
 	std::filesystem::path m_filepath;
 	sf::IntRect m_spriteSheetRect;
-	std::unordered_map<std::string, Animation> m_animationClips;
+	std::unordered_map<hash_type, Animation> m_animationClips;
 
 	AnimationDictionary(std::filesystem::path filepath);
 
 	bool LoadFromXML(const XmlNode& node) override;
 };
 
-static inline std::unordered_map<std::string, AnimationDictionary> ANIMATION_DICTIONARIES;
+static inline std::unordered_map<hash_type, AnimationDictionary> ANIMATION_DICTIONARIES;
 
 #endif

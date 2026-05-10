@@ -3,15 +3,20 @@
 
 AnimationPlayer::AnimationPlayer(const std::shared_ptr<AnimationDictionary>& dict) :
 	m_dictionary(dict),
-	m_currentAnimName("idle_down"),
+	m_currentAnimName(HASH("idle_down")),
 	m_frameIndex(0),
 	m_frameTime(0.f)
 {
 }
 
-void AnimationPlayer::PlayAnimation(const std::string_view& name, const bool forceRestart)
+bool AnimationPlayer::CanPlayAnimation(const hash_type& name) const
 {
-	if (!m_dictionary->HasClip(std::string{ name }))
+	return m_dictionary->HasClip(name);
+}
+
+void AnimationPlayer::PlayAnimation(const hash_type& name, const bool forceRestart)
+{
+	if (!m_dictionary->HasClip(name ))
 	{
 		return;
 	}
@@ -28,11 +33,6 @@ void AnimationPlayer::PlayAnimation(const std::string_view& name, const bool for
 
 void AnimationPlayer::Update(const float deltaTime)
 {
-	if (m_currentAnimName.empty())
-	{
-		return;
-	}
-
 	m_frameTime += deltaTime;
 
 	const Animation& clip = m_dictionary->GetClip(m_currentAnimName);
@@ -60,7 +60,7 @@ void AnimationPlayer::Update(const float deltaTime)
 			m_frameIndex = clip.m_Frames.size() - 1;
 		}
 
-		if (!clip.m_OnAnimEnd.empty())
+		if (clip.m_HasOnAnimEnd)
 		{
 			PlayAnimation(clip.m_OnAnimEnd, true);
 		}
@@ -73,7 +73,7 @@ const AnimationFrame& AnimationPlayer::GetCurrentFrame() const
 	return clip.m_Frames[m_frameIndex];
 }
 
-const std::string& AnimationPlayer::GetDictionarySpritesheetResourceName() const
+const hash_type& AnimationPlayer::GetDictionarySpritesheetResourceName() const
 {
 	return m_dictionary->GetName();
 }

@@ -1,6 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 #include <random>
+#include <span>
 #include <sstream>
 #include <SFML/System/Vector2.hpp>
 

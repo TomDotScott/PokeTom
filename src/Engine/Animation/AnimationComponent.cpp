@@ -30,45 +30,45 @@ const AnimationPlayer& EntityAnimationComponent::GetAnimator() const
 	return m_player;
 }
 
-std::string_view EntityAnimationComponent::GetAnimationName(const eAnimationName state)
+hash_type EntityAnimationComponent::GetAnimationName(const eAnimationName state)
 {
 	switch (state)
 	{
 	case IDLE_UP:
-		return "idle_up";
+		return HASH("idle_up");
 	case IDLE_DOWN:
-		return "idle_down";
+		return HASH("idle_down");
 	case IDLE_LEFT:
-		return "idle_left";
+		return HASH("idle_left");
 	case IDLE_RIGHT:
-		return "idle_right";
+		return HASH("idle_right");
 	case WALK_UP:
-		return "walk_up";
+		return HASH("walk_up");
 	case WALK_DOWN:
-		return "walk_down";
+		return HASH("walk_down");
 	case WALK_LEFT:
-		return "walk_left";
+		return HASH("walk_left");
 	case WALK_RIGHT:
-		return "walk_right";
+		return HASH("walk_right");
 	case RUN_UP:
-		return "run_up";
+		return HASH("run_up");
 	case RUN_DOWN:
-		return "run_down";
+		return HASH("run_down");
 	case RUN_LEFT:
-		return "run_left";
+		return HASH("run_left");
 	case RUN_RIGHT:
-		return "run_right";
+		return HASH("run_right");
 	case CYCLE_UP:
-		return "cycle_up";
+		return HASH("cycle_up");
 	case CYCLE_DOWN:
-		return "cycle_down";
+		return HASH("cycle_down");
 	case CYCLE_LEFT:
-		return "cycle_left";
+		return HASH("cycle_left");
 	case CYCLE_RIGHT:
-		return "cycle_right";
+		return HASH("cycle_right");
 	}
 
-	return "UNKNOWN";
+	return HASH("UNKNOWN");
 }
 
 EntityAnimationComponent::eAnimationName EntityAnimationComponent::GetWalkAnimation(const eOrientation orientation)

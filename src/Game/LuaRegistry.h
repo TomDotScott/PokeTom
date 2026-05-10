@@ -15,6 +15,7 @@ public:
 	LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities);
 
 private:
+	void RegisterUtilityAPI(sol::state& lua);
 	void RegisterEntityAPI(sol::state& lua, WorldDefinition& world, EntityRegistry& entities);
 	void RegisterDialogueAPI(sol::state& lua);
 	void RegisterDirections(sol::state& lua);

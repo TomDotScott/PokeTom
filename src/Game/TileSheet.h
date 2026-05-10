@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <unordered_map>
 
+#include "../Engine/Hash.h"
 #include "../Engine/Parsers/Tiled/TiledParsers.h"
 
 class TileSheet
@@ -29,13 +30,13 @@ public:
 		// ID from the TSX file
 		uint32_t m_LocalID;
 		uint32_t m_Flags;
-		std::string m_ParentTileSetName;
+		hash_type m_ParentTileSetName;
 	};
 
 	explicit TileSheet(const std::shared_ptr<TSX>& tsxParser, uint32_t firstGID);
 	const TileDefinition* GetTileDefinition(uint32_t localID) const;
 
-	const std::string& GetSpriteSheetResourceName() const;
+	hash_type GetSpriteSheetResourceName() const;
 	uint32_t GetNumColumns() const;
 	uint32_t GetFirstGID() const;
 
@@ -43,7 +44,7 @@ public:
 	uint32_t GetTileHeight() const;
 
 private:
-	std::string m_name;
+	hash_type m_name;
 	uint32_t m_firstGID;
 
 	uint32_t m_numColumns;
@@ -51,7 +52,7 @@ private:
 	uint32_t m_tileWidth;
 	uint32_t m_tileHeight;
 
-	std::string m_spriteSheetResourceName;
+	hash_type m_spriteSheetResourceName;
 	std::unordered_map<uint32_t, TileDefinition> m_tiles;
 
 	bool LoadTexture(const std::filesystem::path& filepath);

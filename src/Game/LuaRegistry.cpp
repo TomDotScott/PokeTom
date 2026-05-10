@@ -1,5 +1,4 @@
 #if !BUILD_MASTER
-#pragma optimize("", off)
 #endif
 #include "LuaRegistry.h"
 
@@ -37,10 +36,22 @@ struct SimpleVector {
 LuaRegistry::LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
 {
 	SimpleVector::RegisterLua(lua);
+	RegisterUtilityAPI(lua);
 	RegisterEntityAPI(lua, world, entities);
 	RegisterDialogueAPI(lua);
 	RegisterDirections(lua);
 	RegisterAnimationNames(lua);
+}
+
+void LuaRegistry::RegisterUtilityAPI(sol::state& lua)
+{
+	LUA_API_BEGIN(Utility, lua)
+		LUA_FUNC(Utility, Hash,
+			[&](std::string_view string)
+			{
+				return HASH(string);
+			})
+	LUA_API_END()
 }
 
 void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, EntityRegistry& entities)
@@ -230,10 +241,8 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, AddDialogueComponent,
-			[&entities](const uint32_t id, const std::string& dialogueID, bool shouldLoop, float loopTimer)
+			[&entities](const uint32_t id, hash_type dialogueID, bool shouldLoop, float loopTimer)
 			{
-				printf("Adding Dialogue Component! %d %s %s %f\n", id, dialogueID.c_str(), shouldLoop ? "true" : "false", loopTimer);
-
 				Entity* e = entities.Get<Entity>(id);
 
 				if (e == nullptr)

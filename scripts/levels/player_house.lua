@@ -5,7 +5,7 @@ function init(self)
     self.onActivate = function(self)
         self.tvEntityID = Entity.Create(SimpleVector.new(2, 2), SimpleVector.new(2, 1))
         Entity.SetActive(self.tvEntityID, true)
-        Entity.AddDialogueComponent(self.tvEntityID, "GENERIC_TV_1", true, 10)
+        Entity.AddDialogueComponent(self.tvEntityID, Utility.Hash("GENERIC_TV_1"), true, 10)
 
         self.mumEntityID = Entity.Create(SimpleVector.new(8, 7), SimpleVector.new(1, 1))
         Entity.SetActive(self.mumEntityID, true)
@@ -19,7 +19,7 @@ function init(self)
 
         --TODO: Think of a way to make the TVs select random dialogue from the list
         --TODO: I think we need the concept of a "one-shot" dialogue line instead of going through the XML
-        Entity.AddDialogueComponent(self.mumEntityID, "PLAYER_MUM", true, 0)
+        Entity.AddDialogueComponent(self.mumEntityID, Utility.Hash("PLAYER_MUM"), true, 0)
     end
 
     self.onDeactivate = function(self)

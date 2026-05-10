@@ -24,10 +24,10 @@ Game::Game(sol::state& lua) :
 	m_cameraRebuildThreshold()
 {
 	// TODO: Make this a variable, loaded at startup
-	StringTable::Get()->AddCustomString("CHARACTER", "PLAYER_NAME", "Tom");
-	StringTable::Get()->AddCustomString("CHARACTER", "RIVAL_NAME", "Ben");
+	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
+	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
 
-	const std::shared_ptr<Level> startLevel = m_world.GetLevel(START_LEVEL);
+	const std::shared_ptr<Level> startLevel = m_world.GetLevel(HASH(START_LEVEL));
 	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
 
 	m_playerEntityID = m_entities.Create<Player>().GetID();
@@ -134,7 +134,7 @@ void Game::UpdateChunks()
 	{
 		const auto visibleLevels = m_world.GetLevelsIntersectingRect(camRect);
 
-		std::unordered_map<std::string, LevelRenderData> renderData;
+		std::unordered_map<hash_type, LevelRenderData> renderData;
 
 		sf::FloatRect mergedBounds;
 		bool first = true;
@@ -247,7 +247,7 @@ void Game::UpdateScreenFade(const float deltaTime)
 	}
 }
 
-void Game::RespawnPlayer(const std::string& levelName, const std::string& spawnPointName,
+void Game::RespawnPlayer(const hash_type& levelName, const std::string& spawnPointName,
 	const bool shouldSetPlayerPosition)
 {
 	const std::shared_ptr<Level> level = m_world.GetLevel(levelName);
@@ -287,7 +287,7 @@ void Game::OnTransitionEnd()
 
 	if (m_lastEnteredPortal == nullptr)
 	{
-		RespawnPlayer(START_LEVEL, "player_spawn", true);
+		RespawnPlayer(HASH(START_LEVEL), "player_spawn", true);
 		m_world.GetLevelAtPosition(player->GetPosition())->OnActivate();
 		return;
 	}

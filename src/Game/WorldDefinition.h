@@ -22,44 +22,44 @@ public:
 
 	struct LevelTransition
 	{
-		std::string m_NewLevelName;
+		hash_type m_NewLevelName;
 		std::string m_SpawnPointName;
 	};
 
-	std::optional<LevelTransition> EnterPortal(const std::string& levelName, const std::string& portalName);
+	std::optional<LevelTransition> EnterPortal(const hash_type& levelName, const std::string& portalName);
 	void LoadLevelScripts(sol::state& lua);
 
 	struct Portal
 	{
 		std::string m_Name;
-		std::string m_TargetLevel;
+		hash_type m_TargetLevel;
 		std::string m_TargetSpawnPoint;
 	};
 
-	const Portal& GetPortalData(const std::string& levelName, const std::string& portalName);
+	const Portal& GetPortalData(const hash_type& levelName, const std::string& portalName);
 
 	std::vector<std::shared_ptr<Level>> GetLevelsIntersectingRect(const sf::FloatRect& rect) const;
 
-	std::shared_ptr<Level> GetLevel(const std::string& name) const;
+	std::shared_ptr<Level> GetLevel(const hash_type& name) const;
 	std::shared_ptr<Level> LastTransitionedToLevel() const;
 	std::shared_ptr<Level> GetLevelAtPosition(const sf::Vector2f& position) const;
 
-	const Level::AdjacentLevels& GetAdjacentLevels(const std::string& levelName) const;
+	const Level::AdjacentLevels& GetAdjacentLevels(const hash_type& levelName) const;
 
 	bool CanMoveTo(const Entity* entity, EntityRegistry& entities, eDirection direction) const;
 	void SortLevels();
 	bool LoadFromXML(const XmlNode& node) override;
 
 private:
-	std::unordered_map<std::string, std::shared_ptr<Level>> m_levels;
+	std::unordered_map<hash_type, std::shared_ptr<Level>> m_levels;
 
 	// Key - LevelName
 	// Value - Map of Portal Names to Portal data
-	std::unordered_map<std::string, std::unordered_map<std::string, Portal>> m_levelPortals;
+	std::unordered_map<hash_type, std::unordered_map<std::string, Portal>> m_levelPortals;
 
 	sol::state* m_lua;
 
-	std::string m_lastTransitionedLevel;
+	hash_type m_lastTransitionedLevel;
 };
 
 #endif // WORLDDEFINITION_H

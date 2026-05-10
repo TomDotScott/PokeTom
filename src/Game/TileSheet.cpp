@@ -8,7 +8,7 @@
 
 
 TileSheet::TileSheet(const std::shared_ptr<TSX>& tsxParser, const uint32_t firstGID) :
-	m_name(tsxParser->GetTileSetInfo().m_Name),
+	m_name(HASH(tsxParser->GetTileSetInfo().m_Name)),
 	m_firstGID(firstGID),
 	m_numColumns(tsxParser->GetTileSetInfo().m_NumColumns),
 	m_tileWidth(tsxParser->GetTileSetInfo().m_TileWidth),
@@ -34,7 +34,7 @@ const TileSheet::TileDefinition* TileSheet::GetTileDefinition(const uint32_t loc
 	return &it->second;
 }
 
-const std::string& TileSheet::GetSpriteSheetResourceName() const
+hash_type TileSheet::GetSpriteSheetResourceName() const
 {
 	return m_spriteSheetResourceName;
 }

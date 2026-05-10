@@ -17,21 +17,21 @@ DialogueManager* DialogueManager::Get()
 	return manager.get();
 }
 
-std::string DialogueManager::GetLine(const std::string& dialogueID, const uint8_t index) const
+std::string DialogueManager::GetLine(hash_type dialogueID, const uint8_t index) const
 {
 	ASSERT(m_dialogueTree.contains(dialogueID));
 
-	const std::vector<std::string>& dialogue = m_dialogueTree.at(dialogueID);
+	const std::vector<hash_type>& dialogue = m_dialogueTree.at(dialogueID);
 
 	ASSERT_MSG(index < dialogue.size());
 
-	const std::string& stringID = dialogue[index];
-	ASSERT(STRINGTABLE->Exists("DIALOGUE", stringID));
+	hash_type stringID = dialogue[index];
+	ASSERT(STRINGTABLE->Exists(HASH("DIALOGUE"), stringID));
 
-	return STRINGTABLE->GetString("DIALOGUE", stringID);
+	return STRINGTABLE->GetString(HASH("DIALOGUE"), stringID);
 }
 
-size_t DialogueManager::GetNumLines(const std::string& dialogueID) const
+size_t DialogueManager::GetNumLines(hash_type dialogueID) const
 {
 	ASSERT(m_dialogueTree.contains(dialogueID));
 	return m_dialogueTree.at(dialogueID).size();
@@ -56,7 +56,7 @@ bool DialogueManager::Init()
 
 bool DialogueManager::LoadFromXML(const XmlNode& node)
 {
-	std::unordered_map<std::string, std::vector<std::string>> dialogueTree;
+	std::unordered_map<hash_type, std::vector<hash_type>> dialogueTree;
 
 	const std::vector<const XmlNode*> dialogueOptions = node.Children("Dialogue");
 	for (const auto& dialogue : dialogueOptions)
@@ -70,14 +70,15 @@ bool DialogueManager::LoadFromXML(const XmlNode& node)
 			return false;
 		}
 
-		if (dialogueTree.contains(treeName))
+		hash_type treeID = HASH(treeName);
+		if (dialogueTree.contains(treeID))
 		{
 			ASSERT_MSG(false, "DialogueManager::LoadFromXML - Dialogue tree %s already registered!\n", treeName.c_str());
 			return false;
 		}
 
 		const auto lines = dialogue->Children();
-		std::vector<std::string> treeLines;
+		std::vector<hash_type> treeLines;
 		treeLines.reserve(lines.size());
 
 		for (const auto& line : lines)
@@ -91,10 +92,10 @@ bool DialogueManager::LoadFromXML(const XmlNode& node)
 				return false;
 			}
 
-			treeLines.emplace_back(id);
+			treeLines.emplace_back(HASH(id));
 		}
 
-		dialogueTree[treeName] = treeLines;
+		dialogueTree[treeID] = treeLines;
 	}
 
 	m_dialogueTree = std::move(dialogueTree);

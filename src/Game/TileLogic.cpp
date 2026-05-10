@@ -15,9 +15,9 @@ TileLogic::TileLogic(const std::shared_ptr<MapData>& mapData)
 
 		for (size_t i = 0; i < layer.m_LevelData.size(); ++i)
 		{
-			uint32_t globalID = layer.m_LevelData[i];
+			const uint32_t globalID = layer.m_LevelData[i];
 
-			for (const auto& [name, sheet] : mapData->m_TileSheets)
+			for (const auto& sheet : mapData->m_TileSheets | std::views::values)
 			{
 				const int localID = static_cast<int>(globalID) - static_cast<int>(sheet->GetFirstGID()) + 1;
 				if (localID < 0)

@@ -111,13 +111,13 @@ bool UiSprite::LoadTexture(const std::string& resourceID)
 	}
 
 	// Load the texture into the TextureManager
-	if (!TEXTUREMANAGER.LoadTexture(resourceID, texturePath))
+	if (!TEXTUREMANAGER.LoadTexture(HASH(resourceID), texturePath))
 	{
 		std::cerr << "Failed to load texture: " << texturePath << "\n";
 		return false;
 	}
 
-	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(resourceID);
+	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(HASH(resourceID));
 
 	const sf::Vector2f scaleFactor = {
 		static_cast<float>(texture->getSize().x) / TRANSFORMED_SCALAR(texture->getSize().x),

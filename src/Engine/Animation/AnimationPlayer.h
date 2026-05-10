@@ -9,15 +9,17 @@ class AnimationPlayer
 public:
 	AnimationPlayer(const std::shared_ptr<AnimationDictionary>& dict);
 
-	void PlayAnimation(const std::string_view& name, bool forceRestart);
+	bool CanPlayAnimation(const hash_type& name) const;
+	void PlayAnimation(const hash_type& name, bool forceRestart);
+
 	void Update(float deltaTime);
+
 	const AnimationFrame& GetCurrentFrame() const;
-	const std::string& GetDictionarySpritesheetResourceName() const;
-	bool CanPlayAnimation(const std::string_view& name) const;
+	const hash_type& GetDictionarySpritesheetResourceName() const;
 
 private:
 	std::shared_ptr<AnimationDictionary> m_dictionary;
-	std::string m_currentAnimName;
+	hash_type m_currentAnimName;
 	size_t m_frameIndex;
 	float m_frameTime;
 };

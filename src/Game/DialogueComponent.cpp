@@ -4,9 +4,9 @@
 #include "DialogueManager.h"
 #include "../Engine/Entity.h"
 
-DialogueComponent::DialogueComponent(Entity* owner, std::string dialogueID, const bool loop, const float loopTimer) :
+DialogueComponent::DialogueComponent(Entity* owner, const hash_type dialogueID, const bool loop, const float loopTimer) :
 	m_owner(owner),
-	m_dialogueID(std::move(dialogueID)),
+	m_dialogueID(dialogueID),
 	m_canSpeak(true),
 	m_loopDialogue(loop),
 	m_loopCountdown(0.f),

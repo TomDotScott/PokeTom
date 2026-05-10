@@ -12,7 +12,7 @@ function init(self)
     ---@param yPosition number
     ---@param gridMovementConfig { isCycling: boolean } | nil
     ---@param animationConfig { dictName: string, initialAnim: number } | nil
-    ---@param dialogueConfig { dialogueID: string, isLooping: boolean | nil, cooldownTime: number | nil } | nil
+    ---@param dialogueConfig { dialogueID: number, isLooping: boolean | nil, cooldownTime: number | nil } | nil
     ---@param scriptName string | nil
     self.spawnNPC = function(self, xPosition, yPosition, gridMovementConfig, animationConfig, dialogueConfig, scriptName)
         print("spawnNPC")
@@ -70,7 +70,7 @@ function init(self)
                 initialAnim=AnimationName.IDLE_DOWN
             },
             {
-                dialogueID="STARTER_TOWN_MAN_1",
+                dialogueID=Utility.Hash("STARTER_TOWN_MAN_1"),
                 isLooping=false
             },
             "test_script_1"
@@ -82,7 +82,7 @@ function init(self)
             nil,
             nil,
             {
-                dialogueID="STARTER_TOWN_PROFESSOR_SIGN",
+                dialogueID=Utility.Hash("STARTER_TOWN_PROFESSOR_SIGN"),
                 cooldownTime=0,
                 isLooping=true
             },
@@ -100,7 +100,7 @@ function init(self)
                 initialAnim=AnimationName.CYCLE_DOWN
             },
             {
-                dialogueID="STARTER_TOWN_CYCLIST",
+                dialogueID=Utility.Hash("STARTER_TOWN_CYCLIST"),
                 cooldownTime=5,
                 isLooping=true
             },
@@ -119,7 +119,7 @@ function init(self)
                 initialAnim=AnimationName.IDLE_DOWN
             },
             {
-                dialogueID="STARTER_TOWN_FISHERMAN",
+                dialogueID=Utility.Hash("STARTER_TOWN_FISHERMAN"),
                 cooldownTime=10,
                 isLooping=true
             },

@@ -17,15 +17,15 @@ struct TileRenderData
 	uint32_t m_GlobalID;
 	uint32_t m_LocalID;
 	sf::Vector2f m_Position;
-	std::string m_SpriteSheetResourceName;
+	hash_type m_SpriteSheetResourceName;
 	sf::IntRect m_TextureRect;
-	std::string m_LayerName;
+	hash_type m_LayerName;
 	int m_ZIndex;
 };
 
 struct LayerBatcher
 {
-	std::string m_LayerName;
+	hash_type m_LayerName;
 	int m_ZIndex;
 	SpriteBatcher m_SpriteBatcher;
 };
@@ -44,7 +44,7 @@ public:
 	// Sets the position of the camera view, clamped to the width and height of the map
 	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
-	void BuildBatches(const std::unordered_map<std::string, LevelRenderData>& visibleLevelRenderData);
+	void BuildBatches(const std::unordered_map<hash_type, LevelRenderData>& visibleLevelRenderData);
 	void Render(sf::RenderWindow& window, const EntityRegistry& entities, int entityZIndex) const;
 
 private:

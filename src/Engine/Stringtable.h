@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "Factory.h"
+#include "Hash.h"
 #include "Language.h"
 
 class StringTable : Factory<StringTable>
@@ -12,15 +13,15 @@ public:
 	static StringTable* Get();
 	friend class Factory;
 
-	bool Exists(const std::string& group, const std::string& stringID) const;
+	bool Exists(const hash_type& group, const hash_type& stringID) const;
 
-	void AddCustomString(const std::string& group, const std::string& stringID, const std::string& value);
-	std::string GetString(const std::string& stringID) const;
-	std::string GetString(const std::string& group, const std::string& stringID) const;
+	void AddCustomString(const hash_type& group, const hash_type& stringID, const std::string& value);
+	std::string GetString(const hash_type& stringID) const;
+	std::string GetString(const hash_type& group, const hash_type& stringID) const;
 
 private:
 	// KEY - group, VALUE - { KEY - ID, VALUE - String }
-	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> m_strings;
+	std::unordered_map<hash_type, std::unordered_map<hash_type, std::string>> m_strings;
 
 	StringTable();
 	bool Init() override;
