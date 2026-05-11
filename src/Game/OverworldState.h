@@ -6,7 +6,7 @@
 class OverworldState : public IGameState
 {
 public:
-	OverworldState(GameContext& ctx);
+	OverworldState(GameContext& ctx, hash_type overworldLevel, std::optional<sf::Vector2f> playerPosition);
 
 	void OnEnter() override;
 	void OnExit() override;
@@ -33,6 +33,7 @@ private:
 	void CheckForPortals(Entity* player, const Level* currentLevel);
 	void CheckForTallGrass(Entity* player, const Level* currentLevel);
 	void OnLevelEntered();
-	void RespawnPlayer(const hash_type& levelName, const hash_type& spawnPointName, bool shouldSetPlayerPosition);
+	void RespawnPlayerAtPortal(const hash_type& levelName, const hash_type& spawnPointName);
+	void RespawnPlayerInWorld(const hash_type& levelName, const sf::Vector2f& position);
 };
 #endif // OVERWORLDSTATE_H

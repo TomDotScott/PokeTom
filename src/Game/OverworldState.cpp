@@ -8,7 +8,8 @@
 #include "../Engine/Maths.h"
 #include "../Engine/Animation/AnimationComponent.h"
 
-OverworldState::OverworldState(GameContext& ctx) :
+OverworldState::OverworldState(GameContext& ctx, hash_type overworldLevel,
+                               const std::optional<sf::Vector2f> playerPosition) :
 	m_ctx(ctx),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
@@ -17,10 +18,28 @@ OverworldState::OverworldState(GameContext& ctx) :
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_rng(0, 100)
 {
-	const std::shared_ptr<Level> startLevel = m_ctx.m_World.GetLevel(HASH(START_LEVEL));
+	const std::shared_ptr<Level> startLevel = m_ctx.m_World.GetLevel(overworldLevel);
 	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
 
-	OnLevelEntered();
+	if (playerPosition == std::nullopt)
+	{
+		if (m_lastEnteredPortalID == std::nullopt)
+		{
+			auto* player = ctx.m_Entities.Get<Entity>(ctx.m_PlayerEntityID);
+			ASSERT(player);
+
+			RespawnPlayerAtPortal(HASH(START_LEVEL), HASH("player_spawn"));
+			m_ctx.m_World.GetLevelAtPosition(player->GetPosition())->OnActivate();
+		}
+		else
+		{
+			OnLevelEntered();
+		}
+	}
+	else
+	{
+		RespawnPlayerInWorld(overworldLevel, playerPosition.value());
+	}
 
 	m_onScreenFadedEventID = game_events::OnScreenFaded.On([this]() { OnLevelEntered(); });
 }
@@ -35,6 +54,12 @@ void OverworldState::OnEnter()
 void OverworldState::OnExit()
 {
 	game_events::OnScreenFaded.Off(m_onScreenFadedEventID);
+
+	Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
+	const sf::Vector2f& playerPosition = player->GetPosition();
+
+	const std::shared_ptr<Level> level = m_ctx.m_World.GetLevelAtPosition(playerPosition);
+	level->OnDeactivate();
 }
 
 void OverworldState::Update(const float deltaTime)
@@ -133,9 +158,12 @@ void OverworldState::UpdateChunks()
 void OverworldState::Render(sf::RenderWindow& window) const
 {
 	const Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
+	const std::shared_ptr<Level> level = m_ctx.m_World.GetLevelAtPosition(player->GetPosition());
 
-	m_ctx.m_Renderer.Render(window, m_ctx.m_Entities,
-	                        m_ctx.m_World.GetLevelAtPosition(player->GetPosition())->GetEntityZIndex());
+	ASSERT(player);
+	ASSERT(level);
+
+	m_ctx.m_Renderer.Render(window, m_ctx.m_Entities, level->GetEntityZIndex());
 }
 
 void OverworldState::CheckForPortals(Entity* player, const Level* currentLevel)
@@ -169,6 +197,8 @@ void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel
 		if (m_rng.Next() < 25)
 		{
 			game_events::OnBattleStart.Fire({
+				.m_LevelHash = currentLevel->GetName(),
+				.m_PlayerPosition = player->GetPosition(),
 				.m_PlayerEntityID = m_ctx.m_PlayerEntityID,
 				.m_OpponentEntityID = ~0U
 			});
@@ -178,19 +208,17 @@ void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel
 
 void OverworldState::OnLevelEntered()
 {
-	Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
-
 	if (m_lastEnteredPortalID == std::nullopt)
 	{
-		RespawnPlayer(HASH(START_LEVEL), HASH("player_spawn"), true);
-		m_ctx.m_World.GetLevelAtPosition(player->GetPosition())->OnActivate();
 		return;
 	}
+
+	Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
 
 	if (const auto transition = m_ctx.m_World.EnterPortal(
 		m_ctx.m_World.GetLevelAtPosition(player->GetPosition())->GetName(), m_lastEnteredPortalID.value()))
 	{
-		RespawnPlayer(transition->m_NewLevelName, transition->m_SpawnPointName, true);
+		RespawnPlayerAtPortal(transition->m_NewLevelName, transition->m_SpawnPointName);
 	}
 	else
 	{
@@ -200,34 +228,58 @@ void OverworldState::OnLevelEntered()
 	m_lastEnteredPortalID = std::nullopt;
 }
 
-void OverworldState::RespawnPlayer(const hash_type& levelName,
-                                   const hash_type& spawnPointName,
-                                   const bool shouldSetPlayerPosition
-)
+void OverworldState::RespawnPlayerAtPortal(const hash_type& levelName, const hash_type& spawnPointName)
 {
 	const std::shared_ptr<Level> level = m_ctx.m_World.GetLevel(levelName);
-
 	ASSERT(level != nullptr);
 
-	if (shouldSetPlayerPosition)
-	{
-		const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
+	const SpawnPointData& spawnPointData = level->GetSpawnPointData(spawnPointName);
 
-		Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
+	Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
 
-		GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
-		playerMovement->StopMoving();
-		playerMovement->SetDirection(spawnPointData.m_Orientation);
-		player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition *
-			static_cast<int>(level->GetTileWidth())));
+	GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
+	playerMovement->StopMoving();
+	playerMovement->SetDirection(spawnPointData.m_Orientation);
+	player->SetPosition(static_cast<sf::Vector2f>(level->GetWorldOrigin() + spawnPointData.m_GridPosition *
+		static_cast<int>(level->GetTileWidth())));
 
-		player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
-			EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
+	player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
+		EntityAnimationComponent::GetIdleAnimation(spawnPointData.m_Orientation), true);
 
-		m_cameraPosition = player->GetPosition();
+	m_cameraPosition = player->GetPosition();
 
-		m_worldBounds = level->GetBounds();
-	}
+	m_worldBounds = level->GetBounds();
+
+
+	UpdateChunks();
+	UpdateCamera(0.f);
+}
+
+void OverworldState::RespawnPlayerInWorld(const hash_type& levelName, const sf::Vector2f& position)
+{
+	const std::shared_ptr<Level> level = m_ctx.m_World.GetLevel(levelName);
+	ASSERT(level != nullptr);
+
+	Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
+
+	GridMovementComponent* playerMovement = player->GetComponent<GridMovementComponent>();
+	playerMovement->StopMoving();
+
+	player->GetComponent<EntityAnimationComponent>()->PlayAnimation(
+		EntityAnimationComponent::GetIdleAnimation(playerMovement->GetCurrentOrientation()), true);
+
+	const sf::Vector2f tileSize{
+		static_cast<float>(level->GetTileWidth()),
+		static_cast<float>(level->GetTileHeight())
+	};
+
+	// Round the position to the nearest grid position
+	player->SetPosition(static_cast<sf::Vector2f>(static_cast<sf::Vector2i>(position.componentWiseDiv(tileSize))).componentWiseMul(tileSize));
+
+	level->OnActivate();
+
+	m_cameraPosition = player->GetPosition();
+	m_worldBounds = level->GetBounds();
 
 	UpdateChunks();
 	UpdateCamera(0.f);

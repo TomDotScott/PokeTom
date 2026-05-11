@@ -1,7 +1,7 @@
 #ifndef BATTLESTATE_H
 #define BATTLESTATE_H
 
-#include "BattleContext.h"
+#include "BattleBeginContext.h"
 #include "GameContext.h"
 #include "../Engine/IGameState.h"
 #include "../Engine/Input/InputMapper.h"
@@ -10,7 +10,7 @@
 class BattleState : public IGameState
 {
 public:
-	BattleState(GameContext& gameContext, const BattleContext& battleContext);
+	BattleState(GameContext& gameContext, const BattleBeginContext& battleContext);
 
 	void OnEnter() override;
 	void OnExit() override;
@@ -19,7 +19,7 @@ public:
 
 private:
 	GameContext& m_gameContext;
-	BattleContext m_battleContext;
+	BattleBeginContext m_battleContext;
 
 	enum eInputs : uint8_t
 	{

@@ -61,7 +61,7 @@ Game::Game(sol::state& lua) :
 
 	m_context.m_World.LoadLevelScripts(lua);
 
-	m_currentState = std::make_unique<OverworldState>(m_context);
+	m_currentState = std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt);
 
 
 	game_events::OnScreenFadeTriggered.On([this]()
@@ -69,14 +69,14 @@ Game::Game(sol::state& lua) :
 		m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
 	});
 
-	game_events::OnBattleStart.On([this](BattleContext battleContext)
+	game_events::OnBattleStart.On([this](const BattleBeginContext& battleContext)
 	{
 		RequestTransition(std::make_unique<BattleState>(m_context, battleContext));
 	});
 
-	game_events::OnBattleEnd.On([this]()
+	game_events::OnBattleEnd.On([this](const BattleEndContext& ctx)
 	{
-		RequestTransition(std::make_unique<OverworldState>(m_context));
+		RequestTransition(std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition));
 	});
 }
 

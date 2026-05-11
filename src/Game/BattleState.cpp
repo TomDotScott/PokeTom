@@ -4,7 +4,7 @@
 #include "GameEvents.h"
 
 
-BattleState::BattleState(GameContext& gameContext, const BattleContext& battleContext):
+BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext):
 	m_gameContext(gameContext),
 	m_battleContext(battleContext)
 {
@@ -32,7 +32,10 @@ void BattleState::Update(float deltaTime)
 
 	if (m_inputMapper.IsButtonPressed(SELECT_MOVE))
 	{
-		game_events::OnBattleEnd.Fire();
+		game_events::OnBattleEnd.Fire({
+			.m_LevelHash = m_battleContext.m_LevelHash,
+			.m_PlayerPosition = m_battleContext.m_PlayerPosition,
+		});
 	}
 }
 

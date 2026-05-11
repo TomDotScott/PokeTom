@@ -1,6 +1,6 @@
 #ifndef GAMEEVENTS_H
 #define GAMEEVENTS_H
-#include "BattleContext.h"
+#include "BattleBeginContext.h"
 #include "../Engine/Event.h"
 
 namespace game_events
@@ -8,8 +8,8 @@ namespace game_events
 	inline Event OnScreenFadeTriggered = Event();
 	inline Event OnScreenFaded = Event();
 
-	inline Event<BattleContext> OnBattleStart = Event<BattleContext>();
-	inline Event OnBattleEnd = Event(/*TODO: Pass through any items, money and stat changes here?*/);
+	inline Event<BattleBeginContext> OnBattleStart = Event<BattleBeginContext>();
+	inline Event<BattleEndContext> OnBattleEnd = Event<BattleEndContext>();
 }
 
 #endif // GAMEEVENTS_H
