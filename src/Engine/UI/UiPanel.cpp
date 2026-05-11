@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "UiManager.h"
+#include "../Asserts.h"
 
 UiPanel::UiPanel() :
 	UiElement(eType::Panel)
@@ -79,7 +80,9 @@ bool UiPanel::LoadFromXML(const XmlNode& node)
 		UiSprite* newSprite = dynamic_cast<UiSprite*>(m_children.emplace_back(std::make_unique<UiSprite>(this)).get());
 		if (!newSprite->LoadFromXML(*c))
 		{
-			std::cerr << "UiPanel: Error loading sprite in panel " << GetName() << "\n";
+#if BUILD_DEBUG
+			ASSERT_MSG(false, "UiPanel: Error loading sprite in panel %s", GetName().c_str());
+#endif
 			return false;
 		}
 

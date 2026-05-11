@@ -17,6 +17,8 @@ textures:
     source: sprites/ui/dialogue_box.png
   - name: BATTLE_HUD
     source: sprites/ui/battle_hud.png
+  - name: BATTLE_BACKGROUNDS
+    source: sprites/ui/battle_backgrounds.png
 
 fonts:
   - name: DEFAULT

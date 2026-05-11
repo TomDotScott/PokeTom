@@ -19,7 +19,7 @@
       <string>This is a very long and
 --hopefully--multi-line string
 So that I can see what dialogue will look like!!!
-</string>
+      </string>
       <alignment>left</alignment>
       <colour>000000FF</colour>
       <position x="145" y="45" />
@@ -40,11 +40,44 @@ So that I can see what dialogue will look like!!!
     <position x="0" y="0" />
     <size x="768" y="128" />
     <Sprite>
-      <name>OPTIONS</name>
+      <!--TODO: Figure out a nice way to swap these out at runtime for the different biomes-->
+      <name>BACKGROUND</name>
       <position x="0" y="0" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="146" topLeftY="4" spriteWidth="120" spriteHeight="48">BATTLE_HUD</texture>
+      <texture topLeftX="249" topLeftY="6" spriteWidth="240" spriteHeight="112">BATTLE_BACKGROUNDS</texture>
+      <layer>background</layer>
+    </Sprite>
+
+    <Sprite>
+      <name>TEXT_BOX</name>
+      <position x="0" y="358" />
+      <scale x="3.2" y="3.2" />
+      <texture topLeftX="297" topLeftY="56" spriteWidth="240" spriteHeight="48">BATTLE_HUD</texture>
       <layer>midground</layer>
+    </Sprite>
+
+    <Sprite>
+      <name>OPTIONS</name>
+      <position x="384" y="358" />
+      <scale x="3.2" y="3.2" />
+      <texture topLeftX="146" topLeftY="4" spriteWidth="120" spriteHeight="48">BATTLE_HUD</texture>
+      <layer>foreground</layer>
+    </Sprite>
+
+    <Sprite>
+      <name>OPPONENT_HP</name>
+      <position x="32" y="32" />
+      <scale x="3.2" y="3.2" />
+      <texture topLeftX="3" topLeftY="3" spriteWidth="100" spriteHeight="29">BATTLE_HUD</texture>
+      <layer>foreground</layer>
+    </Sprite>
+
+    <Sprite>
+      <name>PLAYER_HP</name>
+      <position x="414" y="227" />
+      <scale x="3.2" y="3.2" />
+      <texture topLeftX="3" topLeftY="44" spriteWidth="104" spriteHeight="37">BATTLE_HUD</texture>
+      <layer>foreground</layer>
     </Sprite>
   </Panel>
 </ui>
