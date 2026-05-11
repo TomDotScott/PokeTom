@@ -1,5 +1,7 @@
 #ifndef OVERWORLDSTATE_H
 #define OVERWORLDSTATE_H
+#include <unordered_set>
+
 #include "GameContext.h"
 #include "../Engine/IGameState.h"
 
@@ -20,6 +22,8 @@ private:
 	float m_cameraRebuildThreshold;
 
 	std::optional<hash_type> m_lastEnteredPortalID;
+
+	std::unordered_set<hash_type> m_activeLevelIDs;
 
 	sf::Vector2f m_cameraPosition;
 	sf::Vector2f m_cameraVelocity;

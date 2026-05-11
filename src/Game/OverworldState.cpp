@@ -8,8 +8,11 @@
 #include "../Engine/Maths.h"
 #include "../Engine/Animation/AnimationComponent.h"
 
-OverworldState::OverworldState(GameContext& ctx, hash_type overworldLevel,
-                               const std::optional<sf::Vector2f> playerPosition) :
+OverworldState::OverworldState(
+	GameContext& ctx,
+	hash_type overworldLevel,
+	const std::optional<sf::Vector2f> playerPosition
+) :
 	m_ctx(ctx),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
 	m_lastCameraRect({ 0.f, 0.f }, { 0.f, 0.f }),
@@ -55,11 +58,12 @@ void OverworldState::OnExit()
 {
 	game_events::OnScreenFaded.Off(m_onScreenFadedEventID);
 
-	Entity* player = m_ctx.m_Entities.Get<Entity>(m_ctx.m_PlayerEntityID);
-	const sf::Vector2f& playerPosition = player->GetPosition();
+	for (const hash_type& hash : m_activeLevelIDs)
+	{
+		m_ctx.m_World.GetLevel(hash)->OnDeactivate();
+	}
 
-	const std::shared_ptr<Level> level = m_ctx.m_World.GetLevelAtPosition(playerPosition);
-	level->OnDeactivate();
+	m_activeLevelIDs.clear();
 }
 
 void OverworldState::Update(const float deltaTime)
@@ -103,6 +107,32 @@ void OverworldState::UpdateChunks()
 		m_cameraRebuildThreshold * m_cameraRebuildThreshold)
 	{
 		const auto visibleLevels = m_ctx.m_World.GetLevelsIntersectingRect(camRect);
+
+		// TODO: This all really needs to be multi-threaded - it eats up so much CPU time building the render data and executing the Lua
+		// Deactivate any levels that are no longer visible
+		std::unordered_set<hash_type> newActiveLevels;
+		for (const auto& level : visibleLevels)
+		{
+			newActiveLevels.insert(level->GetName());
+		}
+
+		for (const auto& hash : m_activeLevelIDs)
+		{
+			if (!newActiveLevels.contains(hash))
+			{
+				m_ctx.m_World.GetLevel(hash)->OnDeactivate();
+			}
+		}
+
+		for (const auto& level : visibleLevels)
+		{
+			if (!m_activeLevelIDs.contains(level->GetName()))
+			{
+				level->OnActivate();
+			}
+		}
+
+		m_activeLevelIDs = newActiveLevels;
 
 		std::unordered_map<hash_type, LevelRenderData> renderData;
 

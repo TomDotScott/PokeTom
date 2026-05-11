@@ -2,13 +2,18 @@
 
 #include "../Engine/Asserts.h"
 
-Level::Level(sol::state& lua, const hash_type name, const std::shared_ptr<MapData>& mapData,
-             const AdjacentLevels adjacentLevels) :
+Level::Level(
+	sol::state& lua,
+	const hash_type name,
+	const std::shared_ptr<MapData>& mapData,
+	const AdjacentLevels& adjacentLevels
+) :
 	m_name(name),
 	m_mapData(mapData),
 	m_adjacentLevels(adjacentLevels),
 	m_hasLevelScript(false),
 	m_levelScriptLoaded(false),
+	m_active(false),
 	m_entityZIndex(0),
 	m_worldTileOrigin(0, 0),
 	m_tileLogic(m_mapData)
@@ -27,6 +32,11 @@ Level::Level(sol::state& lua, const hash_type name, const std::shared_ptr<MapDat
 
 bool Level::OnActivate()
 {
+	if (m_active)
+	{
+		return true;
+	}
+
 	if (m_hasLevelScript)
 	{
 		if (!m_onActivate.valid())
@@ -48,6 +58,11 @@ bool Level::OnActivate()
 
 bool Level::OnDeactivate()
 {
+	if (!m_active)
+	{
+		return true;
+	}
+
 	if (m_hasLevelScript)
 	{
 		if (!m_onDeactivate.valid())

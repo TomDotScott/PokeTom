@@ -16,7 +16,7 @@ public:
 		hash_type m_West;
 	};
 
-	explicit Level(sol::state& lua, hash_type name, const std::shared_ptr<MapData>& mapData, AdjacentLevels adjacentLevels);
+	explicit Level(sol::state& lua, hash_type name, const std::shared_ptr<MapData>& mapData, const AdjacentLevels& adjacentLevels);
 
 	// Update Level Lua script
 	bool OnUpdate(float deltaTime);
