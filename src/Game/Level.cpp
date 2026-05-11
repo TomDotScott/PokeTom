@@ -176,9 +176,27 @@ const SpawnPointData& Level::GetSpawnPointData(const hash_type& name) const
 {
 #if BUILD_DEBUG
 	// If the map isn't found, assume we are debug-teleporting to a place
+	// Either teleport the player to the first valid spawnpoint or to the centre
+	// of the map
 	if (!m_mapData->m_SpawnPoints.contains(name))
 	{
-		return m_mapData->m_SpawnPoints.begin()->second;
+		if (m_mapData->m_SpawnPoints.empty())
+		{
+			static SpawnPointData spd {
+				name,
+				eOrientation::Up,
+				sf::Vector2i{
+					static_cast<int>(m_mapData->m_NumColumns / 2),
+					static_cast<int>(m_mapData->m_NumRows / 2)
+				}
+			};
+
+			return spd;
+		}
+		else
+		{
+			return m_mapData->m_SpawnPoints.begin()->second;
+		}
 	}
 #endif
 	return m_mapData->m_SpawnPoints.at(name);
