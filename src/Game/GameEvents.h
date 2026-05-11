@@ -1,6 +1,6 @@
 #ifndef GAMEEVENTS_H
 #define GAMEEVENTS_H
-#include "BattleBeginContext.h"
+#include "BattleContext.h"
 #include "../Engine/Event.h"
 
 namespace game_events

@@ -182,6 +182,11 @@ bool GridMovementComponent::WasMoving() const
 	return m_wasMoving;
 }
 
+bool GridMovementComponent::JustCompletedMovement() const
+{
+	return m_wasMoving && !m_isMoving;
+}
+
 void GridMovementComponent::StopMoving()
 {
 	m_isMoving = false;

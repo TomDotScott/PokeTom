@@ -191,6 +191,12 @@ void OverworldState::CheckForPortals(Entity* player, const Level* currentLevel)
 
 void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel)
 {
+	const GridMovementComponent* mvmt = player->GetComponent<GridMovementComponent>();
+	if (mvmt == nullptr || !mvmt->JustCompletedMovement())
+	{
+		return;
+	}
+
 	if (currentLevel->GetTileAtPosition(player->GetPosition(), TileSheet::TileDefinition::IsGrass))
 	{
 		// TODO: Have custom odds per level

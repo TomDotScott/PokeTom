@@ -48,6 +48,9 @@ public:
 	// Updates one frame behind IsMoving()
 	bool WasMoving() const;
 
+	// Returns true for the frame the movement is completed
+	bool JustCompletedMovement() const;
+
 	void StopMoving();
 
 	void SetSprinting(bool isSprinting);

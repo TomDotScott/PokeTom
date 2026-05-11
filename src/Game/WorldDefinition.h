@@ -11,7 +11,7 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/ISerialisable.h"
 
-static constexpr const char* START_LEVEL = "starter_town";
+static constexpr const char* START_LEVEL = "player_bedroom";
 
 class EntityRegistry;
 

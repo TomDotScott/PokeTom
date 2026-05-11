@@ -1,7 +1,7 @@
 #ifndef BATTLESTATE_H
 #define BATTLESTATE_H
 
-#include "BattleBeginContext.h"
+#include "BattleContext.h"
 #include "GameContext.h"
 #include "../Engine/IGameState.h"
 #include "../Engine/Input/InputMapper.h"
