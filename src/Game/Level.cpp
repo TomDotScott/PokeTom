@@ -6,14 +6,15 @@ Level::Level(
 	sol::state& lua,
 	const hash_type name,
 	const std::shared_ptr<MapData>& mapData,
-	const AdjacentLevels& adjacentLevels
+	AdjacentLevels adjacentLevels
 ) :
 	m_name(name),
 	m_mapData(mapData),
-	m_adjacentLevels(adjacentLevels),
+	m_adjacentLevels(std::move(adjacentLevels)),
 	m_hasLevelScript(false),
 	m_levelScriptLoaded(false),
 	m_active(false),
+	m_renderDataIsDirty(true),
 	m_entityZIndex(0),
 	m_worldTileOrigin(0, 0),
 	m_tileLogic(m_mapData)
@@ -112,9 +113,15 @@ const hash_type& Level::GetName() const
 	return m_name;
 }
 
-std::vector<TileRenderData> Level::GetRenderData() const
+const std::vector<TileRenderData>& Level::GetRenderData() const
 {
-	return m_tileLogic.BuildRenderData(m_worldTileOrigin);
+	if (m_renderDataIsDirty)
+	{
+		m_cachedRenderData = m_tileLogic.BuildRenderData(m_worldTileOrigin);
+		m_renderDataIsDirty = false;
+	}
+
+	return m_cachedRenderData;
 }
 
 std::vector<TileLayerData> Level::GetLayers() const
@@ -197,7 +204,7 @@ const SpawnPointData& Level::GetSpawnPointData(const hash_type& name) const
 	{
 		if (m_mapData->m_SpawnPoints.empty())
 		{
-			static SpawnPointData spd {
+			static SpawnPointData spd{
 				name,
 				eOrientation::Up,
 				sf::Vector2i{
@@ -225,6 +232,7 @@ const Level::AdjacentLevels& Level::GetAdjacentLevels() const
 void Level::SetWorldOrigin(const sf::Vector2i& tileOrigin)
 {
 	m_worldTileOrigin = tileOrigin;
+	m_renderDataIsDirty = true;
 }
 
 sf::FloatRect Level::GetBounds() const
@@ -307,7 +315,8 @@ sf::Vector2i Level::GetGridPositionFromWorldPosition(const sf::Vector2f& worldSp
 	return { gx, gy };
 }
 
-const TileSheet::TileDefinition* Level::GetTileAtPosition(const sf::Vector2f& worldSpacePosition, const unsigned tileFlags) const
+const TileSheet::TileDefinition* Level::GetTileAtPosition(const sf::Vector2f& worldSpacePosition,
+                                                          const unsigned tileFlags) const
 {
 	const sf::Vector2i gridPos = GetGridPositionFromWorldPosition(worldSpacePosition);
 	const uint32_t index = gridPos.y * GetNumColumns() + gridPos.x;

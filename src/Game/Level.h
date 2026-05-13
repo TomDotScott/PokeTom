@@ -16,7 +16,8 @@ public:
 		hash_type m_West;
 	};
 
-	explicit Level(sol::state& lua, hash_type name, const std::shared_ptr<MapData>& mapData, const AdjacentLevels& adjacentLevels);
+	explicit Level(sol::state& lua, hash_type name, const std::shared_ptr<MapData>& mapData,
+	               AdjacentLevels adjacentLevels);
 
 	// Update Level Lua script
 	bool OnUpdate(float deltaTime);
@@ -27,7 +28,7 @@ public:
 
 	const hash_type& GetName() const;
 
-	std::vector<TileRenderData> GetRenderData() const;
+	const std::vector<TileRenderData>& GetRenderData() const;
 	std::vector<TileLayerData> GetLayers() const;
 
 	uint32_t GetNumColumns() const;
@@ -74,6 +75,9 @@ private:
 	sol::function m_onUpdate;
 	sol::function m_onActivate;
 	sol::function m_onDeactivate;
+
+	mutable bool m_renderDataIsDirty;
+	mutable std::vector<TileRenderData> m_cachedRenderData;
 
 	int m_entityZIndex;
 
