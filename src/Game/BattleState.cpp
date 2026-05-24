@@ -4,10 +4,11 @@
 #include "GameEvents.h"
 #include "../Engine/Animation/AnimationComponent.h"
 
+constexpr static auto HUD_PANEL_NAME = "BATTLE_HUD_PANEL";
 
-BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext):
+BattleState::BattleState(GameContext& gameContext, BattleBeginContext battleContext):
 	m_gameContext(gameContext),
-	m_battleContext(battleContext)
+	m_battleContext(std::move(battleContext))
 {
 	m_inputMapper.Map(SELECT_MOVE, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::Enter),
 	                  static_cast<int>(sf::Keyboard::Key::Space));
@@ -43,14 +44,14 @@ void BattleState::OnEnter()
 {
 	printf("Entered a battle!\n");
 
-	UIMANAGER.GetUiElement("BATTLE_HUD_PANEL")->OnActivate();
+	UIMANAGER.GetElement(HUD_PANEL_NAME)->OnActivate();
 	DialogueBox::SetVisible(false);
 }
 
 void BattleState::OnExit()
 {
 	printf("Battle finished!\n");
-	UIMANAGER.GetUiElement("BATTLE_HUD_PANEL")->OnDeactivate();
+	UIMANAGER.GetElement(HUD_PANEL_NAME)->OnDeactivate();
 
 	m_gameContext.m_Entities.Destroy(m_playerMonsterEntityID);
 	m_gameContext.m_Entities.Destroy(m_opponentMonsterEntityID);

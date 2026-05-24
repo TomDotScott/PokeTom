@@ -33,7 +33,7 @@ private:
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)
 	{
-		if (auto* debugUi = UIMANAGER.GetUiText("DEBUG_TEXT"))
+		if (auto* debugUi = UIMANAGER.GetElement<UiText>("DEBUG_TEXT"))
 		{
 			debugUi->SetElementPosition(position);
 			debugUi->SetTextSize(size);

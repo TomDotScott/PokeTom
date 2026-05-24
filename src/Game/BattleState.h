@@ -10,7 +10,7 @@
 class BattleState : public IGameState
 {
 public:
-	BattleState(GameContext& gameContext, const BattleBeginContext& battleContext);
+	BattleState(GameContext& gameContext, BattleBeginContext battleContext);
 
 	void OnEnter() override;
 	void OnExit() override;

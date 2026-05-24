@@ -5,9 +5,13 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "UiElement.h"
+
 #include "UiButton.h"
 #include "UiPanel.h"
+#include "UiSprite.h"
 #include "UiText.h"
+
 #include "../Input/InputMapper.h"
 
 class UiManager : public ISerialisable
@@ -25,11 +29,22 @@ public:
 
 	const sf::Font* GetFont(const std::string& name) const;
 
-	UiElement* GetUiElement(const std::string& name) const;
-	UiButton* GetUiButton(const std::string& name) const;
-	UiPanel* GetUiPanel(const std::string& name) const;
-	UiText* GetUiText(const std::string& name) const;
-	UiSprite* GetUiSprite(const std::string& name) const;
+	UiElement* GetElement(const std::string& name) const
+	{
+		if (!m_uiElements.contains(name))
+		{
+			return nullptr;
+		}
+
+		return m_uiElements.at(name);
+	}
+
+	template<typename T>
+	T* GetElement(const std::string& name) const
+		requires (std::is_base_of_v<UiElement, T>)
+	{
+		return dynamic_cast<T*>(GetElement(name));
+	}
 
 #if !BUILD_MASTER
 	void DrawDebugText(sf::RenderWindow& window) const;

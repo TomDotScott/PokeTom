@@ -8,11 +8,16 @@
 
 class DialogueBox
 {
+	constexpr static auto DIALOGUE_PANEL_NAME = "DIALOGUE_PANEL";
+
 public:
-	template<typename... Args>
+	template <typename... Args>
 	static void SetText(const char* fmt, Args... args)
 	{
-		auto* text = dynamic_cast<UiText*>(UIMANAGER.GetUiPanel("DIALOGUE_PANEL")->GetChild("DIALOGUE_TEXT"));
+		auto* dialoguePanel = UIMANAGER.GetElement<UiPanel>(DIALOGUE_PANEL_NAME);
+		ASSERT(dialoguePanel != nullptr);
+
+		auto* text = dynamic_cast<UiText*>(dialoguePanel->GetChild("DIALOGUE_TEXT"));
 		ASSERT(text != nullptr);
 
 		text->SetText(fmt, args...);

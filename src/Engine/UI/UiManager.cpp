@@ -19,41 +19,10 @@
 #define UIMANAGER_DEBUG_SPEW 0
 #define RENDER_PANEL_DEBUG 0
 
-UiElement* UiManager::GetUiElement(const std::string& name) const
-{
-	if (!m_uiElements.contains(name))
-	{
-		return nullptr;
-	}
-
-	return m_uiElements.at(name);
-}
-
-UiButton* UiManager::GetUiButton(const std::string& name) const
-{
-	return dynamic_cast<UiButton*>(GetUiElement(name));
-}
-
-UiPanel* UiManager::GetUiPanel(const std::string& name) const
-{
-	return dynamic_cast<UiPanel*>(GetUiElement(name));
-}
-
-UiText* UiManager::GetUiText(const std::string& name) const
-{
-	return dynamic_cast<UiText*>(GetUiElement(name));
-}
-
-UiSprite* UiManager::GetUiSprite(const std::string& name) const
-{
-	return dynamic_cast<UiSprite*>(GetUiElement(name));
-}
-
-
 #if !BUILD_MASTER
 void UiManager::DrawDebugText(sf::RenderWindow& window) const
 {
-	for (const auto& text : GetUiText("DEBUG_TEXT")->GetDrawablesList())
+	for (const auto& text : GetElement("DEBUG_TEXT")->GetDrawablesList())
 	{
 		window.draw(*text);
 	}
