@@ -142,10 +142,11 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 		anim.m_HasOnAnimEnd = false;
 		anim.m_OnAnimEnd = HASH("INVALID_ANIMATION_NAME");
 
-		if (const auto onAnimEnd = animation->Child("OnEnd"))
+		const std::string onAnimEnd = animation->Attr("onEnd", std::string{ "" });
+		if (!onAnimEnd.empty())
 		{
 			anim.m_HasOnAnimEnd = true;
-			anim.m_OnAnimEnd = HASH(onAnimEnd->Attr("animName", std::string{ "" }));
+			anim.m_OnAnimEnd = HASH(onAnimEnd);
 		}
 
 		m_animationClips[anim.m_Name] = anim;
