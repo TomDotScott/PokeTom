@@ -120,6 +120,12 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 		anim.m_Name = HASH(animName);
 		anim.m_IsLooping = animation->Attr("looping", false);
 
+		const std::string anchor = animation->Attr("anchor", std::string{ "" });
+		if (!anchor.empty())
+		{
+			anim.m_SpriteAnchor = static_cast<Animation::eSpriteAnchor>(animation->Attr("anchor", 0));
+		}
+
 		const auto frameNodes = animation->Children("Frame");
 		std::vector<AnimationFrame> frames;
 		frames.reserve(frameNodes.size());

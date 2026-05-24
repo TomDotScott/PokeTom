@@ -21,11 +21,27 @@ struct AnimationFrame
 
 struct Animation
 {
+	enum eSpriteAnchor
+	{
+		TOP_LEFT = 1 << 0,
+		TOP_MIDDLE = 1 << 1,
+		TOP_RIGHT = 1 << 2,
+
+		MIDDLE_LEFT = 1 << 3,
+		MIDDLE_MIDDLE = 1 << 4,
+		MIDDLE_RIGHT = 1 << 5,
+
+		BOTTOM_LEFT = 1 << 6,
+		BOTTOM_MIDDLE = 1 << 7,
+		BOTTOM_RIGHT = 1 << 8,
+	};
+
 	hash_type m_Name;
 	bool m_IsLooping;
 	std::vector<AnimationFrame> m_Frames;
 	bool m_HasOnAnimEnd;
 	hash_type m_OnAnimEnd;
+	eSpriteAnchor m_SpriteAnchor = MIDDLE_MIDDLE;
 };
 
 class AnimationDictionary : public Factory<AnimationDictionary>, public ISerialisable

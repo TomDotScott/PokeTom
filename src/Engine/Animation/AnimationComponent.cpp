@@ -66,6 +66,10 @@ hash_type EntityAnimationComponent::GetAnimationName(const eAnimationName state)
 		return HASH("cycle_left");
 	case CYCLE_RIGHT:
 		return HASH("cycle_right");
+	case BATTLE_BACK:
+		return HASH("battle_back");
+	case BATTLE_FRONT:
+		return HASH("battle_front");
 	}
 
 	return HASH("UNKNOWN");

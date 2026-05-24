@@ -73,6 +73,11 @@ const AnimationFrame& AnimationPlayer::GetCurrentFrame() const
 	return clip.m_Frames[m_frameIndex];
 }
 
+const Animation& AnimationPlayer::GetCurrentClip() const
+{
+	return m_dictionary->GetClip(m_currentAnimName);
+}
+
 const hash_type& AnimationPlayer::GetDictionarySpritesheetResourceName() const
 {
 	return m_dictionary->GetName();

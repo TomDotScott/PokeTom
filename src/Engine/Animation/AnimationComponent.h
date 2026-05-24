@@ -12,25 +12,28 @@ class EntityAnimationComponent : public IUpdateable
 public:
 	enum eAnimationName
 	{
-		IDLE_UP = 1,
-		IDLE_DOWN = 1 << 2,
-		IDLE_LEFT = 1 << 3,
-		IDLE_RIGHT = 1 << 4,
+		IDLE_UP = 1 << 0,
+		IDLE_DOWN = 1 << 1,
+		IDLE_LEFT = 1 << 2,
+		IDLE_RIGHT = 1 << 3,
 
-		WALK_UP = 1 << 5,
-		WALK_DOWN = 1 << 6,
-		WALK_LEFT = 1 << 7,
-		WALK_RIGHT = 1 << 8,
+		WALK_UP = 1 << 4,
+		WALK_DOWN = 1 << 5,
+		WALK_LEFT = 1 << 6,
+		WALK_RIGHT = 1 << 7,
 
-		RUN_UP = 1 << 9,
-		RUN_DOWN = 1 << 10,
-		RUN_LEFT = 1 << 11,
-		RUN_RIGHT = 1 << 12,
+		RUN_UP = 1 << 8,
+		RUN_DOWN = 1 << 9,
+		RUN_LEFT = 1 << 10,
+		RUN_RIGHT = 1 << 11,
 
-		CYCLE_UP = 1 << 13,
-		CYCLE_DOWN = 1 << 14,
-		CYCLE_LEFT = 1 << 15,
-		CYCLE_RIGHT = 1 << 16,
+		CYCLE_UP = 1 << 12,
+		CYCLE_DOWN = 1 << 13,
+		CYCLE_LEFT = 1 << 14,
+		CYCLE_RIGHT = 1 << 15,
+
+		BATTLE_BACK = 1 << 30,
+		BATTLE_FRONT = 1 << 31
 	};
 
 	EntityAnimationComponent(Entity* owner, const std::string_view& animDictResourceName, eAnimationName initialAnimation);

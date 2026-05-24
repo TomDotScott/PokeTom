@@ -15,6 +15,7 @@ public:
 	void Update(float deltaTime);
 
 	const AnimationFrame& GetCurrentFrame() const;
+	const Animation& GetCurrentClip() const;
 	const hash_type& GetDictionarySpritesheetResourceName() const;
 
 private:
