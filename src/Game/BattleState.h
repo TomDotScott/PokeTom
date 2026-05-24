@@ -24,11 +24,27 @@ private:
 	entity_id_t m_playerMonsterEntityID;
 	entity_id_t m_opponentMonsterEntityID;
 
+	enum class eSelectedOption : uint8_t
+	{
+		FIGHT,
+		MONSTERS,
+		BAG,
+		RUN
+	};
+	eSelectedOption m_selectedOption;
+
 	enum eInputs : uint8_t
 	{
-		SELECT_MOVE = 1,
+		SELECT = 1 << 0,
+		UP = 1 << 1,
+		DOWN = 1 << 2,
+		LEFT = 1 << 3,
+		RIGHT = 1 << 4
 	};
 	InputMapper m_inputMapper;
+
+	void OnNavigateButtonPressed(eInputs button);
+	void OnSelectedOptionChanged(eSelectedOption newOption);
 };
 
 #endif // BATTLESTATE_H
