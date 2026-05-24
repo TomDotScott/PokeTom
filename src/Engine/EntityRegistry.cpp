@@ -9,7 +9,7 @@
 #include "TextureManager.h"
 #include "Animation/AnimationComponent.h"
 
-void EntityRegistry::Destroy(const uint32_t id)
+void EntityRegistry::Destroy(const entity_id_t id)
 {
 	if (!m_entities.contains(id))
 	{
@@ -35,7 +35,7 @@ void EntityRegistry::Destroy(const uint32_t id)
 
 void EntityRegistry::UpdateAll(const float deltaTime)
 {
-	for (auto& entity : m_entities | std::views::values)
+	for (const auto& entity : m_entities | std::views::values)
 	{
 		if (entity->IsActive())
 		{
@@ -44,73 +44,7 @@ void EntityRegistry::UpdateAll(const float deltaTime)
 	}
 }
 
-void EntityRegistry::RenderAll(sf::RenderWindow& window) const
-{
-	std::vector<const Entity*> renderables;
-	renderables.reserve(m_entities.size());
-
-	for (const auto& entity : m_entities | std::views::values)
-	{
-		if (entity->IsActive())
-		{
-			renderables.push_back(entity.get());
-		}
-	}
-
-	// Sort by Y position for correct draw order
-	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool{
-		return a->GetPosition().y < b->GetPosition().y;
-	});
-
-	for (const auto& entity : renderables)
-	{
-#if BUILD_DEBUG
-		sf::RectangleShape entityBox{ entity->GetSize() };
-		entityBox.setFillColor(sf::Color::Magenta);
-		entityBox.setPosition(entity->GetPosition());
-		window.draw(entityBox);
-#endif
-
-		// TODO: We should probably allow static, un-animated, entities!
-		const auto* animation = entity->GetComponent<EntityAnimationComponent>();
-		if (animation == nullptr)
-		{
-			continue;
-		}
-
-		// TODO: What a HORRIBLE line of code!
-		const sf::Texture& animatedPlayerTexture = *TEXTUREMANAGER.GetTexture(
-			animation->GetAnimator().GetDictionarySpritesheetResourceName());
-
-		sf::Sprite sprite(animatedPlayerTexture);
-		const AnimationFrame& currentFrame = animation->GetAnimator().GetCurrentFrame();
-
-		sprite.setTextureRect({
-			{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
-			{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
-		});
-
-		sprite.setOrigin({ sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2 });
-		sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
-
-		sf::Vector2f spriteScale = { 2.f, 2.f };
-		if (currentFrame.m_SpriteFlippedHorizontal)
-		{
-			spriteScale.x *= -1;
-		}
-
-		if (currentFrame.m_SpriteFlippedVertical)
-		{
-			spriteScale.y *= -1;
-		}
-
-		sprite.setScale(spriteScale);
-
-		window.draw(sprite);
-	}
-}
-
-uint32_t EntityRegistry::GetEntityAtPosition(const sf::Vector2f& position)
+entity_id_t EntityRegistry::GetEntityAtPosition(const sf::Vector2f& position)
 {
 	// TODO: This is going to get slow in the future!
 	// Some sort of octree maybe?

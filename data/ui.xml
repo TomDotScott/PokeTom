@@ -25,13 +25,14 @@ So that I can see what dialogue will look like!!!
       <position x="145" y="45" />
       <size>15</size>
       <font>DEFAULT</font>
+      <layer>foreground</layer>
     </Text>
     <Sprite>
       <name>DIALOGUE_BOX</name>
       <position x="132" y="0" />
       <scale x="2" y="2" />
       <texture>DIALOGUE_BOX</texture>
-      <layer>background</layer>
+      <layer>midground</layer>
     </Sprite>
   </Panel>
 

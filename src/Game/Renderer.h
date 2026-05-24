@@ -45,12 +45,16 @@ public:
 	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
 	void BuildBatches(const std::unordered_map<hash_type, LevelRenderData>& visibleLevelRenderData);
-	void Render(sf::RenderWindow& window, const EntityRegistry& entities, int entityZIndex) const;
+	void RenderLevel(sf::RenderWindow& window, const EntityRegistry& entities, int entityZIndex) const;
+
+	void RenderEntity(sf::RenderWindow& window, const Entity* entity) const;
 
 private:
 	std::vector<LayerBatcher> m_layerBatchers;
 
 	sf::View m_cameraView;
+
+	void RenderEntities(sf::RenderWindow& window, const EntityRegistry& entities) const;
 };
 
 #endif

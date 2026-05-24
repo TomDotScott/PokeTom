@@ -51,6 +51,11 @@ UiElement* UiPanel::GetChild(const std::string& name) const
 	return nullptr;
 }
 
+const std::vector<std::unique_ptr<UiElement>>& UiPanel::GetChildren() const
+{
+	return m_children;
+}
+
 bool UiPanel::LoadFromXML(const XmlNode& node)
 {
 	if (!UiElement::LoadFromXML(node))

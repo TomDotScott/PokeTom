@@ -49,7 +49,10 @@ private:
 
 	bool LoadFromXML(const XmlNode& node) override;
 	bool LoadElement(const XmlNode& node);
-	void RenderLayer(sf::RenderWindow& window, const std::set<std::string>& layerUIElementIDs) const;
+
+	void InsertElementIntoLayer(const std::string& elementName, UiElement::eLayer layer);
+
+	void RenderLayer(sf::RenderWindow& window, UiElement::eLayer layer) const;
 
 	void OnLeftClickPressed();
 };

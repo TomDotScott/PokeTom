@@ -46,7 +46,7 @@ Game::Game(sol::state& lua) :
 		const GridMovementComponent* playerMovement = p->GetComponent<GridMovementComponent>();
 		const sf::Vector2f nextPlayerPos = playerMovement->GetNextPosition(playerMovement->GetCurrentDirection());
 
-		const uint32_t entityID = m_context.m_Entities.GetEntityAtPosition(nextPlayerPos);
+		const entity_id_t entityID = m_context.m_Entities.GetEntityAtPosition(nextPlayerPos);
 		if (entityID == ~0U)
 		{
 			// TODO: Play a sound or something here
@@ -96,12 +96,12 @@ void Game::Update(const float deltaTime)
 
 void Game::Render(sf::RenderWindow& window) const
 {
-	m_currentState->Render(window);
-
 	window.setView({
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
 	});
+
+	m_currentState->Render(window);
 
 	if (m_screenFader.FadeInProgress())
 	{
@@ -111,17 +111,6 @@ void Game::Render(sf::RenderWindow& window) const
 		screenFade.setFillColor({ 0, 0, 0, screenAlpha });
 		window.draw(screenFade);
 	}
-
-	// TODO: Integrate UI into the Renderer
-	// Draw the background items first
-	UIMANAGER.RenderBackground(window);
-
-	// Then the midground stuff
-	UIMANAGER.RenderMidground(window);
-
-	// Then, in front of everything, the foreground stuff
-	UIMANAGER.RenderForeground(window);
-
 
 #if !BUILD_MASTER
 	DrawText(window, sf::Vector2f{ 0, 10 }, 30, "%.1fFPS", Timer::Get().Fps());

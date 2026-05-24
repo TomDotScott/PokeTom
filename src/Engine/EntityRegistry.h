@@ -2,9 +2,12 @@
 #define ENTITYREGISTRY_H
 #include "Entity.h"
 
+using entity_id_t = uint32_t;
+
 class EntityRegistry
 {
 public:
+	friend class Renderer;
 	template <typename T, typename... Args>
 	T& Create(Args&&... args)
 		requires (std::is_base_of_v<Entity, T>)
@@ -16,7 +19,7 @@ public:
 	}
 
 	template<typename T>
-	T* Get(const uint32_t id) const
+	T* Get(const entity_id_t id) const
 		requires (std::is_base_of_v<Entity, T>)
 	{
 		if (!m_entities.contains(id))
@@ -28,18 +31,15 @@ public:
 	}
 
 
-	void Destroy(uint32_t id);
+	void Destroy(entity_id_t id);
 
 	void UpdateAll(float deltaTime);
-	void RenderAll(sf::RenderWindow& window) const;
 
 	// Returns ~0 if no entity is at the position, otherwise returns the Entity ID
-	uint32_t GetEntityAtPosition(const sf::Vector2f& position);
-
-	void OnInteractPressed(uint32_t id);
+	entity_id_t GetEntityAtPosition(const sf::Vector2f& position);
 
 private:
-	std::unordered_map<uint32_t, std::unique_ptr<Entity>> m_entities;
+	std::unordered_map<entity_id_t, std::unique_ptr<Entity>> m_entities;
 };
 
 #endif

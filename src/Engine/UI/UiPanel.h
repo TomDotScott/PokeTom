@@ -17,6 +17,7 @@ public:
 	void SetSize(const sf::Vector2f& size);
 
 	UiElement* GetChild(const std::string& name) const;
+	const std::vector<std::unique_ptr<UiElement>>& GetChildren() const;
 
 private:
 	std::vector<std::unique_ptr<UiElement>> m_children;

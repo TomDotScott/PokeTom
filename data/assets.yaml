@@ -19,6 +19,10 @@ textures:
     source: sprites/ui/battle_hud.png
   - name: BATTLE_BACKGROUNDS
     source: sprites/ui/battle_backgrounds.png
+  - name: BATTLE_SPRITE_MONSTER_403
+    source: sprites/monsters/shinx.png
+  - name: BATTLE_SPRITE_MONSTER_507
+    source: sprites/monsters/herdier.png
 
 fonts:
   - name: DEFAULT
@@ -37,7 +41,11 @@ animations:
     source: animation/male_fisherman.xml
   - name: CHILD_1
     source: animation/child_1.xml
-  - name: MONSTER_403_ANIMATIONS
-    source: animation/monster_403.xml
   - name: MONSTER_333_ANIMATIONS
     source: animation/monster_333.xml
+  - name: MONSTER_403_ANIMATIONS
+    source: animation/monster_403.xml
+  - name: MONSTER_403_BATTLE
+    source: animation/battle/monster_403.xml
+  - name: MONSTER_507_BATTLE
+    source: animation/battle/monster_507.xml

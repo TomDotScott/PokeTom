@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <AnimDict version="0.1" name="shinx_animations">
-  <Image source="OVERWORLD_MONSTERS" topLeftX="64" topLeftY="3872" regionWidth="64" regionHeight="96" maskColour="98B878FF"/>
+  <Image
+    source="OVERWORLD_MONSTERS"
+    topLeftX="64"
+    topLeftY="3872"
+    regionWidth="64"
+    regionHeight="96"
+    maskColour="98B878FF"
+  />
 
   <Animation name="walk_up" looping="true">
     <Frame topLeftX="64" topLeftY="3872" duration="200" spriteWidth="32" spriteHeight="32" />
@@ -19,7 +26,21 @@
   </Animation>
 
   <Animation name="walk_right" looping="true">
-    <Frame topLeftX="64" topLeftY="3936" duration="200" spriteWidth="32" spriteHeight="32" flippedHorizontal="TRUE"/>
-    <Frame topLeftX="96" topLeftY="3936" duration="200" spriteWidth="32" spriteHeight="32" flippedHorizontal="TRUE"/>
+    <Frame
+      topLeftX="64"
+      topLeftY="3936"
+      duration="200"
+      spriteWidth="32"
+      spriteHeight="32"
+      flippedHorizontal="TRUE"
+    />
+    <Frame
+      topLeftX="96"
+      topLeftY="3936"
+      duration="200"
+      spriteWidth="32"
+      spriteHeight="32"
+      flippedHorizontal="TRUE"
+    />
   </Animation>
 </AnimDict>

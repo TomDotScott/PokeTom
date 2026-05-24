@@ -1,11 +1,14 @@
 #include "Renderer.h"
 
 #include <iostream>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
 #include "../Engine/Globals.h"
 #include "../Engine/TextureManager.h"
+#include "../Engine/Animation/AnimationComponent.h"
+
 
 Renderer::Renderer() :
 	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
@@ -100,7 +103,7 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 		});
 }
 
-void Renderer::Render(sf::RenderWindow& window, const EntityRegistry& entities, const int entityZIndex) const
+void Renderer::RenderLevel(sf::RenderWindow& window, const EntityRegistry& entities, const int entityZIndex) const
 {
 	window.setView(m_cameraView);
 
@@ -110,7 +113,106 @@ void Renderer::Render(sf::RenderWindow& window, const EntityRegistry& entities, 
 
 		if (layerBatcher.m_ZIndex == entityZIndex)
 		{
-			entities.RenderAll(window);
+			RenderEntities(window, entities);
 		}
+	}
+
+	// Reset the view
+	window.setView({
+		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
+		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
+		});
+}
+
+void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) const
+{
+#if BUILD_DEBUG
+	sf::RectangleShape entityBox{ entity->GetSize() };
+	entityBox.setFillColor(sf::Color::Magenta);
+	entityBox.setPosition(entity->GetPosition());
+	window.draw(entityBox);
+#endif
+
+	// TODO: We should probably allow static, un-animated, entities!
+	const auto* animation = entity->GetComponent<EntityAnimationComponent>();
+	if (animation == nullptr)
+	{
+		return;
+	}
+
+	// TODO: What a HORRIBLE way to get the animated sprite!
+	const auto& animator = animation->GetAnimator();
+	const sf::Texture& texture = *TEXTUREMANAGER.GetTexture(animator.GetDictionarySpritesheetResourceName());
+
+	sf::Sprite sprite(texture);
+	const AnimationFrame& currentFrame = animator.GetCurrentFrame();
+
+	sprite.setTextureRect({
+		{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
+		{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
+		});
+
+	const sf::FloatRect bounds = sprite.getLocalBounds();
+	const float w = bounds.size.x;
+	const float h = bounds.size.y;
+
+	float ox = 0.f, oy = 0.f;
+
+	switch (animator.GetCurrentClip().m_SpriteAnchor)
+	{
+	case Animation::eSpriteAnchor::TOP_LEFT:      ox = 0.f;   oy = 0.f;   break;
+	case Animation::eSpriteAnchor::TOP_MIDDLE:    ox = w / 2.f; oy = 0.f;   break;
+	case Animation::eSpriteAnchor::TOP_RIGHT:     ox = w;     oy = 0.f;   break;
+	case Animation::eSpriteAnchor::MIDDLE_LEFT:   ox = 0.f;   oy = h / 2.f; break;
+	case Animation::eSpriteAnchor::MIDDLE_MIDDLE: ox = w / 2.f; oy = h / 2.f; break;
+	case Animation::eSpriteAnchor::MIDDLE_RIGHT:  ox = w;     oy = h / 2.f; break;
+	case Animation::eSpriteAnchor::BOTTOM_LEFT:   ox = 0.f;   oy = h;     break;
+	case Animation::eSpriteAnchor::BOTTOM_MIDDLE: ox = w / 2.f; oy = h;     break;
+	case Animation::eSpriteAnchor::BOTTOM_RIGHT:  ox = w;     oy = h;     break;
+	}
+
+	sprite.setOrigin({ ox, oy });
+	sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
+
+	/*sprite.setOrigin({ sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2 });
+	sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });*/
+
+	sf::Vector2f spriteScale = entity->GetScale();
+	if (currentFrame.m_SpriteFlippedHorizontal)
+	{
+		spriteScale.x *= -1;
+	}
+
+	if (currentFrame.m_SpriteFlippedVertical)
+	{
+		spriteScale.y *= -1;
+	}
+
+	sprite.setScale(spriteScale);
+
+	window.draw(sprite);
+}
+
+void Renderer::RenderEntities(sf::RenderWindow& window, const EntityRegistry& entities) const
+{
+	std::vector<const Entity*> renderables;
+	renderables.reserve(entities.m_entities.size());
+
+	for (const auto& entity : entities.m_entities | std::views::values)
+	{
+		if (entity->IsActive())
+		{
+			renderables.push_back(entity.get());
+		}
+	}
+
+	// Sort by Y position for correct draw order
+	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool {
+		return a->GetPosition().y < b->GetPosition().y;
+		});
+
+	for (const auto& entity : renderables)
+	{
+		RenderEntity(window, entity);
 	}
 }

@@ -7,6 +7,7 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Animation/AnimationComponent.h"
+#include "../Engine/UI/UiManager.h"
 
 OverworldState::OverworldState(
 	GameContext& ctx,
@@ -193,7 +194,11 @@ void OverworldState::Render(sf::RenderWindow& window) const
 	ASSERT(player);
 	ASSERT(level);
 
-	m_ctx.m_Renderer.Render(window, m_ctx.m_Entities, level->GetEntityZIndex());
+	m_ctx.m_Renderer.RenderLevel(window, m_ctx.m_Entities, level->GetEntityZIndex());
+
+	UIMANAGER.RenderBackground(window);
+	UIMANAGER.RenderMidground(window);
+	UIMANAGER.RenderForeground(window);
 }
 
 void OverworldState::CheckForPortals(Entity* player, const Level* currentLevel)

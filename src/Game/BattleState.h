@@ -21,6 +21,9 @@ private:
 	GameContext& m_gameContext;
 	BattleBeginContext m_battleContext;
 
+	entity_id_t m_playerMonsterEntityID;
+	entity_id_t m_opponentMonsterEntityID;
+
 	enum eInputs : uint8_t
 	{
 		SELECT_MOVE = 1,

@@ -58,7 +58,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 {
 	LUA_API_BEGIN(Entity, lua)
 		LUA_FUNC(Entity, Create,
-			[&](const SimpleVector position, const SimpleVector sizeInTiles) -> uint32_t {
+			[&](const SimpleVector position, const SimpleVector sizeInTiles) -> entity_id_t {
 				// TODO: I need a reliable way to get the player!
 				const std::shared_ptr<Level> level = world.LastTransitionedToLevel();
 
@@ -83,13 +83,13 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, Destroy,
-			[&entities](const uint32_t id)
+			[&entities](const entity_id_t id)
 			{
 				entities.Destroy(id);
 			})
 
 		LUA_FUNC(Entity, SetActive,
-			[&entities](const uint32_t id, const bool active)
+			[&entities](const entity_id_t id, const bool active)
 			{
 				auto* e = entities.Get<Entity>(id);
 				if (active)
@@ -103,7 +103,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, TurnToFace,
-			[&entities](const uint32_t entityID, const uint32_t facingEntityID) {
+			[&entities](const entity_id_t entityID, const entity_id_t facingEntityID) {
 				auto* e = entities.Get<Entity>(entityID);
 
 				if (!e->IsActive())
@@ -154,7 +154,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, Move,
-			[&entities](const uint32_t id, const int direction)
+			[&entities](const entity_id_t id, const int direction)
 			{
 				const auto e = entities.Get<Entity>(id);
 				if (e == nullptr)
@@ -174,7 +174,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, CanMove,
-			[&entities](const uint32_t id, const int direction)
+			[&entities](const entity_id_t id, const int direction)
 			{
 				auto e = entities.Get<Entity>(id);
 				if (e == nullptr)
@@ -193,7 +193,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, AddGridMovementComponent,
-			[&](const uint32_t id, const bool isCycling)
+			[&](const entity_id_t id, const bool isCycling)
 			{
 				Entity* e = entities.Get<Entity>(id);
 				// TODO: Fix these magic numbers!
@@ -210,7 +210,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, AddAnimationComponent,
-			[&entities](const uint32_t id, const std::string& animationPath, const int initialAnimation)
+			[&entities](const entity_id_t id, const std::string& animationPath, const int initialAnimation)
 			{
 				Entity* e = entities.Get<Entity>(id);
 
@@ -222,7 +222,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 
 		// TODO: Make this a script name or ID instead of a filepath
 		LUA_FUNC(Entity, AddScriptComponent,
-			[&](const uint32_t id, const std::string& scriptPath)
+			[&](const entity_id_t id, const std::string& scriptPath)
 			{
 				Entity* e = entities.Get<Entity>(id);
 
@@ -241,7 +241,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, AddDialogueComponent,
-			[&entities](const uint32_t id, hash_type dialogueID, bool shouldLoop, float loopTimer)
+			[&entities](const entity_id_t id, hash_type dialogueID, bool shouldLoop, float loopTimer)
 			{
 				Entity* e = entities.Get<Entity>(id);
 
@@ -259,7 +259,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, HasDialogueLeft,
-			[&entities](const uint32_t id) -> bool
+			[&entities](const entity_id_t id) -> bool
 			{
 				Entity* e = entities.Get<Entity>(id);
 
@@ -283,7 +283,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, CanEntityBeInteractedWith,
-			[&entities](const uint32_t id) -> bool
+			[&entities](const entity_id_t id) -> bool
 			{
 				Entity* e = entities.Get<Entity>(id);
 
@@ -298,7 +298,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, GetPosition,
-			[&entities](const uint32_t id) -> SimpleVector
+			[&entities](const entity_id_t id) -> SimpleVector
 			{
 				Entity* e = entities.Get<Entity>(id);
 				if (e == nullptr)
@@ -312,7 +312,7 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			})
 
 		LUA_FUNC(Entity, SetScriptValue,
-			[&entities](const uint32_t id, const std::string& variableName, const std::string& variableValue)
+			[&entities](const entity_id_t id, const std::string& variableName, const std::string& variableValue)
 			{
 				Entity* e = entities.Get<Entity>(id);
 				if (e == nullptr)
@@ -390,6 +390,10 @@ void LuaRegistry::RegisterAnimationNames(sol::state& lua)
 		LUA_CONST(AnimationName, CYCLE_DOWN, static_cast<int>(EntityAnimationComponent::CYCLE_DOWN))
 		LUA_CONST(AnimationName, CYCLE_LEFT, static_cast<int>(EntityAnimationComponent::CYCLE_LEFT))
 		LUA_CONST(AnimationName, CYCLE_RIGHT, static_cast<int>(EntityAnimationComponent::CYCLE_RIGHT))
+
+
+		LUA_CONST(AnimationName, BATTLE_BACK, static_cast<int>(EntityAnimationComponent::BATTLE_BACK))
+		LUA_CONST(AnimationName, BATTLE_FRONT, static_cast<int>(EntityAnimationComponent::BATTLE_FRONT))
 
 	LUA_API_END()
 }

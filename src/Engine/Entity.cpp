@@ -9,7 +9,8 @@ Entity::Entity() : Entity(sf::Vector2f{}, sf::Vector2f{})
 Entity::Entity(const sf::Vector2f& position, const sf::Vector2f& size) :
 	GameObject(position),
 	IUpdateable(),
-	m_size(size)
+	m_size(size),
+	m_scale({ 2.f, 2.f })
 {
 }
 
@@ -77,6 +78,21 @@ sf::Vector2f Entity::GetSize()
 const sf::Vector2f& Entity::GetSize() const
 {
 	return m_size;
+}
+
+sf::Vector2f Entity::GetScale()
+{
+	return m_scale;
+}
+
+const sf::Vector2f& Entity::GetScale() const
+{
+	return m_scale;
+}
+
+void Entity::SetScale(const sf::Vector2f& scale)
+{
+	m_scale = scale;
 }
 
 void Entity::OnPlayerInteractPressed()
