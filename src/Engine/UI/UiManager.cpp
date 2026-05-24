@@ -16,6 +16,9 @@
 #include "../CodeGen/Resources.hpp"
 #include "../Parsers/XML/XmlDocument.h"
 
+#define UIMANAGER_DEBUG_SPEW 0
+#define RENDER_PANEL_DEBUG 0
+
 UiElement* UiManager::GetUiElement(const std::string& name) const
 {
 	if (!m_uiElements.contains(name))
@@ -89,7 +92,7 @@ bool UiManager::Load(const std::filesystem::path& path)
 
 		if (const auto id = std::string{ resourceID }; !m_fonts.contains(id))
 		{
-#if BUILD_DEBUG
+#if UIMANAGER_DEBUG_SPEW
 			std::cout << "UiManager::LoadFont: Loading font \"" << id << "\", path=\"" << resourcePath << "\"\n";
 #endif
 
@@ -205,8 +208,7 @@ void UiManager::Update()
 
 bool UiManager::LoadFromXML(const XmlNode& node)
 {
-	const auto children = node.Children();
-	for (const auto& c : children)
+	for (const auto& c : node.Children())
 	{
 		if (!LoadElement(*c))
 		{
@@ -242,46 +244,71 @@ void UiManager::RenderLayer(sf::RenderWindow& window, const UiElement::eLayer la
 		UiElement* uiElement = m_uiElements.at(elementName);
 		ASSERT(uiElement != nullptr);
 
-		if (!uiElement->IsActive())
-		{
-			continue;
-		}
-
-#if BUILD_DEBUG
-		if (uiElement->GetType() == UiElement::eType::Panel)
+#if RENDER_PANEL_DEBUG
+		if (uiElement->GetType() == UiElement::eType::Panel && uiElement->IsActive())
 		{
 			sf::RectangleShape debugRect(uiElement->GetSize());
 			debugRect.setPosition(uiElement->GetPosition());
-			debugRect.setFillColor(sf::Color::Magenta);
+			debugRect.setFillColor({
+				sf::Color::Magenta.r,
+				sf::Color::Magenta.g,
+				sf::Color::Magenta.b,
+				64
+			});
 			window.draw(debugRect);
 		}
 #endif
 
-		// If it is a Panel, make sure the children are sorted properly
-		if (const UiPanel* panel = dynamic_cast<const UiPanel*>(uiElement); panel != nullptr)
-		{
-			for (const std::unique_ptr<UiElement>& child : panel->GetChildren())
-			{
-				if (child->GetLayer() != layer)
-				{
-					continue;
-				}
-
-				for (const auto* drawable : child->GetDrawablesList())
-				{
-					window.draw(*drawable);
-				}
-			}
-		}
-		else
-		{
-			for (const auto* drawable : uiElement->GetDrawablesList())
-			{
-				window.draw(*drawable);
-			}
-		}
+		RenderElement(window, uiElement, layer);
 	}
 #endif
+}
+
+void UiManager::RenderElement(sf::RenderWindow& window, const UiElement* uiElement, const UiElement::eLayer layer) const
+{
+	if (uiElement->GetType() != UiElement::eType::Panel && uiElement->GetLayer() != layer)
+	{
+		return;
+	}
+
+	if (!uiElement->IsActive())
+	{
+		return;
+	}
+
+	if (const UiPanel* panel = dynamic_cast<const UiPanel*>(uiElement); panel != nullptr)
+	{
+		for (const std::unique_ptr<UiElement>& child : panel->GetChildren())
+		{
+#if UIMANAGER_DEBUG_SPEW
+			printf("===> Children found! Attempting to render %s\n", child->GetName().c_str());
+#endif
+
+			RenderElement(window, child.get(), layer);
+		}
+	}
+	else
+	{
+#if UIMANAGER_DEBUG_SPEW
+		switch (layer)
+		{
+		case UiElement::eLayer::BACKGROUND:
+			printf("Drawing %s in the BACKGROUND\n", uiElement->GetName().c_str());
+			break;
+		case UiElement::eLayer::MIDGROUND:
+			printf("Drawing %s in the MIDGROUND\n", uiElement->GetName().c_str());
+			break;
+		case UiElement::eLayer::FOREGROUND:
+			printf("Drawing %s in the FOREGROUND\n", uiElement->GetName().c_str());
+			break;
+		}
+#endif
+
+		for (const auto* drawable : uiElement->GetDrawablesList())
+		{
+			window.draw(*drawable);
+		}
+	}
 }
 
 void UiManager::OnLeftClickPressed()

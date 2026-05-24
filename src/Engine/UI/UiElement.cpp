@@ -52,8 +52,8 @@ sf::Vector2f UiElement::CalculateOffsetFromParents() const
 	const UiElement* current = m_parent;
 	while (current != nullptr)
 	{
-		offset += m_parent->GetAbsolutePosition();
-		current = m_parent->m_parent;
+		offset += current->GetAbsolutePosition();
+		current = current->m_parent;
 	}
 
 	return offset;

@@ -43,14 +43,14 @@ void BattleState::OnEnter()
 {
 	printf("Entered a battle!\n");
 
-	UIMANAGER.GetUiElement("BATTLE_HUD")->OnActivate();
+	UIMANAGER.GetUiElement("BATTLE_HUD_PANEL")->OnActivate();
 	DialogueBox::SetVisible(false);
 }
 
 void BattleState::OnExit()
 {
 	printf("Battle finished!\n");
-	UIMANAGER.GetUiElement("BATTLE_HUD")->OnDeactivate();
+	UIMANAGER.GetUiElement("BATTLE_HUD_PANEL")->OnDeactivate();
 
 	m_gameContext.m_Entities.Destroy(m_playerMonsterEntityID);
 	m_gameContext.m_Entities.Destroy(m_opponentMonsterEntityID);

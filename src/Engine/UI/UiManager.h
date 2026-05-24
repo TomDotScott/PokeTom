@@ -53,6 +53,7 @@ private:
 	void InsertElementIntoLayer(const std::string& elementName, UiElement::eLayer layer);
 
 	void RenderLayer(sf::RenderWindow& window, UiElement::eLayer layer) const;
+	void RenderElement(sf::RenderWindow& window, const UiElement* uiElement, UiElement::eLayer layer) const;
 
 	void OnLeftClickPressed();
 };

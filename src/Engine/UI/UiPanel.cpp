@@ -5,8 +5,8 @@
 #include "UiManager.h"
 #include "../Asserts.h"
 
-UiPanel::UiPanel() :
-	UiElement(eType::Panel)
+UiPanel::UiPanel(UiElement* parent) :
+	UiElement(eType::Panel, parent)
 {
 	SetLayer(eLayer::MIDGROUND);
 }
@@ -72,54 +72,22 @@ bool UiPanel::LoadFromXML(const XmlNode& node)
 
 	m_size = sizeNode->Attr("x", "y", sf::Vector2f{ 69, 69 });
 
-	// TODO: Make this support any arbitrary children
-	const auto spriteNodes = node.Children("Sprite");
-	for (const auto& c : spriteNodes)
-	{
-		if (c == nullptr)
-		{
-			continue;
-		}
-
-		// This is a kinda hideous line of code
-		UiSprite* newSprite = dynamic_cast<UiSprite*>(m_children.emplace_back(std::make_unique<UiSprite>(this)).get());
-		if (!newSprite->LoadFromXML(*c))
-		{
-#if BUILD_DEBUG
-			ASSERT_MSG(false, "UiPanel: Error loading sprite in panel %s", GetName().c_str());
-#endif
-			return false;
-		}
-
-		for (const sf::Drawable* drawable : newSprite->GetDrawablesList())
-		{
-			AddDrawable(drawable);
-		}
-	}
-
-	const auto textChildren = node.Children("Text");
-	for (const auto& c : textChildren)
-	{
-		if (c == nullptr)
-		{
-			continue;
-		}
-
-		// This is a kinda hideous line of code
-		UiText* newText = dynamic_cast<UiText*>(m_children.emplace_back(std::make_unique<UiText>(this)).get());
-
-		if (!newText->LoadFromXML(*c))
-		{
-			printf(" UiPanel: Error loading Text");
-			return false;
-		}
-
-		for (const sf::Drawable* drawable : newText->GetDrawablesList())
-		{
-			AddDrawable(drawable);
-		}
-	}
+	if (!LoadChildrenOfType<UiSprite>(node, "Sprite")) { return false; }
+	if (!LoadChildrenOfType<UiText>(node, "Text")) { return false; }
+	if (!LoadChildrenOfType<UiButton>(node, "Button")) { return false; }
+	if (!LoadChildrenOfType<UiPanel>(node, "Panel")) { return false; }
 
 	SetElementPosition(m_position);
 	return true;
+}
+
+void UiPanel::OnActivate()
+{
+	UiElement::OnActivate();
+
+	// Activate all the children
+	for (const auto& child : m_children)
+	{
+		child->OnActivate();
+	}
 }

@@ -24,6 +24,8 @@ public:
 
 	UiText* GetText() const;
 
+	bool LoadFromXML(const XmlNode& node) override;
+
 private:
 	// Required!
 	std::unique_ptr<UiSprite> m_sprite;
@@ -32,8 +34,6 @@ private:
 	std::unique_ptr<UiText> m_text;
 
 	Event<> m_pressedEvent;
-
-	bool LoadFromXML(const XmlNode& node) override;
 };
 
 #endif
