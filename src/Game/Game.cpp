@@ -15,6 +15,7 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
+#include "Monsters/PocketMonsterManager.h"
 
 Game::Game(sol::state& lua) :
 	IUpdateable(),
@@ -26,6 +27,8 @@ Game::Game(sol::state& lua) :
 	}),
 	m_luaBindings(lua, m_context.m_World, m_context.m_Entities)
 {
+	const auto x = PocketMonsterManager::Get();
+
 	// TODO: Make this a variable, loaded at startup
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
