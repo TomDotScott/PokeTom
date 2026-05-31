@@ -111,6 +111,8 @@ public class PokeClone : Project
 
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "magic_enum"));
 
+        conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "frozen"));
+
         conf.IncludePaths.Add(Path.Combine(Constants.LIBS_PATH, "lua", "lua-5.4.8", "src"));
         conf.LibraryPaths.Add(Path.Combine(Constants.LIBS_PATH, "lua", $"build_{target.DevEnv}", "output", target.Platform.ToString(), target.Optimization.ToString()));
 
