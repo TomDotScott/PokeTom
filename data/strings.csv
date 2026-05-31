@@ -14,3 +14,1310 @@ PLAYER_MUM_1,DIALOGUE,"Morning, {PLAYER_NAME}! I was speaking to {PROFESSOR_NAME
 GENERIC_TV_1,DIALOGUE,"BREAKING NEWS: Kanto Gym Leader arrested for harrassment charges, his {MONSTER_95} is going to be put to sleep as there is nobody left to care for it.","","","",""
 GENERIC_TV_2,DIALOGUE,"Weather: Trainers in {STARTER_TOWN} have been using {MOVE_RAIN_DANCE} so expect light showers this evening.","","","",""
 PAUSE_BUTTON,UI,"ESCAPE","","","",""
+
+
+
+
+
+
+MONSTER_1,MONSTER_NAME,Bulbasaur,Bulbizarre,Bulbasaur,Bisasam,Bulbasaur
+MONSTER_1_DESC,MONSTER_DESCRIPTION,Seed Pokémon,Pokémon Graine,Pokémon Seme,Samen-Pokémon,Pokémon Semilla
+MONSTER_2,MONSTER_NAME,Ivysaur,Herbizarre,Ivysaur,Bisaknosp,Ivysaur
+MONSTER_2_DESC,MONSTER_DESCRIPTION,Seed Pokémon,Pokémon Graine,Pokémon Seme,Samen-Pokémon,Pokémon Semilla
+MONSTER_3,MONSTER_NAME,Venusaur,Florizarre,Venusaur,Bisaflor,Venusaur
+MONSTER_3_DESC,MONSTER_DESCRIPTION,Seed Pokémon,Pokémon Graine,Pokémon Seme,Samen-Pokémon,Pokémon Semilla
+MONSTER_4,MONSTER_NAME,Charmander,Salamèche,Charmander,Glumanda,Charmander
+MONSTER_4_DESC,MONSTER_DESCRIPTION,Lizard Pokémon,Pokémon Lézard,Pokémon Lucertola,Echsen-Pokémon,Pokémon Lagartija
+MONSTER_5,MONSTER_NAME,Charmeleon,Reptincel,Charmeleon,Glutexo,Charmeleon
+MONSTER_5_DESC,MONSTER_DESCRIPTION,Flame Pokémon,Pokémon Flamme,Pokémon Fiamma,Flammen-Pokémon,Pokémon Llama
+MONSTER_6,MONSTER_NAME,Charizard,Dracaufeu,Charizard,Glurak,Charizard
+MONSTER_6_DESC,MONSTER_DESCRIPTION,Flame Pokémon,Pokémon Flamme,Pokémon Fiamma,Flammen-Pokémon,Pokémon Llama
+MONSTER_7,MONSTER_NAME,Squirtle,Carapuce,Squirtle,Schiggy,Squirtle
+MONSTER_7_DESC,MONSTER_DESCRIPTION,Tiny Turtle Pokémon,Pokémon Minitortue,Pokémon Tartaghina,Minikröten-Pokémon,Pokémon Tortuguita
+MONSTER_8,MONSTER_NAME,Wartortle,Carabaffe,Wartortle,Schillok,Wartortle
+MONSTER_8_DESC,MONSTER_DESCRIPTION,Turtle Pokémon,Pokémon Tortue,Pokémon Tartaruga,Kröten-Pokémon,Pokémon Tortuga
+MONSTER_9,MONSTER_NAME,Blastoise,Tortank,Blastoise,Turtok,Blastoise
+MONSTER_9_DESC,MONSTER_DESCRIPTION,Shellfish Pokémon,Pokémon Carapace,Pokémon Crostaceo,Panzertier-Pokémon,Pokémon Armazón
+MONSTER_10,MONSTER_NAME,Caterpie,Chenipan,Caterpie,Raupy,Caterpie
+MONSTER_10_DESC,MONSTER_DESCRIPTION,Worm Pokémon,Pokémon Ver,Pokémon Baco,Wurm-Pokémon,Pokémon Gusano
+MONSTER_11,MONSTER_NAME,Metapod,Chrysacier,Metapod,Safcon,Metapod
+MONSTER_11_DESC,MONSTER_DESCRIPTION,Cocoon Pokémon,Pokémon Cocon,Pokémon Bozzolo,Kokon-Pokémon,Pokémon Capullo
+MONSTER_12,MONSTER_NAME,Butterfree,Papilusion,Butterfree,Smettbo,Butterfree
+MONSTER_12_DESC,MONSTER_DESCRIPTION,Butterfly Pokémon,Pokémon Papillon,Pokémon Farfalla,Falter-Pokémon,Pokémon Mariposa
+MONSTER_13,MONSTER_NAME,Weedle,Aspicot,Weedle,Hornliu,Weedle
+MONSTER_13_DESC,MONSTER_DESCRIPTION,Hairy Bug Pokémon,Pokémon Insectopic,Pokémon Millepiedi,Raupe,Pokémon Oruga
+MONSTER_14,MONSTER_NAME,Kakuna,Coconfort,Kakuna,Kokuna,Kakuna
+MONSTER_14_DESC,MONSTER_DESCRIPTION,Cocoon Pokémon,Pokémon Cocon,Pokémon Bozzolo,Kokon,Pokémon Capullo
+MONSTER_15,MONSTER_NAME,Beedrill,Dardargnan,Beedrill,Bibor,Beedrill
+MONSTER_15_DESC,MONSTER_DESCRIPTION,Poison Bee Pokémon,Pokémon Guêpoison,Pokémon Velenape,Giftbiene,Pokémon Abeja Veneno
+MONSTER_16,MONSTER_NAME,Pidgey,Roucool,Pidgey,Taubsi,Pidgey
+MONSTER_16_DESC,MONSTER_DESCRIPTION,Tiny Bird Pokémon,Pokémon Minoiseau,Pokémon Uccellino,Kleinvogel,Pokémon Pajarito
+MONSTER_17,MONSTER_NAME,Pidgeotto,Roucoups,Pidgeotto,Tauboga,Pidgeotto
+MONSTER_17_DESC,MONSTER_DESCRIPTION,Bird Pokémon,Pokémon Oiseau,Pokémon Uccello,Vogel,Pokémon Pájaro
+MONSTER_18,MONSTER_NAME,Pidgeot,Roucarnage,Pidgeot,Tauboss,Pidgeot
+MONSTER_18_DESC,MONSTER_DESCRIPTION,Bird Pokémon,Pokémon Oiseau,Pokémon Uccello,Vogel,Pokémon Pájaro
+MONSTER_19,MONSTER_NAME,Rattata,Rattata,Rattata,Rattfratz,Rattata
+MONSTER_19_DESC,MONSTER_DESCRIPTION,Mouse Pokémon,Pokémon Souris,Pokémon Topo,Maus,Pokémon Ratón
+MONSTER_20,MONSTER_NAME,Raticate,Rattatac,Raticate,Rattikarl,Raticate
+MONSTER_20_DESC,MONSTER_DESCRIPTION,Mouse Pokémon,Pokémon Souris,Pokémon Topo,Maus,Pokémon Ratón
+MONSTER_21,MONSTER_NAME,Spearow,Piafabec,Spearow,Habitak,Spearow
+MONSTER_21_DESC,MONSTER_DESCRIPTION,Tiny Bird Pokémon,Pokémon Minoiseau,Pokémon Uccellino,Kleinvogel,Pokémon Pajarito
+MONSTER_22,MONSTER_NAME,Fearow,Rapasdepic,Fearow,Ibitak,Fearow
+MONSTER_22_DESC,MONSTER_DESCRIPTION,Beak Pokémon,Pokémon Bec-Oiseau,Pokémon Becco,Pickvogel,Pokémon Pico
+MONSTER_23,MONSTER_NAME,Ekans,Abo,Ekans,Rettan,Ekans
+MONSTER_23_DESC,MONSTER_DESCRIPTION,Snake Pokémon,Pokémon Serpent,Pokémon Serpente,Schlange,Pokémon Serpiente
+MONSTER_24,MONSTER_NAME,Arbok,Arbok,Arbok,Arbok,Arbok
+MONSTER_24_DESC,MONSTER_DESCRIPTION,Cobra Pokémon,Pokémon Cobra,Pokémon Cobra,Kobra,Pokémon Cobra
+MONSTER_25,MONSTER_NAME,Pikachu,Pikachu,Pikachu,Pikachu,Pikachu
+MONSTER_25_DESC,MONSTER_DESCRIPTION,Mouse Pokémon,Pokémon Souris,Pokémon Topo,Maus-Pokémon,Pokémon Ratón
+MONSTER_26,MONSTER_NAME,Raichu,Raichu,Raichu,Raichu,Raichu
+MONSTER_26_DESC,MONSTER_DESCRIPTION,Mouse Pokémon,Pokémon Souris,Pokémon Topo,Maus-Pokémon,Pokémon Ratón
+MONSTER_27,MONSTER_NAME,Sandshrew,Sabelette,Sandshrew,Sandan,Sandshrew
+MONSTER_27_DESC,MONSTER_DESCRIPTION,Mouse Pokémon,Pokémon Souris,Pokémon Topo,Maus-Pokémon,Pokémon Ratón
+MONSTER_28,MONSTER_NAME,Sandslash,Sablaireau,Sandslash,Sandamer,Sandslash
+MONSTER_28_DESC,MONSTER_DESCRIPTION,Mouse Pokémon,Pokémon Souris,Pokémon Topo,Maus-Pokémon,Pokémon Ratón
+MONSTER_29,MONSTER_NAME,Nidoran♀,Nidoran♀,Nidoran♀,Nidoran♀,Nidoran♀
+MONSTER_29_DESC,MONSTER_DESCRIPTION,Poison Pin Pokémon,Pokémon Vénépic,Pokémon Velenago,Giftdorn-Pokémon,Pokémon Pin Veneno
+MONSTER_30,MONSTER_NAME,Nidorina,Nidorina,Nidorina,Nidorina,Nidorina
+MONSTER_30_DESC,MONSTER_DESCRIPTION,Poison Pin Pokémon,Pokémon Vénépic,Pokémon Velenago,Giftdorn-Pokémon,Pokémon Pin Veneno
+MONSTER_31,MONSTER_NAME,Nidoqueen,Nidoqueen,Nidoqueen,Nidoqueen,Nidoqueen
+MONSTER_31_DESC,MONSTER_DESCRIPTION,Drill Pokémon,Pokémon Perceur,Pokémon Trapano,Bohrer-Pokémon,Pokémon Taladro
+MONSTER_32,MONSTER_NAME,Nidoran♂,Nidoran♂,Nidoran♂,Nidoran♂,Nidoran♂
+MONSTER_32_DESC,MONSTER_DESCRIPTION,Poison Pin Pokémon,Pokémon Vénépic,Pokémon Velenago,Giftdorn-Pokémon,Pokémon Pin Veneno
+MONSTER_33,MONSTER_NAME,Nidorino,Nidorino,Nidorino,Nidorino,Nidorino
+MONSTER_33_DESC,MONSTER_DESCRIPTION,Poison Pin Pokémon,Pokémon Vénépic,Pokémon Velenago,Giftdorn-Pokémon,Pokémon Pin Veneno
+MONSTER_34,MONSTER_NAME,Nidoking,Nidoking,Nidoking,Nidoking,Nidoking
+MONSTER_34_DESC,MONSTER_DESCRIPTION,Drill Pokémon,Pokémon Perceur,Pokémon Trapano,Bohrer-Pokémon,Pokémon Taladro
+MONSTER_35,MONSTER_NAME,Clefairy,Mélofée,Clefairy,Piepi,Clefairy
+MONSTER_35_DESC,MONSTER_DESCRIPTION,Fairy Pokémon,Pokémon Fée,Pokémon Fata,Feen-Pokémon,Pokémon Hada
+MONSTER_36,MONSTER_NAME,Clefable,Mélodelfe,Clefable,Pixi,Clefable
+MONSTER_36_DESC,MONSTER_DESCRIPTION,Fairy Pokémon,Pokémon Fée,Pokémon Fata,Feen-Pokémon,Pokémon Hada
+MONSTER_37,MONSTER_NAME,Vulpix,Goupix,Vulpix,Vulpix,Vulpix
+MONSTER_37_DESC,MONSTER_DESCRIPTION,Fox Pokémon,Pokémon Renard,Pokémon Volpe,Fuchs-Pokémon,Pokémon Zorro
+MONSTER_38,MONSTER_NAME,Ninetales,Feunard,Ninetales,Vulnona,Ninetales
+MONSTER_38_DESC,MONSTER_DESCRIPTION,Fox Pokémon,Pokémon Renard,Pokémon Volpe,Fuchs-Pokémon,Pokémon Zorro
+MONSTER_39,MONSTER_NAME,Jigglypuff,Rondoudou,Jigglypuff,Pummeluff,Jigglypuff
+MONSTER_39_DESC,MONSTER_DESCRIPTION,Balloon Pokémon,Pokémon Bouboule,Pokémon Pallone,Ballon-Pokémon,Pokémon Globo
+MONSTER_40,MONSTER_NAME,Wigglytuff,Grodoudou,Wigglytuff,Knuddeluff,Wigglytuff
+MONSTER_40_DESC,MONSTER_DESCRIPTION,Balloon Pokémon,Pokémon Bouboule,Pokémon Pallone,Ballon-Pokémon,Pokémon Globo
+MONSTER_41,MONSTER_NAME,Zubat,Nosferapti,Zubat,Zubat,Zubat
+MONSTER_41_DESC,MONSTER_DESCRIPTION,Bat Pokémon,Pokémon Chovsouris,Pokémon Pipistrello,Fledermaus-Pokémon,Pokémon Murciélago
+MONSTER_42,MONSTER_NAME,Golbat,Nosferalto,Golbat,Golbat,Golbat
+MONSTER_42_DESC,MONSTER_DESCRIPTION,Bat Pokémon,Pokémon Chovsouris,Pokémon Pipistrello,Fledermaus-Pokémon,Pokémon Murciélago
+MONSTER_43,MONSTER_NAME,Oddish,Mystherbe,Oddish,Myrapla,Oddish
+MONSTER_43_DESC,MONSTER_DESCRIPTION,Weed Pokémon,Pokémon Racine,Pokémon Malerba,Unkraut-Pokémon,Pokémon Hierbajo
+MONSTER_44,MONSTER_NAME,Gloom,Ortide,Gloom,Duflor,Gloom
+MONSTER_44_DESC,MONSTER_DESCRIPTION,Weed Pokémon,Pokémon Racine,Pokémon Malerba,Unkraut-Pokémon,Pokémon Hierbajo
+MONSTER_45,MONSTER_NAME,Vileplume,Rafflesia,Vileplume,Giflor,Vileplume
+MONSTER_45_DESC,MONSTER_DESCRIPTION,Flower Pokémon,Pokémon Fleur,Pokémon Fiore,Blumen-Pokémon,Pokémon Flor
+MONSTER_46,MONSTER_NAME,Paras,Paras,Paras,Paras,Paras
+MONSTER_46_DESC,MONSTER_DESCRIPTION,Mushroom Pokémon,Pokémon Champignon,Pokémon Fungo,Pilz,Pokémon Hongo
+MONSTER_47,MONSTER_NAME,Parasect,Parasect,Parasect,Parasek,Parasect
+MONSTER_47_DESC,MONSTER_DESCRIPTION,Mushroom Pokémon,Pokémon Champignon,Pokémon Fungo,Pilz,Pokémon Hongo
+MONSTER_48,MONSTER_NAME,Venonat,Mimitoss,Venonat,Bluzuk,Venonat
+MONSTER_48_DESC,MONSTER_DESCRIPTION,Insect Pokémon,Pokémon Vermine,Pokémon Insetto,Insekt,Pokémon Insecto
+MONSTER_49,MONSTER_NAME,Venomoth,Aéromite,Venomoth,Omot,Venomoth
+MONSTER_49_DESC,MONSTER_DESCRIPTION,Poison Moth Pokémon,Pokémon Papipoison,Pokémon Velentarma,Giftmotte,Pokémon Polilla Ven.
+MONSTER_50,MONSTER_NAME,Diglett,Taupiqueur,Diglett,Digda,Diglett
+MONSTER_50_DESC,MONSTER_DESCRIPTION,Mole Pokémon,Pokémon Taupe,Pokémon Talpa,Maulwurf-Pokémon,Pokémon Topo
+MONSTER_51,MONSTER_NAME,Dugtrio,Triopikeur,Dugtrio,Digdri,Dugtrio
+MONSTER_51_DESC,MONSTER_DESCRIPTION,Mole Pokémon,Pokémon Taupe,Pokémon Talpa,Maulwurf-Pokémon,Pokémon Topo
+MONSTER_52,MONSTER_NAME,Meowth,Miaouss,Meowth,Mauzi,Meowth
+MONSTER_52_DESC,MONSTER_DESCRIPTION,Scratch Cat Pokémon,Pokémon Chadégout,Pokémon Graffimiao,Katzen-Pokémon,Pokémon Gato Araña
+MONSTER_53,MONSTER_NAME,Persian,Persian,Persian,Snobilikat,Persian
+MONSTER_53_DESC,MONSTER_DESCRIPTION,Classy Cat Pokémon,Pokémon Chadeville,Pokémon Nobilgatto,Rassekatzen-Pokémon,Pokémon Gato Fino
+MONSTER_54,MONSTER_NAME,Psyduck,Psykokwak,Psyduck,Enton,Psyduck
+MONSTER_54_DESC,MONSTER_DESCRIPTION,Duck Pokémon,Pokémon Canard,Pokémon Papero,Enten-Pokémon,Pokémon Pato
+MONSTER_55,MONSTER_NAME,Golduck,Akwakwak,Golduck,Entoron,Golduck
+MONSTER_55_DESC,MONSTER_DESCRIPTION,Duck Pokémon,Pokémon Canard,Pokémon Papero,Enten-Pokémon,Pokémon Pato
+MONSTER_56,MONSTER_NAME,Mankey,Férosinge,Mankey,Menki,Mankey
+MONSTER_56_DESC,MONSTER_DESCRIPTION,Pig Monkey Pokémon,Pokémon Porsinge,Pokémon Suinpanzé,Schwein/Affe,Pokémon Mono Cerdo
+MONSTER_57,MONSTER_NAME,Primeape,Colossinge,Primeape,Rasaff,Primeape
+MONSTER_57_DESC,MONSTER_DESCRIPTION,Pig Monkey Pokémon,Pokémon Porsinge,Pokémon Suinpanzé,Schwein/Affe,Pokémon Mono Cerdo
+MONSTER_58,MONSTER_NAME,Growlithe,Caninos,Growlithe,Fukano,Growlithe
+MONSTER_58_DESC,MONSTER_DESCRIPTION,Puppy Pokémon,Pokémon Chiot,Pokémon Cagnolino,Welpen-Pokémon,Pokémon Perrito
+MONSTER_59,MONSTER_NAME,Arcanine,Arcanin,Arcanine,Arkani,Arcanine
+MONSTER_59_DESC,MONSTER_DESCRIPTION,Legendary Pokémon,Pokémon Légendaire,Pokémon Leggenda,Legendär-Pokémon,Pokémon Leyenda
+MONSTER_60,MONSTER_NAME,Poliwag,Ptitard,Poliwag,Quapsel,Poliwag
+MONSTER_60_DESC,MONSTER_DESCRIPTION,Tadpole Pokémon,Pokémon Têtard,Pokémon Girino,Kaulquappen-Pokémon,Pokémon Renacuajo
+MONSTER_61,MONSTER_NAME,Poliwhirl,Têtarte,Poliwhirl,Quaputzi,Poliwhirl
+MONSTER_61_DESC,MONSTER_DESCRIPTION,Tadpole Pokémon,Pokémon Têtard,Pokémon Girino,Kaulquappen-Pokémon,Pokémon Renacuajo
+MONSTER_62,MONSTER_NAME,Poliwrath,Tartard,Poliwrath,Quappo,Poliwrath
+MONSTER_62_DESC,MONSTER_DESCRIPTION,Tadpole Pokémon,Pokémon Têtard,Pokémon Girino,Kaulquappen-Pokémon,Pokémon Renacuajo
+MONSTER_63,MONSTER_NAME,Abra,Abra,Abra,Abra,Abra
+MONSTER_63_DESC,MONSTER_DESCRIPTION,Psi Pokémon,Pokémon Psy,Pokémon Psico,Psi-Pokémon,Pokémon Psi
+MONSTER_64,MONSTER_NAME,Kadabra,Kadabra,Kadabra,Kadabra,Kadabra
+MONSTER_64_DESC,MONSTER_DESCRIPTION,Psi Pokémon,Pokémon Psy,Pokémon Psico,Psi-Pokémon,Pokémon Psi
+MONSTER_65,MONSTER_NAME,Alakazam,Alakazam,Alakazam,Simsala,Alakazam
+MONSTER_65_DESC,MONSTER_DESCRIPTION,Psi Pokémon,Pokémon Psy,Pokémon Psico,Psi-Pokémon,Pokémon Psi
+MONSTER_66,MONSTER_NAME,Machop,Machoc,Machop,Machollo,Machop
+MONSTER_66_DESC,MONSTER_DESCRIPTION,Superpower Pokémon,Pokémon Colosse,Pokémon Megaforza,Kraftprotz-Pokémon,Pokémon Superpoder
+MONSTER_67,MONSTER_NAME,Machoke,Machopeur,Machoke,Maschock,Machoke
+MONSTER_67_DESC,MONSTER_DESCRIPTION,Superpower Pokémon,Pokémon Colosse,Pokémon Megaforza,Kraftprotz-Pokémon,Pokémon Superpoder
+MONSTER_68,MONSTER_NAME,Machamp,Mackogneur,Machamp,Machomei,Machamp
+MONSTER_68_DESC,MONSTER_DESCRIPTION,Superpower Pokémon,Pokémon Colosse,Pokémon Megaforza,Kraftprotz-Pokémon,Pokémon Superpoder
+MONSTER_69,MONSTER_NAME,Bellsprout,Chétiflor,Bellsprout,Knofensa,Bellsprout
+MONSTER_69_DESC,MONSTER_DESCRIPTION,Flower Pokémon,Pokémon Fleur,Pokémon Fiore,Blume,Pokémon Flor
+MONSTER_70,MONSTER_NAME,Weepinbell,Boustiflor,Weepinbell,Ultrigaria,Weepinbell
+MONSTER_70_DESC,MONSTER_DESCRIPTION,Flycatcher Pokémon,Pokémon Carnivore,Pokémon Moschivoro,Fliegentod,Pokémon Matamoscas
+MONSTER_71,MONSTER_NAME,Victreebel,Empiflor,Victreebel,Sarzenia,Victreebel
+MONSTER_71_DESC,MONSTER_DESCRIPTION,Flycatcher Pokémon,Pokémon Carnivore,Pokémon Moschivoro,Fliegentod,Pokémon Matamoscas
+MONSTER_72,MONSTER_NAME,Tentacool,Tentacool,Tentacool,Tentacha,Tentacool
+MONSTER_72_DESC,MONSTER_DESCRIPTION,Jellyfish Pokémon,Pokémon Mollusque,Pokémon Medusa,Quallen-Pokémon,Pokémon Medusa
+MONSTER_73,MONSTER_NAME,Tentacruel,Tentacruel,Tentacruel,Tentoxa,Tentacruel
+MONSTER_73_DESC,MONSTER_DESCRIPTION,Jellyfish Pokémon,Pokémon Mollusque,Pokémon Medusa,Quallen-Pokémon,Pokémon Medusa
+MONSTER_74,MONSTER_NAME,Geodude,Racaillou,Geodude,Kleinstein,Geodude
+MONSTER_74_DESC,MONSTER_DESCRIPTION,Rock Pokémon,Pokémon Roche,Pokémon Roccia,Gestein,Pokémon Roca
+MONSTER_75,MONSTER_NAME,Graveler,Gravalanch,Graveler,Georok,Graveler
+MONSTER_75_DESC,MONSTER_DESCRIPTION,Rock Pokémon,Pokémon Roche,Pokémon Roccia,Gestein,Pokémon Roca
+MONSTER_76,MONSTER_NAME,Golem,Grolem,Golem,Geowaz,Golem
+MONSTER_76_DESC,MONSTER_DESCRIPTION,Megaton Pokémon,Pokémon Titanesque,Pokémon Megatone,Urgestein,Pokémon Megatón
+MONSTER_77,MONSTER_NAME,Ponyta,Ponyta,Ponyta,Ponita,Ponyta
+MONSTER_77_DESC,MONSTER_DESCRIPTION,Fire Horse Pokémon,Pokémon Cheval Feu,Pokémon Cavalfuoco,Feuerpferd-Pokémon,Pokémon Caballo Fuego
+MONSTER_78,MONSTER_NAME,Rapidash,Galopa,Rapidash,Gallopa,Rapidash
+MONSTER_78_DESC,MONSTER_DESCRIPTION,Fire Horse Pokémon,Pokémon Cheval Feu,Pokémon Cavalfuoco,Feuerpferd-Pokémon,Pokémon Caballo Fuego
+MONSTER_79,MONSTER_NAME,Slowpoke,Ramoloss,Slowpoke,Flegmon,Slowpoke
+MONSTER_79_DESC,MONSTER_DESCRIPTION,Dopey Pokémon,Pokémon Crétin,Pokémon Ronfone,Schnarcher-Pokémon,Pokémon Atontado
+MONSTER_80,MONSTER_NAME,Slowbro,Flagadoss,Slowbro,Lahmus,Slowbro
+MONSTER_80_DESC,MONSTER_DESCRIPTION,Hermit Crab Pokémon,Pokémon Symbiose,Pokémon Paguro,Symbiose-Pokémon,Pokémon Ermitaño
+MONSTER_81,MONSTER_NAME,Magnemite,Magnéti,Magnemite,Magnetilo,Magnemite
+MONSTER_81_DESC,MONSTER_DESCRIPTION,Magnet Pokémon,Pokémon Magnétique,Pokémon Calamita,Magnet-Pokémon,Pokémon Imán
+MONSTER_82,MONSTER_NAME,Magneton,Magnéton,Magneton,Magneton,Magneton
+MONSTER_82_DESC,MONSTER_DESCRIPTION,Magnet Pokémon,Pokémon Magnétique,Pokémon Calamita,Magnet-Pokémon,Pokémon Imán
+MONSTER_83,MONSTER_NAME,Farfetch’d,Canarticho,Farfetch’d,Porenta,Farfetch’d
+MONSTER_83_DESC,MONSTER_DESCRIPTION,Wild Duck Pokémon,Pokémon Canard Fou,Pokémon Selvanatra,Wildenten-Pokémon,Pokémon Pato Salvaje
+MONSTER_84,MONSTER_NAME,Doduo,Doduo,Doduo,Dodu,Doduo
+MONSTER_84_DESC,MONSTER_DESCRIPTION,Twin Bird Pokémon,Pokémon Duoiseau,Pokémon Biuccello,Duovogel,Pokémon Ave Gemela
+MONSTER_85,MONSTER_NAME,Dodrio,Dodrio,Dodrio,Dodri,Dodrio
+MONSTER_85_DESC,MONSTER_DESCRIPTION,Triple Bird Pokémon,Pokémon Trioiseau,Pokémon Triuccello,Trivogel,Pokémon Ave Triple
+MONSTER_86,MONSTER_NAME,Seel,Otaria,Seel,Jurob,Seel
+MONSTER_86_DESC,MONSTER_DESCRIPTION,Sea Lion Pokémon,Pokémon Otarie,Pokémon Otaria,Seehund,Pokémon León Marino
+MONSTER_87,MONSTER_NAME,Dewgong,Lamantine,Dewgong,Jugong,Dewgong
+MONSTER_87_DESC,MONSTER_DESCRIPTION,Sea Lion Pokémon,Pokémon Otarie,Pokémon Otaria,Seehund,Pokémon León Marino
+MONSTER_88,MONSTER_NAME,Grimer,Tadmorv,Grimer,Sleima,Grimer
+MONSTER_88_DESC,MONSTER_DESCRIPTION,Sludge Pokémon,Pokémon Dégueu,Pokémon Melma,Schlamm,Pokémon Lodo
+MONSTER_89,MONSTER_NAME,Muk,Grotadmorv,Muk,Sleimok,Muk
+MONSTER_89_DESC,MONSTER_DESCRIPTION,Sludge Pokémon,Pokémon Dégueu,Pokémon Melma,Schlamm,Pokémon Lodo
+MONSTER_90,MONSTER_NAME,Shellder,Kokiyas,Shellder,Muschas,Shellder
+MONSTER_90_DESC,MONSTER_DESCRIPTION,Bivalve Pokémon,Pokémon Bivalve,Pokémon Bivalve,Muschel-Pokémon,Pokémon Bivalvo
+MONSTER_91,MONSTER_NAME,Cloyster,Crustabri,Cloyster,Austos,Cloyster
+MONSTER_91_DESC,MONSTER_DESCRIPTION,Bivalve Pokémon,Pokémon Bivalve,Pokémon Bivalve,Muschel-Pokémon,Pokémon Bivalvo
+MONSTER_92,MONSTER_NAME,Gastly,Fantominus,Gastly,Nebulak,Gastly
+MONSTER_92_DESC,MONSTER_DESCRIPTION,Gas Pokémon,Pokémon Gaz,Pokémon Gas,Gas-Pokémon,Pokémon Gas
+MONSTER_93,MONSTER_NAME,Haunter,Spectrum,Haunter,Alpollo,Haunter
+MONSTER_93_DESC,MONSTER_DESCRIPTION,Gas Pokémon,Pokémon Gaz,Pokémon Gas,Gas-Pokémon,Pokémon Gas
+MONSTER_94,MONSTER_NAME,Gengar,Ectoplasma,Gengar,Gengar,Gengar
+MONSTER_94_DESC,MONSTER_DESCRIPTION,Shadow Pokémon,Pokémon Ombre,Pokémon Ombra,Schatten-Pokémon,Pokémon Sombra
+MONSTER_95,MONSTER_NAME,Onix,Onix,Onix,Onix,Onix
+MONSTER_95_DESC,MONSTER_DESCRIPTION,Rock Snake Pokémon,Pokémon Serpenroc,Pokémon Serpesasso,Felsnatter-Pokémon,Pokémon Serpiente Roca
+MONSTER_96,MONSTER_NAME,Drowzee,Soporifik,Drowzee,Traumato,Drowzee
+MONSTER_96_DESC,MONSTER_DESCRIPTION,Hypnosis Pokémon,Pokémon Hypnose,Pokémon Ipnosi,Hypnose,Pokémon Hipnosis
+MONSTER_97,MONSTER_NAME,Hypno,Hypnomade,Hypno,Hypno,Hypno
+MONSTER_97_DESC,MONSTER_DESCRIPTION,Hypnosis Pokémon,Pokémon Hypnose,Pokémon Ipnosi,Hypnose,Pokémon Hipnosis
+MONSTER_98,MONSTER_NAME,Krabby,Krabby,Krabby,Krabby,Krabby
+MONSTER_98_DESC,MONSTER_DESCRIPTION,River Crab Pokémon,Pokémon Doux Crabe,Pokémon Granchio,Krabben-Pokémon,Pokémon Cangrejo
+MONSTER_99,MONSTER_NAME,Kingler,Krabboss,Kingler,Kingler,Kingler
+MONSTER_99_DESC,MONSTER_DESCRIPTION,Pincer Pokémon,Pokémon Pince,Pokémon Chela,Kneifer-Pokémon,Pokémon Tenaza
+MONSTER_100,MONSTER_NAME,Voltorb,Voltorbe,Voltorb,Voltobal,Voltorb
+MONSTER_100_DESC,MONSTER_DESCRIPTION,Ball Pokémon,Pokémon Balle,Pokémon Ball,Ball,Pokémon Bola
+MONSTER_101,MONSTER_NAME,Electrode,Électrode,Electrode,Lektrobal,Electrode
+MONSTER_101_DESC,MONSTER_DESCRIPTION,Ball Pokémon,Pokémon Balle,Pokémon Ball,Ball,Pokémon Bola
+MONSTER_102,MONSTER_NAME,Exeggcute,Noeunoeuf,Exeggcute,Owei,Exeggcute
+MONSTER_102_DESC,MONSTER_DESCRIPTION,Egg Pokémon,Pokémon Œuf,Pokémon Uovo,Ei-Pokémon,Pokémon Huevo
+MONSTER_103,MONSTER_NAME,Exeggutor,Noadkoko,Exeggutor,Kokowei,Exeggutor
+MONSTER_103_DESC,MONSTER_DESCRIPTION,Coconut Pokémon,Pokémon Fruitpalme,Pokémon Nocecocco,Palmfrucht-Pokémon,Pokémon Coco
+MONSTER_104,MONSTER_NAME,Cubone,Osselait,Cubone,Tragosso,Cubone
+MONSTER_104_DESC,MONSTER_DESCRIPTION,Lonely Pokémon,Pokémon Solitaire,Pokémon Solitario,Einsam-Pokémon,Pokémon Solitario
+MONSTER_105,MONSTER_NAME,Marowak,Ossatueur,Marowak,Knogga,Marowak
+MONSTER_105_DESC,MONSTER_DESCRIPTION,Bone Keeper Pokémon,Pokémon Gard’Os,Pokémon Guardaossi,Knochenfan-Pokémon,Pokémon Apilahueso
+MONSTER_106,MONSTER_NAME,Hitmonlee,Kicklee,Hitmonlee,Kicklee,Hitmonlee
+MONSTER_106_DESC,MONSTER_DESCRIPTION,Kicking Pokémon,Pokémon Latteur,Pokémon Tiracalci,Kicker-Pokémon,Pokémon Patada
+MONSTER_107,MONSTER_NAME,Hitmonchan,Tygnon,Hitmonchan,Nockchan,Hitmonchan
+MONSTER_107_DESC,MONSTER_DESCRIPTION,Punching Pokémon,Pokémon Puncheur,Pokémon Tirapugni,Puncher-Pokémon,Pokémon Puñetazo
+MONSTER_108,MONSTER_NAME,Lickitung,Excelangue,Lickitung,Schlurp,Lickitung
+MONSTER_108_DESC,MONSTER_DESCRIPTION,Licking Pokémon,Pokémon Lécheur,Pokémon Linguaccia,Schlecker-Pokémon,Pokémon Lametazo
+MONSTER_109,MONSTER_NAME,Koffing,Smogo,Koffing,Smogon,Koffing
+MONSTER_109_DESC,MONSTER_DESCRIPTION,Poison Gas Pokémon,Pokémon Gaz Mortel,Pokémon Velenuvola,Giftwolken-Pokémon,Pokémon Gas Venenoso
+MONSTER_110,MONSTER_NAME,Weezing,Smogogo,Weezing,Smogmog,Weezing
+MONSTER_110_DESC,MONSTER_DESCRIPTION,Poison Gas Pokémon,Pokémon Gaz Mortel,Pokémon Velenuvola,Giftwolken-Pokémon,Pokémon Gas Venenoso
+MONSTER_111,MONSTER_NAME,Rhyhorn,Rhinocorne,Rhyhorn,Rihorn,Rhyhorn
+MONSTER_111_DESC,MONSTER_DESCRIPTION,Spikes Pokémon,Pokémon Piquant,Pokémon Punzoni,Stachler-Pokémon,Pokémon Clavos
+MONSTER_112,MONSTER_NAME,Rhydon,Rhinoféros,Rhydon,Rizeros,Rhydon
+MONSTER_112_DESC,MONSTER_DESCRIPTION,Drill Pokémon,Pokémon Perceur,Pokémon Trapano,Bohrer-Pokémon,Pokémon Taladro
+MONSTER_113,MONSTER_NAME,Chansey,Leveinard,Chansey,Chaneira,Chansey
+MONSTER_113_DESC,MONSTER_DESCRIPTION,Egg Pokémon,Pokémon Œuf,Pokémon Uovo,Ei-Pokémon,Pokémon Huevo
+MONSTER_114,MONSTER_NAME,Tangela,Saquedeneu,Tangela,Tangela,Tangela
+MONSTER_114_DESC,MONSTER_DESCRIPTION,Vine Pokémon,Pokémon Vigne,Pokémon Liana,Ranken-Pokémon,Pokémon Enredadera
+MONSTER_115,MONSTER_NAME,Kangaskhan,Kangourex,Kangaskhan,Kangama,Kangaskhan
+MONSTER_115_DESC,MONSTER_DESCRIPTION,Parent Pokémon,Pokémon Maternel,Pokémon Genitore,Muttertier-Pokémon,Pokémon Maternal
+MONSTER_116,MONSTER_NAME,Horsea,Hypotrempe,Horsea,Seeper,Horsea
+MONSTER_116_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_117,MONSTER_NAME,Seadra,Hypocéan,Seadra,Seemon,Seadra
+MONSTER_117_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_118,MONSTER_NAME,Goldeen,Poissirène,Goldeen,Goldini,Goldeen
+MONSTER_118_DESC,MONSTER_DESCRIPTION,Goldfish Pokémon,Pokémon Poisson,Pokémon Pescerosso,Goldfisch-Pokémon,Pokémon Pez Color
+MONSTER_119,MONSTER_NAME,Seaking,Poissoroy,Seaking,Golking,Seaking
+MONSTER_119_DESC,MONSTER_DESCRIPTION,Goldfish Pokémon,Pokémon Poisson,Pokémon Pescerosso,Goldfisch-Pokémon,Pokémon Pez Color
+MONSTER_120,MONSTER_NAME,Staryu,Stari,Staryu,Sterndu,Staryu
+MONSTER_120_DESC,MONSTER_DESCRIPTION,Star Shape Pokémon,Pokémon Étoile,Pokémon Stella,Sternform-Pokémon,Pokémon Estrella
+MONSTER_121,MONSTER_NAME,Starmie,Staross,Starmie,Starmie,Starmie
+MONSTER_121_DESC,MONSTER_DESCRIPTION,Mysterious Pokémon,Pokémon Mystérieux,Pokémon Misterioso,Mysteriös-Pokémon,Pokémon Misterioso
+MONSTER_122,MONSTER_NAME,Mr. Mime,M. Mime,Mr. Mime,Pantimos,Mr. Mime
+MONSTER_122_DESC,MONSTER_DESCRIPTION,Barrier Pokémon,Pokémon Bloqueur,Pokémon Barriera,Sperren-Pokémon,Pokémon Barrera
+MONSTER_123,MONSTER_NAME,Scyther,Insécateur,Scyther,Sichlor,Scyther
+MONSTER_123_DESC,MONSTER_DESCRIPTION,Mantis Pokémon,Pokémon Mante,Pokémon Mantide,Mantis-Pokémon,Pokémon Mantis
+MONSTER_124,MONSTER_NAME,Jynx,Lippoutou,Jynx,Rossana,Jynx
+MONSTER_124_DESC,MONSTER_DESCRIPTION,Human Shape Pokémon,Pokémon Humanoïde,Pokémon Umanoide,Humanotyp-Pokémon,Pokémon Forma Humana
+MONSTER_125,MONSTER_NAME,Electabuzz,Élektek,Electabuzz,Elektek,Electabuzz
+MONSTER_125_DESC,MONSTER_DESCRIPTION,Electric Pokémon,Pokémon Électrique,Pokémon Elettrico,Elektro-Pokémon,Pokémon Eléctrico
+MONSTER_126,MONSTER_NAME,Magmar,Magmar,Magmar,Magmar,Magmar
+MONSTER_126_DESC,MONSTER_DESCRIPTION,Spitfire Pokémon,Pokémon Crache-Feu,Pokémon Sputafuoco,Brenner-Pokémon,Pokémon Escupefuego
+MONSTER_127,MONSTER_NAME,Pinsir,Scarabrute,Pinsir,Pinsir,Pinsir
+MONSTER_127_DESC,MONSTER_DESCRIPTION,Stag Beetle Pokémon,Pokémon Scarabée,Pokémon Cervolante,Kneifkäfer-Pokémon,Pokémon Escarabajo
+MONSTER_128,MONSTER_NAME,Tauros,Tauros,Tauros,Tauros,Tauros
+MONSTER_128_DESC,MONSTER_DESCRIPTION,Wild Bull Pokémon,Pokémon Buffle,Pokémon Torobrado,Wildbullen-Pokémon,Pokémon Toro Bravo
+MONSTER_129,MONSTER_NAME,Magikarp,Magicarpe,Magikarp,Karpador,Magikarp
+MONSTER_129_DESC,MONSTER_DESCRIPTION,Fish Pokémon,Pokémon Poisson,Pokémon Pesce,Fisch-Pokémon,Pokémon Pez
+MONSTER_130,MONSTER_NAME,Gyarados,Léviator,Gyarados,Garados,Gyarados
+MONSTER_130_DESC,MONSTER_DESCRIPTION,Atrocious Pokémon,Pokémon Terrifiant,Pokémon Atroce,Grausam-Pokémon,Pokémon Atrocidad
+MONSTER_131,MONSTER_NAME,Lapras,Lokhlass,Lapras,Lapras,Lapras
+MONSTER_131_DESC,MONSTER_DESCRIPTION,Transport Pokémon,Pokémon Transport,Pokémon Trasporto,Transport-Pokémon,Pokémon Transporte
+MONSTER_132,MONSTER_NAME,Ditto,Métamorph,Ditto,Ditto,Ditto
+MONSTER_132_DESC,MONSTER_DESCRIPTION,Transform Pokémon,Pokémon Morphing,Pokémon Mutante,Transform-Pokémon,Pokémon Transformación
+MONSTER_133,MONSTER_NAME,Eevee,Évoli,Eevee,Evoli,Eevee
+MONSTER_133_DESC,MONSTER_DESCRIPTION,Evolution Pokémon,Pokémon Évolutif,Pokémon Evoluzione,Evolutions-Pokémon,Pokémon Evolución
+MONSTER_134,MONSTER_NAME,Vaporeon,Aquali,Vaporeon,Aquana,Vaporeon
+MONSTER_134_DESC,MONSTER_DESCRIPTION,Bubble Jet Pokémon,Pokémon Bulleur,Pokémon Bollajet,Blubbblasen-Pokémon,Pokémon Burbuja
+MONSTER_135,MONSTER_NAME,Jolteon,Voltali,Jolteon,Blitza,Jolteon
+MONSTER_135_DESC,MONSTER_DESCRIPTION,Lightning Pokémon,Pokémon Orage,Pokémon Luminoso,Blitz-Pokémon,Pokémon Relámpago
+MONSTER_136,MONSTER_NAME,Flareon,Pyroli,Flareon,Flamara,Flareon
+MONSTER_136_DESC,MONSTER_DESCRIPTION,Flame Pokémon,Pokémon Flamme,Pokémon Fiamma,Feuer-Pokémon,Pokémon Llama
+MONSTER_137,MONSTER_NAME,Porygon,Porygon,Porygon,Porygon,Porygon
+MONSTER_137_DESC,MONSTER_DESCRIPTION,Virtual Pokémon,Pokémon Virtuel,Pokémon Virtuale,Virtuell-Pokémon,Pokémon Virtual
+MONSTER_138,MONSTER_NAME,Omanyte,Amonita,Omanyte,Amonitas,Omanyte
+MONSTER_138_DESC,MONSTER_DESCRIPTION,Spiral Pokémon,Pokémon Spirale,Pokémon Spirale,Spiralen-Pokémon,Pokémon Espiral
+MONSTER_139,MONSTER_NAME,Omastar,Amonistar,Omastar,Amoroso,Omastar
+MONSTER_139_DESC,MONSTER_DESCRIPTION,Spiral Pokémon,Pokémon Spirale,Pokémon Spirale,Spiralen-Pokémon,Pokémon Espiral
+MONSTER_140,MONSTER_NAME,Kabuto,Kabuto,Kabuto,Kabuto,Kabuto
+MONSTER_140_DESC,MONSTER_DESCRIPTION,Shellfish Pokémon,Pokémon Carapace,Pokémon Crostaceo,Schaltier-Pokémon,Pokémon Armazón
+MONSTER_141,MONSTER_NAME,Kabutops,Kabutops,Kabutops,Kabutops,Kabutops
+MONSTER_141_DESC,MONSTER_DESCRIPTION,Shellfish Pokémon,Pokémon Carapace,Pokémon Crostaceo,Schaltier-Pokémon,Pokémon Armazón
+MONSTER_142,MONSTER_NAME,Aerodactyl,Ptéra,Aerodactyl,Aerodactyl,Aerodactyl
+MONSTER_142_DESC,MONSTER_DESCRIPTION,Fossil Pokémon,Pokémon Fossile,Pokémon Fossile,Fossil-Pokémon,Pokémon Fósil
+MONSTER_143,MONSTER_NAME,Snorlax,Ronflex,Snorlax,Relaxo,Snorlax
+MONSTER_143_DESC,MONSTER_DESCRIPTION,Sleeping Pokémon,Pokémon Pionceur,Pokémon Sonno,Tagträumer-Pokémon,Pokémon Dormir
+MONSTER_144,MONSTER_NAME,Articuno,Artikodin,Articuno,Arktos,Articuno
+MONSTER_144_DESC,MONSTER_DESCRIPTION,Freeze Pokémon,Pokémon Glaciaire,Pokémon Gelo,Eis-Pokémon,Pokémon Congelar
+MONSTER_145,MONSTER_NAME,Zapdos,Électhor,Zapdos,Zapdos,Zapdos
+MONSTER_145_DESC,MONSTER_DESCRIPTION,Electric Pokémon,Pokémon Électrique,Pokémon Elettrico,Elektro-Pokémon,Pokémon Eléctrico
+MONSTER_146,MONSTER_NAME,Moltres,Sulfura,Moltres,Lavados,Moltres
+MONSTER_146_DESC,MONSTER_DESCRIPTION,Flame Pokémon,Pokémon Flamme,Pokémon Fiamma,Flammen-Pokémon,Pokémon Llama
+MONSTER_147,MONSTER_NAME,Dratini,Minidraco,Dratini,Dratini,Dratini
+MONSTER_147_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_148,MONSTER_NAME,Dragonair,Draco,Dragonair,Dragonir,Dragonair
+MONSTER_148_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_149,MONSTER_NAME,Dragonite,Dracolosse,Dragonite,Dragoran,Dragonite
+MONSTER_149_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_150,MONSTER_NAME,Mewtwo,Mewtwo,Mewtwo,Mewtu,Mewtwo
+MONSTER_150_DESC,MONSTER_DESCRIPTION,Genetic Pokémon,Pokémon Génétique,Pokémon Genetico,Genmutanten-Pokémon,Pokémon Genético
+MONSTER_151,MONSTER_NAME,Mew,Mew,Mew,Mew,Mew
+MONSTER_151_DESC,MONSTER_DESCRIPTION,New Species Pokémon,Pokémon Nouveau,Pokémon Novaspecie,Neue Art-Pokémon,Pokémon Nueva Especie
+MONSTER_152,MONSTER_NAME,Chikorita,Germignon,Chikorita,Endivie,Chikorita
+MONSTER_152_DESC,MONSTER_DESCRIPTION,Leaf Pokémon,Pokémon Feuille,Pokémon Foglia,Laub,Pokémon Hoja
+MONSTER_153,MONSTER_NAME,Bayleef,Macronium,Bayleef,Lorblatt,Bayleef
+MONSTER_153_DESC,MONSTER_DESCRIPTION,Leaf Pokémon,Pokémon Feuille,Pokémon Foglia,Laub,Pokémon Hoja
+MONSTER_154,MONSTER_NAME,Meganium,Méganium,Meganium,Meganie,Meganium
+MONSTER_154_DESC,MONSTER_DESCRIPTION,Herb Pokémon,Pokémon Herbe,Pokémon Erbe,Kräuter,Pokémon Hierba
+MONSTER_155,MONSTER_NAME,Cyndaquil,Héricendre,Cyndaquil,Feurigel,Cyndaquil
+MONSTER_155_DESC,MONSTER_DESCRIPTION,Fire Mouse Pokémon,Pokémon Souris Feu,Pokémon Fuocotopo,Feuermaus,Pokémon Ratón Fuego
+MONSTER_156,MONSTER_NAME,Quilava,Feurisson,Quilava,Igelavar,Quilava
+MONSTER_156_DESC,MONSTER_DESCRIPTION,Volcano Pokémon,Pokémon Volcan,Pokémon Vulcano,Vulkan,Pokémon Volcán
+MONSTER_157,MONSTER_NAME,Typhlosion,Typhlosion,Typhlosion,Tornupto,Typhlosion
+MONSTER_157_DESC,MONSTER_DESCRIPTION,Volcano Pokémon,Pokémon Volcan,Pokémon Vulcano,Vulkan,Pokémon Volcán
+MONSTER_158,MONSTER_NAME,Totodile,Kaiminus,Totodile,Karnimani,Totodile
+MONSTER_158_DESC,MONSTER_DESCRIPTION,Big Jaw Pokémon,Pokémon Mâchoire,Pokémon Mascellone,Großmaul,Pokémon Fauces
+MONSTER_159,MONSTER_NAME,Croconaw,Crocrodil,Croconaw,Tyracroc,Croconaw
+MONSTER_159_DESC,MONSTER_DESCRIPTION,Big Jaw Pokémon,Pokémon Mâchoire,Pokémon Mascellone,Großmaul,Pokémon Fauces
+MONSTER_160,MONSTER_NAME,Feraligatr,Aligatueur,Feraligatr,Impergator,Feraligatr
+MONSTER_160_DESC,MONSTER_DESCRIPTION,Big Jaw Pokémon,Pokémon Mâchoire,Pokémon Mascellone,Großmaul,Pokémon Fauces
+MONSTER_161,MONSTER_NAME,Sentret,Fouinette,Sentret,Wiesor,Sentret
+MONSTER_161_DESC,MONSTER_DESCRIPTION,Scout Pokémon,Pokémon Espion,Pokémon Esplorante,Späher,Pokémon Explorador
+MONSTER_162,MONSTER_NAME,Furret,Fouinar,Furret,Wiesenior,Furret
+MONSTER_162_DESC,MONSTER_DESCRIPTION,Long Body Pokémon,Pokémon Allongé,Pokémon Lungocorpo,Langleib,Pokémon Alargado
+MONSTER_163,MONSTER_NAME,Hoothoot,Hoothoot,Hoothoot,Hoothoot,Hoothoot
+MONSTER_163_DESC,MONSTER_DESCRIPTION,Owl Pokémon,Pokémon Hibou,Pokémon Gufo,Eulen-Pokémon,Pokémon Búho
+MONSTER_164,MONSTER_NAME,Noctowl,Noarfang,Noctowl,Noctuh,Noctowl
+MONSTER_164_DESC,MONSTER_DESCRIPTION,Owl Pokémon,Pokémon Hibou,Pokémon Gufo,Eulen-Pokémon,Pokémon Búho
+MONSTER_165,MONSTER_NAME,Ledyba,Coxy,Ledyba,Ledyba,Ledyba
+MONSTER_165_DESC,MONSTER_DESCRIPTION,Five Star Pokémon,Pokémon 5 Étoiles,Pokémon Pentastra,Fünf-Punkt,Pokémon 5 Estrellas
+MONSTER_166,MONSTER_NAME,Ledian,Coxyclaque,Ledian,Ledian,Ledian
+MONSTER_166_DESC,MONSTER_DESCRIPTION,Five Star Pokémon,Pokémon 5 Étoiles,Pokémon Pentastra,Fünf-Punkt,Pokémon 5 Estrellas
+MONSTER_167,MONSTER_NAME,Spinarak,Mimigal,Spinarak,Webarak,Spinarak
+MONSTER_167_DESC,MONSTER_DESCRIPTION,String Spit Pokémon,Pokémon Crache Fil,Pokémon Tela,Fadenwurf,Pokémon Escupesoga
+MONSTER_168,MONSTER_NAME,Ariados,Migalos,Ariados,Ariados,Ariados
+MONSTER_168_DESC,MONSTER_DESCRIPTION,Long Leg Pokémon,Pokémon Long-Patte,Pokémon Lungazampa,Langbein,Pokémon Pata Larga
+MONSTER_169,MONSTER_NAME,Crobat,Nostenfer,Crobat,Iksbat,Crobat
+MONSTER_169_DESC,MONSTER_DESCRIPTION,Bat Pokémon,Pokémon Chovsouris,Pokémon Pipistrello,Fledermaus-Pokémon,Pokémon Murciélago
+MONSTER_170,MONSTER_NAME,Chinchou,Loupio,Chinchou,Lampi,Chinchou
+MONSTER_170_DESC,MONSTER_DESCRIPTION,Angler Pokémon,Pokémon Poisson,Pokémon Pescatore,Angler-Pokémon,Pokémon Rape
+MONSTER_171,MONSTER_NAME,Lanturn,Lanturn,Lanturn,Lanturn,Lanturn
+MONSTER_171_DESC,MONSTER_DESCRIPTION,Light Pokémon,Pokémon Lumière,Pokémon Luce,Leuchten-Pokémon,Pokémon Luz
+MONSTER_172,MONSTER_NAME,Pichu,Pichu,Pichu,Pichu,Pichu
+MONSTER_172_DESC,MONSTER_DESCRIPTION,Tiny Mouse Pokémon,Pokémon Minisouris,Pokémon Topino,Babymaus-Pokémon,Pokémon Ratoncito
+MONSTER_173,MONSTER_NAME,Cleffa,Mélo,Cleffa,Pii,Cleffa
+MONSTER_173_DESC,MONSTER_DESCRIPTION,Star Shape Pokémon,Pokémon Étoile,Pokémon Stella,Sternform-Pokémon,Pokémon Estrella
+MONSTER_174,MONSTER_NAME,Igglybuff,Toudoudou,Igglybuff,Fluffeluff,Igglybuff
+MONSTER_174_DESC,MONSTER_DESCRIPTION,Balloon Pokémon,Pokémon Bouboule,Pokémon Pallone,Ballon-Pokémon,Pokémon Globo
+MONSTER_175,MONSTER_NAME,Togepi,Togepi,Togepi,Togepi,Togepi
+MONSTER_175_DESC,MONSTER_DESCRIPTION,Spike Ball Pokémon,Pokémon Balle Pic,Pokémon Pallapunte,Zackenball-Pokémon,Pokémon Bolaclavos
+MONSTER_176,MONSTER_NAME,Togetic,Togetic,Togetic,Togetic,Togetic
+MONSTER_176_DESC,MONSTER_DESCRIPTION,Happiness Pokémon,Pokémon Bonheur,Pokémon Felicità,Freuden-Pokémon,Pokémon Felicidad
+MONSTER_177,MONSTER_NAME,Natu,Natu,Natu,Natu,Natu
+MONSTER_177_DESC,MONSTER_DESCRIPTION,Tiny Bird Pokémon,Pokémon Minoiseau,Pokémon Uccellino,Kleinvogel-Pokémon,Pokémon Pajarito
+MONSTER_178,MONSTER_NAME,Xatu,Xatu,Xatu,Xatu,Xatu
+MONSTER_178_DESC,MONSTER_DESCRIPTION,Mystic Pokémon,Pokémon Mystique,Pokémon Magico,Mystik-Pokémon,Pokémon Místico
+MONSTER_179,MONSTER_NAME,Mareep,Wattouat,Mareep,Voltilamm,Mareep
+MONSTER_179_DESC,MONSTER_DESCRIPTION,Wool Pokémon,Pokémon Laine,Pokémon Lana,Wolle,Pokémon Lana
+MONSTER_180,MONSTER_NAME,Flaaffy,Lainergie,Flaaffy,Waaty,Flaaffy
+MONSTER_180_DESC,MONSTER_DESCRIPTION,Wool Pokémon,Pokémon Laine,Pokémon Lana,Wolle,Pokémon Lana
+MONSTER_181,MONSTER_NAME,Ampharos,Pharamp,Ampharos,Ampharos,Ampharos
+MONSTER_181_DESC,MONSTER_DESCRIPTION,Light Pokémon,Pokémon Lumière,Pokémon Luce,Leuchte,Pokémon Luz
+MONSTER_182,MONSTER_NAME,Bellossom,Joliflor,Bellossom,Blubella,Bellossom
+MONSTER_182_DESC,MONSTER_DESCRIPTION,Flower Pokémon,Pokémon Fleur,Pokémon Fiore,Blumen-Pokémon,Pokémon Flor
+MONSTER_183,MONSTER_NAME,Marill,Marill,Marill,Marill,Marill
+MONSTER_183_DESC,MONSTER_DESCRIPTION,Aqua Mouse Pokémon,Pokémon Aquasouris,Pokémon Acquatopo,Aquamaus-Pokémon,Pokémon Ratón Agua
+MONSTER_184,MONSTER_NAME,Azumarill,Azumarill,Azumarill,Azumarill,Azumarill
+MONSTER_184_DESC,MONSTER_DESCRIPTION,Aqua Rabbit Pokémon,Pokémon Aqualapin,Pokémon Acquniglio,Aquahasen-Pokémon,Pokémon Conejo Agua
+MONSTER_185,MONSTER_NAME,Sudowoodo,Simularbre,Sudowoodo,Mogelbaum,Sudowoodo
+MONSTER_185_DESC,MONSTER_DESCRIPTION,Imitation Pokémon,Pokémon Imitation,Pokémon Imitazione,Imitations-Pokémon,Pokémon Imitación
+MONSTER_186,MONSTER_NAME,Politoed,Tarpaud,Politoed,Quaxo,Politoed
+MONSTER_186_DESC,MONSTER_DESCRIPTION,Frog Pokémon,Pokémon Grenouille,Pokémon Rana,Frosch-Pokémon,Pokémon Rana
+MONSTER_187,MONSTER_NAME,Hoppip,Granivol,Hoppip,Hoppspross,Hoppip
+MONSTER_187_DESC,MONSTER_DESCRIPTION,Cottonweed Pokémon,Pokémon Pissenlit,Pokémon Gramigna,Löwenzahn,Pokémon Algadón
+MONSTER_188,MONSTER_NAME,Skiploom,Floravol,Skiploom,Hubelupf,Skiploom
+MONSTER_188_DESC,MONSTER_DESCRIPTION,Cottonweed Pokémon,Pokémon Pissenlit,Pokémon Gramigna,Löwenzahn,Pokémon Algadón
+MONSTER_189,MONSTER_NAME,Jumpluff,Cotovol,Jumpluff,Papungha,Jumpluff
+MONSTER_189_DESC,MONSTER_DESCRIPTION,Cottonweed Pokémon,Pokémon Pissenlit,Pokémon Gramigna,Löwenzahn,Pokémon Algadón
+MONSTER_190,MONSTER_NAME,Aipom,Capumain,Aipom,Griffel,Aipom
+MONSTER_190_DESC,MONSTER_DESCRIPTION,Long Tail Pokémon,Pokémon Longqueue,Pokémon Lungacoda,Langschweif,Pokémon Cola Larga
+MONSTER_191,MONSTER_NAME,Sunkern,Tournegrin,Sunkern,Sonnkern,Sunkern
+MONSTER_191_DESC,MONSTER_DESCRIPTION,Seed Pokémon,Pokémon Graine,Pokémon Seme,Samen,Pokémon Semilla
+MONSTER_192,MONSTER_NAME,Sunflora,Héliatronc,Sunflora,Sonnflora,Sunflora
+MONSTER_192_DESC,MONSTER_DESCRIPTION,Sun Pokémon,Pokémon Soleil,Pokémon Sole,Sonne,Pokémon Sol
+MONSTER_193,MONSTER_NAME,Yanma,Yanma,Yanma,Yanma,Yanma
+MONSTER_193_DESC,MONSTER_DESCRIPTION,Clear Wing Pokémon,Pokémon Translaile,Pokémon Alachiara,Libelle,Pokémon Ala Clara
+MONSTER_194,MONSTER_NAME,Wooper,Axoloto,Wooper,Felino,Wooper
+MONSTER_194_DESC,MONSTER_DESCRIPTION,Water Fish Pokémon,Pokémon Poisson,Pokémon Acquapesce,Fisch-Pokémon,Pokémon Pez Agua
+MONSTER_195,MONSTER_NAME,Quagsire,Maraiste,Quagsire,Morlord,Quagsire
+MONSTER_195_DESC,MONSTER_DESCRIPTION,Water Fish Pokémon,Pokémon Poisson,Pokémon Acquapesce,Fisch-Pokémon,Pokémon Pez Agua
+MONSTER_196,MONSTER_NAME,Espeon,Mentali,Espeon,Psiana,Espeon
+MONSTER_196_DESC,MONSTER_DESCRIPTION,Sun Pokémon,Pokémon Soleil,Pokémon Sole,Sonnen-Pokémon,Pokémon Sol
+MONSTER_197,MONSTER_NAME,Umbreon,Noctali,Umbreon,Nachtara,Umbreon
+MONSTER_197_DESC,MONSTER_DESCRIPTION,Moonlight Pokémon,Pokémon Lune,Pokémon Lucelunare,Mondschein-Pokémon,Pokémon Luz Lunar
+MONSTER_198,MONSTER_NAME,Murkrow,Cornèbre,Murkrow,Kramurx,Murkrow
+MONSTER_198_DESC,MONSTER_DESCRIPTION,Darkness Pokémon,Pokémon Obscurité,Pokémon Oscurità,Finsternis,Pokémon Oscuridad
+MONSTER_199,MONSTER_NAME,Slowking,Roigada,Slowking,Laschoking,Slowking
+MONSTER_199_DESC,MONSTER_DESCRIPTION,Royal Pokémon,Pokémon Royal,Pokémon Reale,Monarchen-Pokémon,Pokémon Regio
+MONSTER_200,MONSTER_NAME,Misdreavus,Feuforêve,Misdreavus,Traunfugil,Misdreavus
+MONSTER_200_DESC,MONSTER_DESCRIPTION,Screech Pokémon,Pokémon Strident,Pokémon Strido,Kreischer,Pokémon Chirrido
+MONSTER_201,MONSTER_NAME,Unown,Zarbi,Unown,Icognito,Unown
+MONSTER_201_DESC,MONSTER_DESCRIPTION,Symbol Pokémon,Pokémon Symbolique,Pokémon Simbolo,Symbol,Pokémon Símbolo
+MONSTER_202,MONSTER_NAME,Wobbuffet,Qulbutoké,Wobbuffet,Woingenau,Wobbuffet
+MONSTER_202_DESC,MONSTER_DESCRIPTION,Patient Pokémon,Pokémon Patient,Pokémon Pazienza,Gedulds-Pokémon,Pokémon Paciente
+MONSTER_203,MONSTER_NAME,Girafarig,Girafarig,Girafarig,Girafarig,Girafarig
+MONSTER_203_DESC,MONSTER_DESCRIPTION,Long Neck Pokémon,Pokémon Long-Cou,Pokémon Lungocollo,Langhals,Pokémon Gran Cuello
+MONSTER_204,MONSTER_NAME,Pineco,Pomdepik,Pineco,Tannza,Pineco
+MONSTER_204_DESC,MONSTER_DESCRIPTION,Bagworm Pokémon,Pokémon Ver Caché,Pokémon Larva,Beutelwurm,Pokémon Larva
+MONSTER_205,MONSTER_NAME,Forretress,Foretress,Forretress,Forstellka,Forretress
+MONSTER_205_DESC,MONSTER_DESCRIPTION,Bagworm Pokémon,Pokémon Ver Caché,Pokémon Larva,Beutelwurm,Pokémon Larva
+MONSTER_206,MONSTER_NAME,Dunsparce,Insolourdo,Dunsparce,Dummisel,Dunsparce
+MONSTER_206_DESC,MONSTER_DESCRIPTION,Land Snake Pokémon,Pokémon Serpent,Pokémon Terraserpe,Schlangen-Pokémon,Pokémon Serpiente Tierra
+MONSTER_207,MONSTER_NAME,Gligar,Scorplane,Gligar,Skorgla,Gligar
+MONSTER_207_DESC,MONSTER_DESCRIPTION,Fly Scorpion Pokémon,Pokémon Scorpivol,Pokémon Aliscorpio,Flugskorpi,Pokémon Escorpiala
+MONSTER_208,MONSTER_NAME,Steelix,Steelix,Steelix,Stahlos,Steelix
+MONSTER_208_DESC,MONSTER_DESCRIPTION,Iron Snake Pokémon,Pokémon Serpenfer,Pokémon Ferroserpe,Stahlboa-Pokémon,Pokémon Serpiente Férrea
+MONSTER_209,MONSTER_NAME,Snubbull,Snubbull,Snubbull,Snubbull,Snubbull
+MONSTER_209_DESC,MONSTER_DESCRIPTION,Fairy Pokémon,Pokémon Fée,Pokémon Fata,Fee,Pokémon Hada
+MONSTER_210,MONSTER_NAME,Granbull,Granbull,Granbull,Granbull,Granbull
+MONSTER_210_DESC,MONSTER_DESCRIPTION,Fairy Pokémon,Pokémon Fée,Pokémon Fata,Fee,Pokémon Hada
+MONSTER_211,MONSTER_NAME,Qwilfish,Qwilfish,Qwilfish,Baldorfish,Qwilfish
+MONSTER_211_DESC,MONSTER_DESCRIPTION,Balloon Pokémon,Pokémon Bouboule,Pokémon Pallone,Ballon-Pokémon,Pokémon Globo
+MONSTER_212,MONSTER_NAME,Scizor,Cizayox,Scizor,Scherox,Scizor
+MONSTER_212_DESC,MONSTER_DESCRIPTION,Pincer Pokémon,Pokémon Pince,Pokémon Chela,Kneifer-Pokémon,Pokémon Tenaza
+MONSTER_213,MONSTER_NAME,Shuckle,Caratroc,Shuckle,Pottrott,Shuckle
+MONSTER_213_DESC,MONSTER_DESCRIPTION,Mold Pokémon,Pokémon Pourri,Pokémon Muffa,Schimmel-Pokémon,Pokémon Moho
+MONSTER_214,MONSTER_NAME,Heracross,Scarhino,Heracross,Skaraborn,Heracross
+MONSTER_214_DESC,MONSTER_DESCRIPTION,Single Horn Pokémon,Pokémon Unicorne,Pokémon Monocorno,Einzelhorn-Pokémon,Pokémon Cuerno
+MONSTER_215,MONSTER_NAME,Sneasel,Farfuret,Sneasel,Sniebel,Sneasel
+MONSTER_215_DESC,MONSTER_DESCRIPTION,Sharp Claw Pokémon,Pokémon Grifacérée,Pokémon Lamartigli,Stichklauen-Pokémon,Pokémon Garra Filo
+MONSTER_216,MONSTER_NAME,Teddiursa,Teddiursa,Teddiursa,Teddiursa,Teddiursa
+MONSTER_216_DESC,MONSTER_DESCRIPTION,Little Bear Pokémon,Pokémon Mini Ours,Pokémon Orsetto,Kleinbär,Pokémon Osito
+MONSTER_217,MONSTER_NAME,Ursaring,Ursaring,Ursaring,Ursaring,Ursaring
+MONSTER_217_DESC,MONSTER_DESCRIPTION,Hibernator Pokémon,Pokémon Hibernant,Pokémon Letargo,Schläfer,Pokémon Hibernante
+MONSTER_218,MONSTER_NAME,Slugma,Limagma,Slugma,Schneckmag,Slugma
+MONSTER_218_DESC,MONSTER_DESCRIPTION,Lava Pokémon,Pokémon Lave,Pokémon Lava,Lava,Pokémon Lava
+MONSTER_219,MONSTER_NAME,Magcargo,Volcaropod,Magcargo,Magcargo,Magcargo
+MONSTER_219_DESC,MONSTER_DESCRIPTION,Lava Pokémon,Pokémon Lave,Pokémon Lava,Lava,Pokémon Lava
+MONSTER_220,MONSTER_NAME,Swinub,Marcacrin,Swinub,Quiekel,Swinub
+MONSTER_220_DESC,MONSTER_DESCRIPTION,Pig Pokémon,Pokémon Cochon,Pokémon Maiale,Ferkel-Pokémon,Pokémon Cerdo
+MONSTER_221,MONSTER_NAME,Piloswine,Cochignon,Piloswine,Keifel,Piloswine
+MONSTER_221_DESC,MONSTER_DESCRIPTION,Swine Pokémon,Pokémon Porc,Pokémon Suino,Schwein-Pokémon,Pokémon Puerco
+MONSTER_222,MONSTER_NAME,Corsola,Corayon,Corsola,Corasonn,Corsola
+MONSTER_222_DESC,MONSTER_DESCRIPTION,Coral Pokémon,Pokémon Corail,Pokémon Corallo,Korallen-Pokémon,Pokémon Coral
+MONSTER_223,MONSTER_NAME,Remoraid,Rémoraid,Remoraid,Remoraid,Remoraid
+MONSTER_223_DESC,MONSTER_DESCRIPTION,Jet Pokémon,Pokémon Jet,Pokémon Jet,Hochdruck-Pokémon,Pokémon Reactor
+MONSTER_224,MONSTER_NAME,Octillery,Octillery,Octillery,Octillery,Octillery
+MONSTER_224_DESC,MONSTER_DESCRIPTION,Jet Pokémon,Pokémon Jet,Pokémon Jet,Hochdruck-Pokémon,Pokémon Reactor
+MONSTER_225,MONSTER_NAME,Delibird,Cadoizo,Delibird,Botogel,Delibird
+MONSTER_225_DESC,MONSTER_DESCRIPTION,Delivery Pokémon,Pokémon Livraison,Pokémon Consegna,Lieferanten-Pokémon,Pokémon Reparto
+MONSTER_226,MONSTER_NAME,Mantine,Démanta,Mantine,Mantax,Mantine
+MONSTER_226_DESC,MONSTER_DESCRIPTION,Kite Pokémon,Pokémon Cervolant,Pokémon Aquilone,Flugrochen-Pokémon,Pokémon Milano
+MONSTER_227,MONSTER_NAME,Skarmory,Airmure,Skarmory,Panzaeron,Skarmory
+MONSTER_227_DESC,MONSTER_DESCRIPTION,Armor Bird Pokémon,Pokémon Armoiseau,Pokémon Armuccello,Flugstahl-Pokémon,Pokémon Coraza Ave
+MONSTER_228,MONSTER_NAME,Houndour,Malosse,Houndour,Hunduster,Houndour
+MONSTER_228_DESC,MONSTER_DESCRIPTION,Dark Pokémon,Pokémon Sombre,Pokémon Buio,Hades,Pokémon Siniestro
+MONSTER_229,MONSTER_NAME,Houndoom,Démolosse,Houndoom,Hundemon,Houndoom
+MONSTER_229_DESC,MONSTER_DESCRIPTION,Dark Pokémon,Pokémon Sombre,Pokémon Buio,Hades,Pokémon Siniestro
+MONSTER_230,MONSTER_NAME,Kingdra,Hyporoi,Kingdra,Seedraking,Kingdra
+MONSTER_230_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_231,MONSTER_NAME,Phanpy,Phanpy,Phanpy,Phanpy,Phanpy
+MONSTER_231_DESC,MONSTER_DESCRIPTION,Long Nose Pokémon,Pokémon Long-Nez,Pokémon Nasone,Langrüssel,Pokémon Narizotas
+MONSTER_232,MONSTER_NAME,Donphan,Donphan,Donphan,Donphan,Donphan
+MONSTER_232_DESC,MONSTER_DESCRIPTION,Armor Pokémon,Pokémon Armure,Pokémon Armatura,Panzer,Pokémon Coraza
+MONSTER_233,MONSTER_NAME,Porygon2,Porygon2,Porygon2,Porygon2,Porygon2
+MONSTER_233_DESC,MONSTER_DESCRIPTION,Virtual Pokémon,Pokémon Virtuel,Pokémon Virtuale,Virtuell-Pokémon,Pokémon Virtual
+MONSTER_234,MONSTER_NAME,Stantler,Cerfrousse,Stantler,Damhirplex,Stantler
+MONSTER_234_DESC,MONSTER_DESCRIPTION,Big Horn Pokémon,Pokémon Maxi Corne,Pokémon Grancorno,Vielender,Pokémon Gran Cuerno
+MONSTER_235,MONSTER_NAME,Smeargle,Queulorior,Smeargle,Farbeagle,Smeargle
+MONSTER_235_DESC,MONSTER_DESCRIPTION,Painter Pokémon,Pokémon Peintre,Pokémon Pittore,Maler,Pokémon Pintor
+MONSTER_236,MONSTER_NAME,Tyrogue,Debugant,Tyrogue,Rabauz,Tyrogue
+MONSTER_236_DESC,MONSTER_DESCRIPTION,Scuffle Pokémon,Pokémon Bagarreur,Pokémon Baruffa,Racker-Pokémon,Pokémon Peleón
+MONSTER_237,MONSTER_NAME,Hitmontop,Kapoera,Hitmontop,Kapoera,Hitmontop
+MONSTER_237_DESC,MONSTER_DESCRIPTION,Handstand Pokémon,Pokémon Poirier,Pokémon Verticale,Kopfstand-Pokémon,Pokémon Boca Abajo
+MONSTER_238,MONSTER_NAME,Smoochum,Lippouti,Smoochum,Kussilla,Smoochum
+MONSTER_238_DESC,MONSTER_DESCRIPTION,Kiss Pokémon,Pokémon Bisou,Pokémon Bacio,Kuss-Pokémon,Pokémon Beso
+MONSTER_239,MONSTER_NAME,Elekid,Élekid,Elekid,Elekid,Elekid
+MONSTER_239_DESC,MONSTER_DESCRIPTION,Electric Pokémon,Pokémon Électrique,Pokémon Elettrico,Elektro-Pokémon,Pokémon Eléctrico
+MONSTER_240,MONSTER_NAME,Magby,Magby,Magby,Magby,Magby
+MONSTER_240_DESC,MONSTER_DESCRIPTION,Live Coal Pokémon,Pokémon Charbon,Pokémon Carbonvivo,Glutherd-Pokémon,Pokémon Ascuas
+MONSTER_241,MONSTER_NAME,Miltank,Écrémeuh,Miltank,Miltank,Miltank
+MONSTER_241_DESC,MONSTER_DESCRIPTION,Milk Cow Pokémon,Pokémon Vachalait,Pokémon Bovino,Milchkuh-Pokémon,Pokémon Lechera
+MONSTER_242,MONSTER_NAME,Blissey,Leuphorie,Blissey,Heiteira,Blissey
+MONSTER_242_DESC,MONSTER_DESCRIPTION,Happiness Pokémon,Pokémon Bonheur,Pokémon Felicità,Freuden-Pokémon,Pokémon Felicidad
+MONSTER_243,MONSTER_NAME,Raikou,Raikou,Raikou,Raikou,Raikou
+MONSTER_243_DESC,MONSTER_DESCRIPTION,Thunder Pokémon,Pokémon Foudre,Pokémon Tuono,Donner-Pokémon,Pokémon Trueno
+MONSTER_244,MONSTER_NAME,Entei,Entei,Entei,Entei,Entei
+MONSTER_244_DESC,MONSTER_DESCRIPTION,Volcano Pokémon,Pokémon Volcan,Pokémon Vulcano,Vulkan-Pokémon,Pokémon Volcán
+MONSTER_245,MONSTER_NAME,Suicune,Suicune,Suicune,Suicune,Suicune
+MONSTER_245_DESC,MONSTER_DESCRIPTION,Aurora Pokémon,Pokémon Aurore,Pokémon Aurora,Polarlicht-Pokémon,Pokémon Aurora
+MONSTER_246,MONSTER_NAME,Larvitar,Embrylex,Larvitar,Larvitar,Larvitar
+MONSTER_246_DESC,MONSTER_DESCRIPTION,Rock Skin Pokémon,Pokémon Peaupierre,Pokémon Peldisasso,Felshaut-Pokémon,Pokémon Piel Roca
+MONSTER_247,MONSTER_NAME,Pupitar,Ymphect,Pupitar,Pupitar,Pupitar
+MONSTER_247_DESC,MONSTER_DESCRIPTION,Hard Shell Pokémon,Pokémon Carapadure,Pokémon Guscioduro,Hartschalen-Pokémon,Pokémon Caparazón
+MONSTER_248,MONSTER_NAME,Tyranitar,Tyranocif,Tyranitar,Despotar,Tyranitar
+MONSTER_248_DESC,MONSTER_DESCRIPTION,Armor Pokémon,Pokémon Armure,Pokémon Armatura,Panzer-Pokémon,Pokémon Coraza
+MONSTER_249,MONSTER_NAME,Lugia,Lugia,Lugia,Lugia,Lugia
+MONSTER_249_DESC,MONSTER_DESCRIPTION,Diving Pokémon,Pokémon Plongeon,Pokémon Immersione,Taucher-Pokémon,Pokémon Buceo
+MONSTER_250,MONSTER_NAME,Ho-Oh,Ho-Oh,Ho-Oh,Ho-Oh,Ho-Oh
+MONSTER_250_DESC,MONSTER_DESCRIPTION,Rainbow Pokémon,Pokémon Arcenciel,Pokémon Arcobaleno,Regenbogen-Pokémon,Pokémon Arcoíris
+MONSTER_251,MONSTER_NAME,Celebi,Celebi,Celebi,Celebi,Celebi
+MONSTER_251_DESC,MONSTER_DESCRIPTION,Time Travel Pokémon,Pokémon Temporel,Pokémon Tempovia,Zeitreise-Pokémon,Pokémon Viajetiempo
+MONSTER_252,MONSTER_NAME,Treecko,Arcko,Treecko,Geckarbor,Treecko
+MONSTER_252_DESC,MONSTER_DESCRIPTION,Wood Gecko Pokémon,Pokémon Bois Gecko,Pokémon Legnogeco,Waldgecko-Pokémon,Pokémon Geco Bosque
+MONSTER_253,MONSTER_NAME,Grovyle,Massko,Grovyle,Reptain,Grovyle
+MONSTER_253_DESC,MONSTER_DESCRIPTION,Wood Gecko Pokémon,Pokémon Bois Gecko,Pokémon Legnogeco,Waldgecko-Pokémon,Pokémon Geco Bosque
+MONSTER_254,MONSTER_NAME,Sceptile,Jungko,Sceptile,Gewaldro,Sceptile
+MONSTER_254_DESC,MONSTER_DESCRIPTION,Forest Pokémon,Pokémon Forêt,Pokémon Foresta,Dschungel-Pokémon,Pokémon Monte
+MONSTER_255,MONSTER_NAME,Torchic,Poussifeu,Torchic,Flemmli,Torchic
+MONSTER_255_DESC,MONSTER_DESCRIPTION,Chick Pokémon,Pokémon Poussin,Pokémon Pulcino,Küken-Pokémon,Pokémon Polluelo
+MONSTER_256,MONSTER_NAME,Combusken,Galifeu,Combusken,Jungglut,Combusken
+MONSTER_256_DESC,MONSTER_DESCRIPTION,Young Fowl Pokémon,Pokémon Poulet,Pokémon Rampollo,Kleinhahn-Pokémon,Pokémon Ave Corral
+MONSTER_257,MONSTER_NAME,Blaziken,Braségali,Blaziken,Lohgock,Blaziken
+MONSTER_257_DESC,MONSTER_DESCRIPTION,Blaze Pokémon,Pokémon Ardent,Pokémon Vampe,Großbrand-Pokémon,Pokémon Llameante
+MONSTER_258,MONSTER_NAME,Mudkip,Gobou,Mudkip,Hydropi,Mudkip
+MONSTER_258_DESC,MONSTER_DESCRIPTION,Mud Fish Pokémon,Pokémon Poissonboue,Pokémon Fango Pesce,Lehmhüpfer-Pokémon,Pokémon Pez Lodo
+MONSTER_259,MONSTER_NAME,Marshtomp,Flobio,Marshtomp,Moorabbel,Marshtomp
+MONSTER_259_DESC,MONSTER_DESCRIPTION,Mud Fish Pokémon,Pokémon Poissonboue,Pokémon Fango Pesce,Lehmhüpfer-Pokémon,Pokémon Pez Lodo
+MONSTER_260,MONSTER_NAME,Swampert,Laggron,Swampert,Sumpex,Swampert
+MONSTER_260_DESC,MONSTER_DESCRIPTION,Mud Fish Pokémon,Pokémon Poissonboue,Pokémon Fango Pesce,Lehmhüpfer-Pokémon,Pokémon Pez Lodo
+MONSTER_261,MONSTER_NAME,Poochyena,Medhyèna,Poochyena,Fiffyen,Poochyena
+MONSTER_261_DESC,MONSTER_DESCRIPTION,Bite Pokémon,Pokémon Morsure,Pokémon Morso,Biss,Pokémon Mordisco
+MONSTER_262,MONSTER_NAME,Mightyena,Grahyèna,Mightyena,Magnayen,Mightyena
+MONSTER_262_DESC,MONSTER_DESCRIPTION,Bite Pokémon,Pokémon Morsure,Pokémon Morso,Biss,Pokémon Mordisco
+MONSTER_263,MONSTER_NAME,Zigzagoon,Zigzaton,Zigzagoon,Zigzachs,Zigzagoon
+MONSTER_263_DESC,MONSTER_DESCRIPTION,Tiny Raccoon Pokémon,Pokémon Petit Raton,Pokémon Procione,Kleindachs-Pokémon,Pokémon Mapachito
+MONSTER_264,MONSTER_NAME,Linoone,Linéon,Linoone,Geradaks,Linoone
+MONSTER_264_DESC,MONSTER_DESCRIPTION,Rushing Pokémon,Pokémon Fonceur,Pokémon Sfrecciante,Sprinter-Pokémon,Pokémon Lanzado
+MONSTER_265,MONSTER_NAME,Wurmple,Chenipotte,Wurmple,Waumpel,Wurmple
+MONSTER_265_DESC,MONSTER_DESCRIPTION,Worm Pokémon,Pokémon Ver,Pokémon Baco,Wurm,Pokémon Gusano
+MONSTER_266,MONSTER_NAME,Silcoon,Armulys,Silcoon,Schaloko,Silcoon
+MONSTER_266_DESC,MONSTER_DESCRIPTION,Cocoon Pokémon,Pokémon Cocon,Pokémon Bozzolo,Kokon,Pokémon Capullo
+MONSTER_267,MONSTER_NAME,Beautifly,Charmillon,Beautifly,Papinella,Beautifly
+MONSTER_267_DESC,MONSTER_DESCRIPTION,Butterfly Pokémon,Pokémon Papillon,Pokémon Farfalla,Falter,Pokémon Mariposa
+MONSTER_268,MONSTER_NAME,Cascoon,Blindalys,Cascoon,Panekon,Cascoon
+MONSTER_268_DESC,MONSTER_DESCRIPTION,Cocoon Pokémon,Pokémon Cocon,Pokémon Bozzolo,Kokon,Pokémon Capullo
+MONSTER_269,MONSTER_NAME,Dustox,Papinox,Dustox,Pudox,Dustox
+MONSTER_269_DESC,MONSTER_DESCRIPTION,Poison Moth Pokémon,Pokémon Papipoison,Pokémon Velentarma,Giftmotte,Pokémon Polilla Ven.
+MONSTER_270,MONSTER_NAME,Lotad,Nénupiot,Lotad,Loturzel,Lotad
+MONSTER_270_DESC,MONSTER_DESCRIPTION,Water Weed Pokémon,Pokémon Aquaplante,Pokémon Alga,Wasserlinsen-Pokémon,Pokémon Lenteja Agua
+MONSTER_271,MONSTER_NAME,Lombre,Lombre,Lombre,Lombrero,Lombre
+MONSTER_271_DESC,MONSTER_DESCRIPTION,Jolly Pokémon,Pokémon Jovial,Pokémon Giocoso,Frohmut-Pokémon,Pokémon Alegre
+MONSTER_272,MONSTER_NAME,Ludicolo,Ludicolo,Ludicolo,Kappalores,Ludicolo
+MONSTER_272_DESC,MONSTER_DESCRIPTION,Carefree Pokémon,Pokémon Insouciant,Pokémon Spensierato,Sorglos-Pokémon,Pokémon Optimista
+MONSTER_273,MONSTER_NAME,Seedot,Grainipiot,Seedot,Samurzel,Seedot
+MONSTER_273_DESC,MONSTER_DESCRIPTION,Acorn Pokémon,Pokémon Gland,Pokémon Ghianda,Eichelnuss-Pokémon,Pokémon Bellota
+MONSTER_274,MONSTER_NAME,Nuzleaf,Pifeuil,Nuzleaf,Blanas,Nuzleaf
+MONSTER_274_DESC,MONSTER_DESCRIPTION,Wily Pokémon,Pokémon Malin,Pokémon Scaltro,Hinterlist-Pokémon,Pokémon Astuto
+MONSTER_275,MONSTER_NAME,Shiftry,Tengalice,Shiftry,Tengulist,Shiftry
+MONSTER_275_DESC,MONSTER_DESCRIPTION,Wicked Pokémon,Pokémon Malveillant,Pokémon Burbero,Verschlagen-Pokémon,Pokémon Malvado
+MONSTER_276,MONSTER_NAME,Taillow,Nirondelle,Taillow,Schwalbini,Taillow
+MONSTER_276_DESC,MONSTER_DESCRIPTION,Tiny Swallow Pokémon,Pokémon Minirondel,Pokémon Rondinella,Schwälblein,Pokémon Pequebuche
+MONSTER_277,MONSTER_NAME,Swellow,Hélédelle,Swellow,Schwalboss,Swellow
+MONSTER_277_DESC,MONSTER_DESCRIPTION,Swallow Pokémon,Pokémon Hirondelle,Pokémon Rondine,Schwalbe,Pokémon Buche
+MONSTER_278,MONSTER_NAME,Wingull,Goélise,Wingull,Wingull,Wingull
+MONSTER_278_DESC,MONSTER_DESCRIPTION,Seagull Pokémon,Pokémon Mouette,Pokémon Gabbiano,Seemöwen-Pokémon,Pokémon Gaviota
+MONSTER_279,MONSTER_NAME,Pelipper,Bekipan,Pelipper,Pelipper,Pelipper
+MONSTER_279_DESC,MONSTER_DESCRIPTION,Water Bird Pokémon,Pokémon Oiseaudo,Pokémon Alacquatico,Wasservogel-Pokémon,Pokémon Ave Agua
+MONSTER_280,MONSTER_NAME,Ralts,Tarsal,Ralts,Trasla,Ralts
+MONSTER_280_DESC,MONSTER_DESCRIPTION,Feeling Pokémon,Pokémon Sentiment,Pokémon Sensazione,Gefühls-Pokémon,Pokémon Sensible
+MONSTER_281,MONSTER_NAME,Kirlia,Kirlia,Kirlia,Kirlia,Kirlia
+MONSTER_281_DESC,MONSTER_DESCRIPTION,Emotion Pokémon,Pokémon Émotion,Pokémon Emozione,Emotions-Pokémon,Pokémon Sensorio
+MONSTER_282,MONSTER_NAME,Gardevoir,Gardevoir,Gardevoir,Guardevoir,Gardevoir
+MONSTER_282_DESC,MONSTER_DESCRIPTION,Embrace Pokémon,Pokémon Étreinte,Pokémon Abbraccio,Umarmungs-Pokémon,Pokémon Envolvente
+MONSTER_283,MONSTER_NAME,Surskit,Arakdo,Surskit,Gehweiher,Surskit
+MONSTER_283_DESC,MONSTER_DESCRIPTION,Pond Skater Pokémon,Pokémon Maresurfeur,Pokémon Sfiorapozze,Wassergeher,Pokémon Zapatero
+MONSTER_284,MONSTER_NAME,Masquerain,Maskadra,Masquerain,Maskeregen,Masquerain
+MONSTER_284_DESC,MONSTER_DESCRIPTION,Eyeball Pokémon,Pokémon Boule Œil,Pokémon Occhi,Auge,Pokémon Globocular
+MONSTER_285,MONSTER_NAME,Shroomish,Balignon,Shroomish,Knilz,Shroomish
+MONSTER_285_DESC,MONSTER_DESCRIPTION,Mushroom Pokémon,Pokémon Champignon,Pokémon Fungo,Pilz,Pokémon Hongo
+MONSTER_286,MONSTER_NAME,Breloom,Chapignon,Breloom,Kapilz,Breloom
+MONSTER_286_DESC,MONSTER_DESCRIPTION,Mushroom Pokémon,Pokémon Champignon,Pokémon Fungo,Pilz,Pokémon Hongo
+MONSTER_287,MONSTER_NAME,Slakoth,Parecool,Slakoth,Bummelz,Slakoth
+MONSTER_287_DESC,MONSTER_DESCRIPTION,Slacker Pokémon,Pokémon Flâneur,Pokémon Ozioso,Faulpelz,Pokémon Gandul
+MONSTER_288,MONSTER_NAME,Vigoroth,Vigoroth,Vigoroth,Muntier,Vigoroth
+MONSTER_288_DESC,MONSTER_DESCRIPTION,Wild Monkey Pokémon,Pokémon Turbusinge,Pokémon Indocile,Wildaffe,Pokémon Mono Feroz
+MONSTER_289,MONSTER_NAME,Slaking,Monaflèmit,Slaking,Letarking,Slaking
+MONSTER_289_DESC,MONSTER_DESCRIPTION,Lazy Pokémon,Pokémon Fainéant,Pokémon Pigrizia,Müßig,Pokémon Holgazán
+MONSTER_290,MONSTER_NAME,Nincada,Ningale,Nincada,Nincada,Nincada
+MONSTER_290_DESC,MONSTER_DESCRIPTION,Trainee Pokémon,Pokémon Apprenti,Pokémon Novizio,Vorbereiter-Pokémon,Pokémon Aprendiz
+MONSTER_291,MONSTER_NAME,Ninjask,Ninjask,Ninjask,Ninjask,Ninjask
+MONSTER_291_DESC,MONSTER_DESCRIPTION,Ninja Pokémon,Pokémon Ninja,Pokémon Ninja,Ninja-Pokémon,Pokémon Ninja
+MONSTER_292,MONSTER_NAME,Shedinja,Munja,Shedinja,Ninjatom,Shedinja
+MONSTER_292_DESC,MONSTER_DESCRIPTION,Shed Pokémon,Pokémon Exuvie,Pokémon Cambiapelle,Häutungs-Pokémon,Pokémon Muda
+MONSTER_293,MONSTER_NAME,Whismur,Chuchmur,Whismur,Flurmel,Whismur
+MONSTER_293_DESC,MONSTER_DESCRIPTION,Whisper Pokémon,Pokémon Chuchoteur,Pokémon Sussurro,Flüster-Pokémon,Pokémon Susurro
+MONSTER_294,MONSTER_NAME,Loudred,Ramboum,Loudred,Krakeelo,Loudred
+MONSTER_294_DESC,MONSTER_DESCRIPTION,Big Voice Pokémon,Pokémon Grosse Voix,Pokémon Vocione,Lauthals-Pokémon,Pokémon Chillón
+MONSTER_295,MONSTER_NAME,Exploud,Brouhabam,Exploud,Krawumms,Exploud
+MONSTER_295_DESC,MONSTER_DESCRIPTION,Loud Noise Pokémon,Pokémon Bruit Sourd,Pokémon Fragore,Krach-Pokémon,Pokémon Escandaloso
+MONSTER_296,MONSTER_NAME,Makuhita,Makuhita,Makuhita,Makuhita,Makuhita
+MONSTER_296_DESC,MONSTER_DESCRIPTION,Guts Pokémon,Pokémon Tenace,Pokémon Coraggio,Courage,Pokémon Valiente
+MONSTER_297,MONSTER_NAME,Hariyama,Hariyama,Hariyama,Hariyama,Hariyama
+MONSTER_297_DESC,MONSTER_DESCRIPTION,Arm Thrust Pokémon,Pokémon Cogneur,Pokémon Sberletese,Armwurf,Pokémon Empuje
+MONSTER_298,MONSTER_NAME,Azurill,Azurill,Azurill,Azurill,Azurill
+MONSTER_298_DESC,MONSTER_DESCRIPTION,Polka Dot Pokémon,Pokémon Point Polka,Pokémon Pois,Gepunktet-Pokémon,Pokémon A Topos
+MONSTER_299,MONSTER_NAME,Nosepass,Tarinor,Nosepass,Nasgnet,Nosepass
+MONSTER_299_DESC,MONSTER_DESCRIPTION,Compass Pokémon,Pokémon Boussole,Pokémon Bussola,Kompass,Pokémon Brújula
+MONSTER_300,MONSTER_NAME,Skitty,Skitty,Skitty,Eneco,Skitty
+MONSTER_300_DESC,MONSTER_DESCRIPTION,Kitten Pokémon,Pokémon Chaton,Pokémon Micio,Kätzchen,Pokémon Gatito
+MONSTER_301,MONSTER_NAME,Delcatty,Delcatty,Delcatty,Enekoro,Delcatty
+MONSTER_301_DESC,MONSTER_DESCRIPTION,Prim Pokémon,Pokémon Guindé,Pokémon Finezza,Eingebildet,Pokémon Cursi
+MONSTER_302,MONSTER_NAME,Sableye,Ténéfix,Sableye,Zobiris,Sableye
+MONSTER_302_DESC,MONSTER_DESCRIPTION,Darkness Pokémon,Pokémon Obscurité,Pokémon Oscurità,Finsternis-Pokémon,Pokémon Oscuridad
+MONSTER_303,MONSTER_NAME,Mawile,Mysdibule,Mawile,Flunkifer,Mawile
+MONSTER_303_DESC,MONSTER_DESCRIPTION,Deceiver Pokémon,Pokémon Trompeur,Pokémon Inganno,Schwindler-Pokémon,Pokémon Tramposo
+MONSTER_304,MONSTER_NAME,Aron,Galekid,Aron,Stollunior,Aron
+MONSTER_304_DESC,MONSTER_DESCRIPTION,Iron Armor Pokémon,Pokémon Armurfer,Pokémon Corazza,Eisenpanzer-Pokémon,Pokémon Coraza Férrea
+MONSTER_305,MONSTER_NAME,Lairon,Galegon,Lairon,Stollrak,Lairon
+MONSTER_305_DESC,MONSTER_DESCRIPTION,Iron Armor Pokémon,Pokémon Armurfer,Pokémon Corazza,Eisenpanzer-Pokémon,Pokémon Coraza Férrea
+MONSTER_306,MONSTER_NAME,Aggron,Galeking,Aggron,Stolloss,Aggron
+MONSTER_306_DESC,MONSTER_DESCRIPTION,Iron Armor Pokémon,Pokémon Armurfer,Pokémon Corazza,Eisenpanzer-Pokémon,Pokémon Coraza Férrea
+MONSTER_307,MONSTER_NAME,Meditite,Méditikka,Meditite,Meditie,Meditite
+MONSTER_307_DESC,MONSTER_DESCRIPTION,Meditate Pokémon,Pokémon Méditation,Pokémon Meditazione,Meditation,Pokémon Meditador
+MONSTER_308,MONSTER_NAME,Medicham,Charmina,Medicham,Meditalis,Medicham
+MONSTER_308_DESC,MONSTER_DESCRIPTION,Meditate Pokémon,Pokémon Méditation,Pokémon Meditazione,Meditation,Pokémon Meditador
+MONSTER_309,MONSTER_NAME,Electrike,Dynavolt,Electrike,Frizelbliz,Electrike
+MONSTER_309_DESC,MONSTER_DESCRIPTION,Lightning Pokémon,Pokémon Orage,Pokémon Lampo,Gewitter-Pokémon,Pokémon Calambre
+MONSTER_310,MONSTER_NAME,Manectric,Élecsprint,Manectric,Voltenso,Manectric
+MONSTER_310_DESC,MONSTER_DESCRIPTION,Discharge Pokémon,Pokémon Décharge,Pokémon Scossa,Entladungs-Pokémon,Pokémon Descarga
+MONSTER_311,MONSTER_NAME,Plusle,Posipi,Plusle,Plusle,Plusle
+MONSTER_311_DESC,MONSTER_DESCRIPTION,Cheering Pokémon,Pokémon Acclameur,Pokémon Incitamento,Jubel,Pokémon Ánimo
+MONSTER_312,MONSTER_NAME,Minun,Négapi,Minun,Minun,Minun
+MONSTER_312_DESC,MONSTER_DESCRIPTION,Cheering Pokémon,Pokémon Acclameur,Pokémon Incitamento,Jubel,Pokémon Ánimo
+MONSTER_313,MONSTER_NAME,Volbeat,Muciole,Volbeat,Volbeat,Volbeat
+MONSTER_313_DESC,MONSTER_DESCRIPTION,Firefly Pokémon,Pokémon Luciole,Pokémon Lucciola,Glühwürmchen,Pokémon Luciérnaga
+MONSTER_314,MONSTER_NAME,Illumise,Lumivole,Illumise,Illumise,Illumise
+MONSTER_314_DESC,MONSTER_DESCRIPTION,Firefly Pokémon,Pokémon Luciole,Pokémon Lucciola,Glühwürmchen,Pokémon Luciérnaga
+MONSTER_315,MONSTER_NAME,Roselia,Rosélia,Roselia,Roselia,Roselia
+MONSTER_315_DESC,MONSTER_DESCRIPTION,Thorn Pokémon,Pokémon Épine,Pokémon Spina,Dorn-Pokémon,Pokémon Espina
+MONSTER_316,MONSTER_NAME,Gulpin,Gloupti,Gulpin,Schluppuck,Gulpin
+MONSTER_316_DESC,MONSTER_DESCRIPTION,Stomach Pokémon,Pokémon Estomac,Pokémon Stomaco,Magen,Pokémon Estómago
+MONSTER_317,MONSTER_NAME,Swalot,Avaltout,Swalot,Schlukwech,Swalot
+MONSTER_317_DESC,MONSTER_DESCRIPTION,Poison Bag Pokémon,Pokémon Sac Poison,Pokémon Velenosacco,Giftbeutel,Pokémon Bolsa Veneno
+MONSTER_318,MONSTER_NAME,Carvanha,Carvanha,Carvanha,Kanivanha,Carvanha
+MONSTER_318_DESC,MONSTER_DESCRIPTION,Savage Pokémon,Pokémon Féroce,Pokémon Feroce,Gnadenlos-Pokémon,Pokémon Feroz
+MONSTER_319,MONSTER_NAME,Sharpedo,Sharpedo,Sharpedo,Tohaido,Sharpedo
+MONSTER_319_DESC,MONSTER_DESCRIPTION,Brutal Pokémon,Pokémon Brutal,Pokémon Brutale,Brutal-Pokémon,Pokémon Voraz
+MONSTER_320,MONSTER_NAME,Wailmer,Wailmer,Wailmer,Wailmer,Wailmer
+MONSTER_320_DESC,MONSTER_DESCRIPTION,Ball Whale Pokémon,Pokémon Baleinboule,Pokémon Balenottero,Kugelwal-Pokémon,Pokémon Ballenabola
+MONSTER_321,MONSTER_NAME,Wailord,Wailord,Wailord,Wailord,Wailord
+MONSTER_321_DESC,MONSTER_DESCRIPTION,Float Whale Pokémon,Pokémon Cachabouée,Pokémon Megabalena,Flutwal-Pokémon,Pokémon Ballenaflot
+MONSTER_322,MONSTER_NAME,Numel,Chamallot,Numel,Camaub,Numel
+MONSTER_322_DESC,MONSTER_DESCRIPTION,Numb Pokémon,Pokémon Engourdi,Pokémon Torpore,Taubheit,Pokémon Torpe
+MONSTER_323,MONSTER_NAME,Camerupt,Camérupt,Camerupt,Camerupt,Camerupt
+MONSTER_323_DESC,MONSTER_DESCRIPTION,Eruption Pokémon,Pokémon Éruption,Pokémon Eruzione,Ausbruch,Pokémon Erupción
+MONSTER_324,MONSTER_NAME,Torkoal,Chartor,Torkoal,Qurtel,Torkoal
+MONSTER_324_DESC,MONSTER_DESCRIPTION,Coal Pokémon,Pokémon Charbon,Pokémon Carbone,Kohle-Pokémon,Pokémon Carbón
+MONSTER_325,MONSTER_NAME,Spoink,Spoink,Spoink,Spoink,Spoink
+MONSTER_325_DESC,MONSTER_DESCRIPTION,Bounce Pokémon,Pokémon Rebond,Pokémon Molla,Sprungfeder,Pokémon Saltarín
+MONSTER_326,MONSTER_NAME,Grumpig,Groret,Grumpig,Groink,Grumpig
+MONSTER_326_DESC,MONSTER_DESCRIPTION,Manipulate Pokémon,Pokémon Magouilleur,Pokémon Raggiro,Manipulator,Pokémon Manipulador
+MONSTER_327,MONSTER_NAME,Spinda,Spinda,Spinda,Pandir,Spinda
+MONSTER_327_DESC,MONSTER_DESCRIPTION,Spot Panda Pokémon,Pokémon Panda Tache,Pokémon Macchipanda,Punkt-Panda,Pokémon Panda Topos
+MONSTER_328,MONSTER_NAME,Trapinch,Kraknoix,Trapinch,Knacklion,Trapinch
+MONSTER_328_DESC,MONSTER_DESCRIPTION,Ant Pit Pokémon,Pokémon Piégeur,Pokémon Trappola,Ameisenlöwen-Pokémon,Pokémon Hormiga León
+MONSTER_329,MONSTER_NAME,Vibrava,Vibraninf,Vibrava,Vibrava,Vibrava
+MONSTER_329_DESC,MONSTER_DESCRIPTION,Vibration Pokémon,Pokémon Vibration,Pokémon Vibrazione,Vibrations-Pokémon,Pokémon Vibrante
+MONSTER_330,MONSTER_NAME,Flygon,Libégon,Flygon,Libelldra,Flygon
+MONSTER_330_DESC,MONSTER_DESCRIPTION,Mystic Pokémon,Pokémon Mystique,Pokémon Magico,Mystik-Pokémon,Pokémon Místico
+MONSTER_331,MONSTER_NAME,Cacnea,Cacnea,Cacnea,Tuska,Cacnea
+MONSTER_331_DESC,MONSTER_DESCRIPTION,Cactus Pokémon,Pokémon Cactus,Pokémon Cactus,Kaktus,Pokémon Cactus
+MONSTER_332,MONSTER_NAME,Cacturne,Cacturne,Cacturne,Noktuska,Cacturne
+MONSTER_332_DESC,MONSTER_DESCRIPTION,Scarecrow Pokémon,Pokémon Épouvantail,Pokémon Spavento,Vogelschock,Pokémon Espantajo
+MONSTER_333,MONSTER_NAME,Swablu,Tylton,Swablu,Wablu,Swablu
+MONSTER_333_DESC,MONSTER_DESCRIPTION,Cotton Bird Pokémon,Pokémon Oiseaucoton,Pokémon Alidicotone,Wollvogel-Pokémon,Pokémon Ave Algodón
+MONSTER_334,MONSTER_NAME,Altaria,Altaria,Altaria,Altaria,Altaria
+MONSTER_334_DESC,MONSTER_DESCRIPTION,Humming Pokémon,Pokémon Virevolteur,Pokémon Canterino,Summsel-Pokémon,Pokémon Cantor
+MONSTER_335,MONSTER_NAME,Zangoose,Mangriff,Zangoose,Sengo,Zangoose
+MONSTER_335_DESC,MONSTER_DESCRIPTION,Cat Ferret Pokémon,Pokémon Chat Furet,Pokémon Furogatto,Frettkatz,Pokémon Gato Hurón
+MONSTER_336,MONSTER_NAME,Seviper,Séviper,Seviper,Vipitis,Seviper
+MONSTER_336_DESC,MONSTER_DESCRIPTION,Fang Snake Pokémon,Pokémon Serpacroc,Pokémon Zannaserpe,Reißzahn,Pokémon Colmillos
+MONSTER_337,MONSTER_NAME,Lunatone,Séléroc,Lunatone,Lunastein,Lunatone
+MONSTER_337_DESC,MONSTER_DESCRIPTION,Meteorite Pokémon,Pokémon Météorite,Pokémon Meteorite,Meteoriten-Pokémon,Pokémon Meteorito
+MONSTER_338,MONSTER_NAME,Solrock,Solaroc,Solrock,Sonnfel,Solrock
+MONSTER_338_DESC,MONSTER_DESCRIPTION,Meteorite Pokémon,Pokémon Météorite,Pokémon Meteorite,Meteoriten-Pokémon,Pokémon Meteorito
+MONSTER_339,MONSTER_NAME,Barboach,Barloche,Barboach,Schmerbe,Barboach
+MONSTER_339_DESC,MONSTER_DESCRIPTION,Whiskers Pokémon,Pokémon Barbillon,Pokémon Baffetti,Barthaar-Pokémon,Pokémon Bigotudo
+MONSTER_340,MONSTER_NAME,Whiscash,Barbicha,Whiscash,Welsar,Whiscash
+MONSTER_340_DESC,MONSTER_DESCRIPTION,Whiskers Pokémon,Pokémon Barbillon,Pokémon Baffetti,Barthaar-Pokémon,Pokémon Bigotudo
+MONSTER_341,MONSTER_NAME,Corphish,Écrapince,Corphish,Krebscorps,Corphish
+MONSTER_341_DESC,MONSTER_DESCRIPTION,Ruffian Pokémon,Pokémon Brute,Pokémon Birbone,Grobian-Pokémon,Pokémon Rufián
+MONSTER_342,MONSTER_NAME,Crawdaunt,Colhomard,Crawdaunt,Krebutack,Crawdaunt
+MONSTER_342_DESC,MONSTER_DESCRIPTION,Rogue Pokémon,Pokémon Crapule,Pokémon Canaglia,Schlingel-Pokémon,Pokémon Granuja
+MONSTER_343,MONSTER_NAME,Baltoy,Balbuto,Baltoy,Puppance,Baltoy
+MONSTER_343_DESC,MONSTER_DESCRIPTION,Clay Doll Pokémon,Pokémon Poupargile,Pokémon Argilla,Lehmpuppen-Pokémon,Pokémon Muñeca Barro
+MONSTER_344,MONSTER_NAME,Claydol,Kaorine,Claydol,Lepumentas,Claydol
+MONSTER_344_DESC,MONSTER_DESCRIPTION,Clay Doll Pokémon,Pokémon Poupargile,Pokémon Argilla,Lehmpuppen-Pokémon,Pokémon Muñeca Barro
+MONSTER_345,MONSTER_NAME,Lileep,Lilia,Lileep,Liliep,Lileep
+MONSTER_345_DESC,MONSTER_DESCRIPTION,Sea Lily Pokémon,Pokémon Lis d’Eau,Pokémon Fiordimare,Seeanemonen-Pokémon,Pokémon Lirio de Mar
+MONSTER_346,MONSTER_NAME,Cradily,Vacilys,Cradily,Wielie,Cradily
+MONSTER_346_DESC,MONSTER_DESCRIPTION,Barnacle Pokémon,Pokémon Bernacle,Pokémon Lepade,Rankfüßer-Pokémon,Pokémon Percebe
+MONSTER_347,MONSTER_NAME,Anorith,Anorith,Anorith,Anorith,Anorith
+MONSTER_347_DESC,MONSTER_DESCRIPTION,Old Shrimp Pokémon,Pokémon Crustage,Pokémon Primaceo,Urgarnelen-Pokémon,Pokémon Camarón
+MONSTER_348,MONSTER_NAME,Armaldo,Armaldo,Armaldo,Armaldo,Armaldo
+MONSTER_348_DESC,MONSTER_DESCRIPTION,Plate Pokémon,Pokémon Blindage,Pokémon Piastre,Schild-Pokémon,Pokémon Armadura
+MONSTER_349,MONSTER_NAME,Feebas,Barpau,Feebas,Barschwa,Feebas
+MONSTER_349_DESC,MONSTER_DESCRIPTION,Fish Pokémon,Pokémon Poisson,Pokémon Pesce,Fisch-Pokémon,Pokémon Pez
+MONSTER_350,MONSTER_NAME,Milotic,Milobellus,Milotic,Milotic,Milotic
+MONSTER_350_DESC,MONSTER_DESCRIPTION,Tender Pokémon,Pokémon Tendre,Pokémon Tenerezza,Zartheits-Pokémon,Pokémon Tierno
+MONSTER_351,MONSTER_NAME,Castform,Morphéo,Castform,Formeo,Castform
+MONSTER_351_DESC,MONSTER_DESCRIPTION,Weather Pokémon,Pokémon Climat,Pokémon Meteo,Wetter,Pokémon Clima
+MONSTER_352,MONSTER_NAME,Kecleon,Kecleon,Kecleon,Kecleon,Kecleon
+MONSTER_352_DESC,MONSTER_DESCRIPTION,Color Swap Pokémon,Pokémon Multicolor,Pokémon Mutacolore,Farbenspiel,Pokémon Camaleónico
+MONSTER_353,MONSTER_NAME,Shuppet,Polichombr,Shuppet,Shuppet,Shuppet
+MONSTER_353_DESC,MONSTER_DESCRIPTION,Puppet Pokémon,Pokémon Poupée,Pokémon Pupazzo,Puppe,Pokémon Títere
+MONSTER_354,MONSTER_NAME,Banette,Branette,Banette,Banette,Banette
+MONSTER_354_DESC,MONSTER_DESCRIPTION,Marionette Pokémon,Pokémon Marionnette,Pokémon Marionetta,Marionette,Pokémon Marioneta
+MONSTER_355,MONSTER_NAME,Duskull,Skelénox,Duskull,Zwirrlicht,Duskull
+MONSTER_355_DESC,MONSTER_DESCRIPTION,Requiem Pokémon,Pokémon Requiem,Pokémon Requiem,Requiem-Pokémon,Pokémon Réquiem
+MONSTER_356,MONSTER_NAME,Dusclops,Téraclope,Dusclops,Zwirrklop,Dusclops
+MONSTER_356_DESC,MONSTER_DESCRIPTION,Beckon Pokémon,Pokémon Appel,Pokémon Ipnosguardo,Wink-Pokémon,Pokémon Atrayente
+MONSTER_357,MONSTER_NAME,Tropius,Tropius,Tropius,Tropius,Tropius
+MONSTER_357_DESC,MONSTER_DESCRIPTION,Fruit Pokémon,Pokémon Fruit,Pokémon Frutto,Obst,Pokémon Fruto
+MONSTER_358,MONSTER_NAME,Chimecho,Éoko,Chimecho,Palimpalim,Chimecho
+MONSTER_358_DESC,MONSTER_DESCRIPTION,Wind Chime Pokémon,Pokémon Carillon,Pokémon Vencampana,Windspiel,Pokémon Sonido Aire
+MONSTER_359,MONSTER_NAME,Absol,Absol,Absol,Absol,Absol
+MONSTER_359_DESC,MONSTER_DESCRIPTION,Disaster Pokémon,Pokémon Désastre,Pokémon Catastrofe,Desaster-Pokémon,Pokémon Catástrofe
+MONSTER_360,MONSTER_NAME,Wynaut,Okéoké,Wynaut,Isso,Wynaut
+MONSTER_360_DESC,MONSTER_DESCRIPTION,Bright Pokémon,Pokémon Ravi,Pokémon Brillante,Strahlekind-Pokémon,Pokémon Radiante
+MONSTER_361,MONSTER_NAME,Snorunt,Stalgamin,Snorunt,Schneppke,Snorunt
+MONSTER_361_DESC,MONSTER_DESCRIPTION,Snow Hat Pokémon,Pokémon Capuche,Pokémon Cappelneve,Schneehut-Pokémon,Pokémon Gorro Nieve
+MONSTER_362,MONSTER_NAME,Glalie,Oniglali,Glalie,Firnontor,Glalie
+MONSTER_362_DESC,MONSTER_DESCRIPTION,Face Pokémon,Pokémon Face,Pokémon Tuttomuso,Antlitz-Pokémon,Pokémon Cara
+MONSTER_363,MONSTER_NAME,Spheal,Obalie,Spheal,Seemops,Spheal
+MONSTER_363_DESC,MONSTER_DESCRIPTION,Clap Pokémon,Pokémon Clap Clap,Pokémon Rotolante,Applaus-Pokémon,Pokémon Aplauso
+MONSTER_364,MONSTER_NAME,Sealeo,Phogleur,Sealeo,Seejong,Sealeo
+MONSTER_364_DESC,MONSTER_DESCRIPTION,Ball Roll Pokémon,Pokémon Roule Boule,Pokémon Rotapalla,Spielball-Pokémon,Pokémon Rodabola
+MONSTER_365,MONSTER_NAME,Walrein,Kaimorse,Walrein,Walraisa,Walrein
+MONSTER_365_DESC,MONSTER_DESCRIPTION,Ice Break Pokémon,Pokémon Brise Glace,Pokémon Spaccagelo,Eisbrecher-Pokémon,Pokémon Rompehielo
+MONSTER_366,MONSTER_NAME,Clamperl,Coquiperl,Clamperl,Perlu,Clamperl
+MONSTER_366_DESC,MONSTER_DESCRIPTION,Bivalve Pokémon,Pokémon Bivalve,Pokémon Bivalve,Muschel,Pokémon Bivalvo
+MONSTER_367,MONSTER_NAME,Huntail,Serpang,Huntail,Aalabyss,Huntail
+MONSTER_367_DESC,MONSTER_DESCRIPTION,Deep Sea Pokémon,Pokémon Abysse,Pokémon Abissi,Tiefsee,Pokémon Abisal
+MONSTER_368,MONSTER_NAME,Gorebyss,Rosabyss,Gorebyss,Saganabyss,Gorebyss
+MONSTER_368_DESC,MONSTER_DESCRIPTION,South Sea Pokémon,Pokémon Mer du Sud,Pokémon Sudmarino,Südsee,Pokémon Mar del Sur
+MONSTER_369,MONSTER_NAME,Relicanth,Relicanth,Relicanth,Relicanth,Relicanth
+MONSTER_369_DESC,MONSTER_DESCRIPTION,Longevity Pokémon,Pokémon Longévité,Pokémon Longevità,Bestand-Pokémon,Pokémon Longevo
+MONSTER_370,MONSTER_NAME,Luvdisc,Lovdisc,Luvdisc,Liebiskus,Luvdisc
+MONSTER_370_DESC,MONSTER_DESCRIPTION,Rendezvous Pokémon,Pokémon Rendezvous,Pokémon Rendezvous,Rendezvous,Pokémon Cita
+MONSTER_371,MONSTER_NAME,Bagon,Draby,Bagon,Kindwurm,Bagon
+MONSTER_371_DESC,MONSTER_DESCRIPTION,Rock Head Pokémon,Pokémon Tête de Roc,Pokémon Rocciotesta,Steinhaupt-Pokémon,Pokémon Cabeza Roca
+MONSTER_372,MONSTER_NAME,Shelgon,Drackhaus,Shelgon,Draschel,Shelgon
+MONSTER_372_DESC,MONSTER_DESCRIPTION,Endurance Pokémon,Pokémon Endurant,Pokémon Resistenza,Durchsteher-Pokémon,Pokémon Resistencia
+MONSTER_373,MONSTER_NAME,Salamence,Drattak,Salamence,Brutalanda,Salamence
+MONSTER_373_DESC,MONSTER_DESCRIPTION,Dragon Pokémon,Pokémon Dragon,Pokémon Drago,Drachen-Pokémon,Pokémon Dragón
+MONSTER_374,MONSTER_NAME,Beldum,Terhal,Beldum,Tanhel,Beldum
+MONSTER_374_DESC,MONSTER_DESCRIPTION,Iron Ball Pokémon,Pokémon Boulefer,Pokémon Ferrosfera,Eisenkugel-Pokémon,Pokémon Bola Hierro
+MONSTER_375,MONSTER_NAME,Metang,Métang,Metang,Metang,Metang
+MONSTER_375_DESC,MONSTER_DESCRIPTION,Iron Claw Pokémon,Pokémon Pincefer,Pokémon Ferrunghia,Eisenklauen-Pokémon,Pokémon Garra Hierro
+MONSTER_376,MONSTER_NAME,Metagross,Métalosse,Metagross,Metagross,Metagross
+MONSTER_376_DESC,MONSTER_DESCRIPTION,Iron Leg Pokémon,Pokémon Pattefer,Pokémon Ferrarto,Eisenfuß-Pokémon,Pokémon Pata Hierro
+MONSTER_377,MONSTER_NAME,Regirock,Regirock,Regirock,Regirock,Regirock
+MONSTER_377_DESC,MONSTER_DESCRIPTION,Rock Peak Pokémon,Pokémon Pic Rocheux,Pokémon Picco,Steingipfel-Pokémon,Pokémon Pico Roca
+MONSTER_378,MONSTER_NAME,Regice,Regice,Regice,Regice,Regice
+MONSTER_378_DESC,MONSTER_DESCRIPTION,Iceberg Pokémon,Pokémon Iceberg,Pokémon Iceberg,Eisberg-Pokémon,Pokémon Iceberg
+MONSTER_379,MONSTER_NAME,Registeel,Registeel,Registeel,Registeel,Registeel
+MONSTER_379_DESC,MONSTER_DESCRIPTION,Iron Pokémon,Pokémon Fer,Pokémon Ferro,Eisen-Pokémon,Pokémon Hierro
+MONSTER_380,MONSTER_NAME,Latias,Latias,Latias,Latias,Latias
+MONSTER_380_DESC,MONSTER_DESCRIPTION,Eon Pokémon,Pokémon Éon,Pokémon Eone,Äon-Pokémon,Pokémon Eón
+MONSTER_381,MONSTER_NAME,Latios,Latios,Latios,Latios,Latios
+MONSTER_381_DESC,MONSTER_DESCRIPTION,Eon Pokémon,Pokémon Éon,Pokémon Eone,Äon-Pokémon,Pokémon Eón
+MONSTER_382,MONSTER_NAME,Kyogre,Kyogre,Kyogre,Kyogre,Kyogre
+MONSTER_382_DESC,MONSTER_DESCRIPTION,Sea Basin Pokémon,Pokémon Bassinmarin,Pokémon Oceano,Seegründler-Pokémon,Pokémon Cuenca Mar
+MONSTER_383,MONSTER_NAME,Groudon,Groudon,Groudon,Groudon,Groudon
+MONSTER_383_DESC,MONSTER_DESCRIPTION,Continent Pokémon,Pokémon Continent,Pokémon Continente,Kontinent-Pokémon,Pokémon Continente
+MONSTER_384,MONSTER_NAME,Rayquaza,Rayquaza,Rayquaza,Rayquaza,Rayquaza
+MONSTER_384_DESC,MONSTER_DESCRIPTION,Sky High Pokémon,Pokémon Cieux,Pokémon Stratosfera,Himmelhoch-Pokémon,Pokémon Cielo
+MONSTER_385,MONSTER_NAME,Jirachi,Jirachi,Jirachi,Jirachi,Jirachi
+MONSTER_385_DESC,MONSTER_DESCRIPTION,Wish Pokémon,Pokémon Souhait,Pokémon Desiderio,Wünscher-Pokémon,Pokémon Deseo
+MONSTER_386,MONSTER_NAME,Deoxys,Deoxys,Deoxys,Deoxys,Deoxys
+MONSTER_386_DESC,MONSTER_DESCRIPTION,DNA Pokémon,Pokémon ADN,Pokémon DNA,DNS,Pokémon ADN
+MONSTER_387,MONSTER_NAME,Turtwig,Tortipouss,Turtwig,Chelast,Turtwig
+MONSTER_387_DESC,MONSTER_DESCRIPTION,Tiny Leaf Pokémon,Pokémon Minifeuille,Pokémon Fogliolina,Winziglaub,Pokémon Hojita
+MONSTER_388,MONSTER_NAME,Grotle,Boskara,Grotle,Chelcarain,Grotle
+MONSTER_388_DESC,MONSTER_DESCRIPTION,Grove Pokémon,Pokémon Bosquet,Pokémon Boschetto,Hain,Pokémon Arboleda
+MONSTER_389,MONSTER_NAME,Torterra,Torterra,Torterra,Chelterrar,Torterra
+MONSTER_389_DESC,MONSTER_DESCRIPTION,Continent Pokémon,Pokémon Continent,Pokémon Continente,Kontinent,Pokémon Continente
+MONSTER_390,MONSTER_NAME,Chimchar,Ouisticram,Chimchar,Panflam,Chimchar
+MONSTER_390_DESC,MONSTER_DESCRIPTION,Chimp Pokémon,Pokémon Chimpanzé,Pokémon Scimpanzé,Schimpanse,Pokémon Chimpancé
+MONSTER_391,MONSTER_NAME,Monferno,Chimpenfeu,Monferno,Panpyro,Monferno
+MONSTER_391_DESC,MONSTER_DESCRIPTION,Playful Pokémon,Pokémon Garnement,Pokémon Briccone,Verspielt,Pokémon Juguetón
+MONSTER_392,MONSTER_NAME,Infernape,Simiabraz,Infernape,Panferno,Infernape
+MONSTER_392_DESC,MONSTER_DESCRIPTION,Flame Pokémon,Pokémon Flamme,Pokémon Fiamma,Flamme,Pokémon Llama
+MONSTER_393,MONSTER_NAME,Piplup,Tiplouf,Piplup,Plinfa,Piplup
+MONSTER_393_DESC,MONSTER_DESCRIPTION,Penguin Pokémon,Pokémon Pingouin,Pokémon Pinguino,Pinguin,Pokémon Pingüino
+MONSTER_394,MONSTER_NAME,Prinplup,Prinplouf,Prinplup,Pliprin,Prinplup
+MONSTER_394_DESC,MONSTER_DESCRIPTION,Penguin Pokémon,Pokémon Pingouin,Pokémon Pinguino,Pinguin,Pokémon Pingüino
+MONSTER_395,MONSTER_NAME,Empoleon,Pingoléon,Empoleon,Impoleon,Empoleon
+MONSTER_395_DESC,MONSTER_DESCRIPTION,Emperor Pokémon,Pokémon Empereur,Pokémon Imperatore,Kaiser,Pokémon Emperador
+MONSTER_396,MONSTER_NAME,Starly,Étourmi,Starly,Staralili,Starly
+MONSTER_396_DESC,MONSTER_DESCRIPTION,Starling Pokémon,Pokémon Étourneau,Pokémon Storno,Star,Pokémon Estornino
+MONSTER_397,MONSTER_NAME,Staravia,Étourvol,Staravia,Staravia,Staravia
+MONSTER_397_DESC,MONSTER_DESCRIPTION,Starling Pokémon,Pokémon Étourneau,Pokémon Storno,Star,Pokémon Estornino
+MONSTER_398,MONSTER_NAME,Staraptor,Étouraptor,Staraptor,Staraptor,Staraptor
+MONSTER_398_DESC,MONSTER_DESCRIPTION,Predator Pokémon,Pokémon Rapace,Pokémon Rapace,Raubtier,Pokémon Depredador
+MONSTER_399,MONSTER_NAME,Bidoof,Keunotor,Bidoof,Bidiza,Bidoof
+MONSTER_399_DESC,MONSTER_DESCRIPTION,Plump Mouse Pokémon,Pokémon Souridodue,Pokémon Topaffuto,Dickmaus,Pokémon Gran Ratón
+MONSTER_400,MONSTER_NAME,Bibarel,Castorno,Bibarel,Bidifas,Bibarel
+MONSTER_400_DESC,MONSTER_DESCRIPTION,Beaver Pokémon,Pokémon Castor,Pokémon Castoro,Biber,Pokémon Castor
+MONSTER_401,MONSTER_NAME,Kricketot,Crikzik,Kricketot,Zirpurze,Kricketot
+MONSTER_401_DESC,MONSTER_DESCRIPTION,Cricket Pokémon,Pokémon Criquet,Pokémon Grillo,Zirper,Pokémon Grillo
+MONSTER_402,MONSTER_NAME,Kricketune,Mélokrik,Kricketune,Zirpeise,Kricketune
+MONSTER_402_DESC,MONSTER_DESCRIPTION,Cricket Pokémon,Pokémon Criquet,Pokémon Grillo,Zirper,Pokémon Grillo
+MONSTER_403,MONSTER_NAME,Shinx,Lixy,Shinx,Sheinux,Shinx
+MONSTER_403_DESC,MONSTER_DESCRIPTION,Flash Pokémon,Pokémon Flash,Pokémon Baleno,Flacker-Pokémon,Pokémon Flash
+MONSTER_404,MONSTER_NAME,Luxio,Luxio,Luxio,Luxio,Luxio
+MONSTER_404_DESC,MONSTER_DESCRIPTION,Spark Pokémon,Pokémon Étincelle,Pokémon Favilla,Funken-Pokémon,Pokémon Chispa
+MONSTER_405,MONSTER_NAME,Luxray,Luxray,Luxray,Luxtra,Luxray
+MONSTER_405_DESC,MONSTER_DESCRIPTION,Gleam Eyes Pokémon,Pokémon Brillœil,Pokémon Occhiluce,Glühaugen-Pokémon,Pokémon Chispa Ojos
+MONSTER_406,MONSTER_NAME,Budew,Rozbouton,Budew,Knospi,Budew
+MONSTER_406_DESC,MONSTER_DESCRIPTION,Bud Pokémon,Pokémon Bourgeon,Pokémon Germoglio,Knospen-Pokémon,Pokémon Brote
+MONSTER_407,MONSTER_NAME,Roserade,Roserade,Roserade,Roserade,Roserade
+MONSTER_407_DESC,MONSTER_DESCRIPTION,Bouquet Pokémon,Pokémon Bouquet,Pokémon Floreale,Blumenstrauß-Pokémon,Pokémon Ramillete
+MONSTER_408,MONSTER_NAME,Cranidos,Kranidos,Cranidos,Koknodon,Cranidos
+MONSTER_408_DESC,MONSTER_DESCRIPTION,Head Butt Pokémon,Pokémon Coud’Boule,Pokémon Cranioso,Kopfstoß,Pokémon Cabezazo
+MONSTER_409,MONSTER_NAME,Rampardos,Charkos,Rampardos,Rameidon,Rampardos
+MONSTER_409_DESC,MONSTER_DESCRIPTION,Head Butt Pokémon,Pokémon Coud’Boule,Pokémon Cranioso,Kopfstoß,Pokémon Cabezazo
+MONSTER_410,MONSTER_NAME,Shieldon,Dinoclier,Shieldon,Schilterus,Shieldon
+MONSTER_410_DESC,MONSTER_DESCRIPTION,Shield Pokémon,Pokémon Bouclier,Pokémon Schermo,Schutzschild,Pokémon Escudo
+MONSTER_411,MONSTER_NAME,Bastiodon,Bastiodon,Bastiodon,Bollterus,Bastiodon
+MONSTER_411_DESC,MONSTER_DESCRIPTION,Shield Pokémon,Pokémon Bouclier,Pokémon Schermo,Schutzschild,Pokémon Escudo
+MONSTER_412,MONSTER_NAME,Burmy,Cheniti,Burmy,Burmy,Burmy
+MONSTER_412_DESC,MONSTER_DESCRIPTION,Bagworm Pokémon,Pokémon Ver Caché,Pokémon Larva,Beutelwurm,Pokémon Larva
+MONSTER_413,MONSTER_NAME,Wormadam,Cheniselle,Wormadam,Burmadame,Wormadam
+MONSTER_413_DESC,MONSTER_DESCRIPTION,Bagworm Pokémon,Pokémon Ver Caché,Pokémon Larva,Beutelwurm,Pokémon Larva
+MONSTER_414,MONSTER_NAME,Mothim,Papilord,Mothim,Moterpel,Mothim
+MONSTER_414_DESC,MONSTER_DESCRIPTION,Moth Pokémon,Pokémon Phalène,Pokémon Falena,Motte,Pokémon Polilla
+MONSTER_415,MONSTER_NAME,Combee,Apitrini,Combee,Wadribie,Combee
+MONSTER_415_DESC,MONSTER_DESCRIPTION,Tiny Bee Pokémon,Pokémon Miniabeille,Pokémon Apetta,Kleinbienen-Pokémon,Pokémon Abejita
+MONSTER_416,MONSTER_NAME,Vespiquen,Apireine,Vespiquen,Honweisel,Vespiquen
+MONSTER_416_DESC,MONSTER_DESCRIPTION,Beehive Pokémon,Pokémon Ruche,Pokémon Alveare,Bienenstock-Pokémon,Pokémon Colmena
+MONSTER_417,MONSTER_NAME,Pachirisu,Pachirisu,Pachirisu,Pachirisu,Pachirisu
+MONSTER_417_DESC,MONSTER_DESCRIPTION,EleSquirrel Pokémon,Pokémon Écurélec,Pokémon Elescoiatto,Elektrohörnchen,Pokémon Ardillalec
+MONSTER_418,MONSTER_NAME,Buizel,Mustébouée,Buizel,Bamelin,Buizel
+MONSTER_418_DESC,MONSTER_DESCRIPTION,Sea Weasel Pokémon,Pokémon Aquabelette,Pokémon Maridonnola,Meereswiesel,Pokémon Nutria Mar.
+MONSTER_419,MONSTER_NAME,Floatzel,Mustéflott,Floatzel,Bojelin,Floatzel
+MONSTER_419_DESC,MONSTER_DESCRIPTION,Sea Weasel Pokémon,Pokémon Aquabelette,Pokémon Maridonnola,Meereswiesel,Pokémon Nutria Mar.
+MONSTER_420,MONSTER_NAME,Cherubi,Ceribou,Cherubi,Kikugi,Cherubi
+MONSTER_420_DESC,MONSTER_DESCRIPTION,Cherry Pokémon,Pokémon Cerise,Pokémon Ciliegia,Kirschen-Pokémon,Pokémon Cereza
+MONSTER_421,MONSTER_NAME,Cherrim,Ceriflor,Cherrim,Kinoso,Cherrim
+MONSTER_421_DESC,MONSTER_DESCRIPTION,Blossom Pokémon,Pokémon Floraison,Pokémon Bocciolo,Blüten-Pokémon,Pokémon Floración
+MONSTER_422,MONSTER_NAME,Shellos,Sancoki,Shellos,Schalellos,Shellos
+MONSTER_422_DESC,MONSTER_DESCRIPTION,Sea Slug Pokémon,Pokémon Aqualimace,Pokémon Lumacomare,Seeschnecken-Pokémon,Pokémon Babosa Marina
+MONSTER_423,MONSTER_NAME,Gastrodon,Tritosor,Gastrodon,Gastrodon,Gastrodon
+MONSTER_423_DESC,MONSTER_DESCRIPTION,Sea Slug Pokémon,Pokémon Aqualimace,Pokémon Lumacomare,Seeschnecken-Pokémon,Pokémon Babosa Marina
+MONSTER_424,MONSTER_NAME,Ambipom,Capidextre,Ambipom,Ambidiffel,Ambipom
+MONSTER_424_DESC,MONSTER_DESCRIPTION,Long Tail Pokémon,Pokémon Longqueue,Pokémon Lungacoda,Langschweif,Pokémon Cola Larga
+MONSTER_425,MONSTER_NAME,Drifloon,Baudrive,Drifloon,Driftlon,Drifloon
+MONSTER_425_DESC,MONSTER_DESCRIPTION,Balloon Pokémon,Pokémon Bouboule,Pokémon Pallone,Ballon-Pokémon,Pokémon Globo
+MONSTER_426,MONSTER_NAME,Drifblim,Grodrive,Drifblim,Drifzepeli,Drifblim
+MONSTER_426_DESC,MONSTER_DESCRIPTION,Blimp Pokémon,Pokémon Ballon,Pokémon Dirigibile,Luftschiff-Pokémon,Pokémon Dirigible
+MONSTER_427,MONSTER_NAME,Buneary,Laporeille,Buneary,Haspiror,Buneary
+MONSTER_427_DESC,MONSTER_DESCRIPTION,Rabbit Pokémon,Pokémon Lapin,Pokémon Coniglio,Hasen-Pokémon,Pokémon Conejo
+MONSTER_428,MONSTER_NAME,Lopunny,Lockpin,Lopunny,Schlapor,Lopunny
+MONSTER_428_DESC,MONSTER_DESCRIPTION,Rabbit Pokémon,Pokémon Lapin,Pokémon Coniglio,Hasen-Pokémon,Pokémon Conejo
+MONSTER_429,MONSTER_NAME,Mismagius,Magirêve,Mismagius,Traunmagil,Mismagius
+MONSTER_429_DESC,MONSTER_DESCRIPTION,Magical Pokémon,Pokémon Magique,Pokémon Stregone,Magisch,Pokémon Mágico
+MONSTER_430,MONSTER_NAME,Honchkrow,Corboss,Honchkrow,Kramshef,Honchkrow
+MONSTER_430_DESC,MONSTER_DESCRIPTION,Big Boss Pokémon,Pokémon Big Boss,Pokémon Grancapo,Anführer,Pokémon Gran Jefe
+MONSTER_431,MONSTER_NAME,Glameow,Chaglam,Glameow,Charmian,Glameow
+MONSTER_431_DESC,MONSTER_DESCRIPTION,Catty Pokémon,Pokémon Chafouin,Pokémon Felide,Fies,Pokémon Gastuto
+MONSTER_432,MONSTER_NAME,Purugly,Chaffreux,Purugly,Shnurgarst,Purugly
+MONSTER_432_DESC,MONSTER_DESCRIPTION,Tiger Cat Pokémon,Pokémon Chatigre,Pokémon Gattotigre,Tigerkatze,Pokémon Tigre Gato
+MONSTER_433,MONSTER_NAME,Chingling,Korillon,Chingling,Klingplim,Chingling
+MONSTER_433_DESC,MONSTER_DESCRIPTION,Bell Pokémon,Pokémon Clochette,Pokémon Sonaglio,Glöckchen,Pokémon Campana
+MONSTER_434,MONSTER_NAME,Stunky,Moufouette,Stunky,Skunkapuh,Stunky
+MONSTER_434_DESC,MONSTER_DESCRIPTION,Skunk Pokémon,Pokémon Moufette,Pokémon Moffetta,Stinktier-Pokémon,Pokémon Mofeta
+MONSTER_435,MONSTER_NAME,Skuntank,Moufflair,Skuntank,Skuntank,Skuntank
+MONSTER_435_DESC,MONSTER_DESCRIPTION,Skunk Pokémon,Pokémon Moufette,Pokémon Moffetta,Stinktier-Pokémon,Pokémon Mofeta
+MONSTER_436,MONSTER_NAME,Bronzor,Archéomire,Bronzor,Bronzel,Bronzor
+MONSTER_436_DESC,MONSTER_DESCRIPTION,Bronze Pokémon,Pokémon Bronze,Pokémon Bronzo,Bronze-Pokémon,Pokémon Bronce
+MONSTER_437,MONSTER_NAME,Bronzong,Archéodong,Bronzong,Bronzong,Bronzong
+MONSTER_437_DESC,MONSTER_DESCRIPTION,Bronze Bell Pokémon,Pokémon Clochebronze,Pokémon Squibronzo,Bronzeglocken-Pokémon,Pokémon Campana Bronce
+MONSTER_438,MONSTER_NAME,Bonsly,Manzaï,Bonsly,Mobai,Bonsly
+MONSTER_438_DESC,MONSTER_DESCRIPTION,Bonsai Pokémon,Pokémon Bonsaï,Pokémon Bonsai,Bonsai-Pokémon,Pokémon Bonsái
+MONSTER_439,MONSTER_NAME,Mime Jr.,Mime Jr.,Mime Jr.,Pantimimi,Mime Jr.
+MONSTER_439_DESC,MONSTER_DESCRIPTION,Mime Pokémon,Pokémon Mime,Pokémon Mimo,Mimen-Pokémon,Pokémon Mimo
+MONSTER_440,MONSTER_NAME,Happiny,Ptiravi,Happiny,Wonneira,Happiny
+MONSTER_440_DESC,MONSTER_DESCRIPTION,Playhouse Pokémon,Pokémon Maisonjouet,Pokémon Ovettino,Spielhaus-Pokémon,Pokémon Casita
+MONSTER_441,MONSTER_NAME,Chatot,Pijako,Chatot,Plaudagei,Chatot
+MONSTER_441_DESC,MONSTER_DESCRIPTION,Music Note Pokémon,Pokémon Note Musique,Pokémon Musicale,Musiknote,Pokémon Corchea
+MONSTER_442,MONSTER_NAME,Spiritomb,Spiritomb,Spiritomb,Kryppuk,Spiritomb
+MONSTER_442_DESC,MONSTER_DESCRIPTION,Forbidden Pokémon,Pokémon Interdit,Pokémon Proibito,Verboten-Pokémon,Pokémon Prohibido
+MONSTER_443,MONSTER_NAME,Gible,Griknot,Gible,Kaumalat,Gible
+MONSTER_443_DESC,MONSTER_DESCRIPTION,Land Shark Pokémon,Pokémon Terrequin,Pokémon Squaloterra,Landhai-Pokémon,Pokémon Terrascualo
+MONSTER_444,MONSTER_NAME,Gabite,Carmache,Gabite,Knarksel,Gabite
+MONSTER_444_DESC,MONSTER_DESCRIPTION,Cave Pokémon,Pokémon Caverne,Pokémon Grotta,Höhlen-Pokémon,Pokémon Cueva
+MONSTER_445,MONSTER_NAME,Garchomp,Carchacrok,Garchomp,Knakrack,Garchomp
+MONSTER_445_DESC,MONSTER_DESCRIPTION,Mach Pokémon,Pokémon Supersonic,Pokémon Mach,Rasanz-Pokémon,Pokémon Mach
+MONSTER_446,MONSTER_NAME,Munchlax,Goinfrex,Munchlax,Mampfaxo,Munchlax
+MONSTER_446_DESC,MONSTER_DESCRIPTION,Big Eater Pokémon,Pokémon Goinfre,Pokémon Ghiottone,Nimmersatt-Pokémon,Pokémon Comilón
+MONSTER_447,MONSTER_NAME,Riolu,Riolu,Riolu,Riolu,Riolu
+MONSTER_447_DESC,MONSTER_DESCRIPTION,Emanation Pokémon,Pokémon Émanation,Pokémon Emanazione,Wellenspiel-Pokémon,Pokémon Emanación
+MONSTER_448,MONSTER_NAME,Lucario,Lucario,Lucario,Lucario,Lucario
+MONSTER_448_DESC,MONSTER_DESCRIPTION,Aura Pokémon,Pokémon Aura,Pokémon Aura,Aura-Pokémon,Pokémon Aura
+MONSTER_449,MONSTER_NAME,Hippopotas,Hippopotas,Hippopotas,Hippopotas,Hippopotas
+MONSTER_449_DESC,MONSTER_DESCRIPTION,Hippo Pokémon,Pokémon Hippo,Pokémon Ippo,Flusspferd-Pokémon,Pokémon Hipo
+MONSTER_450,MONSTER_NAME,Hippowdon,Hippodocus,Hippowdon,Hippoterus,Hippowdon
+MONSTER_450_DESC,MONSTER_DESCRIPTION,Heavyweight Pokémon,Pokémon Poids Lourd,Pokémon Grandepeso,Schwergewichts-Pokémon,Pokémon Peso Pesado
+MONSTER_451,MONSTER_NAME,Skorupi,Rapion,Skorupi,Pionskora,Skorupi
+MONSTER_451_DESC,MONSTER_DESCRIPTION,Scorpion Pokémon,Pokémon Scorpion,Pokémon Scorpione,Skorpion-Pokémon,Pokémon Escorpión
+MONSTER_452,MONSTER_NAME,Drapion,Drascore,Drapion,Piondragi,Drapion
+MONSTER_452_DESC,MONSTER_DESCRIPTION,Ogre Scorpion Pokémon,Pokémon Scorpogre,Pokémon Scorpiaccio,Ogerskorpion-Pokémon,Pokémon Escorpiogro
+MONSTER_453,MONSTER_NAME,Croagunk,Cradopaud,Croagunk,Glibunkel,Croagunk
+MONSTER_453_DESC,MONSTER_DESCRIPTION,Toxic Mouth Pokémon,Pokémon Toxique,Pokémon Inveieleno,Giftmund-Pokémon,Pokémon Boca Tóxica
+MONSTER_454,MONSTER_NAME,Toxicroak,Coatox,Toxicroak,Toxiquak,Toxicroak
+MONSTER_454_DESC,MONSTER_DESCRIPTION,Toxic Mouth Pokémon,Pokémon Toxique,Pokémon Inveieleno,Giftmund-Pokémon,Pokémon Boca Tóxica
+MONSTER_455,MONSTER_NAME,Carnivine,Vortente,Carnivine,Venuflibis,Carnivine
+MONSTER_455_DESC,MONSTER_DESCRIPTION,Bug Catcher Pokémon,Pokémon Chopinsecte,Pokémon Insettivoro,Käfertod,Pokémon Caza Bichos
+MONSTER_456,MONSTER_NAME,Finneon,Écayon,Finneon,Finneon,Finneon
+MONSTER_456_DESC,MONSTER_DESCRIPTION,Wing Fish Pokémon,Pokémon Poisson Ailé,Pokémon Pescealato,Flügelfisch,Pokémon Pez Ala
+MONSTER_457,MONSTER_NAME,Lumineon,Luminéon,Lumineon,Lumineon,Lumineon
+MONSTER_457_DESC,MONSTER_DESCRIPTION,Neon Pokémon,Pokémon Néon,Pokémon Neon,Neon,Pokémon Neón
+MONSTER_458,MONSTER_NAME,Mantyke,Babimanta,Mantyke,Mantirps,Mantyke
+MONSTER_458_DESC,MONSTER_DESCRIPTION,Kite Pokémon,Pokémon Cervolant,Pokémon Aquilone,Flugrochen-Pokémon,Pokémon Milano
+MONSTER_459,MONSTER_NAME,Snover,Blizzi,Snover,Shnebedeck,Snover
+MONSTER_459_DESC,MONSTER_DESCRIPTION,Frost Tree Pokémon,Pokémon Arbregelé,Pokémon Albergelo,Frostbaum-Pokémon,Pokémon Árbol Nieve
+MONSTER_460,MONSTER_NAME,Abomasnow,Blizzaroi,Abomasnow,Rexblisar,Abomasnow
+MONSTER_460_DESC,MONSTER_DESCRIPTION,Frost Tree Pokémon,Pokémon Arbregelé,Pokémon Albergelo,Frostbaum-Pokémon,Pokémon Árbol Nieve
+MONSTER_461,MONSTER_NAME,Weavile,Dimoret,Weavile,Snibunna,Weavile
+MONSTER_461_DESC,MONSTER_DESCRIPTION,Sharp Claw Pokémon,Pokémon Grifacérée,Pokémon Lamartigli,Stichklauen-Pokémon,Pokémon Garra Filo
+MONSTER_462,MONSTER_NAME,Magnezone,Magnézone,Magnezone,Magnezone,Magnezone
+MONSTER_462_DESC,MONSTER_DESCRIPTION,Magnet Area Pokémon,Pokémon Aimant,Pokémon Magnetico,Magnetgebiets-Pokémon,Pokémon Magnético
+MONSTER_463,MONSTER_NAME,Lickilicky,Coudlangue,Lickilicky,Schlurplek,Lickilicky
+MONSTER_463_DESC,MONSTER_DESCRIPTION,Licking Pokémon,Pokémon Lécheur,Pokémon Linguaccia,Schlecker-Pokémon,Pokémon Lametazo
+MONSTER_464,MONSTER_NAME,Rhyperior,Rhinastoc,Rhyperior,Rihornior,Rhyperior
+MONSTER_464_DESC,MONSTER_DESCRIPTION,Drill Pokémon,Pokémon Perceur,Pokémon Trapano,Bohrer-Pokémon,Pokémon Taladro
+MONSTER_465,MONSTER_NAME,Tangrowth,Bouldeneu,Tangrowth,Tangoloss,Tangrowth
+MONSTER_465_DESC,MONSTER_DESCRIPTION,Vine Pokémon,Pokémon Vigne,Pokémon Liana,Ranken-Pokémon,Pokémon Enredadera
+MONSTER_466,MONSTER_NAME,Electivire,Élekable,Electivire,Elevoltek,Electivire
+MONSTER_466_DESC,MONSTER_DESCRIPTION,Thunderbolt Pokémon,Pokémon Foudrélec,Pokémon Saetta,Donnerkeil-Pokémon,Pokémon Rayo
+MONSTER_467,MONSTER_NAME,Magmortar,Maganon,Magmortar,Magbrant,Magmortar
+MONSTER_467_DESC,MONSTER_DESCRIPTION,Blast Pokémon,Pokémon Explosion,Pokémon Esplosivo,Detonations-Pokémon,Pokémon Explosión
+MONSTER_468,MONSTER_NAME,Togekiss,Togekiss,Togekiss,Togekiss,Togekiss
+MONSTER_468_DESC,MONSTER_DESCRIPTION,Jubilee Pokémon,Pokémon Célébration,Pokémon Festa,Jubilierer-Pokémon,Pokémon Festejo
+MONSTER_469,MONSTER_NAME,Yanmega,Yanmega,Yanmega,Yanmega,Yanmega
+MONSTER_469_DESC,MONSTER_DESCRIPTION,Ogre Darner Pokémon,Pokémon Libellogre,Pokémon Libellorco,Agrion,Pokémon Libélula
+MONSTER_470,MONSTER_NAME,Leafeon,Phyllali,Leafeon,Folipurba,Leafeon
+MONSTER_470_DESC,MONSTER_DESCRIPTION,Verdant Pokémon,Pokémon Verdoyant,Pokémon Rigoglioso,Unreif-Pokémon,Pokémon Verdor
+MONSTER_471,MONSTER_NAME,Glaceon,Givrali,Glaceon,Glaziola,Glaceon
+MONSTER_471_DESC,MONSTER_DESCRIPTION,Fresh Snow Pokémon,Pokémon Poudreuse,Pokémon Nevefresca,Neuschnee-Pokémon,Pokémon Nieve Fresca
+MONSTER_472,MONSTER_NAME,Gliscor,Scorvol,Gliscor,Skorgro,Gliscor
+MONSTER_472_DESC,MONSTER_DESCRIPTION,Fang Scorpion Pokémon,Pokémon Scorpicroc,Pokémon Scorpidente,Zahnskorpi,Pokémon Colmicorpio
+MONSTER_473,MONSTER_NAME,Mamoswine,Mammochon,Mamoswine,Mamutel,Mamoswine
+MONSTER_473_DESC,MONSTER_DESCRIPTION,Twin Tusk Pokémon,Pokémon Deudéfenses,Pokémon Duezanne,Doppelstoßzahn-Pokémon,Pokémon Doscolmillos
+MONSTER_474,MONSTER_NAME,Porygon-Z,Porygon-Z,Porygon-Z,Porygon-Z,Porygon-Z
+MONSTER_474_DESC,MONSTER_DESCRIPTION,Virtual Pokémon,Pokémon Virtuel,Pokémon Virtuale,Virtuell-Pokémon,Pokémon Virtual
+MONSTER_475,MONSTER_NAME,Gallade,Gallame,Gallade,Galagladi,Gallade
+MONSTER_475_DESC,MONSTER_DESCRIPTION,Blade Pokémon,Pokémon Lame,Pokémon Lama,Klingen-Pokémon,Pokémon Cuchilla
+MONSTER_476,MONSTER_NAME,Probopass,Tarinorme,Probopass,Voluminas,Probopass
+MONSTER_476_DESC,MONSTER_DESCRIPTION,Compass Pokémon,Pokémon Boussole,Pokémon Bussola,Kompass,Pokémon Brújula
+MONSTER_477,MONSTER_NAME,Dusknoir,Noctunoir,Dusknoir,Zwirrfinst,Dusknoir
+MONSTER_477_DESC,MONSTER_DESCRIPTION,Gripper Pokémon,Pokémon Mainpince,Pokémon Pinza,Greifer-Pokémon,Pokémon Grilletes
+MONSTER_478,MONSTER_NAME,Froslass,Momartik,Froslass,Frosdedje,Froslass
+MONSTER_478_DESC,MONSTER_DESCRIPTION,Snow Land Pokémon,Pokémon Enneigement,Pokémon Suolnevoso,Schneegebiets-Pokémon,Pokémon Tierra Fría
+MONSTER_479,MONSTER_NAME,Rotom,Motisma,Rotom,Rotom,Rotom
+MONSTER_479_DESC,MONSTER_DESCRIPTION,Plasma Pokémon,Pokémon Plasma,Pokémon Plasma,Plasma-Pokémon,Pokémon Plasma
+MONSTER_480,MONSTER_NAME,Uxie,Créhelf,Uxie,Selfe,Uxie
+MONSTER_480_DESC,MONSTER_DESCRIPTION,Knowledge Pokémon,Pokémon Savoir,Pokémon Sapienza,Wissens-Pokémon,Pokémon Sabiduría
+MONSTER_481,MONSTER_NAME,Mesprit,Créfollet,Mesprit,Vesprit,Mesprit
+MONSTER_481_DESC,MONSTER_DESCRIPTION,Emotion Pokémon,Pokémon Émotion,Pokémon Emozione,Emotions-Pokémon,Pokémon Sensorio
+MONSTER_482,MONSTER_NAME,Azelf,Créfadet,Azelf,Tobutz,Azelf
+MONSTER_482_DESC,MONSTER_DESCRIPTION,Willpower Pokémon,Pokémon Volonté,Pokémon Volontà,Willenskraft-Pokémon,Pokémon Voluntad
+MONSTER_483,MONSTER_NAME,Dialga,Dialga,Dialga,Dialga,Dialga
+MONSTER_483_DESC,MONSTER_DESCRIPTION,Temporal Pokémon,Pokémon Temps,Pokémon Tempo,Zeitweilig-Pokémon,Pokémon Temporal
+MONSTER_484,MONSTER_NAME,Palkia,Palkia,Palkia,Palkia,Palkia
+MONSTER_484_DESC,MONSTER_DESCRIPTION,Spatial Pokémon,Pokémon Espace,Pokémon Spazio,Räumlich-Pokémon,Pokémon Espacial
+MONSTER_485,MONSTER_NAME,Heatran,Heatran,Heatran,Heatran,Heatran
+MONSTER_485_DESC,MONSTER_DESCRIPTION,Lava Dome Pokémon,Pokémon Caldeira,Pokémon Cratere,Lavadom-Pokémon,Pokémon Domo Lava
+MONSTER_486,MONSTER_NAME,Regigigas,Regigigas,Regigigas,Regigigas,Regigigas
+MONSTER_486_DESC,MONSTER_DESCRIPTION,Colossal Pokémon,Pokémon Prodigieux,Pokémon Colossale,Kolossal-Pokémon,Pokémon Colosal
+MONSTER_487,MONSTER_NAME,Giratina,Giratina,Giratina,Giratina,Giratina
+MONSTER_487_DESC,MONSTER_DESCRIPTION,Renegade Pokémon,Pokémon Renégat,Pokémon Ribelle,Rebellen-Pokémon,Pokémon Renegado
+MONSTER_488,MONSTER_NAME,Cresselia,Cresselia,Cresselia,Cresselia,Cresselia
+MONSTER_488_DESC,MONSTER_DESCRIPTION,Lunar Pokémon,Pokémon Lunaire,Pokémon Falcato,Lunar-Pokémon,Pokémon Lunar
+MONSTER_489,MONSTER_NAME,Phione,Phione,Phione,Phione,Phione
+MONSTER_489_DESC,MONSTER_DESCRIPTION,Sea Drifter Pokémon,Pokémon Dérivenmer,Pokémon Oceanbondo,Seedrift,Pokémon Marino
+MONSTER_490,MONSTER_NAME,Manaphy,Manaphy,Manaphy,Manaphy,Manaphy
+MONSTER_490_DESC,MONSTER_DESCRIPTION,Seafaring Pokémon,Pokémon Voyagenmer,Pokémon Oceandante,Seefahrer,Pokémon Náutico
+MONSTER_491,MONSTER_NAME,Darkrai,Darkrai,Darkrai,Darkrai,Darkrai
+MONSTER_491_DESC,MONSTER_DESCRIPTION,Pitch-Black Pokémon,Pokémon Noirtotal,Pokémon Neropesto,Dunkelnacht,Pokémon Oscuridad
+MONSTER_492,MONSTER_NAME,Shaymin,Shaymin,Shaymin,Shaymin,Shaymin
+MONSTER_492_DESC,MONSTER_DESCRIPTION,Gratitude Pokémon,Pokémon Gratitude,Pokémon Gratitudine,Dankbarkeit,Pokémon Gratitud
+MONSTER_493,MONSTER_NAME,Arceus,Arceus,Arceus,Arceus,Arceus
+MONSTER_493_DESC,MONSTER_DESCRIPTION,Alpha Pokémon,Pokémon Alpha,Pokémon Primevo,Alpha,Pokémon Alfa
+MONSTER_494,MONSTER_NAME,Victini,Victini,Victini,Victini,Victini
+MONSTER_494_DESC,MONSTER_DESCRIPTION,Victory Pokémon,Pokémon Victoire,Pokémon Vittoria,Triumph-Pokémon,Pokémon Victoria
+MONSTER_495,MONSTER_NAME,Snivy,Vipélierre,Snivy,Serpifeu,Snivy
+MONSTER_495_DESC,MONSTER_DESCRIPTION,Grass Snake Pokémon,Pokémon Serpenterbe,Pokémon Serperba,Grasschlange,Pokémon Serp. Hierba
+MONSTER_496,MONSTER_NAME,Servine,Lianaja,Servine,Efoserp,Servine
+MONSTER_496_DESC,MONSTER_DESCRIPTION,Grass Snake Pokémon,Pokémon Serpenterbe,Pokémon Serperba,Grasschlange,Pokémon Serp. Hierba
+MONSTER_497,MONSTER_NAME,Serperior,Majaspic,Serperior,Serpiroyal,Serperior
+MONSTER_497_DESC,MONSTER_DESCRIPTION,Regal Pokémon,Pokémon Majestueux,Pokémon Regale,Hoheit,Pokémon Realeza
+MONSTER_498,MONSTER_NAME,Tepig,Gruikui,Tepig,Floink,Tepig
+MONSTER_498_DESC,MONSTER_DESCRIPTION,Fire Pig Pokémon,Pokémon Cochon Feu,Pokémon Suinfuoco,Feuerferkel,Pokémon Cerdo Fuego
+MONSTER_499,MONSTER_NAME,Pignite,Grotichon,Pignite,Ferkokel,Pignite
+MONSTER_499_DESC,MONSTER_DESCRIPTION,Fire Pig Pokémon,Pokémon Cochon Feu,Pokémon Suinfuoco,Feuerferkel,Pokémon Cerdo Fuego
+MONSTER_500,MONSTER_NAME,Emboar,Roitiflam,Emboar,Flambirex,Emboar
+MONSTER_500_DESC,MONSTER_DESCRIPTION,Mega Fire Pig Pokémon,Pokémon Grochon Feu,Pokémon Suincendio,Feuerschwein,Pokémon Cerdo Ígneo
+MONSTER_501,MONSTER_NAME,Oshawott,Moustillon,Oshawott,Ottaro,Oshawott
+MONSTER_501_DESC,MONSTER_DESCRIPTION,Sea Otter Pokémon,Pokémon Loutre,Pokémon Lontra,Otter,Pokémon Nutria
+MONSTER_502,MONSTER_NAME,Dewott,Mateloutre,Dewott,Zwottronin,Dewott
+MONSTER_502_DESC,MONSTER_DESCRIPTION,Discipline Pokémon,Pokémon Entraînement,Pokémon Apprendista,Schulung,Pokémon Superación
+MONSTER_503,MONSTER_NAME,Samurott,Clamiral,Samurott,Admurai,Samurott
+MONSTER_503_DESC,MONSTER_DESCRIPTION,Formidable Pokémon,Pokémon Dignitaire,Pokémon Dignità,Würde,Pokémon Majestuoso
+MONSTER_504,MONSTER_NAME,Patrat,Ratentif,Patrat,Nagelotz,Patrat
+MONSTER_504_DESC,MONSTER_DESCRIPTION,Scout Pokémon,Pokémon Espion,Pokémon Esplorante,Späher,Pokémon Explorador
+MONSTER_505,MONSTER_NAME,Watchog,Miradar,Watchog,Kukmarda,Watchog
+MONSTER_505_DESC,MONSTER_DESCRIPTION,Lookout Pokémon,Pokémon Vigilant,Pokémon Sentinella,Wachsamkeit,Pokémon Alerta
+MONSTER_506,MONSTER_NAME,Lillipup,Ponchiot,Lillipup,Yorkleff,Lillipup
+MONSTER_506_DESC,MONSTER_DESCRIPTION,Puppy Pokémon,Pokémon Chiot,Pokémon Cagnolino,Welpen-Pokémon,Pokémon Perrito
+MONSTER_507,MONSTER_NAME,Herdier,Ponchien,Herdier,Terribark,Herdier
+MONSTER_507_DESC,MONSTER_DESCRIPTION,Loyal Dog Pokémon,Pokémon Chien Fidèle,Pokémon Fedeltà,Treuhund-Pokémon,Pokémon Leal
+MONSTER_508,MONSTER_NAME,Stoutland,Mastouffe,Stoutland,Bissbark,Stoutland
+MONSTER_508_DESC,MONSTER_DESCRIPTION,Big-Hearted Pokémon,Pokémon Magnanime,Pokémon Generosità,Großmut-Pokémon,Pokémon Magnánimo
+MONSTER_509,MONSTER_NAME,Purrloin,Chacripan,Purrloin,Felilou,Purrloin
+MONSTER_509_DESC,MONSTER_DESCRIPTION,Devious Pokémon,Pokémon Scélérat,Pokémon Furbizia,Schelm-Pokémon,Pokémon Malicioso
+MONSTER_510,MONSTER_NAME,Liepard,Léopardus,Liepard,Kleoparda,Liepard
+MONSTER_510_DESC,MONSTER_DESCRIPTION,Cruel Pokémon,Pokémon Implacable,Pokémon Sanguefreddo,Gefühlskälte-Pokémon,Pokémon Calculador
+MONSTER_511,MONSTER_NAME,Pansage,Feuillajou,Pansage,Vegimak,Pansage
+MONSTER_511_DESC,MONSTER_DESCRIPTION,Grass Monkey Pokémon,Pokémon Singe Herbe,Pokémon Scimperba,Grasaffe,Pokémon Mono Hierba
+MONSTER_512,MONSTER_NAME,Simisage,Feuiloutan,Simisage,Vegichita,Simisage
+MONSTER_512_DESC,MONSTER_DESCRIPTION,Thorn Monkey Pokémon,Pokémon Singépine,Pokémon Spinpanzé,Stachelaffe,Pokémon Mono Pincho
+MONSTER_513,MONSTER_NAME,Pansear,Flamajou,Pansear,Grillmak,Pansear
+MONSTER_513_DESC,MONSTER_DESCRIPTION,High Temp Pokémon,Pokémon Brûlant,Pokémon Testacalda,Hitze,Pokémon Ardiente
+MONSTER_514,MONSTER_NAME,Simisear,Flamoutan,Simisear,Grillchita,Simisear
+MONSTER_514_DESC,MONSTER_DESCRIPTION,Ember Pokémon,Pokémon Braise,Pokémon Sfavillante,Funkenregen,Pokémon Lumbre
+MONSTER_515,MONSTER_NAME,Panpour,Flotajou,Panpour,Sodamak,Panpour
+MONSTER_515_DESC,MONSTER_DESCRIPTION,Spray Pokémon,Pokémon Jet d’Eau,Pokémon Annaffiatore,Wasserstrahl,Pokémon Salpicadura
+MONSTER_516,MONSTER_NAME,Simipour,Flotoutan,Simipour,Sodachita,Simipour
+MONSTER_516_DESC,MONSTER_DESCRIPTION,Geyser Pokémon,Pokémon Drainage,Pokémon Spruzzacqua,Drainage,Pokémon Drenaje
+MONSTER_517,MONSTER_NAME,Munna,Munna,Munna,Somniam,Munna
+MONSTER_517_DESC,MONSTER_DESCRIPTION,Dream Eater Pokémon,Pokémon Mangerêve,Pokémon Divorasogni,Traumfresser-Pokémon,Pokémon Comesueños
+MONSTER_518,MONSTER_NAME,Musharna,Mushana,Musharna,Somnivora,Musharna
+MONSTER_518_DESC,MONSTER_DESCRIPTION,Drowsing Pokémon,Pokémon Rêveur,Pokémon Dormiveglia,Halbschlaf-Pokémon,Pokémon Duermevela
+MONSTER_519,MONSTER_NAME,Pidove,Poichigeon,Pidove,Dusselgurr,Pidove
+MONSTER_519_DESC,MONSTER_DESCRIPTION,Tiny Pigeon Pokémon,Pokémon Tipigeon,Pokémon Piccione,Täubchen-Pokémon,Pokémon Pichón
+MONSTER_520,MONSTER_NAME,Tranquill,Colombeau,Tranquill,Navitaub,Tranquill
+MONSTER_520_DESC,MONSTER_DESCRIPTION,Wild Pigeon Pokémon,Pokémon Sauvapigeon,Pokémon Granpiccione,Wildtauben-Pokémon,Pokémon Torcaz
+MONSTER_521,MONSTER_NAME,Unfezant,Déflaisan,Unfezant,Fasasnob,Unfezant
+MONSTER_521_DESC,MONSTER_DESCRIPTION,Proud Pokémon,Pokémon Fier,Pokémon Orgoglio,Stolz-Pokémon,Pokémon Altanero
+MONSTER_522,MONSTER_NAME,Blitzle,Zébibron,Blitzle,Elezeba,Blitzle
+MONSTER_522_DESC,MONSTER_DESCRIPTION,Electrified Pokémon,Pokémon Étincélec,Pokémon Caricavolt,Hochspannung,Pokémon Electrizado
+MONSTER_523,MONSTER_NAME,Zebstrika,Zéblitz,Zebstrika,Zebritz,Zebstrika
+MONSTER_523_DESC,MONSTER_DESCRIPTION,Thunderbolt Pokémon,Pokémon Foudrélec,Pokémon Saetta,Donnerkeil,Pokémon Rayo
+MONSTER_524,MONSTER_NAME,Roggenrola,Nodulithe,Roggenrola,Kiesling,Roggenrola
+MONSTER_524_DESC,MONSTER_DESCRIPTION,Mantle Pokémon,Pokémon Manteau,Pokémon Placca,Erdmantel-Pokémon,Pokémon Manto
+MONSTER_525,MONSTER_NAME,Boldore,Géolithe,Boldore,Sedimantur,Boldore
+MONSTER_525_DESC,MONSTER_DESCRIPTION,Ore Pokémon,Pokémon Minerai,Pokémon Minerale,Erz-Pokémon,Pokémon Mineral
+MONSTER_526,MONSTER_NAME,Gigalith,Gigalithe,Gigalith,Brockoloss,Gigalith
+MONSTER_526_DESC,MONSTER_DESCRIPTION,Compressed Pokémon,Pokémon Surpression,Pokémon Pressionalta,Kompressions-Pokémon,Pokémon Presurizado
+MONSTER_527,MONSTER_NAME,Woobat,Chovsourir,Woobat,Fleknoil,Woobat
+MONSTER_527_DESC,MONSTER_DESCRIPTION,Bat Pokémon,Pokémon Chovsouris,Pokémon Pipistrello,Fledermaus-Pokémon,Pokémon Murciélago
+MONSTER_528,MONSTER_NAME,Swoobat,Rhinolove,Swoobat,Fletiamo,Swoobat
+MONSTER_528_DESC,MONSTER_DESCRIPTION,Courting Pokémon,Pokémon Cupidon,Pokémon Cercamore,Balz-Pokémon,Pokémon Galante
+MONSTER_529,MONSTER_NAME,Drilbur,Rototaupe,Drilbur,Rotomurf,Drilbur
+MONSTER_529_DESC,MONSTER_DESCRIPTION,Mole Pokémon,Pokémon Taupe,Pokémon Talpa,Maulwurf-Pokémon,Pokémon Topo
+MONSTER_530,MONSTER_NAME,Excadrill,Minotaupe,Excadrill,Stalobor,Excadrill
+MONSTER_530_DESC,MONSTER_DESCRIPTION,Subterrene Pokémon,Pokémon Souterrain,Pokémon Sottoterra,Untergrund-Pokémon,Pokémon Subterráneo
+MONSTER_531,MONSTER_NAME,Audino,Nanméouïe,Audino,Ohrdoch,Audino
+MONSTER_531_DESC,MONSTER_DESCRIPTION,Hearing Pokémon,Pokémon Audition,Pokémon Ascolto,Gehör-Pokémon,Pokémon Escucha
+MONSTER_532,MONSTER_NAME,Timburr,Charpenti,Timburr,Praktibalk,Timburr
+MONSTER_532_DESC,MONSTER_DESCRIPTION,Muscular Pokémon,Pokémon Costaud,Pokémon Forzaimmane,Muskel-Pokémon,Pokémon Musculoso
+MONSTER_533,MONSTER_NAME,Gurdurr,Ouvrifier,Gurdurr,Strepoli,Gurdurr
+MONSTER_533_DESC,MONSTER_DESCRIPTION,Muscular Pokémon,Pokémon Costaud,Pokémon Forzaimmane,Muskel-Pokémon,Pokémon Musculoso
+MONSTER_534,MONSTER_NAME,Conkeldurr,Bétochef,Conkeldurr,Meistagrif,Conkeldurr
+MONSTER_534_DESC,MONSTER_DESCRIPTION,Muscular Pokémon,Pokémon Costaud,Pokémon Forzaimmane,Muskel-Pokémon,Pokémon Musculoso
+MONSTER_535,MONSTER_NAME,Tympole,Tritonde,Tympole,Schallquap,Tympole
+MONSTER_535_DESC,MONSTER_DESCRIPTION,Tadpole Pokémon,Pokémon Têtard,Pokémon Girino,Kaulquappen-Pokémon,Pokémon Renacuajo
+MONSTER_536,MONSTER_NAME,Palpitoad,Batracné,Palpitoad,Mebrana,Palpitoad
+MONSTER_536_DESC,MONSTER_DESCRIPTION,Vibration Pokémon,Pokémon Vibration,Pokémon Vibrazione,Vibrations-Pokémon,Pokémon Vibrante
+MONSTER_537,MONSTER_NAME,Seismitoad,Crapustule,Seismitoad,Branawarz,Seismitoad
+MONSTER_537_DESC,MONSTER_DESCRIPTION,Vibration Pokémon,Pokémon Vibration,Pokémon Vibrazione,Vibrations-Pokémon,Pokémon Vibrante
+MONSTER_538,MONSTER_NAME,Throh,Judokrak,Throh,Jiutesto,Throh
+MONSTER_538_DESC,MONSTER_DESCRIPTION,Judo Pokémon,Pokémon Judo,Pokémon Judo,Judo-Pokémon,Pokémon Judo
+MONSTER_539,MONSTER_NAME,Sawk,Karaclée,Sawk,Karadonis,Sawk
+MONSTER_539_DESC,MONSTER_DESCRIPTION,Karate Pokémon,Pokémon Karaté,Pokémon Karate,Karate-Pokémon,Pokémon Kárate
+MONSTER_540,MONSTER_NAME,Sewaddle,Larveyette,Sewaddle,Strawickl,Sewaddle
+MONSTER_540_DESC,MONSTER_DESCRIPTION,Sewing Pokémon,Pokémon Couture,Pokémon Grancucito,Schneider,Pokémon Sastre
+MONSTER_541,MONSTER_NAME,Swadloon,Couverdure,Swadloon,Folikon,Swadloon
+MONSTER_541_DESC,MONSTER_DESCRIPTION,Leaf-Wrapped Pokémon,Pokémon Capefeuille,Pokémon Coprifoglia,Wickelblatt,Pokémon Arropado
+MONSTER_542,MONSTER_NAME,Leavanny,Manternel,Leavanny,Matrifol,Leavanny
+MONSTER_542_DESC,MONSTER_DESCRIPTION,Nurturing Pokémon,Pokémon Précepteur,Pokémon Balia,Kinderpflege,Pokémon Cuidador
+MONSTER_543,MONSTER_NAME,Venipede,Venipatte,Venipede,Toxiped,Venipede
+MONSTER_543_DESC,MONSTER_DESCRIPTION,Centipede Pokémon,Pokémon Chilopode,Pokémon Centipede,Tausendfüßer-Pokémon,Pokémon Ciempiés
+MONSTER_544,MONSTER_NAME,Whirlipede,Scobolide,Whirlipede,Rollum,Whirlipede
+MONSTER_544_DESC,MONSTER_DESCRIPTION,Curlipede Pokémon,Pokémon Coconplopode,Pokémon Rotopede,Kokonfüßer-Pokémon,Pokémon Pupaciempiés
+MONSTER_545,MONSTER_NAME,Scolipede,Brutapode,Scolipede,Cerapendra,Scolipede
+MONSTER_545_DESC,MONSTER_DESCRIPTION,Megapede Pokémon,Pokémon Mégaplopode,Pokémon Megapede,Riesenfüßer-Pokémon,Pokémon Megaciempiés
+MONSTER_546,MONSTER_NAME,Cottonee,Doudouvet,Cottonee,Waumboll,Cottonee
+MONSTER_546_DESC,MONSTER_DESCRIPTION,Cotton Puff Pokémon,Pokémon Boule Coton,Pokémon Cotonpalla,Wattebausch-Pokémon,Pokémon Bolalgodón
+MONSTER_547,MONSTER_NAME,Whimsicott,Farfaduvet,Whimsicott,Elfun,Whimsicott
+MONSTER_547_DESC,MONSTER_DESCRIPTION,Windveiled Pokémon,Pokémon Vole Vent,Pokémon Spiffero,Windschatten-Pokémon,Pokémon Vuelalviento
+MONSTER_548,MONSTER_NAME,Petilil,Chlorobule,Petilil,Lilminip,Petilil
+MONSTER_548_DESC,MONSTER_DESCRIPTION,Bulb Pokémon,Pokémon Racine,Pokémon Radice,Wurzel-Pokémon,Pokémon Bulbo
+MONSTER_549,MONSTER_NAME,Lilligant,Fragilady,Lilligant,Dressella,Lilligant
+MONSTER_549_DESC,MONSTER_DESCRIPTION,Flowering Pokémon,Pokémon Chef-Fleur,Pokémon Fiorfronzolo,Blumenzier-Pokémon,Pokémon Adornofloral
+MONSTER_550,MONSTER_NAME,Basculin,Bargantua,Basculin,Barschuft,Basculin
+MONSTER_550_DESC,MONSTER_DESCRIPTION,Hostile Pokémon,Pokémon Violent,Pokémon Irruenza,Grobheits-Pokémon,Pokémon Violento
+MONSTER_551,MONSTER_NAME,Sandile,Mascaïman,Sandile,Ganovil,Sandile
+MONSTER_551_DESC,MONSTER_DESCRIPTION,Desert Croc Pokémon,Pokémon Croco Sable,Pokémon Sabbiadrillo,Wüstenkroko-Pokémon,Pokémon Desierdrilo
+MONSTER_552,MONSTER_NAME,Krokorok,Escroco,Krokorok,Rokkaiman,Krokorok
+MONSTER_552_DESC,MONSTER_DESCRIPTION,Desert Croc Pokémon,Pokémon Croco Sable,Pokémon Sabbiadrillo,Wüstenkroko-Pokémon,Pokémon Desierdrilo
+MONSTER_553,MONSTER_NAME,Krookodile,Crocorible,Krookodile,Rabigator,Krookodile
+MONSTER_553_DESC,MONSTER_DESCRIPTION,Intimidation Pokémon,Pokémon Intimidation,Pokémon Minaccia,Abschreckungs-Pokémon,Pokémon Amenazador
+MONSTER_554,MONSTER_NAME,Darumaka,Darumarond,Darumaka,Flampion,Darumaka
+MONSTER_554_DESC,MONSTER_DESCRIPTION,Zen Charm Pokémon,Pokémon Daruma,Pokémon Daruma,Lampion-Pokémon,Pokémon Daruma
+MONSTER_555,MONSTER_NAME,Darmanitan,Darumacho,Darmanitan,Flampivian,Darmanitan
+MONSTER_555_DESC,MONSTER_DESCRIPTION,Blazing Pokémon,Pokémon Enflammé,Pokémon Altefiamme,Lichterloh-Pokémon,Pokémon Candente
+MONSTER_556,MONSTER_NAME,Maractus,Maracachi,Maractus,Maracamba,Maractus
+MONSTER_556_DESC,MONSTER_DESCRIPTION,Cactus Pokémon,Pokémon Cactus,Pokémon Cactus,Kaktus-Pokémon,Pokémon Cactus
+MONSTER_557,MONSTER_NAME,Dwebble,Crabicoque,Dwebble,Lithomith,Dwebble
+MONSTER_557_DESC,MONSTER_DESCRIPTION,Rock Inn Pokémon,Pokémon Lithicole,Pokémon Pietracasa,Steinhaus-Pokémon,Pokémon Casapiedra
+MONSTER_558,MONSTER_NAME,Crustle,Crabaraque,Crustle,Castellith,Crustle
+MONSTER_558_DESC,MONSTER_DESCRIPTION,Stone Home Pokémon,Pokémon Lapidicole,Pokémon Scogliocasa,Felshaus-Pokémon,Pokémon Casarroca
+MONSTER_559,MONSTER_NAME,Scraggy,Baggiguane,Scraggy,Zurrokex,Scraggy
+MONSTER_559_DESC,MONSTER_DESCRIPTION,Shedding Pokémon,Pokémon Mue,Pokémon Mutapelle,Hautwechsel-Pokémon,Pokémon Mudapiel
+MONSTER_560,MONSTER_NAME,Scrafty,Baggaïd,Scrafty,Irokex,Scrafty
+MONSTER_560_DESC,MONSTER_DESCRIPTION,Hoodlum Pokémon,Pokémon Gang,Pokémon Furfante,Halunken-Pokémon,Pokémon Gamberro
+MONSTER_561,MONSTER_NAME,Sigilyph,Cryptéro,Sigilyph,Symvolara,Sigilyph
+MONSTER_561_DESC,MONSTER_DESCRIPTION,Avianoid Pokémon,Pokémon Similoiseau,Pokémon Pseuduccello,Vogelgleich-Pokémon,Pokémon Pseudopájaro
+MONSTER_562,MONSTER_NAME,Yamask,Tutafeh,Yamask,Makabaja,Yamask
+MONSTER_562_DESC,MONSTER_DESCRIPTION,Spirit Pokémon,Pokémon Âme,Pokémon Fatuanima,Seelen-Pokémon,Pokémon Espíritu
+MONSTER_563,MONSTER_NAME,Cofagrigus,Tutankafer,Cofagrigus,Echnatoll,Cofagrigus
+MONSTER_563_DESC,MONSTER_DESCRIPTION,Coffin Pokémon,Pokémon Cercueil,Pokémon Bara,Sarkophag-Pokémon,Pokémon Sepultura
+MONSTER_564,MONSTER_NAME,Tirtouga,Carapagos,Tirtouga,Galapaflos,Tirtouga
+MONSTER_564_DESC,MONSTER_DESCRIPTION,Prototurtle Pokémon,Pokémon Tortantique,Pokémon Ancestruga,Urzeitkröten-Pokémon,Pokémon Pretortuga
+MONSTER_565,MONSTER_NAME,Carracosta,Mégapagos,Carracosta,Karippas,Carracosta
+MONSTER_565_DESC,MONSTER_DESCRIPTION,Prototurtle Pokémon,Pokémon Tortantique,Pokémon Ancestruga,Urzeitkröten-Pokémon,Pokémon Pretortuga
+MONSTER_566,MONSTER_NAME,Archen,Arkéapti,Archen,Flapteryx,Archen
+MONSTER_566_DESC,MONSTER_DESCRIPTION,First Bird Pokémon,Pokémon Oisancien,Pokémon Paleouccello,Urzeitvogel-Pokémon,Pokémon Protopájaro
+MONSTER_567,MONSTER_NAME,Archeops,Aéroptéryx,Archeops,Aeropteryx,Archeops
+MONSTER_567_DESC,MONSTER_DESCRIPTION,First Bird Pokémon,Pokémon Oisancien,Pokémon Paleouccello,Urzeitvogel-Pokémon,Pokémon Protopájaro
+MONSTER_568,MONSTER_NAME,Trubbish,Miamiasme,Trubbish,Unratütox,Trubbish
+MONSTER_568_DESC,MONSTER_DESCRIPTION,Trash Bag Pokémon,Pokémon Sac Poubelle,Pokémon Spazzatura,Mülltüten-Pokémon,Pokémon Bolsa Basura
+MONSTER_569,MONSTER_NAME,Garbodor,Miasmax,Garbodor,Deponitox,Garbodor
+MONSTER_569_DESC,MONSTER_DESCRIPTION,Trash Heap Pokémon,Pokémon Dépotoir,Pokémon Discarica,Müllhalden-Pokémon,Pokémon Vertedero
+MONSTER_570,MONSTER_NAME,Zorua,Zorua,Zorua,Zorua,Zorua
+MONSTER_570_DESC,MONSTER_DESCRIPTION,Tricky Fox Pokémon,Pokémon Sombrenard,Pokémon Malavolpe,Lausefuchs-Pokémon,Pokémon Zorro Pillo
+MONSTER_571,MONSTER_NAME,Zoroark,Zoroark,Zoroark,Zoroark,Zoroark
+MONSTER_571_DESC,MONSTER_DESCRIPTION,Illusion Fox Pokémon,Pokémon Polymorfox,Pokémon Mutevolpe,Polymorfuchs-Pokémon,Pokémon Disfrazorro
+MONSTER_572,MONSTER_NAME,Minccino,Chinchidou,Minccino,Picochilla,Minccino
+MONSTER_572_DESC,MONSTER_DESCRIPTION,Chinchilla Pokémon,Pokémon Chinchilla,Pokémon Cincillà,Chinchilla-Pokémon,Pokémon Chinchilla
+MONSTER_573,MONSTER_NAME,Cinccino,Pashmilla,Cinccino,Chillabell,Cinccino
+MONSTER_573_DESC,MONSTER_DESCRIPTION,Scarf Pokémon,Pokémon Écharpe,Pokémon Sciarpa,Schal-Pokémon,Pokémon Estola
+MONSTER_574,MONSTER_NAME,Gothita,Scrutella,Gothita,Mollimorba,Gothita
+MONSTER_574_DESC,MONSTER_DESCRIPTION,Fixation Pokémon,Pokémon Dévisageur,Pokémon Fissosguardo,Glotz-Pokémon,Pokémon Inquisitivo
+MONSTER_575,MONSTER_NAME,Gothorita,Mesmérella,Gothorita,Hypnomorba,Gothorita
+MONSTER_575_DESC,MONSTER_DESCRIPTION,Manipulate Pokémon,Pokémon Magouilleur,Pokémon Raggiro,Manipulator-Pokémon,Pokémon Manipulador
+MONSTER_576,MONSTER_NAME,Gothitelle,Sidérella,Gothitelle,Morbitesse,Gothitelle
+MONSTER_576_DESC,MONSTER_DESCRIPTION,Astral Body Pokémon,Pokémon Cosmique,Pokémon Corpoceleste,Gestirns-Pokémon,Pokémon Astro
+MONSTER_577,MONSTER_NAME,Solosis,Nucléos,Solosis,Monozyto,Solosis
+MONSTER_577_DESC,MONSTER_DESCRIPTION,Cell Pokémon,Pokémon Cellule,Pokémon Cellula,Zellen-Pokémon,Pokémon Célula
+MONSTER_578,MONSTER_NAME,Duosion,Méios,Duosion,Mitodos,Duosion
+MONSTER_578_DESC,MONSTER_DESCRIPTION,Mitosis Pokémon,Pokémon Divisé,Pokémon Scissione,Zellteilungs-Pokémon,Pokémon Mitosis
+MONSTER_579,MONSTER_NAME,Reuniclus,Symbios,Reuniclus,Zytomega,Reuniclus
+MONSTER_579_DESC,MONSTER_DESCRIPTION,Multiplying Pokémon,Pokémon Multiplié,Pokémon Espansione,Vermehrungs-Pokémon,Pokémon Ampliación
+MONSTER_580,MONSTER_NAME,Ducklett,Couaneton,Ducklett,Piccolente,Ducklett
+MONSTER_580_DESC,MONSTER_DESCRIPTION,Water Bird Pokémon,Pokémon Oiseaudo,Pokémon Alacquatico,Wasservogel,Pokémon Ave Agua
+MONSTER_581,MONSTER_NAME,Swanna,Lakmécygne,Swanna,Swaroness,Swanna
+MONSTER_581_DESC,MONSTER_DESCRIPTION,White Bird Pokémon,Pokémon Cygne,Pokémon Biancuccello,Schwan,Pokémon Cisne
+MONSTER_582,MONSTER_NAME,Vanillite,Sorbébé,Vanillite,Gelatini,Vanillite
+MONSTER_582_DESC,MONSTER_DESCRIPTION,Fresh Snow Pokémon,Pokémon Poudreuse,Pokémon Nevefresca,Neuschnee-Pokémon,Pokémon Nieve Fresca
+MONSTER_583,MONSTER_NAME,Vanillish,Sorboul,Vanillish,Gelatroppo,Vanillish
+MONSTER_583_DESC,MONSTER_DESCRIPTION,Icy Snow Pokémon,Pokémon Grêle,Pokémon Geloneve,Firn-Pokémon,Pokémon Nieve Helada
+MONSTER_584,MONSTER_NAME,Vanilluxe,Sorbouboul,Vanilluxe,Gelatwino,Vanilluxe
+MONSTER_584_DESC,MONSTER_DESCRIPTION,Snowstorm Pokémon,Pokémon Congère,Pokémon Bufera,Schneesturm-Pokémon,Pokémon Nieve Gélida
+MONSTER_585,MONSTER_NAME,Deerling,Vivaldaim,Deerling,Sesokitz,Deerling
+MONSTER_585_DESC,MONSTER_DESCRIPTION,Season Pokémon,Pokémon Saison,Pokémon Stagione,Jahreszeit,Pokémon Estacional
+MONSTER_586,MONSTER_NAME,Sawsbuck,Haydaim,Sawsbuck,Kronjuwild,Sawsbuck
+MONSTER_586_DESC,MONSTER_DESCRIPTION,Season Pokémon,Pokémon Saison,Pokémon Stagione,Jahreszeit,Pokémon Estacional
+MONSTER_587,MONSTER_NAME,Emolga,Emolga,Emolga,Emolga,Emolga
+MONSTER_587_DESC,MONSTER_DESCRIPTION,Sky Squirrel Pokémon,Pokémon Pteromys,Pokémon Petauro,Flughörnchen-Pokémon,Pokémon Vuelardilla
+MONSTER_588,MONSTER_NAME,Karrablast,Carabing,Karrablast,Laukaps,Karrablast
+MONSTER_588_DESC,MONSTER_DESCRIPTION,Clamping Pokémon,Pokémon Carabe,Pokémon Addentatore,Schnappbiss-Pokémon,Pokémon Bocado
+MONSTER_589,MONSTER_NAME,Escavalier,Lançargot,Escavalier,Cavalanzas,Escavalier
+MONSTER_589_DESC,MONSTER_DESCRIPTION,Cavalry Pokémon,Pokémon Chevalier,Pokémon Cavaliere,Kavallerie-Pokémon,Pokémon Soldado
+MONSTER_590,MONSTER_NAME,Foongus,Trompignon,Foongus,Tarnpignon,Foongus
+MONSTER_590_DESC,MONSTER_DESCRIPTION,Mushroom Pokémon,Pokémon Champignon,Pokémon Fungo,Pilz-Pokémon,Pokémon Hongo
+MONSTER_591,MONSTER_NAME,Amoonguss,Gaulet,Amoonguss,Hutsassa,Amoonguss
+MONSTER_591_DESC,MONSTER_DESCRIPTION,Mushroom Pokémon,Pokémon Champignon,Pokémon Fungo,Pilz-Pokémon,Pokémon Hongo
+MONSTER_592,MONSTER_NAME,Frillish,Viskuse,Frillish,Quabbel,Frillish
+MONSTER_592_DESC,MONSTER_DESCRIPTION,Floating Pokémon,Pokémon Flottaison,Pokémon Fluttuante,Gleit-Pokémon,Pokémon Ingrávido
+MONSTER_593,MONSTER_NAME,Jellicent,Moyade,Jellicent,Apoquallyp,Jellicent
+MONSTER_593_DESC,MONSTER_DESCRIPTION,Floating Pokémon,Pokémon Flottaison,Pokémon Fluttuante,Gleit-Pokémon,Pokémon Ingrávido
+MONSTER_594,MONSTER_NAME,Alomomola,Mamanbo,Alomomola,Mamolida,Alomomola
+MONSTER_594_DESC,MONSTER_DESCRIPTION,Caring Pokémon,Pokémon Soigneur,Pokémon Assistenza,Fürsorge,Pokémon Socorrista
+MONSTER_595,MONSTER_NAME,Joltik,Statitik,Joltik,Wattzapf,Joltik
+MONSTER_595_DESC,MONSTER_DESCRIPTION,Attaching Pokémon,Pokémon Crampon,Pokémon Appiccicante,Kleben-Pokémon,Pokémon Lapa
+MONSTER_596,MONSTER_NAME,Galvantula,Mygavolt,Galvantula,Voltula,Galvantula
+MONSTER_596_DESC,MONSTER_DESCRIPTION,EleSpider Pokémon,Pokémon Araclectrik,Pokémon Elettroragno,Stromspinnen-Pokémon,Pokémon Electroaraña
+MONSTER_597,MONSTER_NAME,Ferroseed,Grindur,Ferroseed,Kastadur,Ferroseed
+MONSTER_597_DESC,MONSTER_DESCRIPTION,Thorn Seed Pokémon,Pokémon Graine Épine,Pokémon Spinaseme,Dornfrucht-Pokémon,Pokémon Fruto Espina
+MONSTER_598,MONSTER_NAME,Ferrothorn,Noacier,Ferrothorn,Tentantel,Ferrothorn
+MONSTER_598_DESC,MONSTER_DESCRIPTION,Thorn Pod Pokémon,Pokémon Boule Épine,Pokémon Spinasfere,Dornkugel-Pokémon,Pokémon Bola Espina
+MONSTER_599,MONSTER_NAME,Klink,Tic,Klink,Klikk,Klink
+MONSTER_599_DESC,MONSTER_DESCRIPTION,Gear Pokémon,Pokémon Engrenage,Pokémon Ingranaggio,Getriebe-Pokémon,Pokémon Engranaje
+MONSTER_600,MONSTER_NAME,Klang,Clic,Klang,Kliklak,Klang
+MONSTER_600_DESC,MONSTER_DESCRIPTION,Gear Pokémon,Pokémon Engrenage,Pokémon Ingranaggio,Getriebe-Pokémon,Pokémon Engranaje
+MONSTER_601,MONSTER_NAME,Klinklang,Cliticlic,Klinklang,Klikdiklak,Klinklang
+MONSTER_601_DESC,MONSTER_DESCRIPTION,Gear Pokémon,Pokémon Engrenage,Pokémon Ingranaggio,Getriebe-Pokémon,Pokémon Engranaje
+MONSTER_602,MONSTER_NAME,Tynamo,Anchwatt,Tynamo,Zapplardin,Tynamo
+MONSTER_602_DESC,MONSTER_DESCRIPTION,EleFish Pokémon,Pokémon Électrophore,Pokémon Elettropesce,Stromfisch,Pokémon Electropez
+MONSTER_603,MONSTER_NAME,Eelektrik,Lampéroie,Eelektrik,Zapplalek,Eelektrik
+MONSTER_603_DESC,MONSTER_DESCRIPTION,EleFish Pokémon,Pokémon Électrophore,Pokémon Elettropesce,Stromfisch,Pokémon Electropez
+MONSTER_604,MONSTER_NAME,Eelektross,Ohmassacre,Eelektross,Zapplarang,Eelektross
+MONSTER_604_DESC,MONSTER_DESCRIPTION,EleFish Pokémon,Pokémon Électrophore,Pokémon Elettropesce,Stromfisch,Pokémon Electropez
+MONSTER_605,MONSTER_NAME,Elgyem,Lewsor,Elgyem,Pygraulon,Elgyem
+MONSTER_605_DESC,MONSTER_DESCRIPTION,Cerebral Pokémon,Pokémon Cerveau,Pokémon Cervello,Grips-Pokémon,Pokémon Cerebro
+MONSTER_606,MONSTER_NAME,Beheeyem,Neitram,Beheeyem,Megalon,Beheeyem
+MONSTER_606_DESC,MONSTER_DESCRIPTION,Cerebral Pokémon,Pokémon Cerveau,Pokémon Cervello,Grips-Pokémon,Pokémon Cerebro
+MONSTER_607,MONSTER_NAME,Litwick,Funécire,Litwick,Lichtel,Litwick
+MONSTER_607_DESC,MONSTER_DESCRIPTION,Candle Pokémon,Pokémon Chandelle,Pokémon Candela,Kerzen-Pokémon,Pokémon Vela
+MONSTER_608,MONSTER_NAME,Lampent,Mélancolux,Lampent,Laternecto,Lampent
+MONSTER_608_DESC,MONSTER_DESCRIPTION,Lamp Pokémon,Pokémon Lampe,Pokémon Lanterna,Lampen-Pokémon,Pokémon Farolillo
+MONSTER_609,MONSTER_NAME,Chandelure,Lugulabre,Chandelure,Skelabra,Chandelure
+MONSTER_609_DESC,MONSTER_DESCRIPTION,Luring Pokémon,Pokémon Invitation,Pokémon Attiranime,Geleit-Pokémon,Pokémon Señuelo
+MONSTER_610,MONSTER_NAME,Axew,Coupenotte,Axew,Milza,Axew
+MONSTER_610_DESC,MONSTER_DESCRIPTION,Tusk Pokémon,Pokémon Crocs,Pokémon Zanna,Stoßzahn-Pokémon,Pokémon Colmillo
+MONSTER_611,MONSTER_NAME,Fraxure,Incisache,Fraxure,Sharfax,Fraxure
+MONSTER_611_DESC,MONSTER_DESCRIPTION,Axe Jaw Pokémon,Pokémon Hachomenton,Pokémon Mascellascia,Beilkiefer-Pokémon,Pokémon Boca Hacha
+MONSTER_612,MONSTER_NAME,Haxorus,Tranchodon,Haxorus,Maxax,Haxorus
+MONSTER_612_DESC,MONSTER_DESCRIPTION,Axe Jaw Pokémon,Pokémon Hachomenton,Pokémon Mascellascia,Beilkiefer-Pokémon,Pokémon Boca Hacha
+MONSTER_613,MONSTER_NAME,Cubchoo,Polarhume,Cubchoo,Petznief,Cubchoo
+MONSTER_613_DESC,MONSTER_DESCRIPTION,Chill Pokémon,Pokémon Gelé,Pokémon Freddo,Eisschollen-Pokémon,Pokémon Congelación
+MONSTER_614,MONSTER_NAME,Beartic,Polagriffe,Beartic,Siberio,Beartic
+MONSTER_614_DESC,MONSTER_DESCRIPTION,Freezing Pokémon,Pokémon Congelé,Pokémon Glaciale,Packeis-Pokémon,Pokémon Glaciación
+MONSTER_615,MONSTER_NAME,Cryogonal,Hexagel,Cryogonal,Frigometri,Cryogonal
+MONSTER_615_DESC,MONSTER_DESCRIPTION,Crystallizing Pokémon,Pokémon Cristal,Pokémon Cristallo,Kristall-Pokémon,Pokémon Cristal
+MONSTER_616,MONSTER_NAME,Shelmet,Escargaume,Shelmet,Schnuthelm,Shelmet
+MONSTER_616_DESC,MONSTER_DESCRIPTION,Snail Pokémon,Pokémon Escargot,Pokémon Lumachina,Schnecken-Pokémon,Pokémon Caracol
+MONSTER_617,MONSTER_NAME,Accelgor,Limaspeed,Accelgor,Hydragil,Accelgor
+MONSTER_617_DESC,MONSTER_DESCRIPTION,Shell Out Pokémon,Pokémon Exuviateur,Pokémon Sgusciato,Entschalungs-Pokémon,Pokémon Sincaparazón
+MONSTER_618,MONSTER_NAME,Stunfisk,Limonde,Stunfisk,Flunschlik,Stunfisk
+MONSTER_618_DESC,MONSTER_DESCRIPTION,Trap Pokémon,Pokémon Piège,Pokémon Trappola,Falle-Pokémon,Pokémon Trampa
+MONSTER_619,MONSTER_NAME,Mienfoo,Kungfouine,Mienfoo,Lin-Fu,Mienfoo
+MONSTER_619_DESC,MONSTER_DESCRIPTION,Martial Arts Pokémon,Pokémon Art Martial,Pokémon Marziale,Kampfkünste-Pokémon,Pokémon Arte Marcial
+MONSTER_620,MONSTER_NAME,Mienshao,Shaofouine,Mienshao,Wie-Shu,Mienshao
+MONSTER_620_DESC,MONSTER_DESCRIPTION,Martial Arts Pokémon,Pokémon Art Martial,Pokémon Marziale,Kampfkünste-Pokémon,Pokémon Arte Marcial
+MONSTER_621,MONSTER_NAME,Druddigon,Drakkarmin,Druddigon,Shardrago,Druddigon
+MONSTER_621_DESC,MONSTER_DESCRIPTION,Cave Pokémon,Pokémon Caverne,Pokémon Grotta,Höhlen-Pokémon,Pokémon Cueva
+MONSTER_622,MONSTER_NAME,Golett,Gringolem,Golett,Golbit,Golett
+MONSTER_622_DESC,MONSTER_DESCRIPTION,Automaton Pokémon,Pokémon Golem Ancien,Pokémon Statuanimata,Urgolem-Pokémon,Pokémon Autómata
+MONSTER_623,MONSTER_NAME,Golurk,Golemastoc,Golurk,Golgantes,Golurk
+MONSTER_623_DESC,MONSTER_DESCRIPTION,Automaton Pokémon,Pokémon Golem Ancien,Pokémon Statuanimata,Urgolem-Pokémon,Pokémon Autómata
+MONSTER_624,MONSTER_NAME,Pawniard,Scalpion,Pawniard,Gladiantri,Pawniard
+MONSTER_624_DESC,MONSTER_DESCRIPTION,Sharp Blade Pokémon,Pokémon Coupant,Pokémon Lamaffilata,Stahlklingen-Pokémon,Pokémon Tajo
+MONSTER_625,MONSTER_NAME,Bisharp,Scalproie,Bisharp,Caesurio,Bisharp
+MONSTER_625_DESC,MONSTER_DESCRIPTION,Sword Blade Pokémon,Pokémon Tranchant,Pokémon Fildilama,Schwertklingen-Pokémon,Pokémon Filo
+MONSTER_626,MONSTER_NAME,Bouffalant,Frison,Bouffalant,Bisofank,Bouffalant
+MONSTER_626_DESC,MONSTER_DESCRIPTION,Bash Buffalo Pokémon,Pokémon Coup d’Bœuf,Pokémon Sfondatoro,Kopfstoßrind-Pokémon,Pokémon Torocabezazo
+MONSTER_627,MONSTER_NAME,Rufflet,Furaiglon,Rufflet,Geronimatz,Rufflet
+MONSTER_627_DESC,MONSTER_DESCRIPTION,Eaglet Pokémon,Pokémon Aiglon,Pokémon Aquilotto,Adlerküken-Pokémon,Pokémon Aguilucho
+MONSTER_628,MONSTER_NAME,Braviary,Gueriaigle,Braviary,Washakwil,Braviary
+MONSTER_628_DESC,MONSTER_DESCRIPTION,Valiant Pokémon,Pokémon Vaillant,Pokémon Baldanza,Kühnheits-Pokémon,Pokémon Aguerrido
+MONSTER_629,MONSTER_NAME,Vullaby,Vostourno,Vullaby,Skallyk,Vullaby
+MONSTER_629_DESC,MONSTER_DESCRIPTION,Diapered Pokémon,Pokémon Couche,Pokémon Pannolino,Windel-Pokémon,Pokémon Pañal
+MONSTER_630,MONSTER_NAME,Mandibuzz,Vaututrice,Mandibuzz,Grypheldis,Mandibuzz
+MONSTER_630_DESC,MONSTER_DESCRIPTION,Bone Vulture Pokémon,Pokémon Vostour,Pokémon Ossaquila,Knochenadler-Pokémon,Pokémon Buitre Hueso
+MONSTER_631,MONSTER_NAME,Heatmor,Aflamanoir,Heatmor,Furnifraß,Heatmor
+MONSTER_631_DESC,MONSTER_DESCRIPTION,Anteater Pokémon,Pokémon Tamanoir,Pokémon Formichiere,Ameisenbären-Pokémon,Pokémon Hormiguero
+MONSTER_632,MONSTER_NAME,Durant,Fermite,Durant,Fermicula,Durant
+MONSTER_632_DESC,MONSTER_DESCRIPTION,Iron Ant Pokémon,Pokémon Fourmi Dure,Pokémon Ferformica,Eisenameisen-Pokémon,Pokémon Hormigacero
+MONSTER_633,MONSTER_NAME,Deino,Solochi,Deino,Kapuno,Deino
+MONSTER_633_DESC,MONSTER_DESCRIPTION,Irate Pokémon,Pokémon Rude,Pokémon Impeto,Haudrauf-Pokémon,Pokémon Tosco
+MONSTER_634,MONSTER_NAME,Zweilous,Diamat,Zweilous,Duodino,Zweilous
+MONSTER_634_DESC,MONSTER_DESCRIPTION,Hostile Pokémon,Pokémon Violent,Pokémon Irruenza,Grobheits-Pokémon,Pokémon Violento
+MONSTER_635,MONSTER_NAME,Hydreigon,Trioxhydre,Hydreigon,Trikephalo,Hydreigon
+MONSTER_635_DESC,MONSTER_DESCRIPTION,Brutal Pokémon,Pokémon Brutal,Pokémon Brutale,Brutal-Pokémon,Pokémon Voraz
+MONSTER_636,MONSTER_NAME,Larvesta,Pyronille,Larvesta,Ignivor,Larvesta
+MONSTER_636_DESC,MONSTER_DESCRIPTION,Torch Pokémon,Pokémon Torche,Pokémon Torcia,Fackel-Pokémon,Pokémon Antorcha
+MONSTER_637,MONSTER_NAME,Volcarona,Pyrax,Volcarona,Ramoth,Volcarona
+MONSTER_637_DESC,MONSTER_DESCRIPTION,Sun Pokémon,Pokémon Soleil,Pokémon Sole,Sonnen-Pokémon,Pokémon Sol
+MONSTER_638,MONSTER_NAME,Cobalion,Cobaltium,Cobalion,Kobalium,Cobalion
+MONSTER_638_DESC,MONSTER_DESCRIPTION,Iron Will Pokémon,Pokémon Cœur de Fer,Pokémon Metalcuore,Eisenkern-Pokémon,Pokémon Tesón Acero
+MONSTER_639,MONSTER_NAME,Terrakion,Terrakium,Terrakion,Terrakium,Terrakion
+MONSTER_639_DESC,MONSTER_DESCRIPTION,Cavern Pokémon,Pokémon Grotte,Pokémon Caverna,Felsenhöhlen-Pokémon,Pokémon Gruta
+MONSTER_640,MONSTER_NAME,Virizion,Viridium,Virizion,Viridium,Virizion
+MONSTER_640_DESC,MONSTER_DESCRIPTION,Grassland Pokémon,Pokémon Plaine Verte,Pokémon Prateria,Wiesen-Pokémon,Pokémon Prado
+MONSTER_641,MONSTER_NAME,Tornadus,Boréas,Tornadus,Boreos,Tornadus
+MONSTER_641_DESC,MONSTER_DESCRIPTION,Cyclone Pokémon,Pokémon Tornade,Pokémon Turbinio,Wirbelsturm-Pokémon,Pokémon Torbellino
+MONSTER_642,MONSTER_NAME,Thundurus,Fulguris,Thundurus,Voltolos,Thundurus
+MONSTER_642_DESC,MONSTER_DESCRIPTION,Bolt Strike Pokémon,Pokémon Foudroyeur,Pokémon Fulminante,Torpedo-Pokémon,Pokémon Centella
+MONSTER_643,MONSTER_NAME,Reshiram,Reshiram,Reshiram,Reshiram,Reshiram
+MONSTER_643_DESC,MONSTER_DESCRIPTION,Vast White Pokémon,Pokémon Blanc Réel,Pokémon Bianco Verità,Wahres Weiß-Pokémon,Pokémon Blanco Veraz
+MONSTER_644,MONSTER_NAME,Zekrom,Zekrom,Zekrom,Zekrom,Zekrom
+MONSTER_644_DESC,MONSTER_DESCRIPTION,Deep Black Pokémon,Pokémon Noir Idéal,Pokémon Nero Ideale,Reines Schwarz-Pokémon,Pokémon Negro Puro
+MONSTER_645,MONSTER_NAME,Landorus,Démétéros,Landorus,Demeteros,Landorus
+MONSTER_645_DESC,MONSTER_DESCRIPTION,Abundance Pokémon,Pokémon Fertilité,Pokémon Fertilità,Reichtums-Pokémon,Pokémon Fertilidad
+MONSTER_646,MONSTER_NAME,Kyurem,Kyurem,Kyurem,Kyurem,Kyurem
+MONSTER_646_DESC,MONSTER_DESCRIPTION,Boundary Pokémon,Pokémon Frontière,Pokémon Confine,Schwellen-Pokémon,Pokémon Frontera
+MONSTER_647,MONSTER_NAME,Keldeo,Keldeo,Keldeo,Keldeo,Keldeo
+MONSTER_647_DESC,MONSTER_DESCRIPTION,Colt Pokémon,Pokémon Poulain,Pokémon Puledro,Fohlen-Pokémon,Pokémon Potro
+MONSTER_648,MONSTER_NAME,Meloetta,Meloetta,Meloetta,Meloetta,Meloetta
+MONSTER_648_DESC,MONSTER_DESCRIPTION,Melody Pokémon,Pokémon Mélodie,Pokémon Melodia,Melodie,Pokémon Melodía
+MONSTER_649,MONSTER_NAME,Genesect,Genesect,Genesect,Genesect,Genesect
+MONSTER_649_DESC,MONSTER_DESCRIPTION,Paleozoic Pokémon,Pokémon Paléozoïque,Pokémon Paleozoico,Paläozoikums-Pokémon,Pokémon Paleozoico
+
+
+
