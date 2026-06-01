@@ -3,6 +3,8 @@
 #include <iostream>
 #include "zlib.h"
 #include <base64.h>
+
+#include "../../Asserts.h"
 #include "../XML/XmlDocument.h"
 
 
@@ -10,7 +12,7 @@ namespace
 {
 	std::string DecompressZlib(const std::string& compressed)
 	{
-		z_stream stream{ };
+		z_stream stream{};
 		stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(compressed.data()));
 		stream.avail_in = compressed.size();
 
@@ -48,10 +50,10 @@ namespace
 		{
 			const auto b = reinterpret_cast<const unsigned char*>(bytes.data() + i * 4);
 			tiles[i] =
-			static_cast<uint32_t>(b[0]) |
-			static_cast<uint32_t>(b[1]) << 8 |
-			static_cast<uint32_t>(b[2]) << 16 |
-			static_cast<uint32_t>(b[3]) << 24;
+				static_cast<uint32_t>(b[0]) |
+				static_cast<uint32_t>(b[1]) << 8 |
+				static_cast<uint32_t>(b[2]) << 16 |
+				static_cast<uint32_t>(b[3]) << 24;
 		}
 
 		return tiles;
@@ -110,6 +112,21 @@ const std::filesystem::path& TMJ::GetLevelScriptFilepath() const
 	return m_levelScriptPath;
 }
 
+const std::unordered_map<std::string, std::string>& TMJ::GetCustomProperties() const
+{
+	return m_customProperties;
+}
+
+const std::unordered_map<std::string, std::string>* TMJ::GetCustomLayerProperties(const std::string& layerName) const
+{
+	if (m_customLayerProperties.contains(layerName))
+	{
+		return &m_customLayerProperties.at(layerName);
+	}
+
+	return nullptr;
+}
+
 bool TMJ::Init()
 {
 	if (!exists(m_filePath))
@@ -144,7 +161,8 @@ bool TMJ::Init()
 	const auto& levelPropertiesArray = json["properties"];
 	if (!ParsePropertiesArray(levelPropertiesArray))
 	{
-		std::cout << "Error: Failed to parse properties array! Scripting may not work for level: " << m_filePath << "\n";
+		std::cout << "Error: Failed to parse properties array! Scripting may not work for level: " << m_filePath <<
+			"\n";
 	}
 
 	const auto& tileSetsArray = json["tilesets"];
@@ -195,6 +213,20 @@ bool TMJ::ParseLayersArray(const nlohmann::basic_json<>& layersArray)
 				return false;
 			}
 		}
+
+		if (elem.find("properties") != elem.end())
+		{
+			const std::string& layerName = elem["name"];
+			const auto& propertiesArray = elem["properties"];
+			ASSERT(propertiesArray.is_array());
+
+			for (auto& property : propertiesArray)
+			{
+				const std::string& name = property["name"];
+				const std::string& value = property["value"];
+				m_customLayerProperties[layerName][name] = value;
+			}
+		}
 	}
 
 	m_layers = layers;
@@ -233,6 +265,10 @@ bool TMJ::ParsePropertiesArray(const nlohmann::basic_json<>& propertiesArray)
 				return false;
 			}
 		}
+		
+		const std::string& name = elem["name"];
+		const std::string& value = elem["value"];
+		m_customProperties[name] = value;
 	}
 
 	m_levelScriptPath = levelScriptPath;
@@ -368,7 +404,7 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 		if (parsedProperties >= 1)
 		{
 			std::cerr << "TMJ::ParseSpawnPoint: Parsed " << parsedProperties << "properties on spawnPoint " <<
-			spawnPointName << ". Check the TMJ file!\n";
+				spawnPointName << ". Check the TMJ file!\n";
 			return false;
 		}
 
@@ -377,7 +413,7 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 			std::string{ propertyName } != "Orientation")
 		{
 			std::cerr << "TMJ::ParseSpawnPoint: Failed to parse property " << propertyName << " on spawnPoint " <<
-			spawnPointName << "\n";
+				spawnPointName << "\n";
 			return false;
 		}
 
@@ -385,7 +421,7 @@ bool TMJ::ParseSpawnPoint(const nlohmann::basic_json<>& spawnPointObject, std::v
 		if (!orientation.is_string())
 		{
 			std::cerr << "TMJ::ParseSpawnPoint: Orientation value is not a string on spawnPoint " << spawnPointName <<
-			"\n";
+				"\n";
 			return false;
 		}
 
@@ -493,9 +529,10 @@ bool TMJ::ParseTileSets(const nlohmann::basic_json<>& tileSetsArray)
 	}
 
 	std::ranges::sort(tileSets,
-					  [](const TileSet& a, const TileSet& b){
-						  return a.m_FirstGid > b.m_FirstGid;
-					  }
+	                  [](const TileSet& a, const TileSet& b)
+	                  {
+		                  return a.m_FirstGid > b.m_FirstGid;
+	                  }
 	);
 	m_tileSets = tileSets;
 	return true;
@@ -566,7 +603,7 @@ bool TMJ::ParseTileLayerType(const nlohmann::basic_json<>& layerObj, const int z
 }
 
 bool TMJ::ParseObjectLayerType(const nlohmann::basic_json<>& objLayerObj, std::vector<Portal>& portals,
-							   std::vector<SpawnPoint>& spawnPoints)
+                               std::vector<SpawnPoint>& spawnPoints)
 {
 	const auto& objectsArray = objLayerObj["objects"];
 	if (!objectsArray.is_array())
@@ -647,7 +684,7 @@ bool TSX::Init()
 bool TSX::LoadFromXML(const XmlNode& node)
 {
 	const TileSet tileSet{
-		.m_Name = node.Attr("name", std::string{ }),
+		.m_Name = node.Attr("name", std::string{}),
 		.m_TileWidth = node.Attr("tilewidth", ~0U),
 		.m_TileHeight = node.Attr("tileheight", ~0U),
 		.m_TileCount = node.Attr("tilecount", ~0U),
@@ -666,7 +703,7 @@ bool TSX::LoadFromXML(const XmlNode& node)
 	}
 
 	Image image{
-		.m_Source = imageNode->Attr("source", std::string{ }),
+		.m_Source = imageNode->Attr("source", std::string{}),
 		.m_Height = imageNode->Attr("height", ~0U),
 		.m_Width = imageNode->Attr("width", ~0U)
 	};
@@ -705,19 +742,19 @@ bool TSX::LoadFromXML(const XmlNode& node)
 
 		for (const auto& tileProperty : tileProperties)
 		{
-			const std::string propertyName = tileProperty->Attr("name", std::string{ });
+			const std::string propertyName = tileProperty->Attr("name", std::string{});
 			if (propertyName.empty())
 			{
 				return false;
 			}
 
-			const std::string propertyType = tileProperty->Attr("type", std::string{ });
+			const std::string propertyType = tileProperty->Attr("type", std::string{});
 			if (propertyType.empty())
 			{
 				return false;
 			}
 
-			const std::string propertyValue = tileProperty->Attr("value", std::string{ });
+			const std::string propertyValue = tileProperty->Attr("value", std::string{});
 			if (propertyValue.empty())
 			{
 				return false;

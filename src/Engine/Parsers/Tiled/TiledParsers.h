@@ -72,6 +72,8 @@ public:
 	uint32_t GetTileHeight() const;
 	uint32_t GetTileWidth() const;
 	const std::filesystem::path& GetLevelScriptFilepath() const;
+	const std::unordered_map<std::string, std::string>& GetCustomProperties() const;
+	const std::unordered_map<std::string, std::string>* GetCustomLayerProperties(const std::string& layerName) const;
 
 
 private:
@@ -84,6 +86,12 @@ private:
 	std::vector<Layer> m_layers;
 	std::vector<Portal> m_portals;
 	std::vector<SpawnPoint> m_spawnPoints;
+
+	// Anything inside the "properties" object of the level itself
+	std::unordered_map<std::string, std::string> m_customProperties;
+
+	// Anything inside the "properties" object in any layer of the level
+	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> m_customLayerProperties;
 
 	// The GIDs are sorted from highest to lowest
 	std::vector<TileSet> m_tileSets;

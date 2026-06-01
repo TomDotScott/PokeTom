@@ -30,7 +30,7 @@ private:
 
 	size_t m_onScreenFadedEventID;
 
-	RandomRangeGenerator m_rng;
+	RandomRangeGenerator<float> m_rng;
 
 	void UpdateChunks();
 	void UpdateCamera(float deltaTime);

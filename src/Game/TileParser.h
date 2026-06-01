@@ -48,6 +48,36 @@ struct MapData
 	std::unordered_map<hash_type, SpawnPointData> m_SpawnPoints;
 	std::unordered_map<hash_type, std::shared_ptr<TileSheet>> m_TileSheets;
 	std::filesystem::path m_LevelScript;
+
+	struct MonsterDistribution final
+	{
+		enum class eDistributionType
+		{
+			Grass,
+			Water,
+			Ambient
+		};
+
+		MonsterDistribution(const nlohmann::json& distConfig);
+
+		uint32_t ChooseMonsterFromDistribution(eDistributionType type) const;
+
+		// 0-1, probability for a PocketMonster to spawn every step the player is in Tall Grass
+		float m_EncounterProbability;
+
+		// The larger the float, the more likely the PocketMonster is to spawn in a specific area
+		std::unordered_map<uint32_t, float> m_GrassWeightings;
+		std::unordered_map<uint32_t, float> m_WaterWeightings;
+		std::unordered_map<uint32_t, float> m_AmbientWeightings;
+
+	private:
+		static bool LoadWeightings(std::unordered_map<uint32_t, float>& weights, const nlohmann::json& weightArrayJSON);
+		static uint32_t ChooseFromWeightings(const std::unordered_map<uint32_t, float>& weights);
+	};
+
+	// MOST levels have one, but some won't
+	std::optional<MonsterDistribution> m_Distribution = std::nullopt;
+
 	uint32_t m_NumColumns;
 	uint32_t m_NumRows;
 	uint32_t m_TileHeight;

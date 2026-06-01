@@ -302,6 +302,22 @@ bool Level::LoadLevelScript(sol::state& lua)
 	return true;
 }
 
+std::optional<MapData::MonsterDistribution> Level::GetMonsterDistribution() const
+{
+	return m_mapData->m_Distribution;
+}
+
+float Level::GetWildPocketMonsterProbability() const
+{
+	const std::optional<MapData::MonsterDistribution>& dist = m_mapData->m_Distribution;
+	if (dist != std::nullopt)
+	{
+		return dist.value().m_EncounterProbability;
+	}
+
+	return std::numeric_limits<float>::min();
+}
+
 const sf::Vector2i& Level::GetWorldOrigin() const
 {
 	return m_worldTileOrigin;

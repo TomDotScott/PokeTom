@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["EncounterProbability"],
+  "properties": {
+    "EncounterProbability": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "Grass":   { "$ref": "#/$defs/encounter_table" },
+    "Water":   { "$ref": "#/$defs/encounter_table" },
+    "Ambient": { "$ref": "#/$defs/encounter_table" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "encounter_table": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "weight"],
+        "properties": {
+          "id":     { "type": "string", "pattern": "^[0-9]+$" },
+          "weight": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

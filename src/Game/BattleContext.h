@@ -2,7 +2,9 @@
 #define BATTLECONTEXT_H
 #include <cstdint>
 
+#include "../Engine/EntityRegistry.h"
 #include "../Engine/Hash.h"
+#include "Monsters/PocketMonster.h"
 
 struct BattleBeginContext
 {
@@ -12,7 +14,11 @@ struct BattleBeginContext
 	uint32_t m_PlayerEntityID;
 	uint32_t m_OpponentEntityID;
 
-	// TODO: Party details, monster level + species, etc...
+	bool m_isTrainerBattle;
+
+	std::vector<entity_id_t> m_PlayerMonsterEntityIDs;
+	std::vector<PocketMonster> m_opponentMonsters;
+	std::vector<uint8_t> m_opponentMonsterLevels;
 };
 
 

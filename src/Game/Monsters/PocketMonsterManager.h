@@ -13,11 +13,13 @@ public:
 	static PocketMonsterManager* Get();
 	virtual ~PocketMonsterManager() = default;
 
+	const PocketMonster& GetMonsterDetails(uint32_t monsterID) const;
+
 protected:
 	bool Init() override;
 
 private:
-	std::unordered_map<uint64_t, PocketMonster> m_monsterDetails;
+	std::unordered_map<uint32_t, PocketMonster> m_monsterDetails;
 
 	bool Load(const std::filesystem::path& path);
 };

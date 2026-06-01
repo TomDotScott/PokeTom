@@ -62,6 +62,9 @@ public:
 
 	bool LoadLevelScript(sol::state& lua);
 
+	std::optional<MapData::MonsterDistribution> GetMonsterDistribution() const;
+	float GetWildPocketMonsterProbability() const;
+
 private:
 	hash_type m_name;
 	std::shared_ptr<MapData> m_mapData;

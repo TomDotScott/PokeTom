@@ -8,10 +8,6 @@
 #include "../Engine/Input/Keyboard.h"
 
 
-Player::Player() : Player(sf::Vector2f{ 0.f, 0.f })
-{
-}
-
 Player::Player(const sf::Vector2f& position) :
 	Entity(position, { 1.f, 1.f })
 {

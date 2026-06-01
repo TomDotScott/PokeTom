@@ -3,6 +3,8 @@
 #include "DialogueBox.h"
 #include "GameEvents.h"
 #include "../Engine/Animation/AnimationComponent.h"
+#include "Monsters/PocketMonsterEntity.h"
+#include "../Engine/Stringtable.h"
 
 constexpr static auto BATTLE_PANEL_NAME = "BATTLE_HUD_PANEL";
 constexpr static auto OPTIONS_PANEL_NAME = "BATTLE_OPTIONS";
@@ -46,30 +48,30 @@ BattleState::BattleState(GameContext& gameContext, BattleBeginContext battleCont
 	m_inputMapper.OnButtonPressed(LEFT, [this]() { OnNavigateButtonPressed(LEFT); });
 	m_inputMapper.OnButtonPressed(RIGHT, [this]() { OnNavigateButtonPressed(RIGHT); });
 
-	Entity& playerMonster = gameContext.m_Entities.Create<Entity>();
-	playerMonster.AddComponent<EntityAnimationComponent>(
-		&playerMonster,
-		"MONSTER_403_BATTLE",
-		EntityAnimationComponent::eAnimationName::BATTLE_BACK
-	);
-	playerMonster.SetScale(playerMonster.GetScale() * 2.f);
+	// TODO: Find the first Monster in the party that has HP
+	// TODO: This might not even have to be part of the battlecontext if I make it a component attached to the player, we have the player's entity ID here so we can get it through that
+	m_playerMonsterEntityID = m_battleContext.m_PlayerMonsterEntityIDs[0];
+	auto playerMonster = gameContext.m_Entities.Get<PocketMonsterEntity>(m_playerMonsterEntityID);
+	playerMonster->OnActivate();
 
-	m_playerMonsterEntityID = playerMonster.GetID();
-
-
-	Entity& opponentMonster = gameContext.m_Entities.Create<Entity>();
-	opponentMonster.AddComponent<EntityAnimationComponent>(
-		&opponentMonster,
-		"MONSTER_507_BATTLE",
+	PocketMonsterEntity& opponentMonster = gameContext.m_Entities.Create<PocketMonsterEntity>(
+		m_battleContext.m_opponentMonsters[0].GetID(),
+		m_battleContext.m_opponentMonsterLevels[0],
 		EntityAnimationComponent::eAnimationName::BATTLE_FRONT
 	);
-	opponentMonster.SetScale(opponentMonster.GetScale() * 2.f);
 
 	m_opponentMonsterEntityID = opponentMonster.GetID();
 
 	// TODO: Dynamically position them based on the sprites
-	playerMonster.SetPosition({ 206, 389 });
+	playerMonster->SetPosition({ 206, 389 });
 	opponentMonster.SetPosition({ 600, 236 });
+
+
+	std::cout << "Battle begun! Player monster: Level " << static_cast<int>(playerMonster->GetLevel()) << " " << StringTable::Get()->GetString(playerMonster->GetNameStringID()) << " with entity ID " << playerMonster->GetID() << "\n";
+	playerMonster->GetStats().Log();
+
+	std::cout << "Opponent monster: " << "Level " << static_cast<int>(opponentMonster.GetLevel()) << " " << StringTable::Get()->GetString(opponentMonster.GetNameStringID()) << " with entity ID " << opponentMonster.GetID() << "\n";
+	opponentMonster.GetStats().Log();
 }
 
 void BattleState::OnEnter()
@@ -87,7 +89,13 @@ void BattleState::OnExit()
 	printf("Battle finished!\n");
 	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnDeactivate();
 
-	m_gameContext.m_Entities.Destroy(m_playerMonsterEntityID);
+	//m_gameContext.m_Entities.Destroy(m_playerMonsterEntityID);
+	for (auto id : m_battleContext.m_PlayerMonsterEntityIDs)
+	{
+		auto* e = m_gameContext.m_Entities.Get<Entity>(id);
+		e->OnDeactivate();
+	}
+
 	m_gameContext.m_Entities.Destroy(m_opponentMonsterEntityID);
 }
 

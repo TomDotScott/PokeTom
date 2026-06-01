@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="48" height="70" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="1">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="48" height="70" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="7">
  <editorsettings>
   <export target="../../data/tiled_export/route_1.tmj" format="json"/>
  </editorsettings>

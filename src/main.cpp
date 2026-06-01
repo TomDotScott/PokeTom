@@ -16,7 +16,7 @@
 #include "Game/LuaRegistry.h"
 
 GraphicSettings GRAPHIC_SETTINGS{ };
-RandomRangeGenerator RNG = RandomRangeGenerator(0.0, 1.0);
+RandomRangeGenerator<double> RNG = RandomRangeGenerator(0.0, 1.0);
 
 eLanguage CHOSEN_LANGUAGE = eLanguage::English;
 

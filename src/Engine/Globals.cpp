@@ -2,11 +2,6 @@
 
 #include <SFML/Graphics/Font.hpp>
 
-RandomRangeGenerator::RandomRangeGenerator(const double min, const double max) :
-	m_dist(min, max), m_randomEngine(m_randomDevice())
-{
-}
-
 bool OnlyWhitespace(const char* chr)
 {
 	while (*chr != '\0')

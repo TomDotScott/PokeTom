@@ -30,15 +30,20 @@ private:
 	ScreenDetails m_screenDetails;
 };
 
+
+template<typename T, typename TDist = std::conditional_t<std::is_floating_point_v<T>, std::uniform_real_distribution<T>, std::uniform_int_distribution<T>>>
 class RandomRangeGenerator
 {
 public:
-	RandomRangeGenerator(double min, double max);
+	RandomRangeGenerator(const T min, const T max) :
+		m_dist(min, max), m_randomEngine(m_randomDevice())
+	{
+	}
 
-	double Next() { return m_dist(m_randomEngine); }
+	T Next() { return m_dist(m_randomEngine); }
 
 private:
-	std::uniform_real_distribution<double> m_dist;
+	TDist m_dist;
 	std::random_device m_randomDevice;
 	std::default_random_engine m_randomEngine;
 };
@@ -68,7 +73,7 @@ extern sf::Font DEFAULT_FONT;
 
 constexpr static sf::Vector2u REFERENCE_SCREEN_SIZE{ 768, 540 };
 extern GraphicSettings GRAPHIC_SETTINGS;
-extern RandomRangeGenerator RNG;
+extern RandomRangeGenerator<double> RNG;
 
 #define SCALE_X (static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.x) / static_cast<float>(REFERENCE_SCREEN_SIZE.x))
 #define SCALE_Y (static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.y) / static_cast<float>(REFERENCE_SCREEN_SIZE.y))

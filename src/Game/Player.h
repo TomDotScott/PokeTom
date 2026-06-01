@@ -3,11 +3,11 @@
 #include "../Engine/Entity.h"
 #include "../Engine/Input/InputMapper.h"
 #include "../Engine/GridMovementComponent.h"
+#include "Monsters/PocketMonsterEntity.h"
 
 class Player final : public Entity
 {
 public:
-	Player();
 	Player(const sf::Vector2f& position);
 
 	void Update(float deltaTime) override;

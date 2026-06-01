@@ -5,11 +5,11 @@
 
 namespace game_events
 {
-	inline Event OnScreenFadeTriggered = Event();
-	inline Event OnScreenFaded = Event();
+	inline auto OnScreenFadeTriggered = Event();
+	inline auto OnScreenFaded = Event();
 
-	inline Event<BattleBeginContext> OnBattleStart = Event<BattleBeginContext>();
-	inline Event<BattleEndContext> OnBattleEnd = Event<BattleEndContext>();
+	inline auto OnBattleStart = Event<BattleBeginContext>();
+	inline auto OnBattleEnd = Event<BattleEndContext>();
 }
 
 #endif // GAMEEVENTS_H

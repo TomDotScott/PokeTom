@@ -1,12 +1,90 @@
 #include "TileParser.h"
 
+#include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include "../Engine/Asserts.h"
 
 
 bool PortalTrigger::AllowsOrientation(eOrientation orientation) const
 {
 	return static_cast<uint8_t>(orientation) & m_AllowedOrientations;
+}
+
+MapData::MonsterDistribution::MonsterDistribution(const nlohmann::json& distConfig)
+{
+	ASSERT(distConfig.contains("EncounterProbability"));
+	ASSERT(distConfig.contains("Grass"));
+	ASSERT(distConfig.contains("Water"));
+	ASSERT(distConfig.contains("Ambient"));
+
+	m_EncounterProbability = distConfig["EncounterProbability"];
+	ASSERT(LoadWeightings(m_GrassWeightings, distConfig["Grass"]));
+	ASSERT(LoadWeightings(m_WaterWeightings, distConfig["Water"]));
+	ASSERT(LoadWeightings(m_AmbientWeightings, distConfig["Ambient"]));
+}
+
+uint32_t MapData::MonsterDistribution::ChooseMonsterFromDistribution(const eDistributionType type) const
+{
+	switch (type)
+	{
+	case eDistributionType::Grass:
+		return ChooseFromWeightings(m_GrassWeightings);
+	case eDistributionType::Water:
+		return ChooseFromWeightings(m_WaterWeightings);
+	case eDistributionType::Ambient:
+		return ChooseFromWeightings(m_AmbientWeightings);
+	}
+
+	return ChooseFromWeightings(m_GrassWeightings);
+}
+
+bool MapData::MonsterDistribution::LoadWeightings(std::unordered_map<uint32_t, float>& weights,
+                                                  const nlohmann::json& weightArrayJSON)
+{
+	for (const auto& weight : weightArrayJSON)
+	{
+		if (!weight.contains("id") || !weight.contains("weight"))
+		{
+			return false;
+		}
+
+		const uint64_t monsterID = weight["id"];
+		const float monsterWeighting = weight["weight"];
+		weights[monsterID] = monsterWeighting;
+	}
+
+	return true;
+}
+
+uint32_t MapData::MonsterDistribution::ChooseFromWeightings(const std::unordered_map<uint32_t, float>& weights)
+{
+	float sumWeights = 0;
+	for (const float f : weights | std::views::values)
+	{
+		sumWeights += f;
+	}
+
+	std::vector<std::pair<uint32_t, float>> sorted(weights.begin(), weights.end());
+	std::ranges::sort(sorted);
+
+	RandomRangeGenerator rng(0.f, sumWeights);
+	float randomVal = rng.Next();
+	float runningTotal = 0.f;
+
+	uint32_t lastID = sorted.back().first;
+	for (const auto& [id, weight] : sorted)
+	{
+		lastID = id;
+		runningTotal += weight;
+		if (runningTotal > randomVal)
+		{
+			return id;
+		}
+	}
+
+	return lastID;
 }
 
 std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPath)
@@ -40,6 +118,28 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 	data.m_TileWidth = tmjParser->GetTileWidth();
 	data.m_TileHeight = tmjParser->GetTileHeight();
 
+	// Load the Monster Distribution for the level
+	for (const auto& [propertyName, propertyValue] : tmjParser->GetCustomProperties())
+	{
+		if (propertyName == "distribution")
+		{
+			const bool fileExists = std::filesystem::exists(propertyValue);
+			ASSERT(fileExists);
+			if (!fileExists)
+			{
+				return nullptr;
+			}
+
+			std::ifstream f;
+			f.open(propertyValue);
+
+			nlohmann::json distConfig = nlohmann::json::parse(f);
+
+			data.m_Distribution = MapData::MonsterDistribution(distConfig);
+		}
+	}
+
+
 	// Load each layer
 	for (const auto& layer : tmjParser->GetLayers())
 	{
@@ -47,8 +147,7 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 			.m_Name = HASH(layer.m_Name),
 			.m_LevelData = layer.m_Data,
 			.m_ZIndex = layer.m_ZIndex,
-			.m_IsPlayerLayer =
-			layer.m_IsPlayerLayer
+			.m_IsPlayerLayer = layer.m_IsPlayerLayer
 		});
 	}
 
@@ -77,13 +176,13 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 
 		auto nameHash = HASH(portal.m_Name);
 		PortalTrigger portalData{
-			.m_Name= nameHash,
-			.m_AllowedOrientations= orientation,
-			.m_Size= {
+			.m_Name = nameHash,
+			.m_AllowedOrientations = orientation,
+			.m_Size = {
 				static_cast<int>(portal.m_Width / data.m_TileWidth),
 				static_cast<int>(portal.m_Height / data.m_TileHeight)
 			},
-			.m_GridPosition= {
+			.m_GridPosition = {
 				static_cast<int>(portal.m_X / data.m_TileWidth),
 				static_cast<int>(portal.m_Y / data.m_TileHeight)
 			}
@@ -97,9 +196,9 @@ std::shared_ptr<MapData> TileParser::ParseTMJ(const std::filesystem::path& tmjPa
 	{
 		auto hashName = HASH(name);
 		const SpawnPointData spawnPointData{
-			.m_Name= hashName,
-			.m_Orientation= StringToOrientation(orientation),
-			.m_GridPosition= {
+			.m_Name = hashName,
+			.m_Orientation = StringToOrientation(orientation),
+			.m_GridPosition = {
 				static_cast<int>(x / data.m_TileWidth),
 				static_cast<int>(y / data.m_TileHeight)
 			},

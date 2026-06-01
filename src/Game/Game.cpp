@@ -33,7 +33,7 @@ Game::Game(sol::state& lua) :
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
 
-	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>().GetID();
+	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>(sf::Vector2f(0.f, 0.f)).GetID();
 
 	Player* player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
 	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)

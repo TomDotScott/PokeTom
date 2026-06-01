@@ -21,6 +21,13 @@ PocketMonsterManager* PocketMonsterManager::Get()
 	return inst.get();
 }
 
+const PocketMonster& PocketMonsterManager::GetMonsterDetails(const uint32_t monsterID) const
+{
+	ASSERT(m_monsterDetails.contains(monsterID));
+
+	return m_monsterDetails.at(monsterID);
+}
+
 bool PocketMonsterManager::Init()
 {
 	return Load("pokedex.json");
@@ -50,7 +57,7 @@ bool PocketMonsterManager::Load(const std::filesystem::path& path)
 		return false;
 	}
 
-	std::unordered_map<uint64_t, PocketMonster> monsters;
+	std::unordered_map<uint32_t, PocketMonster> monsters;
 
 	for (const auto& elem : monstersArray)
 	{
@@ -127,20 +134,20 @@ bool PocketMonsterManager::Load(const std::filesystem::path& path)
 		const auto& speed = stats["speed"];
 		ASSERT(speed.is_number());
 
-		monsters[id] = PocketMonster(
+		monsters.emplace(id, PocketMonster(
 			id,
 			type,
-			{
-				.m_HP = hp,
-				.m_Attack = attack,
-				.m_Defense = defense,
-				.m_SpAttack = sp_atk,
-				.m_SpDefense = sp_def,
-				.m_Speed = speed
-			},
+			MonsterStats(
+				hp,
+				attack,
+				defense,
+				sp_atk,
+				sp_def,
+				speed
+			),
 			previousEvolutions,
 			nextEvolutions
-		);
+		));
 	}
 
 

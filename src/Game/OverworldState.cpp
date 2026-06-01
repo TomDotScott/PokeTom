@@ -7,7 +7,14 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Animation/AnimationComponent.h"
+#include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/UI/UiManager.h"
+#include "Monsters/PocketMonsterEntity.h"
+#include "Monsters/PocketMonsterManager.h"
+
+
+// TODO: HACK - Gonna turn this into a proper component on the Player entity (and any NPC entities that need it!)
+std::vector<entity_id_t> PLAYER_PARTY;
 
 OverworldState::OverworldState(
 	GameContext& ctx,
@@ -22,6 +29,14 @@ OverworldState::OverworldState(
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_rng(0, 100)
 {
+	if (PLAYER_PARTY.empty())
+	{
+		auto& shinxEntity = ctx.m_Entities.Create<PocketMonsterEntity>(
+			403, 5, EntityAnimationComponent::eAnimationName::BATTLE_BACK);
+		shinxEntity.OnDeactivate();
+		PLAYER_PARTY.emplace_back(shinxEntity.GetID());
+	}
+
 	const std::shared_ptr<Level> startLevel = m_ctx.m_World.GetLevel(overworldLevel);
 	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
 
@@ -232,17 +247,32 @@ void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel
 		return;
 	}
 
-	if (currentLevel->GetTileAtPosition(player->GetPosition(), TileSheet::TileDefinition::IsGrass))
+	// No wild PocketMonsters to see here, buddy!
+	const auto& distribution = currentLevel->GetMonsterDistribution();
+	if (distribution == std::nullopt)
 	{
-		// TODO: Have custom odds per level
-		if (m_rng.Next() < 25)
+		return;
+	}
+
+	const sf::Vector2f& playerPos = player->GetPosition();
+	if (currentLevel->GetTileAtPosition(playerPos, TileSheet::TileDefinition::IsGrass))
+	{
+		if (m_rng.Next() < currentLevel->GetWildPocketMonsterProbability() * 100.f)
 		{
-			game_events::OnBattleStart.Fire({
-				.m_LevelHash = currentLevel->GetName(),
-				.m_PlayerPosition = player->GetPosition(),
-				.m_PlayerEntityID = m_ctx.m_PlayerEntityID,
-				.m_OpponentEntityID = ~0U
-			});
+			uint32_t monster = distribution.value().ChooseMonsterFromDistribution(
+				MapData::MonsterDistribution::eDistributionType::Grass);
+
+			BattleBeginContext ctx(currentLevel->GetName(),
+			                       playerPos,
+			                       m_ctx.m_PlayerEntityID,
+			                       ~0U,
+			                       false,
+			                       PLAYER_PARTY,
+			                       { PocketMonsterManager::Get()->GetMonsterDetails(monster) },
+			                       { 5 }
+			);
+
+			game_events::OnBattleStart.Fire(ctx);
 		}
 	}
 }
@@ -315,7 +345,9 @@ void OverworldState::RespawnPlayerInWorld(const hash_type& levelName, const sf::
 	};
 
 	// Round the position to the nearest grid position
-	player->SetPosition(static_cast<sf::Vector2f>(static_cast<sf::Vector2i>(position.componentWiseDiv(tileSize))).componentWiseMul(tileSize));
+	player->SetPosition(
+		static_cast<sf::Vector2f>(static_cast<sf::Vector2i>(position.componentWiseDiv(tileSize))).
+		componentWiseMul(tileSize));
 
 	level->OnActivate();
 
