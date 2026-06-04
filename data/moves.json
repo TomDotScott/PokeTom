@@ -1103,7 +1103,7 @@
       "accuracy": 90,
       "effect_description": "Seeds the target, stealing HP from it every turn.",
       "effect_category": "Status",
-      "status_inflicted": "Leech Seed"
+      "status_inflicted": "LeechSeed"
     },
     {
       "id": 74,
@@ -2408,7 +2408,7 @@
       "accuracy": 100,
       "effect_description": "Has a 20% chance to burn, freeze, or paralyze the target.",
       "effect_category": "DamageStatus",
-      "status_inflicted": "Burn, Freeze, or Paralysis",
+      "status_inflicted": "Burn, Freeze, Paralysis",
       "status_chance": 20
     },
     {
@@ -2860,7 +2860,7 @@
       "target": "Selected",
       "effect_description": "Forces the target to have no Evade, and allows it to be hit by Normal and Fighting moves even if it's a Ghost.",
       "effect_category": "Status",
-      "status_inflicted": "No type immunity"
+      "status_inflicted": "NoTypeImmunity"
     },
     {
       "id": 194,
@@ -2883,7 +2883,7 @@
       "target": "AllPokemon",
       "effect_description": "User and target both faint after three turns.",
       "effect_category": "Status",
-      "status_inflicted": "Perish Song",
+      "status_inflicted": "PerishSong",
       "binding_min_turns": 4,
       "binding_max_turns": 4,
       "sound_based": true
@@ -4638,7 +4638,7 @@
       "target": "Selected",
       "effect_description": "Forces the target to have no Evade, and allows it to be hit by Normal and Fighting moves even if it's a Ghost.",
       "effect_category": "Status",
-      "status_inflicted": "No type immunity"
+      "status_inflicted": "NoTypeImmunity"
     },
     {
       "id": 317,
@@ -5312,7 +5312,7 @@
       "target": "Selected",
       "effect_description": "Forces the target to have no evasion, and allows it to be hit by Psychic moves even if it's Dark.",
       "effect_category": "Status",
-      "status_inflicted": "No type immunity"
+      "status_inflicted": "NoTypeImmunity"
     },
     {
       "id": 358,
@@ -5591,7 +5591,7 @@
       "accuracy": 100,
       "effect_description": "Prevents target from restoring its HP for five turns.",
       "effect_category": "Status",
-      "status_inflicted": "Heal Block",
+      "status_inflicted": "HealBlock",
       "binding_min_turns": 5,
       "binding_max_turns": 5
     },
@@ -7089,7 +7089,6 @@
       "target": "Selected",
       "effect_description": "Moves have 100% accuracy against the target for three turns.",
       "effect_category": "Status",
-      "status_inflicted": "Burn, Freeze, or Paralysis",
       "binding_min_turns": 3,
       "binding_max_turns": 3
     },
@@ -7115,9 +7114,7 @@
       "power": 50,
       "accuracy": 100,
       "effect_description": "Removes any immunity to Ground damage.",
-      "effect_category": "Damage",
-      "status_inflicted": "Burn, Freeze, or Paralysis",
-      "status_chance": 100
+      "effect_category": "Damage"
     },
     {
       "id": 480,
@@ -9193,9 +9190,7 @@
       "power": 90,
       "accuracy": 100,
       "effect_description": "Grounds the target, and hits even Flying-type or levitating Pok\u00e9mon.",
-      "effect_category": "Damage",
-      "status_inflicted": "Burn, Freeze, or Paralysis",
-      "status_chance": 100
+      "effect_category": "Damage"
     },
     {
       "id": 615,
@@ -10229,27 +10224,6 @@
         {
           "stat": "speed",
           "stages": 1
-        }
-      ],
-      "stat_change_chance": 100
-    },
-    {
-      "id": 749,
-      "name": "TAR_SHOT",
-      "type": "Rock",
-      "category": "Status",
-      "pp": 15,
-      "priority": 0,
-      "target": "Selected",
-      "accuracy": 100,
-      "effect_description": "XXX new effect for tar-shot",
-      "effect_category": "DamageStatus",
-      "status_inflicted": "Tar shot",
-      "status_chance": 100,
-      "stat_changes": [
-        {
-          "stat": "speed",
-          "stages": -1
         }
       ],
       "stat_change_chance": 100
