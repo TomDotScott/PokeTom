@@ -1,0 +1,280 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Moves Database",
+  "type": "object",
+  "required": [
+    "moves"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "moves": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/move"
+      }
+    }
+  },
+  "$defs": {
+    "move": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "type",
+        "category",
+        "priority",
+        "target",
+        "effect_category"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Normal",
+            "Fire",
+            "Water",
+            "Electric",
+            "Grass",
+            "Ice",
+            "Fighting",
+            "Poison",
+            "Ground",
+            "Flying",
+            "Psychic",
+            "Bug",
+            "Rock",
+            "Ghost",
+            "Dragon",
+            "Steel",
+            "Dark",
+            "Fairy",
+            "Shadow",
+            "Unknown"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Physical",
+            "Special",
+            "Status"
+          ]
+        },
+        "pp": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": -7,
+          "maximum": 5
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "AllPokemon",
+            "AllOpponents",
+            "AllOther",
+            "Ally",
+            "EntireField",
+            "OpponentField",
+            "RandomOpponent",
+            "Selected",
+            "SpecificMove",
+            "User",
+            "UserAndAllies",
+            "UserOrAlly",
+            "UserField",
+            "Unknown"
+          ]
+        },
+        "power": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "accuracy": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "effect_category": {
+          "type": "string",
+          "enum": [
+            "Damage",
+            "Status",
+            "StatChange",
+            "Healing",
+            "DamageStatus",
+            "DamageStatChange",
+            "Drain",
+            "OneHitKO",
+            "Field",
+            "ForceSwitch",
+            "Unique"
+          ]
+        },
+        "effect_description": {
+          "type": "string"
+        },
+        "status_inflicted": {
+          "type": "string"
+        },
+        "status_chance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "flinch_chance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "crit_rate_bonus": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_hits": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_hits": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "binding_min_turns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "binding_max_turns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "drain_percent": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "recoil_percent": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "healing_percent": {
+          "type": "integer",
+          "minimum": -100,
+          "maximum": 100
+        },
+        "stat_changes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "stat",
+              "stages"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "stat": {
+                "type": "string",
+                "enum": [
+                  "hp",
+                  "attack",
+                  "defense",
+                  "special-attack",
+                  "special-defense",
+                  "speed",
+                  "accuracy",
+                  "evasion"
+                ]
+              },
+              "stages": {
+                "type": "integer",
+                "minimum": -6,
+                "maximum": 6
+              }
+            }
+          }
+        },
+        "stat_change_chance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "fixed_damage": {
+          "type": "object",
+          "required": [
+            "formula"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "formula": {
+              "type": "string",
+              "enum": [
+                "fixed",
+                "level",
+                "random"
+              ]
+            },
+            "value": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "min": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "charge_turn": {
+          "type": "boolean"
+        },
+        "recharge_turn": {
+          "type": "boolean"
+        },
+        "invulnerable_state": {
+          "type": "string",
+          "enum": [
+            "flying",
+            "underground",
+            "underwater"
+          ]
+        },
+        "makes_contact": {
+          "type": "boolean"
+        },
+        "sound_based": {
+          "type": "boolean"
+        },
+        "punch_based": {
+          "type": "boolean"
+        },
+        "pulse_based": {
+          "type": "boolean"
+        },
+        "bite_based": {
+          "type": "boolean"
+        },
+        "ballistic": {
+          "type": "boolean"
+        },
+        "self_ko": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
