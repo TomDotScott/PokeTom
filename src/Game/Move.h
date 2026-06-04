@@ -48,27 +48,29 @@ struct MoveStatus
 {
 	enum eStatus
 	{
-		BURN = 1 << 0,
-		FREEZE = 1 << 1,
-		PARALYSIS = 1 << 2,
-		POISON = 1 << 3,
-		SLEEP = 1 << 4,
-		CONFUSION = 1 << 5,
-		INFATUATION = 1 << 6,
-		TRAP = 1 << 7,
-		DISABLE = 1 << 8,
-		EMBARGO = 1 << 9,
-		HEAL_BLOCK = 1 << 10,
-		INGRAIN = 1 << 11,
-		LEECH_SEED = 1 << 12,
-		NIGHTMARE = 1 << 13,
-		NO_TYPE_IMMUNITY = 1 << 14,
-		PERISH_SONG = 1 << 15,
-		SILENCE = 1 << 16,
-		TAR_SHOT = 1 << 17,
-		TORMENT = 1 << 18,
-		YAWN = 1 << 19,
-	} m_Status;
+		Burn = 1 << 0,
+		Freeze = 1 << 1,
+		Paralysis = 1 << 2,
+		Poison = 1 << 3,
+		Sleep = 1 << 4,
+		Confusion = 1 << 5,
+		Infatuation = 1 << 6,
+		Trap = 1 << 7,
+		Disable = 1 << 8,
+		Embargo = 1 << 9,
+		HealBlock = 1 << 10,
+		Ingrain = 1 << 11,
+		LeechSeed = 1 << 12,
+		Nightmare = 1 << 13,
+		NoTypeImmunity = 1 << 14,
+		PerishSong = 1 << 15,
+		Silence = 1 << 16,
+		Torment = 1 << 17,
+		Yawn = 1 << 18,
+	};
+
+	// Mask of eStatus flags
+	uint32_t m_Status;
 
 	unsigned char m_Chance;
 };

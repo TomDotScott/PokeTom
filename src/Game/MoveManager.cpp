@@ -1,6 +1,7 @@
 #include "MoveManager.h"
 
 #include <fstream>
+#include <iostream>
 #include <json.hpp>
 
 #include "../Engine/Asserts.h"
@@ -80,12 +81,94 @@ bool MoveManager::LoadJSON()
 			magic_enum::case_insensitive
 		).value();
 
-		movesMap.emplace(id, Move(id, stringTableID, descriptionStringTableID, typeFlag, moveCategory, ppCount, movePriority, moveTarget, moveEffectCategory, std::nullopt, std::nullopt, std::nullopt, std::nullopt));
+		std::optional<unsigned> movePower = std::nullopt;
+		const bool moveDoesDamage = move.contains("power");
+		if (moveDoesDamage)
+		{
+			movePower = move["power"];
+		}
+
+		std::optional<uint8_t> moveAccuracy = std::nullopt;
+		const bool moveHasAccuracy = move.contains("accuracy");
+		if (moveHasAccuracy)
+		{
+			moveAccuracy = move["accuracy"];
+		}
+
+		std::optional<MoveStatus> moveStatus = std::nullopt;
+		const bool moveHasStatus = move.contains("status_inflicted");
+		if (moveHasStatus)
+		{
+			std::vector<std::string> statusStrings;
+			std::string token;
+			std::istringstream isstream(move["status_inflicted"].get<std::string>());
+
+			while (std::getline(isstream, token, ','))
+			{
+				const auto start = token.find_first_not_of(" \t\r\n");
+				const auto end = token.find_last_not_of(" \t\r\n");
+				if (start != std::string::npos)
+				{
+					statusStrings.push_back(token.substr(start, end - start + 1));
+				}
+			}
+
+			unsigned status = 0U;
+			for (const auto& ss : statusStrings)
+			{
+				const auto statusEnum = magic_enum::enum_cast<MoveStatus::eStatus>(
+					ss,
+					magic_enum::case_insensitive
+				);
+
+				ASSERT(statusEnum.has_value());
+				if (statusEnum.has_value())
+				{
+					status |= statusEnum.value();
+				}
+				else
+				{
+					std::cout << "MoveManager::LoadJSON - Unknown string! " << ss << "\n";
+					return false;
+				}
+			}
+
+			uint8_t statusChance = 100;
+			const bool moveHasStatusChance = move.contains("status_chance");
+			if (moveHasStatusChance)
+			{
+				statusChance = move["status_chance"];
+			}
+
+			moveStatus = {
+				.m_Status = status,
+				.m_Chance = statusChance
+			};
+		}
+
+
+		movesMap.emplace(moveID, Move(moveID,
+		                              stringTableID,
+		                              descriptionStringTableID,
+		                              typeFlag,
+		                              moveCategory,
+		                              ppCount,
+		                              movePriority,
+		                              moveTarget,
+		                              moveEffectCategory,
+		                              movePower,
+		                              moveAccuracy,
+		                              moveStatus,
+		                              std::nullopt
+		                 ));
 	}
 
 	m_moves = movesMap;
 
-	f.close();
+#if BUILD_DEBUG
+	printf("MoveManager::LoadJSON - Loaded %llu moves\n", m_moves.size());
+#endif
 
+	f.close();
 	return true;
 }

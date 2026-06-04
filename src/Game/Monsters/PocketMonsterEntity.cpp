@@ -1,6 +1,7 @@
 #include "PocketMonsterEntity.h"
 
 #include "PocketMonsterManager.h"
+#include "../MoveManager.h"
 
 
 namespace
@@ -15,6 +16,8 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 	m_monsterInfo(PocketMonsterManager::Get()->GetMonsterDetails(monsterID)),
 	m_currentLevel(level)
 {
+	const auto& move = MoveManager::Get()->GetMove(1);
+
 	m_IVs = {
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
