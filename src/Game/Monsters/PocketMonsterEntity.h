@@ -9,7 +9,7 @@
 class PocketMonsterEntity : public Entity
 {
 public:
-	PocketMonsterEntity(uint64_t monsterID, uint8_t level, EntityAnimationComponent::eAnimationName initialAnim);
+	PocketMonsterEntity(uint32_t monsterID, uint8_t level, EntityAnimationComponent::eAnimationName initialAnim);
 	~PocketMonsterEntity() override = default;
 
 	uint32_t GetMonsterID() const;
@@ -24,8 +24,8 @@ private:
 	MonsterStats m_currentStats;
 
 	uint8_t m_currentLevel;
-	uint64_t m_EVs;
-	uint64_t m_IVs;
+	std::array<uint8_t, STAT_COUNT> m_EVs;
+	std::array<uint8_t, STAT_COUNT> m_IVs;
 };
 
 #endif // POCKETMONSTERENTITY_H
