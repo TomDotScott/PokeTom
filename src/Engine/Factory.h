@@ -16,6 +16,7 @@ public:
 			return base;
 		}
 
+		base.reset();
 		return nullptr;
 	}
 
