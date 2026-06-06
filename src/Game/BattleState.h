@@ -39,7 +39,11 @@ private:
 		UP = 1 << 1,
 		DOWN = 1 << 2,
 		LEFT = 1 << 3,
-		RIGHT = 1 << 4
+		RIGHT = 1 << 4,
+		ONE = 1 << 5,
+		TWO = 1 << 6,
+		THREE = 1 << 7,
+		FOUR = 1 << 8
 	};
 	InputMapper m_inputMapper;
 

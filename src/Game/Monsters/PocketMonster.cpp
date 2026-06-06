@@ -38,3 +38,8 @@ const MonsterStats& PocketMonster::GetBaseStats() const
 {
 	return m_baseStats;
 }
+
+uint32_t PocketMonster::GetType() const
+{
+	return m_type;
+}

@@ -19,9 +19,10 @@ public:
 	MonsterStats& GetStats();
 	uint8_t GetLevel() const;
 
+	monster_type GetType() const;
+
 private:
 	PocketMonster m_monsterInfo;
-	MonsterStats m_currentStats;
 
 	uint8_t m_currentLevel;
 	std::array<uint8_t, STAT_COUNT> m_EVs;

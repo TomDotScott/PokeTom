@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../../Engine/Maths.h"
+
 MonsterStats::MonsterStats(
 	const uint16_t hp,
 	const uint16_t attack,
@@ -23,18 +25,18 @@ MonsterStats::MonsterStats(
 void MonsterStats::Log() const
 {
 	std::cout << "Monster Stats:\n"
-		"- HP: " << m_HP <<
-		"\n- Attack: " << m_Attack <<
-		"\n- Defense: " << m_Defense <<
-		"\n- SpAttack: " << m_SpAttack <<
-		"\n- SpDefense: " << m_SpDefense <<
-		"\n- Speed: " << m_Speed << "\n";
+	"- HP: " << m_HP <<
+	"\n- Attack: " << m_Attack <<
+	"\n- Defense: " << m_Defense <<
+	"\n- SpAttack: " << m_SpAttack <<
+	"\n- SpDefense: " << m_SpDefense <<
+	"\n- Speed: " << m_Speed << "\n";
 }
 
 MonsterStats MonsterStats::GetNextStat(const MonsterStats base,
-                                       const uint8_t level,
-                                       const std::array<unsigned char, STAT_COUNT>& EVs,
-                                       const std::array<unsigned char, STAT_COUNT>& IVs)
+									   const uint8_t level,
+									   const std::array<unsigned char, STAT_COUNT>& EVs,
+									   const std::array<unsigned char, STAT_COUNT>& IVs)
 {
 	return {
 		GetNextStat(base, eStat::HP, level, EVs, IVs),
@@ -47,10 +49,10 @@ MonsterStats MonsterStats::GetNextStat(const MonsterStats base,
 }
 
 uint16_t MonsterStats::GetNextStat(const MonsterStats base,
-                                   const eStat stat,
-                                   const uint8_t level,
-                                   const std::array<unsigned char, STAT_COUNT>& EVs,
-                                   const std::array<unsigned char, STAT_COUNT>& IVs)
+								   const eStat stat,
+								   const uint8_t level,
+								   const std::array<unsigned char, STAT_COUNT>& EVs,
+								   const std::array<unsigned char, STAT_COUNT>& IVs)
 {
 	const size_t idx = static_cast<size_t>(stat);
 
@@ -93,4 +95,40 @@ uint16_t MonsterStats::GetNextStat(const MonsterStats base,
 	{
 		return lhs + 5;
 	}
+}
+
+MonsterStatComponent::MonsterStatComponent(const MonsterStats& currentStats) :
+	m_statModifiers{ 0, 0, 0, 0, 0, 0 },
+	m_stats{ currentStats }
+{
+}
+
+void MonsterStatComponent::Update(const float deltaTime)
+{
+}
+
+void MonsterStatComponent::ResetAllModifiers()
+{
+	m_statModifiers = { 0, 0, 0, 0, 0, 0 };
+}
+
+void MonsterStatComponent::ResetModifier(MonsterStats::eStat stat)
+{
+	m_statModifiers[static_cast<size_t>(stat)] = 0;
+}
+
+void MonsterStatComponent::ModifyStat(MonsterStats::eStat stat, const int stages)
+{
+	int& currentStage = m_statModifiers[static_cast<size_t>(stat)];
+	currentStage = maths::Clamp(currentStage + stages, -6, 6);
+}
+
+bool MonsterStatComponent::IsFainted() const
+{
+	return m_stats.m_HP == 0;
+}
+
+MonsterStats& MonsterStatComponent::GetStats()
+{
+	return m_stats;
 }

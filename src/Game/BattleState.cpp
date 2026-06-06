@@ -2,6 +2,7 @@
 
 #include "DialogueBox.h"
 #include "GameEvents.h"
+#include "MoveComponent.h"
 #include "../Engine/Animation/AnimationComponent.h"
 #include "Monsters/PocketMonsterEntity.h"
 #include "../Engine/Stringtable.h"
@@ -41,6 +42,26 @@ BattleState::BattleState(GameContext& gameContext, BattleBeginContext battleCont
 		eInputType::Keyboard,
 		static_cast<int>(sf::Keyboard::Key::D),
 		static_cast<int>(sf::Keyboard::Key::Right)
+	);
+	m_inputMapper.Map(
+		ONE,
+		eInputType::Keyboard,
+		static_cast<int>(sf::Keyboard::Key::Num1)
+	);
+	m_inputMapper.Map(
+		TWO,
+		eInputType::Keyboard,
+		static_cast<int>(sf::Keyboard::Key::Num2)
+	);
+	m_inputMapper.Map(
+		THREE,
+		eInputType::Keyboard,
+		static_cast<int>(sf::Keyboard::Key::Num3)
+	);
+	m_inputMapper.Map(
+		FOUR,
+		eInputType::Keyboard,
+		static_cast<int>(sf::Keyboard::Key::Num4)
 	);
 
 	m_inputMapper.OnButtonPressed(UP, [this]() { OnNavigateButtonPressed(UP); });
@@ -118,6 +139,15 @@ void BattleState::Update(const float deltaTime)
 			.m_LevelHash = m_battleContext.m_LevelHash,
 			.m_PlayerPosition = m_battleContext.m_PlayerPosition,
 		});
+	}
+
+	if (m_inputMapper.IsButtonPressed(ONE))
+	{
+		playerMonster->GetComponent<MoveComponent>()->UseMove(0, *opponentMonster);
+	}else if (m_inputMapper.IsButtonPressed(TWO))
+	{
+		playerMonster->GetComponent<MoveComponent>()->UseMove(1, *opponentMonster);
+
 	}
 }
 

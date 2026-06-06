@@ -44,6 +44,6 @@ enum class eTypeEffectiveness : uint8_t
 // eTypeFlags make up the latter 18 bits of the int
 using monster_type = uint32_t;
 
-constexpr eTypeEffectiveness CalculateEffectiveness(monster_type attacker, monster_type defender, bool isAttacking);
+extern constexpr eTypeEffectiveness CalculateEffectiveness(monster_type attacker, monster_type defender, bool isAttacking);
 
 #endif

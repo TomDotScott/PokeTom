@@ -4,6 +4,8 @@
 #include "Monsters/MonsterStats.h"
 #include "Monsters/MonsterTypes.h"
 
+class Entity;
+
 enum class eMoveCategory : uint8_t
 {
 	Physical,
@@ -91,6 +93,8 @@ struct StatChange
 class Move
 {
 public:
+	Move() = default;
+
 	Move(uint32_t id,
 	     hash_type stringTableID,
 	     hash_type descriptionStringTableID,
@@ -106,7 +110,12 @@ public:
 	     const std::optional<StatChange>& statChange
 	);
 
+	void Use(Entity& attacker, Entity& defender);
+
+	unsigned GetPPRemaining() const;
+
 private:
+	bool m_valid = false;
 	uint32_t m_id;
 	hash_type m_stringTableID;
 	hash_type m_descriptionStringTableID;

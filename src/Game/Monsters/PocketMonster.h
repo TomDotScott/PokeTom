@@ -13,13 +13,18 @@ using evolution_tree = std::array<int, 7>;
 class PocketMonster
 {
 public:
-	PocketMonster(uint32_t id, monster_type type, const MonsterStats& stats, const evolution_tree& prevEvolutions,
-	              const evolution_tree& nextEvolutions);
+	PocketMonster(uint32_t id,
+				  monster_type type,
+				  const MonsterStats& stats,
+				  const evolution_tree& prevEvolutions,
+				  const evolution_tree& nextEvolutions
+	);
 
 	uint32_t GetID() const;
 	hash_type GetName() const;
 
 	const MonsterStats& GetBaseStats() const;
+	uint32_t GetType() const;
 
 private:
 	uint32_t m_id;

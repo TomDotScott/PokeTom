@@ -3,6 +3,8 @@
 #include <array>
 #include <cstdint>
 
+#include "../../Engine/IUpdateable.h"
+
 static constexpr unsigned STAT_COUNT = 6;
 
 struct MonsterStats
@@ -59,5 +61,23 @@ struct MonsterStats
 	);
 };
 
+class MonsterStatComponent : public IUpdateable
+{
+public:
+	MonsterStatComponent(const MonsterStats& currentStats);
+	void Update(float deltaTime) override;
+
+	void ResetAllModifiers();
+	void ResetModifier(MonsterStats::eStat stat);
+
+	void ModifyStat(MonsterStats::eStat stat, int stages);
+
+	bool IsFainted() const;
+	MonsterStats& GetStats();
+
+private:
+	std::array<int, STAT_COUNT> m_statModifiers;
+	MonsterStats m_stats;
+};
 
 #endif // MONSTERSTATS_H
