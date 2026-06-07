@@ -10,7 +10,7 @@
 class BattleState : public IGameState
 {
 public:
-	BattleState(GameContext& gameContext, BattleBeginContext battleContext);
+	BattleState(GameContext& gameContext, const BattleBeginContext& battleContext);
 
 	void OnEnter() override;
 	void OnExit() override;
@@ -19,19 +19,21 @@ public:
 
 private:
 	GameContext& m_gameContext;
-	BattleBeginContext m_battleContext;
+	static BattleBeginContext m_battleContext;
 
 	entity_id_t m_playerMonsterEntityID;
 	entity_id_t m_opponentMonsterEntityID;
 
-	enum class eSelectedOption : uint8_t
+	enum eUILayer : uint8_t
 	{
-		FIGHT,
-		MONSTERS,
-		BAG,
-		RUN
+		OptionSelect,
+		MoveSelect,
+		MonsterSelect,
+		ItemSelect,
+		QuitBattle,
+		COUNT
 	};
-	eSelectedOption m_selectedOption;
+	eUILayer m_currentUILayer;
 
 	enum eInputs : uint8_t
 	{
@@ -40,15 +42,66 @@ private:
 		DOWN = 1 << 2,
 		LEFT = 1 << 3,
 		RIGHT = 1 << 4,
-		ONE = 1 << 5,
-		TWO = 1 << 6,
-		THREE = 1 << 7,
-		FOUR = 1 << 8
 	};
 	InputMapper m_inputMapper;
 
-	void OnNavigateButtonPressed(eInputs button);
-	void OnSelectedOptionChanged(eSelectedOption newOption);
+	class UILayer
+	{
+	public:
+		UILayer();
+		bool IsFinished() const;
+		virtual eUILayer GetNextLayer() const = 0;
+		virtual void OnNavigateButtonPressed(eInputs button) = 0;
+		virtual void OnSelectButtonPressed() = 0;
+		virtual void Update(float deltaTime);
+		virtual ~UILayer() = default;
+
+		virtual void OnActivate();
+		virtual void OnDeactivate();
+
+	protected:
+		bool m_finished;
+		InputMapper m_inputMapper;
+	};
+
+	class OptionSelectLayer : public UILayer
+	{
+	public:
+		OptionSelectLayer();
+		eUILayer GetNextLayer() const override;
+		void OnNavigateButtonPressed(eInputs button) override;
+		void OnSelectButtonPressed() override;
+		void OnActivate() override;
+		void OnDeactivate() override;
+
+	private:
+		enum class eSelectedOption : uint8_t
+		{
+			Fight,
+			Monsters,
+			Bag,
+			Run
+		};
+		eSelectedOption m_selectedOption;
+
+		void OnSelectedOptionChanged(eSelectedOption newOption);
+	};
+
+	class RunLayer : public UILayer
+	{
+	public:
+		RunLayer();
+		eUILayer GetNextLayer() const override;
+		void OnNavigateButtonPressed(eInputs button) override;
+		void OnSelectButtonPressed() override;
+		void OnActivate() override;
+		void OnDeactivate() override;
+	};
+
+	std::array<std::unique_ptr<UILayer>, eUILayer::COUNT> m_UILayers;
+
+	void OnNavigateButtonPressed(eInputs button) const;
+	void OnSelectButtonPressed() const;
 };
 
 #endif // BATTLESTATE_H

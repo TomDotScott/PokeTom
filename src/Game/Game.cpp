@@ -27,8 +27,6 @@ Game::Game(sol::state& lua) :
 	}),
 	m_luaBindings(lua, m_context.m_World, m_context.m_Entities)
 {
-	const auto x = PocketMonsterManager::Get();
-
 	// TODO: Make this a variable, loaded at startup
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
@@ -139,6 +137,8 @@ void Game::UpdateScreenFade(const float deltaTime)
 		{
 			if (m_pendingState)
 			{
+				m_currentState.reset();
+
 				m_currentState = std::move(m_pendingState);
 				m_currentState->OnEnter();
 			}
