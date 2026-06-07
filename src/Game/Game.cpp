@@ -121,8 +121,6 @@ void Game::Render(sf::RenderWindow& window) const
 void Game::RequestTransition(std::unique_ptr<IGameState> next)
 {
 	m_pendingState = std::move(next);
-	m_currentState->OnExit();
-
 	game_events::OnScreenFadeTriggered.Fire();
 }
 
@@ -137,8 +135,8 @@ void Game::UpdateScreenFade(const float deltaTime)
 		{
 			if (m_pendingState)
 			{
+				m_currentState->OnExit();
 				m_currentState.reset();
-
 				m_currentState = std::move(m_pendingState);
 				m_currentState->OnEnter();
 			}
