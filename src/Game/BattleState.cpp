@@ -422,6 +422,23 @@ void BattleState::FightLayer::OnNavigateButtonPressed(const eInputs button)
 
 void BattleState::FightLayer::OnSelectButtonPressed()
 {
+	ASSERT(this->m_playerMonster != nullptr);
+	ASSERT(this->m_opponentMonster != nullptr);
+
+	auto* playerMoveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(playerMoveComponent);
+	if (playerMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove)))
+	{
+		playerMoveComponent->UseMove(static_cast<uint8_t>(m_selectedMove), *this->m_opponentMonster);
+	}
+
+	auto* opponentMoveComponent = this->m_opponentMonster->GetComponent<MoveComponent>();
+	ASSERT(opponentMoveComponent);
+	if (opponentMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove)))
+	{
+		opponentMoveComponent->UseMove(static_cast<uint8_t>(m_selectedMove), *this->m_playerMonster);
+	}
+
 	m_finished = true;
 }
 
@@ -447,7 +464,7 @@ void BattleState::FightLayer::OnActivate(const BattleState& state)
 	this->m_playerMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_playerMonsterEntityID);
 	ASSERT(this->m_playerMonster != nullptr);
 
-	this->m_opponentMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_playerMonsterEntityID);
+	this->m_opponentMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_opponentMonsterEntityID);
 	ASSERT(this->m_opponentMonster != nullptr);
 
 	// Set up the move text

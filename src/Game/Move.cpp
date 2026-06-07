@@ -52,7 +52,7 @@ void Move::Use(Entity& attacker, Entity& defender)
 
 	eTypeEffectiveness effectiveness = CalculateEffectiveness(attkType, defType, true);
 
-	std::cout << attackerMonster->GetNameStringID() << " used " << m_stringTableID << " and it was " << magic_enum::enum_name(effectiveness);
+	std::cout << attackerMonster->GetNameStringID() << " used " << m_stringTableID << " and it was " << magic_enum::enum_name(effectiveness) << "\n";
 }
 
 unsigned Move::GetPPRemaining() const
