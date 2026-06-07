@@ -114,6 +114,17 @@ private:
 		PocketMonsterEntity* m_opponentMonster;
 
 		std::array<bool, MOVE_COUNT> m_validMoves;
+
+		enum class eSelection : uint8_t
+		{
+			Move1,
+			Move2,
+			Move3,
+			Move4
+		};
+		eSelection m_selectedMove;
+
+		void OnSelectedMoveChanged(eSelection newMove);
 	};
 
 	class RunLayer final : public UILayer

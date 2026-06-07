@@ -343,7 +343,8 @@ void BattleState::OptionSelectLayer::OnSelectedOptionChanged(const eSelectedOpti
 BattleState::FightLayer::FightLayer() :
 	m_playerMonster(nullptr),
 	m_opponentMonster(nullptr),
-	m_validMoves()
+	m_validMoves(),
+	m_selectedMove(eSelection::Move1)
 {
 }
 
@@ -352,8 +353,71 @@ BattleState::UILayer::LayerResult BattleState::FightLayer::GetLayerResult() cons
 	return { .m_NextLayer = OptionSelect, .m_ChosenMoveID = 41 };
 }
 
-void BattleState::FightLayer::OnNavigateButtonPressed(eInputs button)
+void BattleState::FightLayer::OnNavigateButtonPressed(const eInputs button)
 {
+	const bool upDown = button & (UP | DOWN);
+	const bool leftRight = button & (LEFT | RIGHT);
+
+	if (upDown)
+	{
+		switch (m_selectedMove)
+		{
+		case eSelection::Move1:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move3)])
+			{
+				OnSelectedMoveChanged(eSelection::Move3);
+			}
+			break;
+		case eSelection::Move2:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move4)])
+			{
+				OnSelectedMoveChanged(eSelection::Move4);
+			}
+			break;
+		case eSelection::Move3:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move1)])
+			{
+				OnSelectedMoveChanged(eSelection::Move1);
+			}
+			break;
+		case eSelection::Move4:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move2)])
+			{
+				OnSelectedMoveChanged(eSelection::Move2);
+			}
+			break;
+		}
+	}
+	else if (leftRight)
+	{
+		switch (m_selectedMove)
+		{
+		case eSelection::Move1:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move2)])
+			{
+				OnSelectedMoveChanged(eSelection::Move2);
+			}
+			break;
+		case eSelection::Move2:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move1)])
+			{
+				OnSelectedMoveChanged(eSelection::Move1);
+			}
+			break;
+		case eSelection::Move3:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move4)])
+			{
+				OnSelectedMoveChanged(eSelection::Move4);
+			}
+			break;
+		case eSelection::Move4:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move3)])
+			{
+				OnSelectedMoveChanged(eSelection::Move3);
+			}
+			break;
+		}
+	}
 }
 
 void BattleState::FightLayer::OnSelectButtonPressed()
@@ -416,6 +480,8 @@ void BattleState::FightLayer::OnActivate(const BattleState& state)
 			moveText->SetText(" ");
 		}
 	}
+
+	OnSelectedMoveChanged(eSelection::Move1);
 }
 
 void BattleState::FightLayer::OnDeactivate()
@@ -431,6 +497,50 @@ void BattleState::FightLayer::OnDeactivate()
 	ASSERT(moveUI != nullptr);
 
 	moveUI->OnDeactivate();
+}
+
+void BattleState::FightLayer::OnSelectedMoveChanged(const eSelection newMove)
+{
+	m_selectedMove = newMove;
+
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	const auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	ASSERT(moveSelectUI != nullptr);
+
+	auto* move1 = moveSelectUI->GetChild("MOVE_1_ARROW");
+	ASSERT(move1 != nullptr);
+
+	auto* move2 = moveSelectUI->GetChild("MOVE_2_ARROW");
+	ASSERT(move2 != nullptr);
+
+	auto* move3 = moveSelectUI->GetChild("MOVE_3_ARROW");
+	ASSERT(move3 != nullptr);
+
+	auto* move4 = moveSelectUI->GetChild("MOVE_4_ARROW");
+	ASSERT(move4 != nullptr);
+
+	move1->OnDeactivate();
+	move2->OnDeactivate();
+	move3->OnDeactivate();
+	move4->OnDeactivate();
+
+	switch (newMove)
+	{
+	case eSelection::Move1:
+		move1->OnActivate();
+		break;
+	case eSelection::Move2:
+		move2->OnActivate();
+		break;
+	case eSelection::Move3:
+		move3->OnActivate();
+		break;
+	case eSelection::Move4:
+		move4->OnActivate();
+		break;
+	}
 }
 
 BattleState::RunLayer::RunLayer()
