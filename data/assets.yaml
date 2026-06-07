@@ -27,6 +27,8 @@ textures:
 fonts:
   - name: DEFAULT
     source: fonts/FiraCode-Regular.ttf
+  - name: TEXT_BOX
+    source: fonts/Pokemon-Classic.ttf
 
 animations:
   - name: PLAYER_BOY

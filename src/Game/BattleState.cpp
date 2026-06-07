@@ -9,6 +9,7 @@
 
 constexpr static auto BATTLE_PANEL_NAME = "BATTLE_HUD_PANEL";
 constexpr static auto OPTIONS_PANEL_NAME = "BATTLE_OPTIONS";
+constexpr static auto MOVES_PANEL_NAME = "MOVE_OPTIONS";
 
 BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext):
 	m_gameContext(gameContext),
@@ -18,7 +19,7 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 
 	m_UILayers = std::array<std::unique_ptr<UILayer>, eUILayer::COUNT>{
 		std::make_unique<OptionSelectLayer>(),
-		nullptr,
+		std::make_unique<FightLayer>(),
 		nullptr,
 		nullptr,
 		std::make_unique<RunLayer>(),
@@ -140,7 +141,8 @@ void BattleState::Update(const float deltaTime)
 	{
 		currentLayer->OnDeactivate();
 
-		m_currentUILayer = currentLayer->GetNextLayer();
+		const UILayer::LayerResult currentLayerResult = currentLayer->GetLayerResult();
+		m_currentUILayer = currentLayerResult.m_NextLayer;
 
 		ASSERT(m_UILayers[m_currentUILayer] != nullptr);
 		m_UILayers[m_currentUILayer]->OnActivate(m_battleContext);
@@ -176,12 +178,13 @@ bool BattleState::UILayer::IsFinished() const
 	return m_finished;
 }
 
-void BattleState::UILayer::Update(float deltaTime)
+void BattleState::UILayer::Update(float /*deltaTime*/)
 {
 }
 
-void BattleState::UILayer::OnActivate(const BattleBeginContext& ctx)
+void BattleState::UILayer::OnActivate(const BattleBeginContext& /*ctx*/)
 {
+	m_finished = false;
 }
 
 void BattleState::UILayer::OnDeactivate()
@@ -194,24 +197,24 @@ BattleState::OptionSelectLayer::OptionSelectLayer() :
 {
 }
 
-BattleState::eUILayer BattleState::OptionSelectLayer::GetNextLayer() const
+BattleState::UILayer::LayerResult BattleState::OptionSelectLayer::GetLayerResult() const
 {
 	switch (m_selectedOption)
 	{
 	case eSelectedOption::Fight:
-		return MoveSelect;
+		return { .m_NextLayer = MoveSelect };
 	case eSelectedOption::Monsters:
-		return MonsterSelect;
+		return { .m_NextLayer = MonsterSelect };
 	case eSelectedOption::Bag:
-		return ItemSelect;
+		return { .m_NextLayer = ItemSelect };
 	case eSelectedOption::Run:
-		return QuitBattle;
+		return { .m_NextLayer = QuitBattle };
 	}
 
-	return eUILayer::OptionSelect;
+	return { .m_NextLayer = OptionSelect };
 }
 
-void BattleState::OptionSelectLayer::OnNavigateButtonPressed(eInputs button)
+void BattleState::OptionSelectLayer::OnNavigateButtonPressed(const eInputs button)
 {
 	const bool upDown = button & (UP | DOWN);
 	const bool leftRight = button & (LEFT | RIGHT);
@@ -264,6 +267,18 @@ void BattleState::OptionSelectLayer::OnSelectButtonPressed()
 void BattleState::OptionSelectLayer::OnActivate(const BattleBeginContext& ctx)
 {
 	UILayer::OnActivate(ctx);
+
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	ASSERT(optionsUI != nullptr);
+
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	ASSERT(moveUI != nullptr);
+
+	optionsUI->OnActivate();
+	moveUI->OnDeactivate();
 
 	OnSelectedOptionChanged(eSelectedOption::Fight);
 }
@@ -325,16 +340,64 @@ void BattleState::OptionSelectLayer::OnSelectedOptionChanged(const eSelectedOpti
 	}
 }
 
+BattleState::UILayer::LayerResult BattleState::FightLayer::GetLayerResult() const
+{
+	return { .m_NextLayer = OptionSelect, .m_ChosenMoveID = 41 };
+}
+
+void BattleState::FightLayer::OnNavigateButtonPressed(eInputs button)
+{
+}
+
+void BattleState::FightLayer::OnSelectButtonPressed()
+{
+	m_finished = true;
+}
+
+void BattleState::FightLayer::OnActivate(const BattleBeginContext& ctx)
+{
+	UILayer::OnActivate(ctx);
+
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	battleUI->GetChild("TEXT_BOX")->OnDeactivate();
+
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	ASSERT(optionsUI != nullptr);
+
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	ASSERT(moveUI != nullptr);
+
+	optionsUI->OnDeactivate();
+	moveUI->OnActivate();
+}
+
+void BattleState::FightLayer::OnDeactivate()
+{
+	UILayer::OnDeactivate();
+
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	battleUI->GetChild("TEXT_BOX")->OnActivate();
+
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	ASSERT(moveUI != nullptr);
+
+	moveUI->OnDeactivate();
+}
+
 BattleState::RunLayer::RunLayer()
 {
 }
 
-BattleState::eUILayer BattleState::RunLayer::GetNextLayer() const
+BattleState::UILayer::LayerResult BattleState::RunLayer::GetLayerResult() const
 {
-	return OptionSelect;
+	return { .m_NextLayer = OptionSelect };
 }
 
-void BattleState::RunLayer::OnNavigateButtonPressed(eInputs button)
+void BattleState::RunLayer::OnNavigateButtonPressed(eInputs /*button*/)
 {
 }
 

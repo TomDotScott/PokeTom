@@ -33,6 +33,7 @@ private:
 		QuitBattle,
 		COUNT
 	};
+
 	eUILayer m_currentUILayer;
 
 	enum eInputs : uint8_t
@@ -43,6 +44,7 @@ private:
 		LEFT = 1 << 3,
 		RIGHT = 1 << 4,
 	};
+
 	InputMapper m_inputMapper;
 
 	class UILayer
@@ -50,7 +52,6 @@ private:
 	public:
 		UILayer();
 		bool IsFinished() const;
-		virtual eUILayer GetNextLayer() const = 0;
 		virtual void OnNavigateButtonPressed(eInputs button) = 0;
 		virtual void OnSelectButtonPressed() = 0;
 		virtual void Update(float deltaTime);
@@ -59,15 +60,23 @@ private:
 		virtual void OnActivate(const BattleBeginContext& ctx);
 		virtual void OnDeactivate();
 
+		struct LayerResult
+		{
+			eUILayer m_NextLayer;
+			std::optional<uint32_t> m_ChosenMoveID;
+		};
+
+		virtual LayerResult GetLayerResult() const = 0;
+
 	protected:
 		bool m_finished;
 	};
 
-	class OptionSelectLayer : public UILayer
+	class OptionSelectLayer final : public UILayer
 	{
 	public:
 		OptionSelectLayer();
-		eUILayer GetNextLayer() const override;
+		LayerResult GetLayerResult() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
 		void OnActivate(const BattleBeginContext& ctx) override;
@@ -81,16 +90,27 @@ private:
 			Bag,
 			Run
 		};
+
 		eSelectedOption m_selectedOption;
 
 		void OnSelectedOptionChanged(eSelectedOption newOption);
 	};
 
-	class RunLayer : public UILayer
+	class FightLayer final : public UILayer
+	{
+	public:
+		LayerResult GetLayerResult() const override;
+		void OnNavigateButtonPressed(eInputs button) override;
+		void OnSelectButtonPressed() override;
+		void OnActivate(const BattleBeginContext& ctx) override;
+		void OnDeactivate() override;
+	};
+
+	class RunLayer final : public UILayer
 	{
 	public:
 		RunLayer();
-		eUILayer GetNextLayer() const override;
+		LayerResult GetLayerResult() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
 		void OnActivate(const BattleBeginContext& ctx) override;
