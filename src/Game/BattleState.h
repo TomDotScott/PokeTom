@@ -3,9 +3,12 @@
 
 #include "BattleContext.h"
 #include "GameContext.h"
+#include "MoveComponent.h"
 #include "../Engine/IGameState.h"
 #include "../Engine/Input/InputMapper.h"
 
+
+class PocketMonsterEntity;
 
 class BattleState : public IGameState
 {
@@ -57,7 +60,7 @@ private:
 		virtual void Update(float deltaTime);
 		virtual ~UILayer() = default;
 
-		virtual void OnActivate(const BattleBeginContext& ctx);
+		virtual void OnActivate(const BattleState& state);
 		virtual void OnDeactivate();
 
 		struct LayerResult
@@ -79,7 +82,7 @@ private:
 		LayerResult GetLayerResult() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleBeginContext& ctx) override;
+		void OnActivate(const BattleState& state) override;
 		void OnDeactivate() override;
 
 	private:
@@ -99,11 +102,18 @@ private:
 	class FightLayer final : public UILayer
 	{
 	public:
+		FightLayer();
 		LayerResult GetLayerResult() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleBeginContext& ctx) override;
+		void OnActivate(const BattleState& state) override;
 		void OnDeactivate() override;
+
+	private:
+		PocketMonsterEntity* m_playerMonster;
+		PocketMonsterEntity* m_opponentMonster;
+
+		std::array<bool, MOVE_COUNT> m_validMoves;
 	};
 
 	class RunLayer final : public UILayer
@@ -113,7 +123,7 @@ private:
 		LayerResult GetLayerResult() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleBeginContext& ctx) override;
+		void OnActivate(const BattleState& state) override;
 		void OnDeactivate() override;
 
 	private:

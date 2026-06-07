@@ -3,6 +3,7 @@
 #include <SFML/Graphics/Text.hpp>
 
 #include "UiElement.h"
+#include "../Hash.h"
 
 class UiText final : public UiElement
 {
@@ -31,6 +32,8 @@ public:
 		m_string = &buffer[0];
 		m_text.setString(m_string);
 	}
+
+	void SetText(hash_type stringTableID);
 
 	const char* GetText() const;
 

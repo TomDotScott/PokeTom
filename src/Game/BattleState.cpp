@@ -98,7 +98,7 @@ void BattleState::OnEnter()
 	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnActivate();
 	DialogueBox::SetVisible(false);
 
-	m_UILayers[m_currentUILayer]->OnActivate(m_battleContext);
+	m_UILayers[m_currentUILayer]->OnActivate(*this);
 }
 
 void BattleState::OnExit()
@@ -145,7 +145,7 @@ void BattleState::Update(const float deltaTime)
 		m_currentUILayer = currentLayerResult.m_NextLayer;
 
 		ASSERT(m_UILayers[m_currentUILayer] != nullptr);
-		m_UILayers[m_currentUILayer]->OnActivate(m_battleContext);
+		m_UILayers[m_currentUILayer]->OnActivate(*this);
 	}
 }
 
@@ -182,7 +182,7 @@ void BattleState::UILayer::Update(float /*deltaTime*/)
 {
 }
 
-void BattleState::UILayer::OnActivate(const BattleBeginContext& /*ctx*/)
+void BattleState::UILayer::OnActivate(const BattleState& /*ctx*/)
 {
 	m_finished = false;
 }
@@ -264,9 +264,9 @@ void BattleState::OptionSelectLayer::OnSelectButtonPressed()
 	m_finished = true;
 }
 
-void BattleState::OptionSelectLayer::OnActivate(const BattleBeginContext& ctx)
+void BattleState::OptionSelectLayer::OnActivate(const BattleState& state)
 {
-	UILayer::OnActivate(ctx);
+	UILayer::OnActivate(state);
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
@@ -340,6 +340,13 @@ void BattleState::OptionSelectLayer::OnSelectedOptionChanged(const eSelectedOpti
 	}
 }
 
+BattleState::FightLayer::FightLayer() :
+	m_playerMonster(nullptr),
+	m_opponentMonster(nullptr),
+	m_validMoves()
+{
+}
+
 BattleState::UILayer::LayerResult BattleState::FightLayer::GetLayerResult() const
 {
 	return { .m_NextLayer = OptionSelect, .m_ChosenMoveID = 41 };
@@ -354,9 +361,9 @@ void BattleState::FightLayer::OnSelectButtonPressed()
 	m_finished = true;
 }
 
-void BattleState::FightLayer::OnActivate(const BattleBeginContext& ctx)
+void BattleState::FightLayer::OnActivate(const BattleState& state)
 {
-	UILayer::OnActivate(ctx);
+	UILayer::OnActivate(state);
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
@@ -371,6 +378,44 @@ void BattleState::FightLayer::OnActivate(const BattleBeginContext& ctx)
 
 	optionsUI->OnDeactivate();
 	moveUI->OnActivate();
+
+
+	this->m_playerMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_playerMonsterEntityID);
+	ASSERT(this->m_playerMonster != nullptr);
+
+	this->m_opponentMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_playerMonsterEntityID);
+	ASSERT(this->m_opponentMonster != nullptr);
+
+	// Set up the move text
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+
+	static constexpr std::array<const char*, MOVE_COUNT> uiComponentNames{
+		"MOVE_1_TEXT",
+		"MOVE_2_TEXT",
+		"MOVE_3_TEXT",
+		"MOVE_4_TEXT",
+	};
+
+	for (size_t i = 0; i < MOVE_COUNT; ++i)
+	{
+		const Move& move = moveComponent->GetMove(i);
+
+		bool isValid = move.IsValid();
+		m_validMoves[i] = isValid;
+
+		UiText* moveText = dynamic_cast<UiText*>(moveUI->GetChild(uiComponentNames[i]));
+		ASSERT(moveText != nullptr);
+
+		if (isValid)
+		{
+			moveText->SetText(move.GetNameStringTableID());
+		}
+		else
+		{
+			moveText->SetText(" ");
+		}
+	}
 }
 
 void BattleState::FightLayer::OnDeactivate()
@@ -406,13 +451,13 @@ void BattleState::RunLayer::OnSelectButtonPressed()
 	game_events::OnBattleEnd.Fire(m_endContext);
 }
 
-void BattleState::RunLayer::OnActivate(const BattleBeginContext& ctx)
+void BattleState::RunLayer::OnActivate(const BattleState& state)
 {
-	UILayer::OnActivate(ctx);
+	UILayer::OnActivate(state);
 
 	m_endContext = {
-		.m_LevelHash = ctx.m_LevelHash,
-		.m_PlayerPosition = ctx.m_PlayerPosition,
+		.m_LevelHash = state.m_battleContext.m_LevelHash,
+		.m_PlayerPosition = state.m_battleContext.m_PlayerPosition,
 	};
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);

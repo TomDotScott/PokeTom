@@ -114,6 +114,10 @@ public:
 
 	unsigned GetPPRemaining() const;
 
+	bool IsValid() const;
+
+	hash_type GetNameStringTableID() const;
+
 private:
 	bool m_valid = false;
 	uint32_t m_id;

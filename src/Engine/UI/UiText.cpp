@@ -4,6 +4,7 @@
 
 #include "UiManager.h"
 #include "../Globals.h"
+#include "../Stringtable.h"
 #include "../CodeGen/Resources.hpp"
 
 UiText::UiText(UiElement* parent) :
@@ -14,6 +15,11 @@ UiText::UiText(UiElement* parent) :
 	// All text drawn on top
 	// TODO: Make this more sophisticated... I need to be able to support arbitrary placement of elements in the XML otherwise we are at the mercy of std::hash!
 	SetLayer(eLayer::FOREGROUND);
+}
+
+void UiText::SetText(hash_type stringTableID)
+{
+	SetText(STRINGTABLE->GetString(stringTableID).c_str());
 }
 
 const char* UiText::GetText() const
@@ -35,17 +41,17 @@ void UiText::SetElementPosition(const sf::Vector2f& position)
 	float originX;
 	switch (m_alignment)
 	{
-		// TODO: Completely redo text alignment as the previous "solution" didn't really work!
+	// TODO: Completely redo text alignment as the previous "solution" didn't really work!
 	case eAlignment::Left:
 	default:
 		originX = textBounds.position.x;
 		break;
-		/*case eAlignment::Right:
-			originX = textBounds.position.x + textBounds.size.x;
-			break;
-		case eAlignment::Centre:
-			originX = textBounds.position.x + textBounds.size.x / 2.f;
-			break;*/
+	/*case eAlignment::Right:
+		originX = textBounds.position.x + textBounds.size.x;
+		break;
+	case eAlignment::Centre:
+		originX = textBounds.position.x + textBounds.size.x / 2.f;
+		break;*/
 	}
 
 	float originY = textBounds.position.x + textBounds.size.y / 2.f;

@@ -59,3 +59,13 @@ unsigned Move::GetPPRemaining() const
 {
 	return m_powerPoints;
 }
+
+bool Move::IsValid() const
+{
+	return m_valid;
+}
+
+hash_type Move::GetNameStringTableID() const
+{
+	return m_stringTableID;
+}

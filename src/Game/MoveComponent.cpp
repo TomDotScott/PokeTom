@@ -5,7 +5,7 @@
 #include "../Engine/Entity.h"
 
 
-MoveComponent::MoveComponent(Entity* owner, const std::array<uint32_t, 4>& moves) :
+MoveComponent::MoveComponent(Entity* owner, const std::array<uint32_t, MOVE_COUNT>& moves) :
 	m_owner{ owner },
 	m_moves{ }
 {
@@ -25,7 +25,7 @@ void MoveComponent::Update(float deltaTime)
 
 bool MoveComponent::CanUseMove(const uint8_t moveIdx) const
 {
-	ASSERT(moveIdx <= 3);
+	ASSERT(moveIdx < MOVE_COUNT);
 
 	return m_moves[moveIdx].GetPPRemaining() > 0;
 }
@@ -40,4 +40,16 @@ bool MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
 	}
 
 	return false;
+}
+
+Move& MoveComponent::GetMove(const uint8_t moveIdx)
+{
+	ASSERT(moveIdx < MOVE_COUNT);
+	return m_moves[moveIdx];
+}
+
+const Move& MoveComponent::GetMove(const uint8_t moveIdx) const
+{
+	ASSERT(moveIdx < MOVE_COUNT);
+	return m_moves[moveIdx];
 }

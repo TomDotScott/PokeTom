@@ -182,7 +182,7 @@ So that I can see what dialogue will look like!!!
       </Sprite>
 
       <Text>
-        <name>MOVE_3_TEXT</name>
+        <name>MOVE_4_TEXT</name>
         <string>[MOVE TEXT HERE]</string>
         <alignment>left</alignment>
         <colour>000000FF</colour>
