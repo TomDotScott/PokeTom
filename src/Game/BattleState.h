@@ -19,7 +19,7 @@ public:
 
 private:
 	GameContext& m_gameContext;
-	static BattleBeginContext m_battleContext;
+	BattleBeginContext m_battleContext;
 
 	entity_id_t m_playerMonsterEntityID;
 	entity_id_t m_opponentMonsterEntityID;
@@ -56,12 +56,11 @@ private:
 		virtual void Update(float deltaTime);
 		virtual ~UILayer() = default;
 
-		virtual void OnActivate();
+		virtual void OnActivate(const BattleBeginContext& ctx);
 		virtual void OnDeactivate();
 
 	protected:
 		bool m_finished;
-		InputMapper m_inputMapper;
 	};
 
 	class OptionSelectLayer : public UILayer
@@ -71,7 +70,7 @@ private:
 		eUILayer GetNextLayer() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
-		void OnActivate() override;
+		void OnActivate(const BattleBeginContext& ctx) override;
 		void OnDeactivate() override;
 
 	private:
@@ -94,8 +93,11 @@ private:
 		eUILayer GetNextLayer() const override;
 		void OnNavigateButtonPressed(eInputs button) override;
 		void OnSelectButtonPressed() override;
-		void OnActivate() override;
+		void OnActivate(const BattleBeginContext& ctx) override;
 		void OnDeactivate() override;
+
+	private:
+		BattleEndContext m_endContext;
 	};
 
 	std::array<std::unique_ptr<UILayer>, eUILayer::COUNT> m_UILayers;

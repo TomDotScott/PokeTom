@@ -10,8 +10,6 @@
 constexpr static auto BATTLE_PANEL_NAME = "BATTLE_HUD_PANEL";
 constexpr static auto OPTIONS_PANEL_NAME = "BATTLE_OPTIONS";
 
-BattleBeginContext BattleState::m_battleContext;
-
 BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext):
 	m_gameContext(gameContext),
 	m_currentUILayer(OptionSelect)
@@ -99,7 +97,7 @@ void BattleState::OnEnter()
 	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnActivate();
 	DialogueBox::SetVisible(false);
 
-	m_UILayers[m_currentUILayer]->OnActivate();
+	m_UILayers[m_currentUILayer]->OnActivate(m_battleContext);
 }
 
 void BattleState::OnExit()
@@ -145,7 +143,7 @@ void BattleState::Update(const float deltaTime)
 		m_currentUILayer = currentLayer->GetNextLayer();
 
 		ASSERT(m_UILayers[m_currentUILayer] != nullptr);
-		m_UILayers[m_currentUILayer]->OnActivate();
+		m_UILayers[m_currentUILayer]->OnActivate(m_battleContext);
 	}
 }
 
@@ -180,10 +178,9 @@ bool BattleState::UILayer::IsFinished() const
 
 void BattleState::UILayer::Update(float deltaTime)
 {
-	m_inputMapper.Update();
 }
 
-void BattleState::UILayer::OnActivate()
+void BattleState::UILayer::OnActivate(const BattleBeginContext& ctx)
 {
 }
 
@@ -264,9 +261,9 @@ void BattleState::OptionSelectLayer::OnSelectButtonPressed()
 	m_finished = true;
 }
 
-void BattleState::OptionSelectLayer::OnActivate()
+void BattleState::OptionSelectLayer::OnActivate(const BattleBeginContext& ctx)
 {
-	UILayer::OnActivate();
+	UILayer::OnActivate(ctx);
 
 	OnSelectedOptionChanged(eSelectedOption::Fight);
 }
@@ -343,15 +340,17 @@ void BattleState::RunLayer::OnNavigateButtonPressed(eInputs button)
 
 void BattleState::RunLayer::OnSelectButtonPressed()
 {
-	game_events::OnBattleEnd.Fire({
-		.m_LevelHash = m_battleContext.m_LevelHash,
-		.m_PlayerPosition = m_battleContext.m_PlayerPosition,
-	});
+	game_events::OnBattleEnd.Fire(m_endContext);
 }
 
-void BattleState::RunLayer::OnActivate()
+void BattleState::RunLayer::OnActivate(const BattleBeginContext& ctx)
 {
-	UILayer::OnActivate();
+	UILayer::OnActivate(ctx);
+
+	m_endContext = {
+		.m_LevelHash = ctx.m_LevelHash,
+		.m_PlayerPosition = ctx.m_PlayerPosition,
+	};
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
@@ -361,7 +360,8 @@ void BattleState::RunLayer::OnActivate()
 
 	optionsUI->OnDeactivate();
 
-	DialogueBox::SetText("%s got away safely!\n", STRINGTABLE->GetString(HASH("CHARACTER"), HASH("PLAYER_NAME")).c_str());
+	DialogueBox::SetText("%s got away safely!\n",
+	                     STRINGTABLE->GetString(HASH("CHARACTER"), HASH("PLAYER_NAME")).c_str());
 	DialogueBox::SetVisible(true);
 }
 
