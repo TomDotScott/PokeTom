@@ -67,7 +67,7 @@ namespace attacking_maps
 		bool isSuperEffective = false;
 		bool isNotVeryEffective = false;
 
-		for (unsigned i = 1; i <= NUM_TYPES; ++i)
+		for (unsigned i = 0; i <= NUM_TYPES; ++i)
 		{
 			const uint32_t bit = (1u << i);
 
@@ -181,7 +181,7 @@ namespace defending_maps
 		bool isWeak = false;
 		bool isResistant = false;
 
-		for (int i = 1; i <= 18; ++i)
+		for (int i = 0; i <= NUM_TYPES; ++i)
 		{
 			const uint32_t bit = (1u << i);
 			if (!(defender & bit))
