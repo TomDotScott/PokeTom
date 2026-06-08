@@ -6,6 +6,7 @@
 #include "MoveComponent.h"
 #include "../Engine/IGameState.h"
 #include "../Engine/Input/InputMapper.h"
+#include "BattleUI/UILayer.h"
 
 
 class PocketMonsterEntity;
@@ -20,6 +21,12 @@ public:
 	void Update(float deltaTime) override;
 	void Render(sf::RenderWindow& window) const override;
 
+	GameContext& GetGameContext() const;
+	const BattleBeginContext& GetBattleContext() const;
+
+	entity_id_t GetPlayerMonsterEntityID() const;
+	entity_id_t GetOpponentMonsterEntityID() const;
+
 private:
 	GameContext& m_gameContext;
 	BattleBeginContext m_battleContext;
@@ -29,156 +36,13 @@ private:
 
 	bool m_isInBattleLoop;
 
-	enum eUILayer : uint8_t
-	{
-		OptionSelect,
-		MoveSelect,
-		MonsterSelect,
-		ItemSelect,
-		BattleLoop,
-		QuitBattle,
-		COUNT
-	};
-
-	eUILayer m_currentUILayer;
-
-	enum eInputs : uint8_t
-	{
-		SELECT = 1 << 0,
-		UP = 1 << 1,
-		DOWN = 1 << 2,
-		LEFT = 1 << 3,
-		RIGHT = 1 << 4,
-	};
+	eUILayerType m_currentUILayer;
 
 	InputMapper m_inputMapper;
 
-	class UILayer
-	{
-	public:
-		UILayer();
-		bool IsFinished() const;
-		virtual void OnNavigateButtonPressed(eInputs button) = 0;
-		virtual void OnSelectButtonPressed() = 0;
-		virtual void Update(float deltaTime);
-		virtual ~UILayer() = default;
+	std::array<std::unique_ptr<UILayer>, eUILayerType::COUNT> m_UILayers;
 
-		struct LayerResult
-		{
-			eUILayer m_NextLayer;
-			std::optional<uint8_t> m_ChosenMoveIndex; // 0-3
-		};
-
-		virtual LayerResult GetLayerResult() const = 0;
-
-		virtual void OnActivate(const BattleState& state, const LayerResult& prevLayerResult);
-		virtual void OnDeactivate();
-	protected:
-		bool m_finished;
-	};
-
-	class OptionSelectLayer final : public UILayer
-	{
-	public:
-		OptionSelectLayer();
-		LayerResult GetLayerResult() const override;
-		void OnNavigateButtonPressed(eInputs button) override;
-		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
-		void OnDeactivate() override;
-
-	private:
-		enum class eSelectedOption : uint8_t
-		{
-			Fight,
-			Monsters,
-			Bag,
-			Run
-		};
-
-		eSelectedOption m_selectedOption;
-
-		void OnSelectedOptionChanged(eSelectedOption newOption);
-	};
-
-	class FightLayer final : public UILayer
-	{
-	public:
-		FightLayer();
-		LayerResult GetLayerResult() const override;
-		void OnNavigateButtonPressed(eInputs button) override;
-		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
-		void OnDeactivate() override;
-
-	private:
-		PocketMonsterEntity* m_playerMonster;
-		PocketMonsterEntity* m_opponentMonster;
-
-		std::array<bool, MOVE_COUNT> m_validMoves;
-
-		enum class eSelection : uint8_t
-		{
-			Move1,
-			Move2,
-			Move3,
-			Move4
-		};
-		eSelection m_selectedMove;
-
-		void OnSelectedMoveChanged(eSelection newMove);
-	};
-
-	class RunLayer final : public UILayer
-	{
-	public:
-		RunLayer();
-		LayerResult GetLayerResult() const override;
-		void OnNavigateButtonPressed(eInputs button) override;
-		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
-		void OnDeactivate() override;
-
-	private:
-		BattleEndContext m_endContext;
-	};
-
-	class BattleLoopLayer final : public UILayer
-	{
-	public:
-		BattleLoopLayer();
-		LayerResult GetLayerResult() const override;
-		void OnSelectButtonPressed() override;
-		void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
-		void OnDeactivate() override;
-		void OnNavigateButtonPressed(eInputs button) override;
-
-	private:
-		PocketMonsterEntity* m_playerMonster;
-		PocketMonsterEntity* m_opponentMonster;
-
-		uint8_t m_playerChosenMoveIdx;
-
-		enum class eBattleFlow
-		{
-			PlayerSwitch,
-			OpponentSwitch,
-			PlayerMoveName,
-			PlayerMoveEffectiveness,
-			OpponentFaintOrSwitch,
-			OpponentMoveName,
-			OpponentMoveEffectiveness,
-			PlayerFaint
-		};
-
-		eBattleFlow m_currentState;
-
-		void TransitionToFlowState(eBattleFlow state);
-	};
-
-	std::array<std::unique_ptr<UILayer>, eUILayer::COUNT> m_UILayers;
-
-	void OnNavigateButtonPressed(eInputs button) const;
+	void OnNavigateButtonPressed(eUILayerNavigateButtons button) const;
 	void OnSelectButtonPressed() const;
 	void TriggerBattleLoop(uint8_t chosenPlayerMoveIdx);
 };
