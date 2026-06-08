@@ -30,16 +30,17 @@ bool MoveComponent::CanUseMove(const uint8_t moveIdx) const
 	return m_moves[moveIdx].GetPPRemaining() > 0;
 }
 
-bool MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
+eTypeEffectiveness MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
 {
 	ASSERT(m_owner != nullptr);
 
 	if (CanUseMove(moveIdx))
 	{
-		m_moves[moveIdx].Use(*m_owner, target);
+		return m_moves[moveIdx].Use(*m_owner, target);
 	}
 
-	return false;
+	ASSERT(false);
+	return eTypeEffectiveness::Effective;
 }
 
 Move& MoveComponent::GetMove(const uint8_t moveIdx)

@@ -110,7 +110,7 @@ public:
 	     const std::optional<StatChange>& statChange
 	);
 
-	void Use(Entity& attacker, Entity& defender);
+	eTypeEffectiveness Use(Entity& attacker, Entity& defender);
 
 	unsigned GetPPRemaining() const;
 

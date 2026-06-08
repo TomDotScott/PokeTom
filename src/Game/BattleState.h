@@ -44,7 +44,6 @@ private:
 
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) const;
 	void OnSelectButtonPressed() const;
-	void TriggerBattleLoop(uint8_t chosenPlayerMoveIdx);
 };
 
 #endif // BATTLESTATE_H

@@ -14,7 +14,7 @@ public:
 	void Update(float deltaTime) override;
 
 	bool CanUseMove(uint8_t moveIdx) const;
-	bool UseMove(uint8_t moveIdx, Entity& target);
+	eTypeEffectiveness UseMove(uint8_t moveIdx, Entity& target);
 
 	Move& GetMove(uint8_t moveIdx);
 	const Move& GetMove(uint8_t moveIdx) const;

@@ -7,18 +7,18 @@
 
 
 Move::Move(const uint32_t id,
-		   hash_type stringTableID,
-		   hash_type descriptionStringTableID,
-		   const monster_type type,
-		   const eMoveCategory category,
-		   const unsigned powerPoints,
-		   const int priority,
-		   const eMoveTarget target,
-		   const eEffectCategory effectCategory,
-		   const std::optional<unsigned int>& power,
-		   const std::optional<uint8_t>& accuracy,
-		   const std::optional<MoveStatus>& status,
-		   const std::optional<StatChange>& statChange) :
+           hash_type stringTableID,
+           hash_type descriptionStringTableID,
+           const monster_type type,
+           const eMoveCategory category,
+           const unsigned powerPoints,
+           const int priority,
+           const eMoveTarget target,
+           const eEffectCategory effectCategory,
+           const std::optional<unsigned int>& power,
+           const std::optional<uint8_t>& accuracy,
+           const std::optional<MoveStatus>& status,
+           const std::optional<StatChange>& statChange) :
 	m_valid{ true },
 	m_id(id),
 	m_stringTableID(stringTableID),
@@ -37,22 +37,25 @@ Move::Move(const uint32_t id,
 	ASSERT(m_valid);
 }
 
-void Move::Use(Entity& attacker, Entity& defender)
+eTypeEffectiveness Move::Use(Entity& attacker, Entity& defender)
 {
 	ASSERT(m_valid);
 
 	PocketMonsterEntity* attackerMonster = dynamic_cast<PocketMonsterEntity*>(&attacker);
 	ASSERT(attackerMonster != nullptr);
 
+	/* TODO: S.T.A.B! */
+
 	PocketMonsterEntity* defenderMonster = dynamic_cast<PocketMonsterEntity*>(&defender);
 	ASSERT(defenderMonster != nullptr);
 
-	monster_type attkType = defenderMonster->GetType();
+	monster_type attkType = m_type;
 	monster_type defType = defenderMonster->GetType();
 
 	eTypeEffectiveness effectiveness = CalculateEffectiveness(attkType, defType, true);
 
-	std::cout << attackerMonster->GetNameStringID() << " used " << m_stringTableID << " and it was " << magic_enum::enum_name(effectiveness) << "\n";
+	m_powerPoints--;
+	return effectiveness;
 }
 
 unsigned Move::GetPPRemaining() const

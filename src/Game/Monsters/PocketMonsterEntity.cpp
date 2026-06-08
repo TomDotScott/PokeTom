@@ -90,3 +90,10 @@ std::string PocketMonsterEntity::GetMoveName(const uint8_t moveIdx)
 
 	return STRINGTABLE->GetString(HASH("MOVE"), move.GetNameStringTableID());
 }
+
+bool PocketMonsterEntity::IsFainted() const
+{
+	const MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
+	ASSERT(msc != nullptr);
+	return msc->IsFainted();
+}

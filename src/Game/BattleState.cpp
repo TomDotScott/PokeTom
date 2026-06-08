@@ -13,10 +13,10 @@
 #include "BattleUI/RunAwayLayer.h"
 #include "Monsters/PocketMonsterEntity.h"
 
-BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext):
+BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext) :
 	m_gameContext(gameContext),
-	m_currentUILayer(OptionSelect),
-	m_isInBattleLoop(false)
+	m_isInBattleLoop(false),
+	m_currentUILayer(OptionSelect)
 {
 	m_battleContext = battleContext;
 
@@ -147,11 +147,6 @@ void BattleState::Update(const float deltaTime)
 
 		const UILayer::LayerResult currentLayerResult = currentLayer->GetLayerResult();
 
-		if (m_currentUILayer == MoveSelect && currentLayerResult.m_NextLayer == BattleLoop)
-		{
-			TriggerBattleLoop(currentLayerResult.m_ChosenMoveIndex.value());
-		}
-
 		m_currentUILayer = currentLayerResult.m_NextLayer;
 
 		ASSERT(m_UILayers[m_currentUILayer] != nullptr);
@@ -199,7 +194,6 @@ entity_id_t BattleState::GetOpponentMonsterEntityID() const
 	return m_opponentMonsterEntityID;
 }
 
-
 void BattleState::OnNavigateButtonPressed(const eUILayerNavigateButtons button) const
 {
 	m_UILayers[m_currentUILayer]->OnNavigateButtonPressed(button);
@@ -208,29 +202,4 @@ void BattleState::OnNavigateButtonPressed(const eUILayerNavigateButtons button) 
 void BattleState::OnSelectButtonPressed() const
 {
 	m_UILayers[m_currentUILayer]->OnSelectButtonPressed();
-}
-
-void BattleState::TriggerBattleLoop(const uint8_t chosenPlayerMoveIdx)
-{
-	ASSERT(chosenPlayerMoveIdx < MOVE_COUNT);
-
-	PocketMonsterEntity* playerMonster = m_gameContext.m_Entities.Get<PocketMonsterEntity>(m_playerMonsterEntityID);
-	PocketMonsterEntity* opponentMonster = m_gameContext.m_Entities.Get<PocketMonsterEntity>(m_opponentMonsterEntityID);
-
-	ASSERT(playerMonster != nullptr);
-	ASSERT(opponentMonster != nullptr);
-
-	auto* playerMoveComponent = playerMonster->GetComponent<MoveComponent>();
-	ASSERT(playerMoveComponent);
-	if (playerMoveComponent->CanUseMove(chosenPlayerMoveIdx))
-	{
-		playerMoveComponent->UseMove(chosenPlayerMoveIdx, *opponentMonster);
-	}
-
-	auto* opponentMoveComponent = opponentMonster->GetComponent<MoveComponent>();
-	ASSERT(opponentMoveComponent);
-	if (opponentMoveComponent->CanUseMove(chosenPlayerMoveIdx))
-	{
-		opponentMoveComponent->UseMove(chosenPlayerMoveIdx, *playerMonster);
-	}
 }

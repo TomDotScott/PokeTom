@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "UILayer.h"
+#include "../Monsters/MonsterTypes.h"
 
 class PocketMonsterEntity;
 
@@ -23,13 +24,16 @@ private:
 
 	uint8_t m_playerChosenMoveIdx;
 
+	bool m_playerSwitchedOut;
+	bool m_opponentSwitchedOut;
+
 	enum class eBattleFlow
 	{
 		PlayerSwitch,
 		OpponentSwitch,
 		PlayerMoveName,
 		PlayerMoveEffectiveness,
-		OpponentFaintOrSwitch,
+		OpponentFaint,
 		OpponentMoveName,
 		OpponentMoveEffectiveness,
 		PlayerFaint
@@ -38,5 +42,6 @@ private:
 	eBattleFlow m_currentState;
 
 	void TransitionToFlowState(eBattleFlow state);
+	eTypeEffectiveness UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender) const;
 };
 #endif // BATTLELOOPLAYER_H

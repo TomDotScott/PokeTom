@@ -23,6 +23,8 @@ public:
 
 	std::string GetMoveName(uint8_t moveIdx);
 
+	bool IsFainted() const;
+
 private:
 	PocketMonster m_monsterInfo;
 
