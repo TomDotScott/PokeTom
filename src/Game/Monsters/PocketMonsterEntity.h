@@ -21,6 +21,8 @@ public:
 
 	monster_type GetType() const;
 
+	std::string GetMoveName(uint8_t moveIdx);
+
 private:
 	PocketMonster m_monsterInfo;
 

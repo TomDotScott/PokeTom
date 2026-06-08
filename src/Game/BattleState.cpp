@@ -13,7 +13,8 @@ constexpr static auto MOVES_PANEL_NAME = "MOVE_OPTIONS";
 
 BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext):
 	m_gameContext(gameContext),
-	m_currentUILayer(OptionSelect)
+	m_currentUILayer(OptionSelect),
+	m_isInBattleLoop(false)
 {
 	m_battleContext = battleContext;
 
@@ -22,6 +23,7 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 		std::make_unique<FightLayer>(),
 		nullptr,
 		nullptr,
+		std::make_unique<BattleLoopLayer>(),
 		std::make_unique<RunLayer>(),
 	};
 
@@ -98,7 +100,7 @@ void BattleState::OnEnter()
 	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnActivate();
 	DialogueBox::SetVisible(false);
 
-	m_UILayers[m_currentUILayer]->OnActivate(*this);
+	m_UILayers[m_currentUILayer]->OnActivate(*this, UILayer::LayerResult{});
 }
 
 void BattleState::OnExit()
@@ -142,10 +144,16 @@ void BattleState::Update(const float deltaTime)
 		currentLayer->OnDeactivate();
 
 		const UILayer::LayerResult currentLayerResult = currentLayer->GetLayerResult();
+
+		if (m_currentUILayer == MoveSelect && currentLayerResult.m_NextLayer == BattleLoop)
+		{
+			TriggerBattleLoop(currentLayerResult.m_ChosenMoveIndex.value());
+		}
+
 		m_currentUILayer = currentLayerResult.m_NextLayer;
 
 		ASSERT(m_UILayers[m_currentUILayer] != nullptr);
-		m_UILayers[m_currentUILayer]->OnActivate(*this);
+		m_UILayers[m_currentUILayer]->OnActivate(*this, currentLayerResult);
 	}
 }
 
@@ -182,7 +190,7 @@ void BattleState::UILayer::Update(float /*deltaTime*/)
 {
 }
 
-void BattleState::UILayer::OnActivate(const BattleState& /*ctx*/)
+void BattleState::UILayer::OnActivate(const BattleState& /*ctx*/, const LayerResult& /*prevLayerResult*/)
 {
 	m_finished = false;
 }
@@ -264,9 +272,9 @@ void BattleState::OptionSelectLayer::OnSelectButtonPressed()
 	m_finished = true;
 }
 
-void BattleState::OptionSelectLayer::OnActivate(const BattleState& state)
+void BattleState::OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
-	UILayer::OnActivate(state);
+	UILayer::OnActivate(state, prevLayerResult);
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
@@ -350,7 +358,10 @@ BattleState::FightLayer::FightLayer() :
 
 BattleState::UILayer::LayerResult BattleState::FightLayer::GetLayerResult() const
 {
-	return { .m_NextLayer = OptionSelect, .m_ChosenMoveID = 41 };
+	return {
+		.m_NextLayer = BattleLoop,
+		.m_ChosenMoveIndex = static_cast<uint8_t>(m_selectedMove),
+	};
 }
 
 void BattleState::FightLayer::OnNavigateButtonPressed(const eInputs button)
@@ -423,28 +434,16 @@ void BattleState::FightLayer::OnNavigateButtonPressed(const eInputs button)
 void BattleState::FightLayer::OnSelectButtonPressed()
 {
 	ASSERT(this->m_playerMonster != nullptr);
-	ASSERT(this->m_opponentMonster != nullptr);
 
-	auto* playerMoveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	const MoveComponent* playerMoveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
 	ASSERT(playerMoveComponent);
-	if (playerMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove)))
-	{
-		playerMoveComponent->UseMove(static_cast<uint8_t>(m_selectedMove), *this->m_opponentMonster);
-	}
 
-	auto* opponentMoveComponent = this->m_opponentMonster->GetComponent<MoveComponent>();
-	ASSERT(opponentMoveComponent);
-	if (opponentMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove)))
-	{
-		opponentMoveComponent->UseMove(static_cast<uint8_t>(m_selectedMove), *this->m_playerMonster);
-	}
-
-	m_finished = true;
+	m_finished = playerMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove));
 }
 
-void BattleState::FightLayer::OnActivate(const BattleState& state)
+void BattleState::FightLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
-	UILayer::OnActivate(state);
+	UILayer::OnActivate(state, prevLayerResult);
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
@@ -578,9 +577,9 @@ void BattleState::RunLayer::OnSelectButtonPressed()
 	game_events::OnBattleEnd.Fire(m_endContext);
 }
 
-void BattleState::RunLayer::OnActivate(const BattleState& state)
+void BattleState::RunLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
-	UILayer::OnActivate(state);
+	UILayer::OnActivate(state, prevLayerResult);
 
 	m_endContext = {
 		.m_LevelHash = state.m_battleContext.m_LevelHash,
@@ -609,6 +608,138 @@ void BattleState::RunLayer::OnDeactivate()
 	battleUI->OnDeactivate();
 }
 
+BattleState::BattleLoopLayer::BattleLoopLayer() :
+	m_playerMonster(nullptr),
+	m_opponentMonster(nullptr),
+	m_playerChosenMoveIdx(0xFF),
+	m_currentState(eBattleFlow::PlayerSwitch)
+{
+}
+
+BattleState::UILayer::LayerResult BattleState::BattleLoopLayer::GetLayerResult() const
+{
+	return { .m_NextLayer = OptionSelect };
+}
+
+void BattleState::BattleLoopLayer::OnSelectButtonPressed()
+{
+	switch (m_currentState)
+	{
+	case eBattleFlow::PlayerSwitch:
+		TransitionToFlowState(eBattleFlow::PlayerMoveName);
+		break;
+	case eBattleFlow::OpponentSwitch:
+		TransitionToFlowState(eBattleFlow::PlayerMoveName);
+		break;
+	case eBattleFlow::PlayerMoveName:
+		TransitionToFlowState(eBattleFlow::PlayerMoveEffectiveness);
+		break;
+	case eBattleFlow::PlayerMoveEffectiveness:
+		TransitionToFlowState(eBattleFlow::OpponentFaintOrSwitch);
+		break;
+	case eBattleFlow::OpponentFaintOrSwitch:
+		TransitionToFlowState(eBattleFlow::OpponentMoveName);
+		break;
+	case eBattleFlow::OpponentMoveName:
+		TransitionToFlowState(eBattleFlow::OpponentMoveEffectiveness);
+		break;
+	case eBattleFlow::OpponentMoveEffectiveness:
+		TransitionToFlowState(eBattleFlow::PlayerFaint);
+		break;
+	case eBattleFlow::PlayerFaint:
+		m_finished = true;
+		break;
+	}
+}
+
+void BattleState::BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
+{
+	UILayer::OnActivate(state, prevLayerResult);
+
+	ASSERT(prevLayerResult.m_ChosenMoveIndex.has_value());
+	this->m_playerChosenMoveIdx = prevLayerResult.m_ChosenMoveIndex.value();
+
+	this->m_playerMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_playerMonsterEntityID);
+	ASSERT(this->m_playerMonster != nullptr);
+
+	this->m_opponentMonster = state.m_gameContext.m_Entities.Get<PocketMonsterEntity>(state.m_opponentMonsterEntityID);
+	ASSERT(this->m_opponentMonster != nullptr);
+
+	bool hasPlayerSwitched = false;
+	bool hasOpponentSwitched = false;
+
+	if (hasPlayerSwitched)
+	{
+		TransitionToFlowState(eBattleFlow::PlayerSwitch);
+	}
+	else if (hasOpponentSwitched)
+	{
+		TransitionToFlowState(eBattleFlow::OpponentSwitch);
+	}
+	else
+	{
+		TransitionToFlowState(eBattleFlow::PlayerMoveName);
+	}
+}
+
+void BattleState::BattleLoopLayer::OnDeactivate()
+{
+	UILayer::OnDeactivate();
+	DialogueBox::SetVisible(false);
+}
+
+void BattleState::BattleLoopLayer::OnNavigateButtonPressed(eInputs button)
+{
+}
+
+void BattleState::BattleLoopLayer::TransitionToFlowState(const eBattleFlow state)
+{
+#if BUILD_DEBUG
+	std::cout << "Transitioning to state " << magic_enum::enum_name(state) << "\n";
+#endif
+
+	DialogueBox::SetVisible(true);
+
+	switch (state)
+	{
+	case eBattleFlow::PlayerSwitch:
+		break;
+	case eBattleFlow::OpponentSwitch:
+		break;
+	case eBattleFlow::PlayerMoveName:
+		{
+			const std::string monsterName = STRINGTABLE->GetString(
+				"MONSTER_NAME",
+				m_playerMonster->GetNameStringID()
+			);
+
+			const std::string moveName = m_playerMonster->GetMoveName(m_playerChosenMoveIdx);
+
+			const std::string text = STRINGTABLE->GetDynamicString(
+				HASH("PLAYER_MOVE_NAME"),
+				monsterName,
+				moveName
+			);
+
+			DialogueBox::SetText(text.c_str());
+		}
+		break;
+	case eBattleFlow::PlayerMoveEffectiveness:
+		break;
+	case eBattleFlow::OpponentFaintOrSwitch:
+		break;
+	case eBattleFlow::OpponentMoveName:
+		break;
+	case eBattleFlow::OpponentMoveEffectiveness:
+		break;
+	case eBattleFlow::PlayerFaint:
+		break;
+	}
+
+	m_currentState = state;
+}
+
+
 void BattleState::OnNavigateButtonPressed(const eInputs button) const
 {
 	m_UILayers[m_currentUILayer]->OnNavigateButtonPressed(button);
@@ -617,4 +748,29 @@ void BattleState::OnNavigateButtonPressed(const eInputs button) const
 void BattleState::OnSelectButtonPressed() const
 {
 	m_UILayers[m_currentUILayer]->OnSelectButtonPressed();
+}
+
+void BattleState::TriggerBattleLoop(const uint8_t chosenPlayerMoveIdx)
+{
+	ASSERT(chosenPlayerMoveIdx < MOVE_COUNT);
+
+	PocketMonsterEntity* playerMonster = m_gameContext.m_Entities.Get<PocketMonsterEntity>(m_playerMonsterEntityID);
+	PocketMonsterEntity* opponentMonster = m_gameContext.m_Entities.Get<PocketMonsterEntity>(m_opponentMonsterEntityID);
+
+	ASSERT(playerMonster != nullptr);
+	ASSERT(opponentMonster != nullptr);
+
+	auto* playerMoveComponent = playerMonster->GetComponent<MoveComponent>();
+	ASSERT(playerMoveComponent);
+	if (playerMoveComponent->CanUseMove(chosenPlayerMoveIdx))
+	{
+		playerMoveComponent->UseMove(chosenPlayerMoveIdx, *opponentMonster);
+	}
+
+	auto* opponentMoveComponent = opponentMonster->GetComponent<MoveComponent>();
+	ASSERT(opponentMoveComponent);
+	if (opponentMoveComponent->CanUseMove(chosenPlayerMoveIdx))
+	{
+		opponentMoveComponent->UseMove(chosenPlayerMoveIdx, *playerMonster);
+	}
 }

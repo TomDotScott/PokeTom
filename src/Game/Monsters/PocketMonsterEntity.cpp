@@ -4,6 +4,7 @@
 #include "../MoveComponent.h"
 #include "../MoveManager.h"
 #include "../../Engine/Asserts.h"
+#include "../../Engine/Stringtable.h"
 
 
 namespace
@@ -14,7 +15,7 @@ namespace
 
 
 PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t level,
-										 EntityAnimationComponent::eAnimationName initialAnim) :
+                                         EntityAnimationComponent::eAnimationName initialAnim) :
 	m_monsterInfo(PocketMonsterManager::Get()->GetMonsterDetails(monsterID)),
 	m_currentLevel(level)
 {
@@ -38,9 +39,10 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
 	};
 
-	AddComponent<MonsterStatComponent>(MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
+	AddComponent<MonsterStatComponent>(
+		MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
 
-	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, ~0U, ~0U});
+	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, ~0U, ~0U });
 
 
 	std::string dictName = "MONSTER_" + std::to_string(monsterID) + "_BATTLE";
@@ -75,4 +77,16 @@ uint8_t PocketMonsterEntity::GetLevel() const
 monster_type PocketMonsterEntity::GetType() const
 {
 	return m_monsterInfo.GetType();
+}
+
+std::string PocketMonsterEntity::GetMoveName(const uint8_t moveIdx)
+{
+	ASSERT(moveIdx < MOVE_COUNT);
+	auto* moveComponent = GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+
+	const Move& move = moveComponent->GetMove(moveIdx);
+	ASSERT(move.IsValid());
+
+	return STRINGTABLE->GetString(HASH("MOVE"), move.GetNameStringTableID());
 }
