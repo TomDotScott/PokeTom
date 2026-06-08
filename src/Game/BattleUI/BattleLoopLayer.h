@@ -23,6 +23,7 @@ private:
 	PocketMonsterEntity* m_opponentMonster;
 
 	uint8_t m_playerChosenMoveIdx;
+	uint8_t m_opponentChosenMoveIdx;
 
 	bool m_playerSwitchedOut;
 	bool m_opponentSwitchedOut;
@@ -42,6 +43,10 @@ private:
 	eBattleFlow m_currentState;
 
 	void TransitionToFlowState(eBattleFlow state);
+	void ShowMoveNameText(const PocketMonsterEntity* monster, uint8_t moveIdx) const;
+	void ShowFaintText(const PocketMonsterEntity* monster) const;
+	void ShowEffectivenessText(eTypeEffectiveness effectiveness) const;
 	eTypeEffectiveness UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender) const;
+	eBattleFlow GetNextFlowState() const;
 };
 #endif // BATTLELOOPLAYER_H

@@ -21,7 +21,7 @@ public:
 
 	monster_type GetType() const;
 
-	std::string GetMoveName(uint8_t moveIdx);
+	std::string GetMoveName(uint8_t moveIdx) const;
 
 	bool IsFainted() const;
 
