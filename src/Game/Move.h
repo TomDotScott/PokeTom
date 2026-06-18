@@ -110,7 +110,15 @@ public:
 	     const std::optional<StatChange>& statChange
 	);
 
-	eTypeEffectiveness Use(Entity& attacker, Entity& defender);
+	struct Outcome
+	{
+		bool m_MoveMissed;
+		bool m_IsCriticalHit;
+		uint16_t m_Damage;
+		float m_TypeMultiplier;
+	};
+
+	Outcome Use(Entity& attacker, Entity& defender);
 
 	unsigned GetPPRemaining() const;
 

@@ -59,15 +59,13 @@ namespace attacking_maps
 		{ DRAGON, FAIRY }
 	};
 
-	constexpr static eTypeEffectiveness CalculateEffectiveness(const monster_type attacker, const monster_type defender)
+	constexpr static float CalculateEffectiveness(const monster_type attacker, const monster_type defender)
 	{
 		const eTypeFlags attackType = static_cast<eTypeFlags>(attacker);
 
-		bool isImmune = false;
-		bool isSuperEffective = false;
-		bool isNotVeryEffective = false;
+		float multiplier = 1.f;
 
-		for (unsigned i = 0; i <= NUM_TYPES; ++i)
+		for (unsigned i = 0; i < NUM_TYPES; ++i)
 		{
 			const uint32_t bit = (1u << i);
 
@@ -78,42 +76,21 @@ namespace attacking_maps
 
 			if (IMMUNE.contains(attackType) && (IMMUNE.at(attackType) & bit))
 			{
-				isImmune = true;
-				break;
+				return 0.f;
 			}
 
-			if (SUPER_EFFECTIVE.contains(attackType) && (SUPER_EFFECTIVE.at(attackType)
-				& bit))
+			if (SUPER_EFFECTIVE.contains(attackType) && (SUPER_EFFECTIVE.at(attackType) & bit))
 			{
-				isSuperEffective = true;
-				continue;
+				multiplier *= 2.f;
 			}
 
-			if (NOT_VERY_EFFECTIVE.contains(attackType) && (NOT_VERY_EFFECTIVE.
-				at(attackType) & bit))
+			if (NOT_VERY_EFFECTIVE.contains(attackType) && (NOT_VERY_EFFECTIVE.at(attackType) & bit))
 			{
-				isNotVeryEffective = true;
-				continue;
+				multiplier *= 0.5f;
 			}
 		}
 
-		if (isImmune)
-		{
-			return eTypeEffectiveness::Immune;
-		}
-		if (isSuperEffective && isNotVeryEffective)
-		{
-			return eTypeEffectiveness::Effective;
-		}
-		if (isSuperEffective)
-		{
-			return eTypeEffectiveness::SuperEffective;
-		}
-		if (isNotVeryEffective)
-		{
-			return eTypeEffectiveness::NotVeryEffective;
-		}
-		return eTypeEffectiveness::Effective;
+		return multiplier;
 	}
 }
 
@@ -173,15 +150,13 @@ namespace defending_maps
 		{ FAIRY, DRAGON }
 	};
 
-	constexpr static eTypeEffectiveness CalculateEffectiveness(const monster_type defender, const monster_type attacker)
+	constexpr static float CalculateEffectiveness(const monster_type defender, const monster_type attacker)
 	{
 		const eTypeFlags attackType = static_cast<eTypeFlags>(attacker);
 
-		bool isImmune = false;
-		bool isWeak = false;
-		bool isResistant = false;
+		float multiplier = 1.f;
 
-		for (int i = 0; i <= NUM_TYPES; ++i)
+		for (unsigned i = 0; i < NUM_TYPES; ++i)
 		{
 			const uint32_t bit = (1u << i);
 			if (!(defender & bit))
@@ -193,46 +168,31 @@ namespace defending_maps
 
 			if (IMMUNE.contains(defType) && (IMMUNE.at(defType) & attackType))
 			{
-				isImmune = true;
-				break;
+				return 0.f;
 			}
 
 			if (WEAK.contains(defType) && (WEAK.at(defType) & attackType))
 			{
-				isWeak = true;
+				multiplier *= 2.f;
 			}
 
 			if (RESISTANT.contains(defType) && (RESISTANT.at(defType) & attackType))
 			{
-				isResistant = true;
+				multiplier *= 0.5f;
 			}
 		}
 
-		if (isImmune)
-		{
-			return eTypeEffectiveness::Immune;
-		}
-		if (isWeak && isResistant)
-		{
-			return eTypeEffectiveness::Effective;
-		}
-		if (isWeak)
-		{
-			return eTypeEffectiveness::SuperEffective;
-		}
-		if (isResistant)
-		{
-			return eTypeEffectiveness::NotVeryEffective;
-		}
-
-		return eTypeEffectiveness::Effective;
+		return multiplier;
 	}
 }
 
 
-constexpr eTypeEffectiveness CalculateEffectiveness(const monster_type attacker, const monster_type defender, const bool isAttacking)
+constexpr float CalculateAttackingEffectiveness(const monster_type attacker, const monster_type defender)
 {
-	return isAttacking
-		       ? attacking_maps::CalculateEffectiveness(attacker, defender)
-		       : defending_maps::CalculateEffectiveness(defender, attacker);
+	return attacking_maps::CalculateEffectiveness(attacker, defender);
+}
+
+constexpr float CalculateDefendingEffectiveness(const monster_type attacker, const monster_type defender)
+{
+	return defending_maps::CalculateEffectiveness(defender, attacker);
 }

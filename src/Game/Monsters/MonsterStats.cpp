@@ -22,21 +22,33 @@ MonsterStats::MonsterStats(
 {
 }
 
+void MonsterStats::TakeDamage(const uint16_t damage)
+{
+	if (damage > m_HP)
+	{
+		m_HP = 0;
+	}
+	else
+	{
+		m_HP -= damage;
+	}
+}
+
 void MonsterStats::Log() const
 {
 	std::cout << "Monster Stats:\n"
-	"- HP: " << m_HP <<
-	"\n- Attack: " << m_Attack <<
-	"\n- Defense: " << m_Defense <<
-	"\n- SpAttack: " << m_SpAttack <<
-	"\n- SpDefense: " << m_SpDefense <<
-	"\n- Speed: " << m_Speed << "\n";
+		"- HP: " << m_HP <<
+		"\n- Attack: " << m_Attack <<
+		"\n- Defense: " << m_Defense <<
+		"\n- SpAttack: " << m_SpAttack <<
+		"\n- SpDefense: " << m_SpDefense <<
+		"\n- Speed: " << m_Speed << "\n";
 }
 
 MonsterStats MonsterStats::GetNextStat(const MonsterStats base,
-									   const uint8_t level,
-									   const std::array<unsigned char, STAT_COUNT>& EVs,
-									   const std::array<unsigned char, STAT_COUNT>& IVs)
+                                       const uint8_t level,
+                                       const std::array<unsigned char, STAT_COUNT>& EVs,
+                                       const std::array<unsigned char, STAT_COUNT>& IVs)
 {
 	return {
 		GetNextStat(base, eStat::HP, level, EVs, IVs),
@@ -49,10 +61,10 @@ MonsterStats MonsterStats::GetNextStat(const MonsterStats base,
 }
 
 uint16_t MonsterStats::GetNextStat(const MonsterStats base,
-								   const eStat stat,
-								   const uint8_t level,
-								   const std::array<unsigned char, STAT_COUNT>& EVs,
-								   const std::array<unsigned char, STAT_COUNT>& IVs)
+                                   const eStat stat,
+                                   const uint8_t level,
+                                   const std::array<unsigned char, STAT_COUNT>& EVs,
+                                   const std::array<unsigned char, STAT_COUNT>& IVs)
 {
 	const size_t idx = static_cast<size_t>(stat);
 
@@ -131,4 +143,9 @@ bool MonsterStatComponent::IsFainted() const
 MonsterStats& MonsterStatComponent::GetStats()
 {
 	return m_stats;
+}
+
+void MonsterStatComponent::TakeDamage(const uint16_t damage)
+{
+	m_stats.TakeDamage(damage);
 }

@@ -94,3 +94,8 @@ bool PocketMonsterEntity::IsFainted() const
 	ASSERT(msc != nullptr);
 	return msc->IsFainted();
 }
+
+void PocketMonsterEntity::TakeDamage(const uint16_t damage)
+{
+	GetStats().TakeDamage(damage);
+}

@@ -33,17 +33,10 @@ struct magic_enum::customize::enum_range<eTypeFlags>
 
 inline constexpr unsigned NUM_TYPES = 18;
 
-enum class eTypeEffectiveness : uint8_t
-{
-	Immune,               // 0x damage
-	NotVeryEffective,     // 0.5x damage
-	Effective,            // 1x damage
-	SuperEffective,       // 2x damage
-};
-
 // eTypeFlags make up the latter 18 bits of the int
 using monster_type = uint32_t;
 
-extern constexpr eTypeEffectiveness CalculateEffectiveness(monster_type attacker, monster_type defender, bool isAttacking);
+extern constexpr float CalculateAttackingEffectiveness(monster_type attacker, monster_type defender);
+extern constexpr float CalculateDefendingEffectiveness(monster_type attacker, monster_type defender);
 
 #endif

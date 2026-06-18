@@ -7,7 +7,7 @@
 
 MoveComponent::MoveComponent(Entity* owner, const std::array<uint32_t, MOVE_COUNT>& moves) :
 	m_owner{ owner },
-	m_moves{ }
+	m_moves{}
 {
 	for (size_t i = 0; i < moves.size(); ++i)
 	{
@@ -30,7 +30,7 @@ bool MoveComponent::CanUseMove(const uint8_t moveIdx) const
 	return m_moves[moveIdx].GetPPRemaining() > 0;
 }
 
-eTypeEffectiveness MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
+Move::Outcome MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
 {
 	ASSERT(m_owner != nullptr);
 
@@ -40,7 +40,11 @@ eTypeEffectiveness MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
 	}
 
 	ASSERT(false);
-	return eTypeEffectiveness::Effective;
+	return {
+		.m_IsCriticalHit = false,
+		.m_Damage = 0,
+		.m_TypeMultiplier = 1.f
+	};
 }
 
 Move& MoveComponent::GetMove(const uint8_t moveIdx)

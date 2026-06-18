@@ -5,6 +5,14 @@
 #include "Monsters/PocketMonsterEntity.h"
 #include <iostream>
 
+namespace
+{
+	// Is the move critical? According to u/AxeVice it is a 1/24 chance!
+	RandomRangeGenerator<uint16_t> criticalRNG = RandomRangeGenerator<uint16_t>(1, 24);
+	RandomRangeGenerator<uint16_t> moveRNG = RandomRangeGenerator<uint16_t>(85, 100);
+	RandomRangeGenerator<uint16_t> accuracyRNG = RandomRangeGenerator<uint16_t>(0, 100);
+}
+
 
 Move::Move(const uint32_t id,
            hash_type stringTableID,
@@ -37,25 +45,117 @@ Move::Move(const uint32_t id,
 	ASSERT(m_valid);
 }
 
-eTypeEffectiveness Move::Use(Entity& attacker, Entity& defender)
+Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 {
 	ASSERT(m_valid);
 
 	PocketMonsterEntity* attackerMonster = dynamic_cast<PocketMonsterEntity*>(&attacker);
 	ASSERT(attackerMonster != nullptr);
 
-	/* TODO: S.T.A.B! */
-
 	PocketMonsterEntity* defenderMonster = dynamic_cast<PocketMonsterEntity*>(&defender);
 	ASSERT(defenderMonster != nullptr);
 
-	monster_type attkType = m_type;
-	monster_type defType = defenderMonster->GetType();
+	const monster_type attkType = m_type;
+	const monster_type defType = defenderMonster->GetType();
 
-	eTypeEffectiveness effectiveness = CalculateEffectiveness(attkType, defType, true);
+	// TODO: Calculate this properly - for now, just do RNG based on the numbers!
+	if (m_accuracy.has_value())
+	{
+		if (m_accuracy.value() < accuracyRNG.Next())
+		{
+			return {
+				.m_MoveMissed = true,
+				.m_IsCriticalHit = false,
+				.m_Damage = 0,
+				.m_TypeMultiplier = 0.f
+			};
+		}
+	}
+
+	uint16_t damageDealt = 0;
+	const bool isCriticalHit = criticalRNG.Next() == 1;
+
+	// https://www.bulbapedia.bulbagarden.net/wiki/Damage
+	const float typeMultiplier = CalculateAttackingEffectiveness(attkType, defType);
+	if (typeMultiplier == 0.f)
+	{
+		return {
+			.m_MoveMissed = false,
+			.m_IsCriticalHit = false,
+			.m_Damage = 0,
+			.m_TypeMultiplier = typeMultiplier
+		};
+	}
+
+	if (m_category != eMoveCategory::Status && m_power.has_value())
+	{
+		const float levelModifier = 2.f * static_cast<float>(attackerMonster->GetLevel()) / 5.f + 2.f;
+
+		float attackStat = 1.f;
+		float defenseStat = 1.f;
+
+		if (m_category == eMoveCategory::Physical)
+		{
+			attackStat = attackerMonster->GetStats().m_Attack;
+			defenseStat = defenderMonster->GetStats().m_Defense;
+		}
+		else if (m_category == eMoveCategory::Special)
+		{
+			attackStat = attackerMonster->GetStats().m_SpAttack;
+			defenseStat = defenderMonster->GetStats().m_SpDefense;
+		}
+
+		const float aOverD = attackStat / defenseStat;
+
+		float firstPart = levelModifier * static_cast<float>(m_power.value()) * aOverD / 50.f + 2.f;
+
+		const float targets = 1.f;
+		const float pb = 1.f;
+
+		// TODO:
+		const float weather = 1.f;
+
+		const float critical = isCriticalHit ? 1.5f : 1.0f;
+		const float random = static_cast<float>(moveRNG.Next()) / 100.f;
+		const float stab = m_type & attkType ? 1.5f : 1.0f;
+
+		// TODO:
+		const float burn = 1.f;
+
+		// TODO:
+		const float other = 1.f;
+
+		float damage = firstPart * targets * pb * weather * critical * random * stab * typeMultiplier * burn *
+			other;
+
+		// Round to the nearest integer. If 0, the value is 1.
+		damage = std::round(damage);
+
+		if (damage <= 0.f)
+		{
+			damage = 1.f;
+		}
+
+		damageDealt = static_cast<uint16_t>(damage);
+
+#if BUILD_DEBUG
+		printf("DEALING %u HP of DAMAGE\n", damageDealt);
+#endif
+
+		defenderMonster->TakeDamage(damageDealt);
+	}
+	else
+	{
+		// TODO: Status effects, stat bonuses, etc...
+	}
 
 	m_powerPoints--;
-	return effectiveness;
+	return {
+		.m_MoveMissed = false,
+		.m_IsCriticalHit = isCriticalHit,
+		.m_Damage = damageDealt,
+		.m_TypeMultiplier = typeMultiplier
+	};
 }
 
 unsigned Move::GetPPRemaining() const

@@ -20,9 +20,13 @@ PLAYER_SWITCH_MONSTER,DYNAMIC_STRING,"Go, %1!","","","",""
 OPPONENT_SWITCH_MONSTER,DYNAMIC_STRING,"%1 switched out to %2!","","","",""
 MONSTER_FAINT,DYNAMIC_STRING,"%1 fainted.","","","",""
 MONSTER_MOVE_NAME,DYNAMIC_STRING,"%1 used %2!","","","",""
+MONSTER_ATTACK_MISS,DYNAMIC_STRING,"%1's attack missed!","","","",""
+
+
 MOVE_IMMUNE,BATTLE,"It doesn't seem to affect %1","","","",""
 MOVE_NOT_VERY_EFFECTIVE,BATTLE,"It was not very effective!","","","",""
 MOVE_SUPER_EFFECTIVE,BATTLE,"It was Super Effective!","","","",""
+MOVE_CRITICAL,BATTLE,"It was a Critical Hit!","","","",""
 
 
 

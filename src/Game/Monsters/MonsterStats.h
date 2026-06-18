@@ -30,6 +30,8 @@ struct MonsterStats
 	             uint16_t spDefense,
 	             uint16_t speed);
 
+	void TakeDamage(uint16_t damage);
+
 	void Log() const;
 
 
@@ -74,6 +76,8 @@ public:
 
 	bool IsFainted() const;
 	MonsterStats& GetStats();
+
+	void TakeDamage(uint16_t damage);
 
 private:
 	std::array<int, STAT_COUNT> m_statModifiers;

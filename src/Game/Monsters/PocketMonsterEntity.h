@@ -25,6 +25,8 @@ public:
 
 	bool IsFainted() const;
 
+	void TakeDamage(uint16_t damage);
+
 private:
 	PocketMonster m_monsterInfo;
 

@@ -1,30 +1,21 @@
 #include "BattleLoopLayer.h"
 
 #include <iostream>
-#include <magic_enum.hpp>
 #include <frozen/unordered_map.h>
 
 #include "../BattleState.h"
-#include "../../Engine/UI/UiManager.h"
-#include "../Monsters/PocketMonsterEntity.h"
 #include "../DialogueBox.h"
 #include "../../Engine/Stringtable.h"
+#include "../Monsters/PocketMonsterEntity.h"
 
-constexpr static frozen::unordered_map<eTypeEffectiveness, const char*, 4> EFFECTIVENESS_STRING_IDs = {
-	{ eTypeEffectiveness::Effective, "" },
-	{ eTypeEffectiveness::Immune, "MOVE_IMMUNE" },
-	{ eTypeEffectiveness::NotVeryEffective, "MOVE_NOT_VERY_EFFECTIVE" },
-	{ eTypeEffectiveness::SuperEffective, "MOVE_SUPER_EFFECTIVE" }
-};
+namespace
+{
+	const hash_type MONSTER_NAME_GROUP = HASH("MONSTER_NAME");
+}
 
 BattleLoopLayer::BattleLoopLayer() :
-	m_playerMonster(nullptr),
-	m_opponentMonster(nullptr),
-	m_playerChosenMoveIdx(0xFF),
-	m_opponentChosenMoveIdx(0xFF),
 	m_playerSwitchedOut(false),
-	m_opponentSwitchedOut(false),
-	m_currentState(eBattleFlow::PlayerSwitch)
+	m_opponentSwitchedOut(false)
 {
 }
 
@@ -37,34 +28,73 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 {
 	UILayer::OnActivate(state, prevLayerResult);
 
-	ASSERT(prevLayerResult.m_ChosenMoveIndex.has_value());
-	m_playerChosenMoveIdx = prevLayerResult.m_ChosenMoveIndex.value();
+	DialogueBox::SetVisible(true);
 
-	m_opponentChosenMoveIdx = 0;
+	const EntityRegistry& entities = state.GetGameContext().m_Entities;
 
-	m_playerMonster = state.GetGameContext().m_Entities.Get<PocketMonsterEntity>(
-		state.GetPlayerMonsterEntityID());
-	ASSERT(m_playerMonster != nullptr);
+	PocketMonsterEntity* playerMonster = entities.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
+	ASSERT(playerMonster != nullptr);
 
-	m_opponentMonster = state.GetGameContext().m_Entities.Get<PocketMonsterEntity>(
-		state.GetOpponentMonsterEntityID());
-	ASSERT(m_opponentMonster != nullptr);
+	PocketMonsterEntity* opponentMonster = entities.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
+	ASSERT(opponentMonster != nullptr);
 
+	// TODO:
 	m_playerSwitchedOut = false;
 	m_opponentSwitchedOut = false;
 
-	if (m_playerSwitchedOut)
+	ASSERT(prevLayerResult.m_ChosenMoveIndex.has_value());
+
+	// Determine who is first or second
+	uint8_t firstMonsterMoveIdx;
+	uint8_t secondMonsterMoveIdx;
+
+	// TODO: Properly choose opponent move rather than always 0!
+	PocketMonsterEntity* first;
+	PocketMonsterEntity* second;
+	if (playerMonster->GetStats().m_Speed > opponentMonster->GetStats().m_Speed)
 	{
-		TransitionToFlowState(eBattleFlow::PlayerSwitch);
-	}
-	else if (m_opponentSwitchedOut)
-	{
-		TransitionToFlowState(eBattleFlow::OpponentSwitch);
+		first = playerMonster;
+		firstMonsterMoveIdx = prevLayerResult.m_ChosenMoveIndex.value();
+
+		second = opponentMonster;
+		secondMonsterMoveIdx = 0;
 	}
 	else
 	{
-		TransitionToFlowState(eBattleFlow::PlayerMoveName);
+		first = opponentMonster;
+		firstMonsterMoveIdx = 0;
+
+		second = playerMonster;
+		secondMonsterMoveIdx = prevLayerResult.m_ChosenMoveIndex.value();
 	}
+
+	ASSERT(first != nullptr);
+	ASSERT(second != nullptr);
+
+	DoTurn(first, firstMonsterMoveIdx, second);
+	DoTurn(second, secondMonsterMoveIdx, first);
+
+	// Add any messages for weather effects
+	// Add any messages for burn/poison chip damage
+	// Faint check for end of round effect
+	if (first->IsFainted())
+	{
+		m_messageQueue.emplace("FASTEST FAINTED", [this, first]()
+		{
+			ShowFaintText(first);
+		});
+	}
+
+	if (second->IsFainted())
+	{
+		m_messageQueue.emplace("SLOWER FAINTED", [this, second]()
+		{
+			ShowFaintText(second);
+		});
+	}
+
+
+	ShowNextMessage();
 }
 
 void BattleLoopLayer::OnDeactivate()
@@ -79,156 +109,156 @@ void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons button)
 
 void BattleLoopLayer::OnSelectButtonPressed()
 {
-	TransitionToFlowState(GetNextFlowState());
+	ShowNextMessage();
 }
 
-BattleLoopLayer::eBattleFlow BattleLoopLayer::GetNextFlowState() const
+void BattleLoopLayer::DoTurn(PocketMonsterEntity* attacker,
+                             const uint8_t selectedMoveIdx,
+                             PocketMonsterEntity* defender
+)
 {
-	switch (m_currentState)
+	// Perform the move and then queue the UI messages...
+	Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
+
+	// X used Y...
+	m_messageQueue.emplace(("MOVE NAME"), [this, attacker, selectedMoveIdx]()
 	{
-	case eBattleFlow::PlayerSwitch:
-		return eBattleFlow::OpponentSwitch;
+		ShowMoveNameText(attacker, selectedMoveIdx);
+	});
 
-	case eBattleFlow::OpponentSwitch:
-		return eBattleFlow::PlayerMoveName;
-
-	case eBattleFlow::PlayerMoveName:
-		return eBattleFlow::PlayerMoveEffectiveness;
-
-	case eBattleFlow::PlayerMoveEffectiveness:
-		return m_opponentMonster->IsFainted()
-			       ? eBattleFlow::OpponentFaint
-			       : eBattleFlow::OpponentMoveName;
-
-	case eBattleFlow::OpponentFaint:
-		return eBattleFlow::OpponentMoveName;
-
-	case eBattleFlow::OpponentMoveName:
-		return eBattleFlow::OpponentMoveEffectiveness;
-
-	case eBattleFlow::OpponentMoveEffectiveness:
+	// The move hits or misses...
+	if (outcome.m_MoveMissed)
+	{
+		m_messageQueue.emplace(("THE MOVE MISSED!"), [this, attacker]()
 		{
-			if (m_playerMonster->IsFainted())
-			{
-				return eBattleFlow::PlayerFaint;
-			}
+			ShowMissText(attacker);
+		});
 
-			return eBattleFlow::PlayerMoveName;
-		}
-
-	case eBattleFlow::PlayerFaint:
-		return eBattleFlow::PlayerMoveName;
+		return;
 	}
 
-	return eBattleFlow::PlayerMoveName;
+	// Effectiveness message (and healthbar animation)...
+	const float effectiveness = outcome.m_TypeMultiplier;
+	if (effectiveness != 1.0f)
+	{
+		m_messageQueue.emplace(("IMMUNE/VERY/NOT VERY EFFECTIVE TEXT"), [this, effectiveness]()
+		{
+			ShowEffectivenessText(effectiveness);
+		});
+	}
+
+	// Was it a crit?
+	if (outcome.m_IsCriticalHit)
+	{
+		m_messageQueue.emplace(("CRITICAL HIT!"), [this]()
+		{
+			ShowCriticalHitText();
+		});
+	}
+
+	// Any Stat Changes
+	// Any Status Conditions
+	// Recoil or Health Drain/Gain?
+	// Faint Check
+	if (attacker->IsFainted())
+	{
+		m_messageQueue.emplace("ATTACKER FAINTED", [this, attacker]()
+		{
+			ShowFaintText(attacker);
+		});
+	}
+
+	if (defender->IsFainted())
+	{
+		m_messageQueue.emplace("DEFENDER FAINTED", [this, defender]()
+		{
+			ShowFaintText(defender);
+		});
+	}
 }
 
-void BattleLoopLayer::TransitionToFlowState(const eBattleFlow state)
+void BattleLoopLayer::ShowNextMessage()
 {
-#if BUILD_DEBUG
-	std::cout << "Transitioning to state " << magic_enum::enum_name(state) << "\n";
-#endif
-
-	DialogueBox::SetVisible(true);
-
-	switch (state)
+	if (m_messageQueue.empty())
 	{
-	case eBattleFlow::PlayerSwitch:
-		if (!m_playerSwitchedOut)
-		{
-			TransitionToFlowState(eBattleFlow::OpponentSwitch);
-			return;
-		}
-	// TODO: ShowSwitchText(m_playerMonster);
-		break;
-
-	case eBattleFlow::OpponentSwitch:
-		if (!m_opponentSwitchedOut)
-		{
-			TransitionToFlowState(eBattleFlow::PlayerMoveName);
-			return;
-		}
-	// TODO: ShowSwitchText(m_opponentMonster);
-		break;
-
-	case eBattleFlow::PlayerMoveName:
-		ShowMoveNameText(m_playerMonster, m_playerChosenMoveIdx);
-		break;
-
-	case eBattleFlow::PlayerMoveEffectiveness:
-		{
-			const eTypeEffectiveness effectiveness = UseMove(m_playerMonster, m_opponentMonster);
-			if (effectiveness == eTypeEffectiveness::Effective)
-			{
-				TransitionToFlowState(eBattleFlow::OpponentMoveName);
-				return;
-			}
-			ShowEffectivenessText(effectiveness);
-		}
-		break;
-
-	case eBattleFlow::OpponentFaint:
-		ShowFaintText(m_opponentMonster);
-		break;
-
-	case eBattleFlow::OpponentMoveName:
-		ShowMoveNameText(m_opponentMonster, m_opponentChosenMoveIdx);
-		break;
-
-	case eBattleFlow::OpponentMoveEffectiveness:
-		{
-			const eTypeEffectiveness effectiveness = UseMove(m_opponentMonster, m_playerMonster);
-			if (effectiveness == eTypeEffectiveness::Effective)
-			{
-				// round over!
-				if (!m_playerMonster->IsFainted())
-				{
-					m_finished = true;
-				}
-
-				return;
-			}
-
-			ShowEffectivenessText(effectiveness);
-		}
-		break;
-
-	case eBattleFlow::PlayerFaint:
-		ShowFaintText(m_playerMonster);
 		m_finished = true;
-		break;
+		return;
 	}
 
-	m_currentState = state;
+	const auto& nextMessage = m_messageQueue.front();
+	nextMessage.m_OnShow();
+
+	m_messageQueue.pop();
 }
 
 void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const uint8_t moveIdx) const
 {
-	const std::string monsterName = STRINGTABLE->GetString(HASH("MONSTER_NAME"), monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 	const std::string moveName = monster->GetMoveName(moveIdx);
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_MOVE_NAME"), monsterName, moveName).c_str());
 }
 
 void BattleLoopLayer::ShowFaintText(const PocketMonsterEntity* monster) const
 {
-	const std::string monsterName = STRINGTABLE->GetString(HASH("MONSTER_NAME"), monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
 }
 
-void BattleLoopLayer::ShowEffectivenessText(const eTypeEffectiveness effectiveness) const
+void BattleLoopLayer::ShowMissText(const PocketMonsterEntity* monster) const
 {
-	DialogueBox::SetText(STRINGTABLE->GetString(
-		HASH("BATTLE"), EFFECTIVENESS_STRING_IDs.at(effectiveness)).c_str());
+	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_ATTACK_MISS"), monsterName).c_str());
 }
 
-eTypeEffectiveness BattleLoopLayer::UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender) const
+void BattleLoopLayer::ShowCriticalHitText() const
 {
-	ASSERT(m_playerChosenMoveIdx < MOVE_COUNT);
+	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), HASH("MOVE_CRITICAL")).c_str());
+}
+
+void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
+{
+	hash_type stringID = DEFAULT_HASH;
+	if (moveOutcome == 0.f)
+	{
+		stringID = HASH("MOVE_IMMUNE");
+	}
+	else if (moveOutcome <= 0.5f)
+	{
+		stringID = HASH("MOVE_NOT_VERY_EFFECTIVE");
+	}
+	else if (moveOutcome > 1.0f)
+	{
+		stringID = HASH("MOVE_SUPER_EFFECTIVE");
+	}
+
+	ASSERT(stringID != DEFAULT_HASH);
+
+	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), stringID).c_str());
+}
+
+Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
+                                       PocketMonsterEntity* defender,
+                                       uint8_t moveIdx) const
+{
+	ASSERT(moveIdx < MOVE_COUNT);
 	ASSERT(attacker != nullptr);
 	ASSERT(defender != nullptr);
 
 	auto* moveComponent = attacker->GetComponent<MoveComponent>();
-	ASSERT(moveComponent && moveComponent->CanUseMove(m_playerChosenMoveIdx));
+	ASSERT(moveComponent && moveComponent->CanUseMove(moveIdx));
 
-	return moveComponent->UseMove(m_playerChosenMoveIdx, *defender);
+
+	const Move::Outcome outcome = moveComponent->UseMove(moveIdx, *defender);
+
+#if BUILD_DEBUG
+	std::cout << STRINGTABLE->GetString(MONSTER_NAME_GROUP, attacker->GetNameStringID()) << " stats:\n";
+	attacker->GetStats().Log();
+
+	std::cout << "\n";
+
+	std::cout << STRINGTABLE->GetString(MONSTER_NAME_GROUP, defender->GetNameStringID()) << " stats:\n";
+	defender->GetStats().Log();
+#endif
+
+	return outcome;
 }
