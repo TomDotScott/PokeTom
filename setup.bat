@@ -56,7 +56,7 @@ popd
 :: ----------------------
 if exist "%SFML_DIR%\include\SFML" (
     echo SFML already cloned and built. Skipping setup.
-    goto :EOF
+    goto :PYTHON_SETUP
 )
 
 :: ----------------------
@@ -99,3 +99,15 @@ echo ===============================
 
 cmake --build . --config Release --target INSTALL
 cmake --build . --config Debug   --target INSTALL
+
+:PYTHON_SETUP
+
+:: ----------------------
+:: Configure Python
+:: ----------------------
+@echo ==========================
+@echo Configuring Python venv...
+@echo ==========================
+py -3 -m venv %~dp0.venv
+
+%~dp0.venv\Scripts\pip.exe install -r %~dp0requirements.txt

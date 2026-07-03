@@ -91,3 +91,6 @@ Lib/sol2
 # Ignore all the auto-generated code
 src/Engine/CodeGen/
 
+# Ignore python venv SFML folder
+.venv/
+
