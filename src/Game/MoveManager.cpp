@@ -153,8 +153,8 @@ bool MoveManager::LoadJSON()
 		std::optional<MoveStatus> moveStatus = LoadStatusEffects(move);
 
 		movesMap.emplace(moveID, Move(moveID,
-		                              stringTableID,
-		                              descriptionStringTableID,
+		                              idHash,
+		                              descriptionHash,
 		                              typeFlag,
 		                              moveCategory,
 		                              ppCount,

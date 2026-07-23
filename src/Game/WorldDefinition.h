@@ -11,7 +11,7 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/ISerialisable.h"
 
-static constexpr const char* START_LEVEL = "route_1";
+static constexpr const char* START_LEVEL = "player_bedroom";
 
 class EntityRegistry;
 

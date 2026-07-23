@@ -5,6 +5,7 @@
 
 #include "../BattleState.h"
 #include "../DialogueBox.h"
+#include "../GameEvents.h"
 #include "../../Engine/Stringtable.h"
 #include "../Monsters/PocketMonsterEntity.h"
 
@@ -38,11 +39,19 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	PocketMonsterEntity* opponentMonster = entities.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
 	ASSERT(opponentMonster != nullptr);
 
+	m_endContext = BattleEndContext{
+		.m_LevelHash = state.GetBattleContext().m_LevelHash,
+		.m_PlayerPosition = state.GetBattleContext().m_PlayerPosition,
+		.m_SendPlayerToHospital = false
+	};
+
 	// TODO:
 	m_playerSwitchedOut = false;
 	m_opponentSwitchedOut = false;
 
 	ASSERT(prevLayerResult.m_ChosenMoveIndex.has_value());
+
+	m_previousMessage = std::nullopt;
 
 	// Determine who is first or second
 	uint8_t firstMonsterMoveIdx;
@@ -51,6 +60,7 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	// TODO: Properly choose opponent move rather than always 0!
 	PocketMonsterEntity* first;
 	PocketMonsterEntity* second;
+
 	if (playerMonster->GetStats().m_Speed > opponentMonster->GetStats().m_Speed)
 	{
 		first = playerMonster;
@@ -68,31 +78,35 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 		secondMonsterMoveIdx = prevLayerResult.m_ChosenMoveIndex.value();
 	}
 
+
 	ASSERT(first != nullptr);
 	ASSERT(second != nullptr);
 
-	DoTurn(first, firstMonsterMoveIdx, second);
-	DoTurn(second, secondMonsterMoveIdx, first);
+	const entity_id_t playerMonsterEntityID = playerMonster->GetMonsterID();
 
-	// Add any messages for weather effects
-	// Add any messages for burn/poison chip damage
-	// Faint check for end of round effect
+	DoTurn(state, first, firstMonsterMoveIdx, second, playerMonsterEntityID);
+
 	if (first->IsFainted())
 	{
-		m_messageQueue.emplace("FASTEST FAINTED", [this, first]()
-		{
-			ShowFaintText(first);
-		});
+		OnMonsterFainted(state, first, first == playerMonster);
 	}
-
-	if (second->IsFainted())
+	else if (second->IsFainted())
 	{
-		m_messageQueue.emplace("SLOWER FAINTED", [this, second]()
-		{
-			ShowFaintText(second);
-		});
+		OnMonsterFainted(state, second, second == playerMonster);
 	}
+	else
+	{
+		DoTurn(state, second, secondMonsterMoveIdx, first, playerMonsterEntityID);
 
+		if (second->IsFainted())
+		{
+			OnMonsterFainted(state, second, second == playerMonster);
+		}
+		else if (first->IsFainted())
+		{
+			OnMonsterFainted(state, first, first == playerMonster);
+		}
+	}
 
 	ShowNextMessage();
 }
@@ -103,7 +117,7 @@ void BattleLoopLayer::OnDeactivate()
 	DialogueBox::SetVisible(false);
 }
 
-void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons button)
+void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons /*button*/)
 {
 }
 
@@ -112,25 +126,26 @@ void BattleLoopLayer::OnSelectButtonPressed()
 	ShowNextMessage();
 }
 
-void BattleLoopLayer::DoTurn(PocketMonsterEntity* attacker,
-                             const uint8_t selectedMoveIdx,
-                             PocketMonsterEntity* defender
+void BattleLoopLayer::DoTurn(
+	const BattleState& state,
+	PocketMonsterEntity* attacker,
+	uint8_t selectedMoveIdx,
+	PocketMonsterEntity* defender,
+	const entity_id_t playerMonsterEntityID
 )
 {
 	// Perform the move and then queue the UI messages...
 	Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
 
 	// X used Y...
-	m_messageQueue.emplace(("MOVE NAME"), [this, attacker, selectedMoveIdx]()
-	{
+	m_messageQueue.emplace(("MOVE NAME"), [this, attacker, selectedMoveIdx](){
 		ShowMoveNameText(attacker, selectedMoveIdx);
 	});
 
 	// The move hits or misses...
 	if (outcome.m_MoveMissed)
 	{
-		m_messageQueue.emplace(("THE MOVE MISSED!"), [this, attacker]()
-		{
+		m_messageQueue.emplace(("THE MOVE MISSED!"), [this, attacker](){
 			ShowMissText(attacker);
 		});
 
@@ -141,8 +156,7 @@ void BattleLoopLayer::DoTurn(PocketMonsterEntity* attacker,
 	const float effectiveness = outcome.m_TypeMultiplier;
 	if (effectiveness != 1.0f)
 	{
-		m_messageQueue.emplace(("IMMUNE/VERY/NOT VERY EFFECTIVE TEXT"), [this, effectiveness]()
-		{
+		m_messageQueue.emplace(("IMMUNE/VERY/NOT VERY EFFECTIVE TEXT"), [this, effectiveness](){
 			ShowEffectivenessText(effectiveness);
 		});
 	}
@@ -150,8 +164,7 @@ void BattleLoopLayer::DoTurn(PocketMonsterEntity* attacker,
 	// Was it a crit?
 	if (outcome.m_IsCriticalHit)
 	{
-		m_messageQueue.emplace(("CRITICAL HIT!"), [this]()
-		{
+		m_messageQueue.emplace(("CRITICAL HIT!"), [this](){
 			ShowCriticalHitText();
 		});
 	}
@@ -162,23 +175,30 @@ void BattleLoopLayer::DoTurn(PocketMonsterEntity* attacker,
 	// Faint Check
 	if (attacker->IsFainted())
 	{
-		m_messageQueue.emplace("ATTACKER FAINTED", [this, attacker]()
-		{
-			ShowFaintText(attacker);
-		});
+		OnMonsterFainted(
+			state,
+			attacker,
+			attacker->GetID() == playerMonsterEntityID
+		);
 	}
 
 	if (defender->IsFainted())
 	{
-		m_messageQueue.emplace("DEFENDER FAINTED", [this, defender]()
-		{
-			ShowFaintText(defender);
-		});
+		OnMonsterFainted(
+			state,
+			defender,
+			defender->GetID() == playerMonsterEntityID
+		);
 	}
 }
 
 void BattleLoopLayer::ShowNextMessage()
 {
+	if (m_previousMessage.has_value() && m_previousMessage.value().m_OnDismiss.has_value())
+	{
+		m_previousMessage.value().m_OnDismiss.value()();
+	}
+
 	if (m_messageQueue.empty())
 	{
 		m_finished = true;
@@ -187,6 +207,8 @@ void BattleLoopLayer::ShowNextMessage()
 
 	const auto& nextMessage = m_messageQueue.front();
 	nextMessage.m_OnShow();
+
+	m_previousMessage = nextMessage;
 
 	m_messageQueue.pop();
 }
@@ -202,6 +224,11 @@ void BattleLoopLayer::ShowFaintText(const PocketMonsterEntity* monster) const
 {
 	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
+}
+
+void BattleLoopLayer::ShowWhiteOutText()
+{
+	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), HASH("PLAYER_WHITE_OUT")).c_str());
 }
 
 void BattleLoopLayer::ShowMissText(const PocketMonsterEntity* monster) const
@@ -237,8 +264,8 @@ void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 }
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
-                                       PocketMonsterEntity* defender,
-                                       uint8_t moveIdx) const
+									   PocketMonsterEntity* defender,
+									   uint8_t moveIdx) const
 {
 	ASSERT(moveIdx < MOVE_COUNT);
 	ASSERT(attacker != nullptr);
@@ -261,4 +288,62 @@ Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
 #endif
 
 	return outcome;
+}
+
+void BattleLoopLayer::OnMonsterFainted(const BattleState& state, PocketMonsterEntity* monster, bool isPlayerMonster)
+{
+	bool hasMonstersLeft = false;
+
+	// TODO: Pointers to vectors are generally bad... BUT if these are null there are bigger fish to fry!
+	const std::vector<entity_id_t>* monsterIDs = isPlayerMonster
+		? &state.GetBattleContext().m_PlayerMonsterEntityIDs
+		: &state.GetBattleContext().m_opponentMonsterEntityIDs;
+
+	const EntityRegistry& entities = state.GetGameContext().m_Entities;
+	for (const auto& id : *monsterIDs)
+	{
+		const auto* monsterEntity = entities.Get<PocketMonsterEntity>(id);
+		ASSERT(monsterEntity);
+
+		if (!monsterEntity->IsFainted())
+		{
+			hasMonstersLeft = true;
+		}
+	}
+
+
+	// Was it the player?
+	if (isPlayerMonster)
+	{
+		m_messageQueue.emplace("MONSTER FAINTED",
+			[this, monster]() {
+				ShowFaintText(monster);
+			});
+
+		if (!hasMonstersLeft)
+		{
+			m_messageQueue.emplace("FASTEST FAINTED",
+				[this]() {
+					ShowWhiteOutText();
+				},
+				[this]() {
+					m_endContext.m_SendPlayerToHospital = true;
+					game_events::OnBattleEnd.Fire(m_endContext);
+				});
+		}
+	}
+	else
+	{
+		m_messageQueue.emplace("MONSTER FAINTED",
+			[this, monster]() {
+				ShowFaintText(monster);
+			});
+
+		if (!hasMonstersLeft)
+		{
+			m_messageQueue.back().m_OnDismiss = [this]() {
+				game_events::OnBattleEnd.Fire(m_endContext);
+			};
+		}
+	}
 }

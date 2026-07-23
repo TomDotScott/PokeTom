@@ -1,12 +1,12 @@
 #include "BattleState.h"
 
+#include <iostream>
+
 #include "DialogueBox.h"
 #include "GameEvents.h"
 #include "MoveComponent.h"
-
 #include "../Engine/Stringtable.h"
 #include "../Engine/Animation/AnimationComponent.h"
-
 #include "BattleUI/BattleLoopLayer.h"
 #include "BattleUI/MoveSelectLayer.h"
 #include "BattleUI/OptionSelectLayer.h"
@@ -65,23 +65,20 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 	m_inputMapper.OnButtonPressed(RIGHT, [this]() { OnNavigateButtonPressed(RIGHT); });
 	m_inputMapper.OnButtonPressed(SELECT, [this]() { OnSelectButtonPressed(); });
 
-	// TODO: Find the first Monster in the party that has HP
+	// TODO: Find the first Monster in the parties that have HP
 	// TODO: This might not even have to be part of the battlecontext if I make it a component attached to the player, we have the player's entity ID here so we can get it through that
 	m_playerMonsterEntityID = m_battleContext.m_PlayerMonsterEntityIDs[0];
-	auto playerMonster = gameContext.m_Entities.Get<PocketMonsterEntity>(m_playerMonsterEntityID);
+	PocketMonsterEntity* playerMonster = gameContext.m_Entities.Get<PocketMonsterEntity>(m_playerMonsterEntityID);
 	playerMonster->OnActivate();
 
-	PocketMonsterEntity& opponentMonster = gameContext.m_Entities.Create<PocketMonsterEntity>(
-		m_battleContext.m_opponentMonsters[0].GetID(),
-		m_battleContext.m_opponentMonsterLevels[0],
-		EntityAnimationComponent::eAnimationName::BATTLE_FRONT
-	);
+	PocketMonsterEntity* opponentMonster = gameContext.m_Entities.Get<PocketMonsterEntity>(battleContext.m_opponentMonsterEntityIDs[0]);
+	ASSERT_MSG(opponentMonster, "Something has gone very wrong!");
 
-	m_opponentMonsterEntityID = opponentMonster.GetID();
+	m_opponentMonsterEntityID = opponentMonster->GetID();
 
 	// TODO: Dynamically position them based on the sprites
 	playerMonster->SetPosition({ 206, 389 });
-	opponentMonster.SetPosition({ 600, 236 });
+	opponentMonster->SetPosition({ 600, 236 });
 
 
 	std::cout << "Battle begun! Player monster: Level " << static_cast<int>(playerMonster->GetLevel()) << " " <<
@@ -89,10 +86,10 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 		<< "\n";
 	playerMonster->GetStats().Log();
 
-	std::cout << "Opponent monster: " << "Level " << static_cast<int>(opponentMonster.GetLevel()) << " " <<
-		StringTable::Get()->GetString(opponentMonster.GetNameStringID()) << " with entity ID " << opponentMonster.
+	std::cout << "Opponent monster: " << "Level " << static_cast<int>(opponentMonster->GetLevel()) << " " <<
+		StringTable::Get()->GetString(opponentMonster->GetNameStringID()) << " with entity ID " << opponentMonster->
 		GetID() << "\n";
-	opponentMonster.GetStats().Log();
+	opponentMonster->GetStats().Log();
 }
 
 void BattleState::OnEnter()

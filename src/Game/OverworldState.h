@@ -16,7 +16,7 @@ public:
 	void Render(sf::RenderWindow& window) const override;
 
 private:
-	GameContext& m_ctx;
+	GameContext& m_gameContext;
 	sf::FloatRect m_worldBounds;
 	sf::FloatRect m_lastCameraRect;
 	float m_cameraRebuildThreshold;

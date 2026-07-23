@@ -23,6 +23,7 @@ MONSTER_MOVE_NAME,DYNAMIC_STRING,"%1 used %2!","","","",""
 MONSTER_ATTACK_MISS,DYNAMIC_STRING,"%1's attack missed!","","","",""
 
 
+PLAYER_WHITE_OUT,BATTLE,"{PLAYER_NAME} whited out!","","","",""
 MOVE_IMMUNE,BATTLE,"It doesn't seem to affect %1","","","",""
 MOVE_NOT_VERY_EFFECTIVE,BATTLE,"It was not very effective!","","","",""
 MOVE_SUPER_EFFECTIVE,BATTLE,"It was Super Effective!","","","",""

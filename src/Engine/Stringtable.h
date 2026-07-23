@@ -24,7 +24,7 @@ public:
 	template <typename... Args>
 	std::string GetDynamicString(const hash_type& stringID, Args... fmt)
 	{
-		std::string baseString = GetString("DYNAMIC_STRING", stringID);
+		std::string baseString = GetString(HASH("DYNAMIC_STRING"), stringID);
 
 		std::string result;
 		result.reserve(baseString.size() * 2);
