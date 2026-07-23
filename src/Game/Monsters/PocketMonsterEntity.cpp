@@ -37,8 +37,7 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
 	};
 
-	AddComponent<MonsterStatComponent>(
-		MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
+	AddComponent<MonsterStatComponent>(MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
 
 	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, 2, ~0U });
 
@@ -98,4 +97,9 @@ bool PocketMonsterEntity::IsFainted() const
 void PocketMonsterEntity::TakeDamage(const uint16_t damage)
 {
 	GetStats().TakeDamage(damage);
+}
+
+void PocketMonsterEntity::FullHeal()
+{
+	GetStats() = MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs);
 }

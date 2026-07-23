@@ -27,6 +27,8 @@ public:
 
 	void TakeDamage(uint16_t damage);
 
+	void FullHeal();
+
 private:
 	PocketMonster m_monsterInfo;
 

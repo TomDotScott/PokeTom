@@ -18,8 +18,9 @@ std::vector<entity_id_t> PLAYER_PARTY;
 
 OverworldState::OverworldState(
 	GameContext& ctx,
-	hash_type overworldLevel,
-	const std::optional<sf::Vector2f> playerPosition
+	const hash_type overworldLevel,
+	const std::optional<sf::Vector2f> playerPosition,
+	const bool healPlayerParty
 ) :
 	m_gameContext(ctx),
 	m_worldBounds({ 0, 0 }, { static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) }),
@@ -58,6 +59,18 @@ OverworldState::OverworldState(
 	else
 	{
 		RespawnPlayerInWorld(overworldLevel, playerPosition.value());
+	}
+
+	if (healPlayerParty)
+	{
+		const auto& entities = ctx.m_Entities;
+		for (auto entityID : PLAYER_PARTY)
+		{
+			PocketMonsterEntity* monster = entities.Get<PocketMonsterEntity>(entityID);
+			ASSERT(monster);
+
+			monster->FullHeal();
+		}
 	}
 
 	m_onScreenFadedEventID = game_events::OnScreenFaded.On([this]() { OnLevelEntered(); });
@@ -285,6 +298,11 @@ void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel
 
 		game_events::OnBattleStart.Fire(ctx);
 	}
+}
+
+void OverworldState::HealAllPlayerMonsters()
+{
+
 }
 
 void OverworldState::OnLevelEntered()

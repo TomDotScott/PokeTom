@@ -25,7 +25,11 @@ Game::Game(sol::state& lua) :
 		.m_Renderer = Renderer(),
 		.m_PlayerEntityID = 0x69
 	}),
-	m_luaBindings(lua, m_context.m_World, m_context.m_Entities)
+	m_luaBindings(lua, m_context.m_World, m_context.m_Entities),
+	m_lastHospitalCheckpoint({
+		.m_LevelHash = HASH(START_LEVEL),
+		.m_SpawnPointHash = HASH("player_spawn")
+	})
 {
 	// TODO: Make this a variable, loaded at startup
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
@@ -62,7 +66,7 @@ Game::Game(sol::state& lua) :
 
 	m_context.m_World.LoadLevelScripts(lua);
 
-	m_currentState = std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt);
+	m_currentState = std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt, false);
 
 
 	game_events::OnScreenFadeTriggered.On([this]()
@@ -77,7 +81,17 @@ Game::Game(sol::state& lua) :
 
 	game_events::OnBattleEnd.On([this](const BattleEndContext& ctx)
 	{
-		RequestTransition(std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition));
+		if (ctx.m_SendPlayerToHospital)
+		{
+			// TODO: Proper transition to some dialogue saying that the player whited out and rushed back to the hospital
+			const std::shared_ptr<Level> level = m_context.m_World.GetLevel(m_lastHospitalCheckpoint.m_LevelHash);
+			sf::Vector2f spawnPoint = level->GetWorldPositionFromGridPosition(level->GetSpawnPointData(m_lastHospitalCheckpoint.m_SpawnPointHash).m_GridPosition);
+			RequestTransition(std::make_unique<OverworldState>(m_context, m_lastHospitalCheckpoint.m_LevelHash, spawnPoint, true));
+		}
+		else
+		{
+			RequestTransition(std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition, false));
+		}
 	});
 }
 

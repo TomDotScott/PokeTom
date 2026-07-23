@@ -29,6 +29,13 @@ private:
 	LuaRegistry m_luaBindings;
 	ScreenFader m_screenFader;
 
+	struct HospitalCheckpoint
+	{
+		hash_type m_LevelHash;
+		hash_type m_SpawnPointHash;
+	};
+	HospitalCheckpoint m_lastHospitalCheckpoint;
+
 #if !BUILD_MASTER
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)
