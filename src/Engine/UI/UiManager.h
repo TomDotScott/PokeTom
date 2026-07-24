@@ -1,31 +1,28 @@
 #ifndef UI_MANAGER_H
 #define UI_MANAGER_H
 #include <filesystem>
+#include <map>
 #include <set>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "UiElement.h"
-
-#include "UiButton.h"
-#include "UiPanel.h"
-#include "UiSprite.h"
-#include "UiText.h"
-
 #include "../Input/InputMapper.h"
 
-class UiManager : public ISerialisable
+class UiManager final : public ISerialisable
 {
 public:
 	static UiManager& Get();
+
+	static constexpr int8_t k_topLayer = 0x7F;
+	static constexpr int8_t k_bottomLayer = ~0x7F;
 
 	bool Load(const std::filesystem::path& path);
 	void Update();
 
 	// TODO: There has to be a better way to do this? Maybe a renderer class with a vector of sf::drawables in order?
-	void RenderForeground(sf::RenderWindow& window) const;
-	void RenderMidground(sf::RenderWindow& window) const;
-	void RenderBackground(sf::RenderWindow& window) const;
+	void RenderAll(sf::RenderWindow& window) const;
+	void RenderLayer(sf::RenderWindow& window, int8_t layer) const;
 
 	const sf::Font* GetFont(const std::string& name) const;
 
@@ -56,19 +53,17 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<sf::Font>> m_fonts;
 
 	std::unordered_map<std::string, UiElement*> m_uiElements;
-	std::set<std::string> m_backgroundElements;
-	std::set<std::string> m_midgroundElements;
-	std::set<std::string> m_foregroundElements;
+	std::map<int8_t, std::set<std::string>> m_sortOrderElements;
 
 	InputMapper m_defaultUIInputs;
 
 	bool LoadFromXML(const XmlNode& node) override;
 	bool LoadElement(const XmlNode& node);
 
-	void InsertElementIntoLayer(const std::string& elementName, UiElement::eLayer layer);
+	// TODO: Do we need to have a remove as well depending on state? There might be a LOT of UI in a game...
+	void InsertElementIntoLayer(const UiElement* current);
 
-	void RenderLayer(sf::RenderWindow& window, UiElement::eLayer layer) const;
-	void RenderElement(sf::RenderWindow& window, const UiElement* uiElement, UiElement::eLayer layer) const;
+	void RenderElement(sf::RenderWindow& window, const UiElement* uiElement, int8_t layer) const;
 
 	void OnLeftClickPressed();
 };

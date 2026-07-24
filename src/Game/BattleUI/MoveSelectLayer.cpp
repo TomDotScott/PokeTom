@@ -1,8 +1,11 @@
 #include "MoveSelectLayer.h"
-#include "../../Engine/UI/UiManager.h"
-#include "../Monsters/PocketMonsterEntity.h"
-#include "../../Engine/Asserts.h"
+
 #include "../BattleState.h"
+#include "../../Engine/Asserts.h"
+#include "../../Engine/UI/UiManager.h"
+#include "../../Engine/UI/UiPanel.h"
+#include "../../Engine/UI/UiText.h"
+#include "../Monsters/PocketMonsterEntity.h"
 
 MoveSelectLayer::MoveSelectLayer() :
 	m_playerMonster(nullptr),
@@ -126,7 +129,7 @@ void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
 	ASSERT(moveComponent != nullptr);
 
-	static constexpr std::array<const char*, MOVE_COUNT> uiComponentNames{
+	static constexpr std::array uiComponentNames{
 		"MOVE_1_TEXT",
 		"MOVE_2_TEXT",
 		"MOVE_3_TEXT",
@@ -160,7 +163,7 @@ void MoveSelectLayer::OnDeactivate()
 {
 	UILayer::OnDeactivate();
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
 
 	battleUI->GetChild("TEXT_BOX")->OnActivate();

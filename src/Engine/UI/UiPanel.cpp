@@ -2,13 +2,15 @@
 
 #include <iostream>
 
+#include "UiButton.h"
 #include "UiManager.h"
+#include "UiProgressBar.h"
 #include "../Asserts.h"
 
 UiPanel::UiPanel(UiElement* parent) :
 	UiElement(eType::Panel, parent)
 {
-	SetLayer(eLayer::MIDGROUND);
+	SetLayer(1);
 }
 
 void UiPanel::SetElementPosition(const sf::Vector2f& position)
@@ -76,6 +78,7 @@ bool UiPanel::LoadFromXML(const XmlNode& node)
 	if (!LoadChildrenOfType<UiText>(node, "Text")) { return false; }
 	if (!LoadChildrenOfType<UiButton>(node, "Button")) { return false; }
 	if (!LoadChildrenOfType<UiPanel>(node, "Panel")) { return false; }
+	if (!LoadChildrenOfType<UiProgressBar>(node, "ProgressBar")) { return false; }
 
 	SetElementPosition(m_position);
 	return true;

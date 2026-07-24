@@ -1,6 +1,5 @@
 #include "DialogueBox.h"
 
-
 void DialogueBox::SetVisible(const bool visible)
 {
 	auto* dialoguePanel = UIMANAGER.GetElement<UiPanel>(DIALOGUE_PANEL_NAME);

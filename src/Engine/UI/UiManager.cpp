@@ -11,6 +11,7 @@
 #include "../Input/Mouse.h"
 #include "UiButton.h"
 #include "UiPanel.h"
+#include "UiProgressBar.h"
 #include "UiSprite.h"
 #include "../Asserts.h"
 #include "../CodeGen/Resources.hpp"
@@ -95,8 +96,14 @@ bool UiManager::LoadElement(const XmlNode& node)
 	{
 		currentElement = new UiButton();
 	}
+	else if (node.m_Tag == "ProgressBar")
+	{
+		currentElement = new UiProgressBar();
+	}
 	else
 	{
+		ASSERT_MSG(false, "Unknown button type %s\n", node.m_Tag.c_str());
+
 		// We only care about our specific tags...
 		return false;
 	}
@@ -115,6 +122,7 @@ bool UiManager::LoadElement(const XmlNode& node)
 		return false;
 	}
 
+	ASSERT(!m_uiElements.contains(currentElement->GetName()));
 	if (m_uiElements.contains(currentElement->GetName()))
 	{
 		printf(" UiManager: UI Element with name %s already exists!\n", currentElement->GetName().c_str());
@@ -122,48 +130,26 @@ bool UiManager::LoadElement(const XmlNode& node)
 		return false;
 	}
 
-	ASSERT_MSG(currentElement->GetLayer() != UiElement::eLayer::NONE, "UiManager: No layer set for UiElement %s",
-	           currentElement->GetName().c_str());
-	if (currentElement->GetLayer() == UiElement::eLayer::NONE)
-	{
-		delete currentElement;
-		return false;
-	}
-
-
 	m_uiElements[currentElement->GetName()] = currentElement;
 
-	// If it is a Panel, make sure the children are sorted properly
-	if (const UiPanel* panel = dynamic_cast<const UiPanel*>(currentElement); panel != nullptr)
-	{
-		for (const std::unique_ptr<UiElement>& child : panel->GetChildren())
-		{
-			InsertElementIntoLayer(currentElement->GetName(), child->GetLayer());
-		}
-	}
-	else
-	{
-		InsertElementIntoLayer(currentElement->GetName(), currentElement->GetLayer());
-	}
+	InsertElementIntoLayer(currentElement);
 
 	return true;
 }
 
-void UiManager::InsertElementIntoLayer(const std::string& elementName, const UiElement::eLayer layer)
+void UiManager::InsertElementIntoLayer(const UiElement* current)
 {
-	ASSERT(layer != UiElement::eLayer::NONE);
+	const std::string parentName = (current->GetTopMostParent() != nullptr ? current->GetTopMostParent() : current)->GetName();
 
-	switch (layer)
+	m_sortOrderElements[current->GetLayer()].insert(parentName);
+
+	// If it is a Panel, make sure the children are sorted properly as well!
+	if (const UiPanel* panel = dynamic_cast<const UiPanel*>(current); panel != nullptr)
 	{
-	case UiElement::eLayer::BACKGROUND:
-		m_backgroundElements.insert(elementName);
-		break;
-	case UiElement::eLayer::MIDGROUND:
-		m_midgroundElements.insert(elementName);
-		break;
-	case UiElement::eLayer::FOREGROUND:
-		m_foregroundElements.insert(elementName);
-		break;
+		for (const std::unique_ptr<UiElement>& child : panel->GetChildren())
+		{
+			InsertElementIntoLayer(child.get());
+		}
 	}
 }
 
@@ -174,6 +160,13 @@ void UiManager::Update()
 	// TODO: Animation!
 }
 
+void UiManager::RenderAll(sf::RenderWindow& window) const
+{
+	for (int8_t i = k_bottomLayer; i < k_topLayer; ++i)
+	{
+		RenderLayer(window, i);
+	}
+}
 
 bool UiManager::LoadFromXML(const XmlNode& node)
 {
@@ -188,27 +181,21 @@ bool UiManager::LoadFromXML(const XmlNode& node)
 	return true;
 }
 
-void UiManager::RenderLayer(sf::RenderWindow& window, const UiElement::eLayer layer) const
+void UiManager::RenderLayer(sf::RenderWindow& window, const int8_t layer) const
 {
-#if RENDER_SPRITES
-	ASSERT(layer != UiElement::eLayer::NONE);
-
-	const std::set<std::string>* uiElementNames = nullptr;
-	switch (layer)
+	if (!m_sortOrderElements.contains(layer))
 	{
-	case UiElement::eLayer::BACKGROUND:
-		uiElementNames = &m_backgroundElements;
-		break;
-	case UiElement::eLayer::MIDGROUND:
-		uiElementNames = &m_midgroundElements;
-		break;
-	case UiElement::eLayer::FOREGROUND:
-		uiElementNames = &m_foregroundElements;
-		break;
-	default: ;
+		return;
 	}
 
-	for (const auto& elementName : *uiElementNames)
+#if UIMANAGER_DEBUG_SPEW
+	printf("Moving onto layer %d\n", layer);
+#endif
+
+#if RENDER_SPRITES
+	const std::set<std::string>& uiElementNames = m_sortOrderElements.at(layer);
+
+	for (const auto& elementName : uiElementNames)
 	{
 		UiElement* uiElement = m_uiElements.at(elementName);
 		ASSERT(uiElement != nullptr);
@@ -233,7 +220,7 @@ void UiManager::RenderLayer(sf::RenderWindow& window, const UiElement::eLayer la
 #endif
 }
 
-void UiManager::RenderElement(sf::RenderWindow& window, const UiElement* uiElement, const UiElement::eLayer layer) const
+void UiManager::RenderElement(sf::RenderWindow& window, const UiElement* uiElement, const int8_t layer) const
 {
 	if (uiElement->GetType() != UiElement::eType::Panel && uiElement->GetLayer() != layer)
 	{
@@ -259,18 +246,7 @@ void UiManager::RenderElement(sf::RenderWindow& window, const UiElement* uiEleme
 	else
 	{
 #if UIMANAGER_DEBUG_SPEW
-		switch (layer)
-		{
-		case UiElement::eLayer::BACKGROUND:
-			printf("Drawing %s in the BACKGROUND\n", uiElement->GetName().c_str());
-			break;
-		case UiElement::eLayer::MIDGROUND:
-			printf("Drawing %s in the MIDGROUND\n", uiElement->GetName().c_str());
-			break;
-		case UiElement::eLayer::FOREGROUND:
-			printf("Drawing %s in the FOREGROUND\n", uiElement->GetName().c_str());
-			break;
-		}
+		printf("Drawing %s\n", uiElement->GetName().c_str());
 #endif
 
 		for (const auto* drawable : uiElement->GetDrawablesList())
@@ -303,21 +279,6 @@ void UiManager::OnLeftClickPressed()
 			button.OnLeftClickPressed();
 		}
 	}
-}
-
-void UiManager::RenderForeground(sf::RenderWindow& window) const
-{
-	RenderLayer(window, UiElement::eLayer::FOREGROUND);
-}
-
-void UiManager::RenderMidground(sf::RenderWindow& window) const
-{
-	RenderLayer(window, UiElement::eLayer::MIDGROUND);
-}
-
-void UiManager::RenderBackground(sf::RenderWindow& window) const
-{
-	RenderLayer(window, UiElement::eLayer::BACKGROUND);
 }
 
 const sf::Font* UiManager::GetFont(const std::string& name) const

@@ -5,19 +5,20 @@
 #include "../Globals.h"
 
 UiElement::UiElement(const eType type, UiElement* parent) :
-	m_layer(eLayer::NONE),
-	m_type(type),
-	m_parent(parent)
+	m_parent(parent),
+	m_name("NO NAME SET"),
+	m_layer(0),
+	m_type(type)
 {
 	m_drawables.reserve(10);
 }
 
-UiElement::eLayer UiElement::GetLayer() const
+int8_t UiElement::GetLayer() const
 {
 	return m_layer;
 }
 
-void UiElement::SetLayer(const eLayer layer)
+void UiElement::SetLayer(const int8_t layer)
 {
 	m_layer = layer;
 }
@@ -78,12 +79,13 @@ bool UiElement::LoadFromXML(const XmlNode& node)
 		return false;
 	}
 
-	m_name = nameNode->m_Content;
-	if (m_name.empty())
+	if (nameNode->m_Content.empty())
 	{
 		std::cerr << "UiElement::LoadFromXML - <name/> value was empty!\n";
 		return false;
 	}
+
+	m_name = nameNode->m_Content;
 
 	const auto* positionNode = node.Child("position");
 	if (positionNode == nullptr)
@@ -92,8 +94,41 @@ bool UiElement::LoadFromXML(const XmlNode& node)
 		return false;
 	}
 
+	const auto* layerNode = node.Child("layer");
+	if (layerNode != nullptr)
+	{
+		SetLayer(static_cast<int8_t>(std::stoi(layerNode->m_Content)));
+	}
+	else
+	{
+		std::cerr << "UiElement::LoadFromXML - Warning, no layer provided for UiElement " << GetName() << "! Setting to 0\n";
+		SetLayer(0);
+	}
+
 	SetElementPosition(positionNode->Attr("x", "y", sf::Vector2f{}));
 	return true;
+}
+
+UiElement* UiElement::GetParent() const
+{
+	return m_parent;
+}
+
+UiElement* UiElement::GetTopMostParent() const
+{
+	UiElement* parent = m_parent;
+
+	if (parent == nullptr)
+	{
+		return nullptr;
+	}
+
+	while (parent->GetParent() != nullptr)
+	{
+		parent = parent->GetParent();
+	}
+
+	return parent;
 }
 
 void UiElement::SetParent(UiElement* parent)

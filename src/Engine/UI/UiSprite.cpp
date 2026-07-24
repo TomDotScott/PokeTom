@@ -80,35 +80,6 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 		m_scaleFactorFromXml = scaleNode->Attr("x", "y", { 1, 1 });
 	}
 
-	const auto* layerNode = node.Child("layer");
-	if (layerNode == nullptr)
-	{
-		std::cerr << "UiSprite::LoadFromXML - Warning, no layer provided for UiSprite " << GetName() <<
-			"! Setting to foreground";
-		SetLayer(eLayer::FOREGROUND);
-	}
-	else
-	{
-		if (layerNode->m_Content == "foreground")
-		{
-			SetLayer(eLayer::FOREGROUND);
-		}
-		else if (layerNode->m_Content == "midground")
-		{
-			SetLayer(eLayer::MIDGROUND);
-		}
-		else if (layerNode->m_Content == "background")
-		{
-			SetLayer(eLayer::BACKGROUND);
-		}
-		else
-		{
-			std::cerr << "UiSprite::LoadFromXML - Unknown layer provided for UiSprite " << GetName() <<
-				layerNode->m_Content << "\n";
-			return false;
-		}
-	}
-
 	ASSERT(m_sprite);
 
 	m_sprite->setPosition(m_position);

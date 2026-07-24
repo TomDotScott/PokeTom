@@ -10,8 +10,8 @@ UiButton::UiButton(UiElement* parent) :
 	m_sprite(nullptr),
 	m_text(nullptr)
 {
-	// Always render on top
-	SetLayer(eLayer::FOREGROUND);
+	// Text should be drawn on top of it, so let's make the Button have text on top by default
+	SetLayer(UiManager::k_topLayer - 1);
 }
 
 void UiButton::SetElementPosition(const sf::Vector2f& position)

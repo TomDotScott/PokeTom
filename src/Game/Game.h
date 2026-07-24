@@ -9,6 +9,7 @@
 #include "../Engine/IGameState.h"
 #include "../Engine/Rendering/ScreenFader.h"
 #include "../Engine/UI/UiManager.h"
+#include "../Engine/UI/UiText.h"
 
 class Game final : public IUpdateable
 {

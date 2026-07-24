@@ -153,7 +153,13 @@ void BattleState::Update(const float deltaTime)
 
 void BattleState::Render(sf::RenderWindow& window) const
 {
-	UIMANAGER.RenderBackground(window);
+	int8_t i = UiManager::k_bottomLayer;
+
+	// TODO: This HORRENDOUSLY needs a cleaner interface - we could do with a pass on the whole rendering of the engine tbph
+	for (; i <= 0; ++i)
+	{
+		UIMANAGER.RenderLayer(window, i);
+	}
 
 	Entity* playerMonster = m_gameContext.m_Entities.Get<Entity>(m_playerMonsterEntityID);
 	if (playerMonster != nullptr)
@@ -167,8 +173,12 @@ void BattleState::Render(sf::RenderWindow& window) const
 		m_gameContext.m_Renderer.RenderEntity(window, opponentMonster);
 	}
 
-	UIMANAGER.RenderMidground(window);
-	UIMANAGER.RenderForeground(window);
+	for (; i < UiManager::k_topLayer; ++i)
+	{
+		UIMANAGER.RenderLayer(window, i);
+	}
+
+	return;
 }
 
 GameContext& BattleState::GetGameContext() const

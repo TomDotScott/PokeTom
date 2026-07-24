@@ -1,6 +1,7 @@
 #ifndef UI_ELEMENT_H
 #define UI_ELEMENT_H
 #include <filesystem>
+
 #include "../Gameobject.h"
 #include "../ISerialisable.h"
 
@@ -12,21 +13,14 @@ public:
 		Button,
 		Panel,
 		Sprite,
+		ProgressBar,
 		Text
-	};
-
-	enum class eLayer : std::int8_t
-	{
-		NONE = -1,
-		BACKGROUND,
-		MIDGROUND,
-		FOREGROUND
 	};
 
 	UiElement(eType type, UiElement* parent = nullptr);
 
-	eLayer GetLayer() const;
-	void SetLayer(eLayer layer);
+	int8_t GetLayer() const;
+	void SetLayer(int8_t layer);
 
 	eType GetType() const;
 
@@ -42,6 +36,8 @@ public:
 
 	bool LoadFromXML(const XmlNode& node) override;
 
+	UiElement* GetParent() const;
+	UiElement* GetTopMostParent() const;
 	void SetParent(UiElement* parent);
 
 protected:
@@ -53,7 +49,7 @@ protected:
 
 private:
 	std::string m_name;
-	eLayer m_layer;
+	int8_t m_layer;
 	eType m_type;
 	std::vector<const sf::Drawable*> m_drawables;
 };

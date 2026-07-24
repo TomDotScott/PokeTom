@@ -224,9 +224,7 @@ void OverworldState::Render(sf::RenderWindow& window) const
 
 	m_gameContext.m_Renderer.RenderLevel(window, m_gameContext.m_Entities, level->GetEntityZIndex());
 
-	UIMANAGER.RenderBackground(window);
-	UIMANAGER.RenderMidground(window);
-	UIMANAGER.RenderForeground(window);
+	UIMANAGER.RenderAll(window);
 }
 
 void OverworldState::CheckForPortals(Entity* player, const Level* currentLevel)

@@ -12,9 +12,7 @@ UiText::UiText(UiElement* parent) :
 	m_text(DEFAULT_FONT),
 	m_alignment(eAlignment::Left)
 {
-	// All text drawn on top
-	// TODO: Make this more sophisticated... I need to be able to support arbitrary placement of elements in the XML otherwise we are at the mercy of std::hash!
-	SetLayer(eLayer::FOREGROUND);
+	SetLayer(UiManager::k_topLayer);
 }
 
 void UiText::SetText(hash_type stringTableID)

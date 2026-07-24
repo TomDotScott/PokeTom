@@ -1,6 +1,7 @@
 #include "OptionSelectLayer.h"
 
 #include "../../Engine/UI/UiManager.h"
+#include "../../Engine/UI/UiPanel.h"
 
 OptionSelectLayer::OptionSelectLayer() :
 	UILayer(),

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- REMINDER HERE BECAUSE FUTURE TOM WILL FORGET!
+      - Layers are a int8 so go from -128 to 127, I am gonna use 63 and 64 for the Dialogue boxes
+      - Entities are drawn at 0 so anything on top of entities is positive, anything below is negative
+      - Believe in yourself and you can achieve anything!
+-->
 
 <ui>
   <Text>
@@ -25,14 +30,14 @@ So that I can see what dialogue will look like!!!
       <position x="145" y="45" />
       <size>15</size>
       <font>DEFAULT</font>
-      <layer>foreground</layer>
+      <layer>64</layer>
     </Text>
     <Sprite>
       <name>DIALOGUE_BOX</name>
       <position x="132" y="0" />
       <scale x="2" y="2" />
       <texture>DIALOGUE_BOX</texture>
-      <layer>midground</layer>
+      <layer>63</layer>
     </Sprite>
   </Panel>
 
@@ -46,7 +51,7 @@ So that I can see what dialogue will look like!!!
       <position x="0" y="0" />
       <scale x="3.2" y="3.2" />
       <texture topLeftX="249" topLeftY="6" spriteWidth="240" spriteHeight="112">BATTLE_BACKGROUNDS</texture>
-      <layer>background</layer>
+      <layer>-128</layer>
     </Sprite>
 
     <Sprite>
@@ -54,7 +59,7 @@ So that I can see what dialogue will look like!!!
       <position x="0" y="358" />
       <scale x="3.2" y="3.2" />
       <texture topLeftX="297" topLeftY="56" spriteWidth="240" spriteHeight="48">BATTLE_HUD</texture>
-      <layer>midground</layer>
+      <layer>1</layer>
     </Sprite>
 
     <Panel>
@@ -66,7 +71,7 @@ So that I can see what dialogue will look like!!!
         <name>OPTIONS</name>
         <position x="0" y="0" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>2</layer>
         <texture topLeftX="146" topLeftY="4" spriteWidth="120" spriteHeight="48">BATTLE_HUD</texture>
       </Sprite>
 
@@ -74,7 +79,7 @@ So that I can see what dialogue will look like!!!
         <name>FIGHT_ARROW</name>
         <position x="26" y="42" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -82,7 +87,7 @@ So that I can see what dialogue will look like!!!
         <name>MONSTERS_ARROW</name>
         <position x="26" y="93" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -90,7 +95,7 @@ So that I can see what dialogue will look like!!!
         <name>BAG_ARROW</name>
         <position x="205" y="42" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -98,7 +103,7 @@ So that I can see what dialogue will look like!!!
         <name>RUN_ARROW</name>
         <position x="205" y="93" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
     </Panel>
@@ -113,14 +118,14 @@ So that I can see what dialogue will look like!!!
         <position x="0" y="0" />
         <scale x="3.2" y="3.2" />
         <texture topLeftX="297" topLeftY="4" spriteWidth="240" spriteHeight="48">BATTLE_HUD</texture>
-        <layer>midground</layer>
+        <layer>2</layer>
       </Sprite>
 
       <Sprite>
         <name>MOVE_1_ARROW</name>
         <position x="27" y="27" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -132,14 +137,14 @@ So that I can see what dialogue will look like!!!
         <position x="46" y="43" />
         <size>22</size>
         <font>TEXT_BOX</font>
-        <layer>foreground</layer>
+        <layer>3</layer>
       </Text>
 
       <Sprite>
         <name>MOVE_2_ARROW</name>
         <position x="256" y="27" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -151,14 +156,14 @@ So that I can see what dialogue will look like!!!
         <position x="275" y="43" />
         <size>22</size>
         <font>TEXT_BOX</font>
-        <layer>foreground</layer>
+        <layer>3</layer>
       </Text>
 
       <Sprite>
         <name>MOVE_3_ARROW</name>
         <position x="27" y="95" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -170,14 +175,14 @@ So that I can see what dialogue will look like!!!
         <position x="46" y="111" />
         <size>22</size>
         <font>TEXT_BOX</font>
-        <layer>foreground</layer>
+        <layer>3</layer>
       </Text>
 
       <Sprite>
         <name>MOVE_4_ARROW</name>
         <position x="256" y="95" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
+        <layer>3</layer>
         <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
       </Sprite>
 
@@ -189,7 +194,7 @@ So that I can see what dialogue will look like!!!
         <position x="275" y="111" />
         <size>22</size>
         <font>TEXT_BOX</font>
-        <layer>foreground</layer>
+        <layer>3</layer>
       </Text>
     </Panel>
 
@@ -198,7 +203,7 @@ So that I can see what dialogue will look like!!!
       <position x="32" y="32" />
       <scale x="3.2" y="3.2" />
       <texture topLeftX="3" topLeftY="3" spriteWidth="100" spriteHeight="29">BATTLE_HUD</texture>
-      <layer>foreground</layer>
+      <layer>16</layer>
     </Sprite>
 
     <Sprite>
@@ -206,7 +211,18 @@ So that I can see what dialogue will look like!!!
       <position x="414" y="227" />
       <scale x="3.2" y="3.2" />
       <texture topLeftX="3" topLeftY="44" spriteWidth="104" spriteHeight="37">BATTLE_HUD</texture>
-      <layer>foreground</layer>
+      <layer>16</layer>
     </Sprite>
+
+    <ProgressBar>
+      <name>PLAYER_HP_BAR</name>
+      <fillorientation>horizontal</fillorientation>
+      <position x="154" y="83" />
+      <size x="156" y="16" />
+      <scale x="3.2" y="3.2" />
+      <layer>100</layer>
+      <backgroundcolour>506858FF</backgroundcolour>
+      <fillcolour>58D080FF</fillcolour>
+    </ProgressBar>
   </Panel>
 </ui>

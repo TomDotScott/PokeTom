@@ -5,6 +5,8 @@
 
 #include "../Engine/Asserts.h"
 #include "../Engine/UI/UiManager.h"
+#include "../Engine/UI/UiPanel.h"
+#include "../Engine/UI/UiText.h"
 
 class DialogueBox
 {
