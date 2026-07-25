@@ -15,9 +15,6 @@ struct BattleBeginContext
 	uint32_t m_OpponentEntityID;
 
 	bool m_isTrainerBattle;
-
-	std::vector<entity_id_t> m_PlayerMonsterEntityIDs;
-	std::vector<entity_id_t> m_opponentMonsterEntityIDs;
 };
 
 

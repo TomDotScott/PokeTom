@@ -37,8 +37,6 @@ private:
 	void CheckForPortals(Entity* player, const Level* currentLevel);
 	void CheckForTallGrass(Entity* player, const Level* currentLevel);
 
-	void HealAllPlayerMonsters();
-
 	void OnLevelEntered();
 	void RespawnPlayerAtPortal(const hash_type& levelName, const hash_type& spawnPointName);
 	void RespawnPlayerInWorld(const hash_type& levelName, const sf::Vector2f& position);

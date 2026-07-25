@@ -50,6 +50,13 @@ private:
 			UIMANAGER.DrawDebugText(window);
 		}
 	}
+
+	enum eDebugInputs
+	{
+		TRIGGER_BATTLE
+	};
+
+	InputMapper m_mapper;
 #endif
 
 	void UpdateScreenFade(float deltaTime);

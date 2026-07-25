@@ -2,8 +2,6 @@
 #define ENTITYREGISTRY_H
 #include "Entity.h"
 
-using entity_id_t = uint32_t;
-
 class EntityRegistry
 {
 public:
@@ -18,6 +16,12 @@ public:
 		return ref;
 	}
 
+	template <typename... Args>
+	Entity& Create(Args&&... args)
+	{
+		return Create<Entity>(std::forward<Args>(args)...);
+	}
+
 	template<typename T>
 	T* Get(const entity_id_t id) const
 		requires (std::is_base_of_v<Entity, T>)
@@ -28,6 +32,11 @@ public:
 		}
 
 		return dynamic_cast<T*>(m_entities.at(id).get());
+	}
+
+	Entity* Get(const entity_id_t id) const
+	{
+		return Get<Entity>(id);
 	}
 
 

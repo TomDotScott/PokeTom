@@ -7,14 +7,10 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Animation/AnimationComponent.h"
-#include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/UI/UiManager.h"
+#include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterEntity.h"
 #include "Monsters/PocketMonsterManager.h"
-
-
-// TODO: HACK - Gonna turn this into a proper component on the Player entity (and any NPC entities that need it!)
-std::vector<entity_id_t> PLAYER_PARTY;
 
 OverworldState::OverworldState(
 	GameContext& ctx,
@@ -30,12 +26,28 @@ OverworldState::OverworldState(
 	m_cameraPosition(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
 	m_rng(0, 100)
 {
-	if (PLAYER_PARTY.empty())
+	Entity* playerEntity = ctx.m_Entities.Get<Entity>(ctx.m_PlayerEntityID);
+
+	ASSERT(playerEntity != nullptr);
+
+	if (!playerEntity->HasComponent<MonsterPartyComponent>())
 	{
-		auto& shinxEntity = ctx.m_Entities.Create<PocketMonsterEntity>(
-			403, 5, EntityAnimationComponent::eAnimationName::BATTLE_BACK);
-		shinxEntity.OnDeactivate();
-		PLAYER_PARTY.emplace_back(shinxEntity.GetID());
+		auto& mpc = playerEntity->AddComponent<MonsterPartyComponent>(
+			playerEntity,
+			m_gameContext,
+			std::vector<MonsterPartyComponent::MonsterPartyInfo>{
+				{
+					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(403),
+					.m_Level = 10
+				},
+				{
+					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(507),
+					.m_Level = 12
+				}
+			}
+		);
+
+		mpc.OnActivate();
 	}
 
 	const std::shared_ptr<Level> startLevel = m_gameContext.m_World.GetLevel(overworldLevel);
@@ -45,7 +57,7 @@ OverworldState::OverworldState(
 	{
 		if (m_lastEnteredPortalID == std::nullopt)
 		{
-			auto* player = ctx.m_Entities.Get<Entity>(ctx.m_PlayerEntityID);
+			auto* player = playerEntity;
 			ASSERT(player);
 
 			RespawnPlayerAtPortal(HASH(START_LEVEL), HASH("player_spawn"));
@@ -63,17 +75,12 @@ OverworldState::OverworldState(
 
 	if (healPlayerParty)
 	{
-		const auto& entities = ctx.m_Entities;
-		for (auto entityID : PLAYER_PARTY)
-		{
-			PocketMonsterEntity* monster = entities.Get<PocketMonsterEntity>(entityID);
-			ASSERT(monster);
+		auto* mpc = m_gameContext.m_Entities.Get<Entity>(m_gameContext.m_PlayerEntityID)->GetComponent<
+			MonsterPartyComponent>();
+		ASSERT(mpc);
 
-			monster->FullHeal();
-		}
+		mpc->FullHeal();
 	}
-
-	m_onScreenFadedEventID = game_events::OnScreenFaded.On([this]() { OnLevelEntered(); });
 }
 
 void OverworldState::OnEnter()
@@ -81,6 +88,8 @@ void OverworldState::OnEnter()
 	Entity* player = m_gameContext.m_Entities.Get<Entity>(m_gameContext.m_PlayerEntityID);
 	m_cameraPosition = player->GetPosition();
 	m_gameContext.m_Renderer.SetCameraCentre(m_cameraPosition, m_worldBounds);
+
+	m_onScreenFadedEventID = game_events::OnScreenFaded.On([this]() { OnLevelEntered(); });
 }
 
 void OverworldState::OnExit()
@@ -243,8 +252,9 @@ void OverworldState::CheckForPortals(Entity* player, const Level* currentLevel)
 
 		m_lastEnteredPortalID = portal->m_Name;
 
-		std::cout << "Transitioning to " << m_gameContext.m_World.GetPortalData(currentLevel->GetName(), portal->m_Name).
-		                                          m_TargetLevel << "\n";
+		std::cout << "Transitioning to " << m_gameContext.
+		                                    m_World.GetPortalData(currentLevel->GetName(), portal->m_Name).
+		                                    m_TargetLevel << "\n";
 
 		game_events::OnScreenFadeTriggered.Fire();
 	}
@@ -274,33 +284,31 @@ void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel
 		}
 
 		// Create the entity
-		uint32_t monster = distribution.value().ChooseMonsterFromDistribution(MapData::MonsterDistribution::eDistributionType::Grass);
+		uint32_t monster = distribution.value().ChooseMonsterFromDistribution(
+			MapData::MonsterDistribution::eDistributionType::Grass);
 
-		auto& monsterEntity = m_gameContext.m_Entities.Create<PocketMonsterEntity>(
-			monster,
-			// TODO: Support Different levels of wild monsters!
-			5,
-			EntityAnimationComponent::eAnimationName::BATTLE_FRONT
+		auto& monsterEntity = m_gameContext.m_Entities.Create();
+		auto& monsterMPC = monsterEntity.AddComponent<MonsterPartyComponent>(
+			&monsterEntity,
+			m_gameContext,
+			std::vector<MonsterPartyComponent::MonsterPartyInfo>{{
+					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(monster),
+					.m_Level = 5
+				},
+			}
 		);
 
 		monsterEntity.OnDeactivate();
 
 		const BattleBeginContext ctx(currentLevel->GetName(),
-		                       playerPos,
-		                       m_gameContext.m_PlayerEntityID,
-		                       ~0U,
-		                       false,
-		                       PLAYER_PARTY,
-		                       { monsterEntity.GetID() }
+		                             playerPos,
+		                             m_gameContext.m_PlayerEntityID,
+		                             monsterEntity.GetID(),
+		                             false
 		);
 
 		game_events::OnBattleStart.Fire(ctx);
 	}
-}
-
-void OverworldState::HealAllPlayerMonsters()
-{
-
 }
 
 void OverworldState::OnLevelEntered()

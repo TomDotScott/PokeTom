@@ -2,9 +2,9 @@
 #define ENTITY_H
 #include "Gameobject.h"
 #include "IUpdateable.h"
-#include "Orientation.h"
 #include "Animation/AnimationPlayer.h"
 
+using entity_id_t = uint32_t;
 
 class Entity : public GameObject, public IUpdateable
 {
@@ -53,6 +53,12 @@ public:
 		T& ref = *component;
 		m_components.emplace_back(std::move(component));
 		return ref;
+	}
+
+	template<typename T>
+	bool HasComponent() const
+	{
+		return GetComponent<T>() != nullptr;
 	}
 
 	void OnActivate() override;

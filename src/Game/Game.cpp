@@ -15,6 +15,7 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
+#include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
 Game::Game(sol::state& lua) :
@@ -85,20 +86,77 @@ Game::Game(sol::state& lua) :
 		{
 			// TODO: Proper transition to some dialogue saying that the player whited out and rushed back to the hospital
 			const std::shared_ptr<Level> level = m_context.m_World.GetLevel(m_lastHospitalCheckpoint.m_LevelHash);
-			sf::Vector2f spawnPoint = level->GetWorldPositionFromGridPosition(level->GetSpawnPointData(m_lastHospitalCheckpoint.m_SpawnPointHash).m_GridPosition);
-			RequestTransition(std::make_unique<OverworldState>(m_context, m_lastHospitalCheckpoint.m_LevelHash, spawnPoint, true));
+			sf::Vector2f spawnPoint = level->GetWorldPositionFromGridPosition(
+				level->GetSpawnPointData(m_lastHospitalCheckpoint.m_SpawnPointHash).m_GridPosition);
+			RequestTransition(
+				std::make_unique<OverworldState>(m_context, m_lastHospitalCheckpoint.m_LevelHash, spawnPoint, true));
 		}
 		else
 		{
-			RequestTransition(std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition, false));
+			RequestTransition(
+				std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition, false));
 		}
 	});
+
+#if !BUILD_MASTER
+	m_mapper.Map(TRIGGER_BATTLE, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::F5));
+
+	m_mapper.OnButtonPressed(TRIGGER_BATTLE, [this]()
+	{
+		static Entity* debugOpponent = nullptr;
+
+		if (debugOpponent != nullptr)
+		{
+			m_context.m_Entities.Destroy(debugOpponent->GetID());
+			debugOpponent = nullptr;
+		}
+
+		auto player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
+		debugOpponent = &m_context.m_Entities.Create();
+
+		auto& mpc = debugOpponent->AddComponent<MonsterPartyComponent>(
+			debugOpponent,
+			m_context,
+			std::vector<MonsterPartyComponent::MonsterPartyInfo>{
+				{
+					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(403),
+					.m_Level = 5
+				},
+			}
+		);
+
+		mpc.OnActivate();
+
+		game_events::OnBattleStart.Fire({
+			.m_LevelHash = m_context.m_World.GetLevelAtPosition(player->GetPosition())->GetName(),
+			.m_PlayerPosition = player->GetPosition(),
+			.m_PlayerEntityID = player->GetID(),
+			.m_OpponentEntityID = debugOpponent->GetID(),
+			.m_isTrainerBattle = false,
+		});
+
+		game_events::OnBattleEnd.Once([this](BattleEndContext /*ctx*/)
+		{
+			printf("DEBUG BATTLE ENDED!\n");
+
+			game_events::OnScreenFaded.Once([this]()
+			{
+				m_context.m_Entities.Destroy(debugOpponent->GetID());
+				debugOpponent = nullptr;
+			});
+		});
+	});
+#endif
 }
 
 Game::~Game() = default;
 
 void Game::Update(const float deltaTime)
 {
+#if !BUILD_MASTER
+	m_mapper.Update();
+#endif
+
 	if (m_screenFader.FadeInProgress())
 	{
 		UpdateScreenFade(deltaTime);

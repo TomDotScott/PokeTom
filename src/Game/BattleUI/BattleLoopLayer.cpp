@@ -7,6 +7,7 @@
 #include "../DialogueBox.h"
 #include "../GameEvents.h"
 #include "../../Engine/Stringtable.h"
+#include "../Monsters/MonsterPartyComponent.h"
 #include "../Monsters/PocketMonsterEntity.h"
 
 namespace
@@ -138,14 +139,16 @@ void BattleLoopLayer::DoTurn(
 	Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
 
 	// X used Y...
-	m_messageQueue.emplace(("MOVE NAME"), [this, attacker, selectedMoveIdx](){
+	m_messageQueue.emplace(("MOVE NAME"), [this, attacker, selectedMoveIdx]()
+	{
 		ShowMoveNameText(attacker, selectedMoveIdx);
 	});
 
 	// The move hits or misses...
 	if (outcome.m_MoveMissed)
 	{
-		m_messageQueue.emplace(("THE MOVE MISSED!"), [this, attacker](){
+		m_messageQueue.emplace(("THE MOVE MISSED!"), [this, attacker]()
+		{
 			ShowMissText(attacker);
 		});
 
@@ -156,7 +159,8 @@ void BattleLoopLayer::DoTurn(
 	const float effectiveness = outcome.m_TypeMultiplier;
 	if (effectiveness != 1.0f)
 	{
-		m_messageQueue.emplace(("IMMUNE/VERY/NOT VERY EFFECTIVE TEXT"), [this, effectiveness](){
+		m_messageQueue.emplace(("IMMUNE/VERY/NOT VERY EFFECTIVE TEXT"), [this, effectiveness]()
+		{
 			ShowEffectivenessText(effectiveness);
 		});
 	}
@@ -164,7 +168,8 @@ void BattleLoopLayer::DoTurn(
 	// Was it a crit?
 	if (outcome.m_IsCriticalHit)
 	{
-		m_messageQueue.emplace(("CRITICAL HIT!"), [this](){
+		m_messageQueue.emplace(("CRITICAL HIT!"), [this]()
+		{
 			ShowCriticalHitText();
 		});
 	}
@@ -264,8 +269,8 @@ void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 }
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
-									   PocketMonsterEntity* defender,
-									   uint8_t moveIdx) const
+                                       PocketMonsterEntity* defender,
+                                       uint8_t moveIdx) const
 {
 	ASSERT(moveIdx < MOVE_COUNT);
 	ASSERT(attacker != nullptr);
@@ -292,56 +297,53 @@ Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
 
 void BattleLoopLayer::OnMonsterFainted(const BattleState& state, PocketMonsterEntity* monster, bool isPlayerMonster)
 {
-	bool hasMonstersLeft = false;
+	Entity* playerEntity = state.GetGameContext().m_Entities.Get<Entity>(state.GetBattleContext().m_PlayerEntityID);
+	Entity* opponentEntity = state.GetGameContext().m_Entities.Get<Entity>(state.GetBattleContext().m_OpponentEntityID);
 
-	// TODO: Pointers to vectors are generally bad... BUT if these are null there are bigger fish to fry!
-	const std::vector<entity_id_t>* monsterIDs = isPlayerMonster
-		? &state.GetBattleContext().m_PlayerMonsterEntityIDs
-		: &state.GetBattleContext().m_opponentMonsterEntityIDs;
+	ASSERT(playerEntity && opponentEntity);
 
-	const EntityRegistry& entities = state.GetGameContext().m_Entities;
-	for (const auto& id : *monsterIDs)
-	{
-		const auto* monsterEntity = entities.Get<PocketMonsterEntity>(id);
-		ASSERT(monsterEntity);
+	const MonsterPartyComponent* playerMPC = playerEntity->GetComponent<MonsterPartyComponent>();
+	const MonsterPartyComponent* opponentMPC = opponentEntity->GetComponent<MonsterPartyComponent>();
 
-		if (!monsterEntity->IsFainted())
-		{
-			hasMonstersLeft = true;
-		}
-	}
+	ASSERT(playerMPC && opponentMPC);
 
+	const bool hasMonstersLeft = isPlayerMonster ? playerMPC->HasMonstersLeft() : opponentMPC->HasMonstersLeft();
 
 	// Was it the player?
 	if (isPlayerMonster)
 	{
 		m_messageQueue.emplace("MONSTER FAINTED",
-			[this, monster]() {
-				ShowFaintText(monster);
-			});
+		                       [this, monster]()
+		                       {
+			                       ShowFaintText(monster);
+		                       });
 
 		if (!hasMonstersLeft)
 		{
 			m_messageQueue.emplace("FASTEST FAINTED",
-				[this]() {
-					ShowWhiteOutText();
-				},
-				[this]() {
-					m_endContext.m_SendPlayerToHospital = true;
-					game_events::OnBattleEnd.Fire(m_endContext);
-				});
+			                       [this]()
+			                       {
+				                       ShowWhiteOutText();
+			                       },
+			                       [this]()
+			                       {
+				                       m_endContext.m_SendPlayerToHospital = true;
+				                       game_events::OnBattleEnd.Fire(m_endContext);
+			                       });
 		}
 	}
 	else
 	{
 		m_messageQueue.emplace("MONSTER FAINTED",
-			[this, monster]() {
-				ShowFaintText(monster);
-			});
+		                       [this, monster]()
+		                       {
+			                       ShowFaintText(monster);
+		                       });
 
 		if (!hasMonstersLeft)
 		{
-			m_messageQueue.back().m_OnDismiss = [this]() {
+			m_messageQueue.back().m_OnDismiss = [this]()
+			{
 				game_events::OnBattleEnd.Fire(m_endContext);
 			};
 		}

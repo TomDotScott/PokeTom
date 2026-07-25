@@ -11,6 +11,7 @@
 #include "BattleUI/MoveSelectLayer.h"
 #include "BattleUI/OptionSelectLayer.h"
 #include "BattleUI/RunAwayLayer.h"
+#include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterEntity.h"
 
 BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext) :
@@ -65,16 +66,41 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 	m_inputMapper.OnButtonPressed(RIGHT, [this]() { OnNavigateButtonPressed(RIGHT); });
 	m_inputMapper.OnButtonPressed(SELECT, [this]() { OnSelectButtonPressed(); });
 
-	// TODO: Find the first Monster in the parties that have HP
-	// TODO: This might not even have to be part of the battlecontext if I make it a component attached to the player, we have the player's entity ID here so we can get it through that
-	m_playerMonsterEntityID = m_battleContext.m_PlayerMonsterEntityIDs[0];
-	PocketMonsterEntity* playerMonster = gameContext.m_Entities.Get<PocketMonsterEntity>(m_playerMonsterEntityID);
-	playerMonster->OnActivate();
+	// SET UP PLAYER ENTITY AND PARTY
+	Entity* playerEntity = m_gameContext.m_Entities.Get(battleContext.m_PlayerEntityID);
+	ASSERT(playerEntity->HasComponent<MonsterPartyComponent>());
+	auto* playerMPC = playerEntity->GetComponent<MonsterPartyComponent>();
+	playerMPC->OnBattleBegin();
 
-	PocketMonsterEntity* opponentMonster = gameContext.m_Entities.Get<PocketMonsterEntity>(battleContext.m_opponentMonsterEntityIDs[0]);
+	PocketMonsterEntity* playerMonster = playerMPC->GetActiveMonster();
+	ASSERT_MSG(playerMonster, "Something has gone very wrong!");
+
+	playerMonster->GetComponent<EntityAnimationComponent>()->PlayAnimation(EntityAnimationComponent::BATTLE_BACK, true);
+
+	m_playerMonsterEntityID = playerMonster->GetID();
+
+
+	// SET UP OPPONENT ENTITY AND PARTY
+	Entity* opponentEntity = m_gameContext.m_Entities.Get(battleContext.m_OpponentEntityID);
+
+	// Ensure the opponent components are active!
+	if (!opponentEntity->IsActive())
+	{
+		opponentEntity->OnActivate();
+	}
+
+	ASSERT(opponentEntity->HasComponent<MonsterPartyComponent>());
+	auto* opponentMPC = opponentEntity->GetComponent<MonsterPartyComponent>();
+	opponentMPC->OnBattleBegin();
+
+	PocketMonsterEntity* opponentMonster = opponentMPC->GetActiveMonster();
 	ASSERT_MSG(opponentMonster, "Something has gone very wrong!");
 
+	opponentMonster->GetComponent<EntityAnimationComponent>()->PlayAnimation(
+		EntityAnimationComponent::BATTLE_FRONT, true);
+
 	m_opponentMonsterEntityID = opponentMonster->GetID();
+
 
 	// TODO: Dynamically position them based on the sprites
 	playerMonster->SetPosition({ 206, 389 });
@@ -95,11 +121,17 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 void BattleState::OnEnter()
 {
 	printf("Entered a battle!\n");
+	m_battleFinished = false;
 
 	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnActivate();
 	DialogueBox::SetVisible(false);
 
 	m_UILayers[m_currentUILayer]->OnActivate(*this, UILayer::LayerResult{});
+
+	m_onBattleEndEventID = game_events::OnBattleEnd.On([this](BattleEndContext)
+		{
+			m_battleFinished = true;
+		});
 }
 
 void BattleState::OnExit()
@@ -112,18 +144,25 @@ void BattleState::OnExit()
 
 	m_UILayers[m_currentUILayer]->OnDeactivate();
 
-	for (const auto id : m_battleContext.m_PlayerMonsterEntityIDs)
-	{
-		auto* e = m_gameContext.m_Entities.Get<Entity>(id);
-		e->OnDeactivate();
-	}
+	Entity* player = m_gameContext.m_Entities.Get<Entity>(m_gameContext.m_PlayerEntityID);
+	ASSERT(player && player->HasComponent<MonsterPartyComponent>());
+
+	auto mpc = player->GetComponent<MonsterPartyComponent>();
+	mpc->OnBattleEnd();
 
 	m_gameContext.m_Entities.Destroy(m_opponentMonsterEntityID);
+
+	game_events::OnBattleEnd.Off(m_onBattleEndEventID);
 }
 
 void BattleState::Update(const float deltaTime)
 {
 	m_inputMapper.Update();
+
+	if (m_battleFinished)
+	{
+		return;
+	}
 
 	auto* playerMonster = m_gameContext.m_Entities.Get<Entity>(m_playerMonsterEntityID);
 	ASSERT(playerMonster != nullptr);

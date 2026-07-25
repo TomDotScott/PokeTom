@@ -40,6 +40,9 @@ private:
 
 	InputMapper m_inputMapper;
 
+	size_t m_onBattleEndEventID;
+	bool m_battleFinished;
+
 	std::array<std::unique_ptr<UILayer>, eUILayerType::COUNT> m_UILayers;
 
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) const;
