@@ -77,11 +77,13 @@ public:
 	bool IsFainted() const;
 	MonsterStats& GetStats();
 
+	uint16_t GetMaxHP() const;
 	void TakeDamage(uint16_t damage);
 
 private:
 	std::array<int, STAT_COUNT> m_statModifiers;
 	MonsterStats m_stats;
+	uint16_t m_maxHP;
 };
 
 #endif // MONSTERSTATS_H

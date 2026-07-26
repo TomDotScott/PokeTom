@@ -17,7 +17,11 @@ public:
 	hash_type GetNameStringID() const;
 
 	MonsterStats& GetStats();
+	const MonsterStats& GetBaseStats() const;
+
 	uint8_t GetLevel() const;
+	uint16_t GetMaxHP() const;
+
 
 	monster_type GetType() const;
 

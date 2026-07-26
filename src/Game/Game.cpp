@@ -95,7 +95,7 @@ Game::Game(sol::state& lua) :
 
 	RequestTransition(std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt, false));
 
-#if 0
+#if !BUILD_MASTER
 	m_mapper.Map(TRIGGER_BATTLE, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::F5));
 
 	m_mapper.OnButtonPressed(TRIGGER_BATTLE, [this]()

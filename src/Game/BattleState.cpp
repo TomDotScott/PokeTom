@@ -216,8 +216,6 @@ void BattleState::Render(sf::RenderWindow& window) const
 	{
 		UIMANAGER.RenderLayer(window, i);
 	}
-
-	return;
 }
 
 GameContext& BattleState::GetGameContext() const

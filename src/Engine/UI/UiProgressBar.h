@@ -29,6 +29,8 @@ public:
 
 	void SetProgress(float val, float maxVal, bool invert);
 
+	float GetProgress(bool invert) const;
+
 private:
 	sf::RectangleShape m_fill;
 	float m_maxFillSize;

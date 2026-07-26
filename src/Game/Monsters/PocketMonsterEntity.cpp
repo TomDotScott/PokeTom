@@ -37,7 +37,8 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
 	};
 
-	AddComponent<MonsterStatComponent>(MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
+	AddComponent<MonsterStatComponent>(
+		MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
 
 	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, 2, ~0U });
 
@@ -65,9 +66,22 @@ MonsterStats& PocketMonsterEntity::GetStats()
 	return msc->GetStats();
 }
 
+const MonsterStats& PocketMonsterEntity::GetBaseStats() const
+{
+	return m_monsterInfo.GetBaseStats();
+}
+
 uint8_t PocketMonsterEntity::GetLevel() const
 {
 	return m_currentLevel;
+}
+
+uint16_t PocketMonsterEntity::GetMaxHP() const
+{
+	auto* msc = GetComponent<MonsterStatComponent>();
+	ASSERT(msc);
+
+	return msc->GetMaxHP();
 }
 
 monster_type PocketMonsterEntity::GetType() const

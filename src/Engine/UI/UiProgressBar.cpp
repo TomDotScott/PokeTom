@@ -110,25 +110,33 @@ bool UiProgressBar::LoadFromXML(const XmlNode& node)
 
 void UiProgressBar::SetProgress(const float progress)
 {
-	ASSERT(progress >= 0.f && progress <= 1.0f);
-
 	m_progress = progress;
 	UpdateFill();
 }
 
-void UiProgressBar::SetProgress(const float val, const float maxVal, bool invert)
+void UiProgressBar::SetProgress(const float val, const float maxVal, const bool invert)
 {
-	ASSERT(maxVal > val);
+	ASSERT(maxVal > 0.f);
+	ASSERT(val >= 0.f);
 
-	float progress = val / maxVal;
+	float progress = maths::Clamp(val / maxVal, 0.f, 1.0f);
 
 	if (invert)
 	{
 		progress = 1.0f - progress;
 	}
 
-	maths::Clamp(progress, 0.f, 1.0f);
 	SetProgress(progress);
+}
+
+float UiProgressBar::GetProgress(const bool invert) const
+{
+	if (invert)
+	{
+		return 1 - m_progress;
+	}
+
+	return m_progress;
 }
 
 void UiProgressBar::UpdateFill()

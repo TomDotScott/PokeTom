@@ -111,7 +111,8 @@ uint16_t MonsterStats::GetNextStat(const MonsterStats base,
 
 MonsterStatComponent::MonsterStatComponent(const MonsterStats& currentStats) :
 	m_statModifiers{ 0, 0, 0, 0, 0, 0 },
-	m_stats{ currentStats }
+	m_stats{ currentStats },
+	m_maxHP(m_stats.m_HP)
 {
 }
 
@@ -143,6 +144,11 @@ bool MonsterStatComponent::IsFainted() const
 MonsterStats& MonsterStatComponent::GetStats()
 {
 	return m_stats;
+}
+
+uint16_t MonsterStatComponent::GetMaxHP() const
+{
+	return m_maxHP;
 }
 
 void MonsterStatComponent::TakeDamage(const uint16_t damage)

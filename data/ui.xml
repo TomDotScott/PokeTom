@@ -206,6 +206,18 @@ So that I can see what dialogue will look like!!!
       <layer>16</layer>
     </Sprite>
 
+    <ProgressBar>
+      <name>OPPONENT_HP_BAR</name>
+      <fillorientation>horizontal</fillorientation>
+      <position x="154" y="83" />
+      <size x="156" y="16" />
+      <margin x="2" y="4"/>
+      <scale x="3.2" y="3.2" />
+      <layer>100</layer>
+      <backgroundcolour>506858FF</backgroundcolour>
+      <fillcolour>58D080FF</fillcolour>
+    </ProgressBar>
+
     <Sprite>
       <name>PLAYER_HP</name>
       <position x="414" y="227" />
@@ -217,7 +229,7 @@ So that I can see what dialogue will look like!!!
     <ProgressBar>
       <name>PLAYER_HP_BAR</name>
       <fillorientation>horizontal</fillorientation>
-      <position x="154" y="83" />
+      <position x="564" y="278" />
       <size x="156" y="16" />
       <margin x="2" y="4"/>
       <scale x="3.2" y="3.2" />

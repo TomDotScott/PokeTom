@@ -15,6 +15,7 @@ class BattleLoopLayer final : public UILayer
 public:
 	BattleLoopLayer();
 	LayerResult GetLayerResult() const override;
+	void Update(float deltaTime) override;
 	void OnSelectButtonPressed() override;
 	void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
 	void OnDeactivate() override;
@@ -24,20 +25,68 @@ private:
 	bool m_playerSwitchedOut;
 	bool m_opponentSwitchedOut;
 
-	struct BattleMessage
+	// Advance when A is pressed
+	struct TextBeat
 	{
 		std::string m_MessageName;
 		std::function<void()> m_OnShow;
 		std::optional<std::function<void()>> m_OnDismiss = std::nullopt;
 	};
-	std::queue<BattleMessage> m_messageQueue;
-	std::optional<BattleMessage> m_previousMessage;
+
+	// Advance when the animation is finished
+	struct AnimationBeat
+	{
+		std::function<void()> m_Start;
+		std::function<bool()> m_IsComplete;
+	};
+
+	using BattleBeat = std::variant<TextBeat, AnimationBeat>;
+	std::queue<BattleBeat> m_battleBeatQueue;
+
+	class HealthbarAnimation
+	{
+	public:
+		enum class eAnimationType
+		{
+			None,
+			Player,
+			Opponent
+		};
+
+		HealthbarAnimation(eAnimationType type);
+
+		void Start(PocketMonsterEntity* monster, uint16_t monsterHealthBefore);
+
+		void Finish();
+		void Update(float deltaTime);
+
+		bool IsPlaying() const;
+
+	private:
+		bool m_finished;
+		uint16_t m_healthBefore;
+
+		uint16_t m_currentHealth;
+		uint16_t m_maxHealth;
+
+		eAnimationType m_type;
+
+		float m_duration;
+		float m_currentTime;
+
+		float CalculateFill() const;
+		void UpdateFill() const;
+	};
+
+	HealthbarAnimation m_playerHealthAnimation;
+	HealthbarAnimation m_opponentHealthAnimation;
 
 	BattleEndContext m_endContext;
 
-	void DoTurn(const BattleState& state, PocketMonsterEntity* attacker, uint8_t selectedMoveIdx, PocketMonsterEntity* defender, entity_id_t playerMonsterEntityID);
+	void DoTurn(const BattleState& state, PocketMonsterEntity* attacker, uint8_t selectedMoveIdx,
+	            PocketMonsterEntity* defender, entity_id_t playerMonsterEntityID);
 
-	void ShowNextMessage();
+	void AdvanceBeat();
 	void ShowMoveNameText(const PocketMonsterEntity* monster, uint8_t moveIdx) const;
 	void ShowFaintText(const PocketMonsterEntity* monster) const;
 	void ShowWhiteOutText();
@@ -47,6 +96,6 @@ private:
 	void ShowCriticalHitText() const;
 	void ShowEffectivenessText(float moveOutcome) const;
 	Move::Outcome UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender, uint8_t moveIdx) const;
-	void OnMonsterFainted(const BattleState& state, PocketMonsterEntity* monster, bool isPlayerMonster);
+	void OnMonsterFainted(const BattleState& state, const PocketMonsterEntity* monster, bool isPlayerMonster);
 };
 #endif // BATTLELOOPLAYER_H

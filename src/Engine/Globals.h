@@ -82,4 +82,7 @@ extern RandomRangeGenerator<double> RNG;
 #define TRANSFORMED_SCALAR(x) ((x) * std::min(SCALE_X, SCALE_Y))
 #define TRANSFORMED_VECTOR(v) sf::Vector2f { TRANSFORMED_SCALAR((v).x), TRANSFORMED_SCALAR((v).y) }
 
+template<class... Ts>
+struct overloaded : Ts... { using Ts::operator()...; };
+
 #endif

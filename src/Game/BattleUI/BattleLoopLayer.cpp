@@ -6,7 +6,9 @@
 #include "../BattleState.h"
 #include "../DialogueBox.h"
 #include "../GameEvents.h"
+#include "../../Engine/Maths.h"
 #include "../../Engine/Stringtable.h"
+#include "../../Engine/UI/UiProgressBar.h"
 #include "../Monsters/MonsterPartyComponent.h"
 #include "../Monsters/PocketMonsterEntity.h"
 
@@ -17,13 +19,36 @@ namespace
 
 BattleLoopLayer::BattleLoopLayer() :
 	m_playerSwitchedOut(false),
-	m_opponentSwitchedOut(false)
+	m_opponentSwitchedOut(false),
+	m_playerHealthAnimation(HealthbarAnimation::eAnimationType::Player),
+	m_opponentHealthAnimation(HealthbarAnimation::eAnimationType::Opponent),
+	m_endContext()
 {
 }
 
 UILayer::LayerResult BattleLoopLayer::GetLayerResult() const
 {
 	return { .m_NextLayer = OptionSelect };
+}
+
+void BattleLoopLayer::Update(const float deltaTime)
+{
+	UILayer::Update(deltaTime);
+
+	m_playerHealthAnimation.Update(deltaTime);
+	m_opponentHealthAnimation.Update(deltaTime);
+
+	if (!m_battleBeatQueue.empty())
+	{
+		if (auto* anim = std::get_if<AnimationBeat>(&m_battleBeatQueue.front()))
+		{
+			if (anim->m_IsComplete())
+			{
+				m_battleBeatQueue.pop();
+				AdvanceBeat();
+			}
+		}
+	}
 }
 
 void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
@@ -51,8 +76,6 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	m_opponentSwitchedOut = false;
 
 	ASSERT(prevLayerResult.m_ChosenMoveIndex.has_value());
-
-	m_previousMessage = std::nullopt;
 
 	// Determine who is first or second
 	uint8_t firstMonsterMoveIdx;
@@ -83,7 +106,7 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	ASSERT(first != nullptr);
 	ASSERT(second != nullptr);
 
-	const entity_id_t playerMonsterEntityID = playerMonster->GetMonsterID();
+	const entity_id_t playerMonsterEntityID = playerMonster->GetID();
 
 	DoTurn(state, first, firstMonsterMoveIdx, second, playerMonsterEntityID);
 
@@ -109,7 +132,7 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 		}
 	}
 
-	ShowNextMessage();
+	AdvanceBeat();
 }
 
 void BattleLoopLayer::OnDeactivate()
@@ -122,9 +145,106 @@ void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons /*button*/
 {
 }
 
+BattleLoopLayer::HealthbarAnimation::HealthbarAnimation(const eAnimationType type) :
+	m_finished(true),
+	m_healthBefore(0),
+	m_currentHealth(0),
+	m_maxHealth(0),
+	m_type(type),
+	m_duration(0),
+	m_currentTime(0)
+{
+}
+
+void BattleLoopLayer::HealthbarAnimation::Start(PocketMonsterEntity* monster, const uint16_t monsterHealthBefore)
+{
+	m_finished = false;
+
+	m_currentTime = 0.f;
+
+	m_healthBefore = monsterHealthBefore;
+	m_currentHealth = monster->GetStats().m_HP;
+
+	const float damageDealt = static_cast<float>(monsterHealthBefore) - static_cast<float>(monster->GetStats().m_HP);
+
+	m_maxHealth = monster->GetMaxHP();
+
+	const float percentage = damageDealt / static_cast<float>(m_maxHealth);
+	bool fast = true;
+	if (percentage > 0.25f)
+	{
+		fast = false;
+	}
+
+	m_duration = fast ? 2.f : 5.5f;
+}
+
+void BattleLoopLayer::HealthbarAnimation::Finish()
+{
+	UpdateFill();
+	m_finished = true;
+}
+
+void BattleLoopLayer::HealthbarAnimation::Update(const float deltaTime)
+{
+	if (m_finished)
+	{
+		return;
+	}
+
+	if (m_currentTime > m_duration)
+	{
+		Finish();
+		return;
+	}
+
+	m_currentTime += deltaTime;
+
+	printf("BattleLoopLayer::HealthbarAnimation::Update - Fill=%f    , duration=%f\n", CalculateFill(), m_currentTime);
+	UpdateFill();
+}
+
+bool BattleLoopLayer::HealthbarAnimation::IsPlaying() const
+{
+	return !m_finished;
+}
+
 void BattleLoopLayer::OnSelectButtonPressed()
 {
-	ShowNextMessage();
+	if (m_battleBeatQueue.empty())
+	{
+		return;
+	}
+
+	if (std::holds_alternative<TextBeat>(m_battleBeatQueue.front()))
+	{
+		auto beat = std::move(std::get<TextBeat>(m_battleBeatQueue.front()));
+		m_battleBeatQueue.pop();
+
+		if (beat.m_OnDismiss.has_value())
+		{
+			beat.m_OnDismiss.value()();
+		}
+
+		AdvanceBeat();
+	}
+}
+
+float BattleLoopLayer::HealthbarAnimation::CalculateFill() const
+{
+	return maths::Lerp(static_cast<float>(m_healthBefore) / static_cast<float>(m_maxHealth),
+	                   static_cast<float>(m_currentHealth) / static_cast<float>(m_maxHealth),
+	                   m_currentTime / m_duration
+	);
+}
+
+void BattleLoopLayer::HealthbarAnimation::UpdateFill() const
+{
+	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	UiProgressBar* pb = battlePanel->GetChild<UiProgressBar>(
+		m_type == eAnimationType::Player ? "PLAYER_HP_BAR" : "OPPONENT_HP_BAR");
+	ASSERT(pb);
+	pb->SetProgress(CalculateFill());
 }
 
 void BattleLoopLayer::DoTurn(
@@ -135,42 +255,73 @@ void BattleLoopLayer::DoTurn(
 	const entity_id_t playerMonsterEntityID
 )
 {
+	// TODO: Recoil and other effects
+	const uint16_t attackerHealthBefore = attacker->GetStats().m_HP;
+	const uint16_t defenderHealthBefore = defender->GetStats().m_HP;
+
 	// Perform the move and then queue the UI messages...
-	Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
+	const Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
 
 	// X used Y...
-	m_messageQueue.emplace(("MOVE NAME"), [this, attacker, selectedMoveIdx]()
-	{
-		ShowMoveNameText(attacker, selectedMoveIdx);
+	m_battleBeatQueue.emplace(TextBeat{
+		.m_MessageName = "MOVE NAME",
+		.m_OnShow = [this, attacker, selectedMoveIdx]()
+		{
+			ShowMoveNameText(attacker, selectedMoveIdx);
+		}
 	});
 
 	// The move hits or misses...
 	if (outcome.m_MoveMissed)
 	{
-		m_messageQueue.emplace(("THE MOVE MISSED!"), [this, attacker]()
-		{
-			ShowMissText(attacker);
+		m_battleBeatQueue.emplace(TextBeat{
+			.m_MessageName = "THE MOVE MISSED!",
+			.m_OnShow = [this, attacker]()
+			{
+				ShowMissText(attacker);
+			}
 		});
 
 		return;
+	}
+
+	if (defender->GetID() == playerMonsterEntityID)
+	{
+		m_battleBeatQueue.emplace(AnimationBeat{
+			.m_Start = [this, defender, defenderHealthBefore] { m_playerHealthAnimation.Start(defender, defenderHealthBefore); },
+			.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); }
+		});
+	}
+	else
+	{
+		m_battleBeatQueue.emplace(AnimationBeat{
+			.m_Start = [this, defender, defenderHealthBefore] { m_opponentHealthAnimation.Start(defender, defenderHealthBefore); },
+			.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); }
+		});
 	}
 
 	// Effectiveness message (and healthbar animation)...
 	const float effectiveness = outcome.m_TypeMultiplier;
 	if (effectiveness != 1.0f)
 	{
-		m_messageQueue.emplace(("IMMUNE/VERY/NOT VERY EFFECTIVE TEXT"), [this, effectiveness]()
-		{
-			ShowEffectivenessText(effectiveness);
+		m_battleBeatQueue.emplace(TextBeat{
+			.m_MessageName = "IMMUNE/VERY/NOT VERY EFFECTIVE TEXT",
+			.m_OnShow = [this, effectiveness]()
+			{
+				ShowEffectivenessText(effectiveness);
+			}
 		});
 	}
 
 	// Was it a crit?
 	if (outcome.m_IsCriticalHit)
 	{
-		m_messageQueue.emplace(("CRITICAL HIT!"), [this]()
-		{
-			ShowCriticalHitText();
+		m_battleBeatQueue.emplace(TextBeat{
+			.m_MessageName = "CRITICAL HIT!",
+			.m_OnShow = [this]()
+			{
+				ShowCriticalHitText();
+			}
 		});
 	}
 
@@ -197,25 +348,32 @@ void BattleLoopLayer::DoTurn(
 	}
 }
 
-void BattleLoopLayer::ShowNextMessage()
-{
-	if (m_previousMessage.has_value() && m_previousMessage.value().m_OnDismiss.has_value())
-	{
-		m_previousMessage.value().m_OnDismiss.value()();
-	}
 
-	if (m_messageQueue.empty())
+void BattleLoopLayer::AdvanceBeat()
+{
+	if (m_battleBeatQueue.empty())
 	{
 		m_finished = true;
 		return;
 	}
 
-	const auto& nextMessage = m_messageQueue.front();
-	nextMessage.m_OnShow();
-
-	m_previousMessage = nextMessage;
-
-	m_messageQueue.pop();
+	std::visit(overloaded{
+		           [&](const TextBeat& beat)
+		           {
+			           if (beat.m_OnShow)
+			           {
+				           beat.m_OnShow();
+				           // Waits for the A press in OnSelectButtonPressed
+			           }
+		           },
+		           [&](const AnimationBeat& beat)
+		           {
+			           if (beat.m_Start)
+			           {
+				           beat.m_Start();
+			           }
+		           }
+	           }, m_battleBeatQueue.front());
 }
 
 void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const uint8_t moveIdx) const
@@ -270,7 +428,7 @@ void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
                                        PocketMonsterEntity* defender,
-                                       uint8_t moveIdx) const
+                                       const uint8_t moveIdx) const
 {
 	ASSERT(moveIdx < MOVE_COUNT);
 	ASSERT(attacker != nullptr);
@@ -295,10 +453,13 @@ Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
 	return outcome;
 }
 
-void BattleLoopLayer::OnMonsterFainted(const BattleState& state, PocketMonsterEntity* monster, bool isPlayerMonster)
+void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
+                                       const PocketMonsterEntity* monster,
+                                       const bool isPlayerMonster)
 {
 	Entity* playerEntity = state.GetGameContext().m_Entities.Get<Entity>(state.GetBattleContext().m_PlayerEntityID);
-	Entity* opponentEntity = state.GetGameContext().m_Entities.Get<Entity>(state.GetBattleContext().m_OpponentEntityID);
+	Entity* opponentEntity = state.GetGameContext().m_Entities.Get<Entity>(
+		state.GetBattleContext().m_OpponentEntityID);
 
 	ASSERT(playerEntity && opponentEntity);
 
@@ -309,40 +470,35 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state, PocketMonsterEn
 
 	const bool hasMonstersLeft = isPlayerMonster ? playerMPC->HasMonstersLeft() : opponentMPC->HasMonstersLeft();
 
-	// Was it the player?
-	if (isPlayerMonster)
-	{
-		m_messageQueue.emplace("MONSTER FAINTED",
-		                       [this, monster]()
-		                       {
-			                       ShowFaintText(monster);
-		                       });
-
-		if (!hasMonstersLeft)
+	m_battleBeatQueue.emplace(TextBeat{
+		.m_MessageName = "MONSTER FAINTED",
+		.m_OnShow = [this, monster]()
 		{
-			m_messageQueue.emplace("FASTEST FAINTED",
-			                       [this]()
-			                       {
-				                       ShowWhiteOutText();
-			                       },
-			                       [this]()
-			                       {
-				                       m_endContext.m_SendPlayerToHospital = true;
-				                       game_events::OnBattleEnd.Fire(m_endContext);
-			                       });
+			ShowFaintText(monster);
 		}
-	}
-	else
-	{
-		m_messageQueue.emplace("MONSTER FAINTED",
-		                       [this, monster]()
-		                       {
-			                       ShowFaintText(monster);
-		                       });
+	});
 
-		if (!hasMonstersLeft)
+	if (!hasMonstersLeft)
+	{
+		// Was it the player?
+		if (isPlayerMonster)
 		{
-			m_messageQueue.back().m_OnDismiss = [this]()
+			m_battleBeatQueue.emplace(TextBeat{
+				.m_MessageName = "FASTEST FAINTED",
+				.m_OnShow = [this]()
+				{
+					ShowWhiteOutText();
+				},
+				.m_OnDismiss = [this]()
+				{
+					m_endContext.m_SendPlayerToHospital = true;
+					game_events::OnBattleEnd.Fire(m_endContext);
+				}
+			});
+		}
+		else
+		{
+			std::get<TextBeat>(m_battleBeatQueue.back()).m_OnDismiss = [&]()
 			{
 				game_events::OnBattleEnd.Fire(m_endContext);
 			};
