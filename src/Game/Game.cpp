@@ -1,22 +1,18 @@
 #include "Game.h"
 #include <fstream>
-#include <iostream>
 #include <set>
 #include <SFML/Graphics.hpp>
 
 #include "BattleState.h"
 #include "GameEvents.h"
 #include "OverworldState.h"
-#include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Asserts.h"
 #include "../Engine/EntityRegistry.h"
-#include "../Engine/Stringtable.h"
 #include "../Engine/Globals.h"
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
+#include "../Engine/Stringtable.h"
 #include "../Engine/Timer.h"
-#include "../Engine/UI/UiPanel.h"
-#include "../Engine/UI/UiProgressBar.h"
 #include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
@@ -69,9 +65,6 @@ Game::Game(sol::state& lua) :
 
 	m_context.m_World.LoadLevelScripts(lua);
 
-	m_currentState = std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt, false);
-
-
 	game_events::OnScreenFadeTriggered.On([this]()
 	{
 		m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
@@ -100,7 +93,9 @@ Game::Game(sol::state& lua) :
 		}
 	});
 
-#if !BUILD_MASTER
+	RequestTransition(std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt, false));
+
+#if 0
 	m_mapper.Map(TRIGGER_BATTLE, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::F5));
 
 	m_mapper.OnButtonPressed(TRIGGER_BATTLE, [this]()
@@ -122,7 +117,7 @@ Game::Game(sol::state& lua) :
 			std::vector<MonsterPartyComponent::MonsterPartyInfo>{
 				{
 					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(403),
-					.m_Level = 5
+					.m_Level = 12
 				},
 			}
 		);
@@ -159,25 +154,16 @@ void Game::Update(const float deltaTime)
 	m_mapper.Update();
 #endif
 
-	auto* pBar = UIMANAGER.GetElement<UiPanel>("BATTLE_HUD_PANEL")->GetChild<UiProgressBar>("PLAYER_HP_BAR");
-	if (pBar->IsActive())
-	{
-		static float totalTime = 10.f;
-		static float elapsedTime = 0.f;
-
-
-		elapsedTime += deltaTime;
-
-		pBar->SetProgress(elapsedTime, totalTime, false);
-	}
-
 	if (m_screenFader.FadeInProgress())
 	{
 		UpdateScreenFade(deltaTime);
 	}
 	else
 	{
-		m_currentState->Update(deltaTime);
+		if (m_currentState != nullptr)
+		{
+			m_currentState->Update(deltaTime);
+		}
 	}
 }
 
@@ -188,7 +174,10 @@ void Game::Render(sf::RenderWindow& window) const
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
 	});
 
-	m_currentState->Render(window);
+	if (m_currentState != nullptr)
+	{
+		m_currentState->Render(window);
+	}
 
 	if (m_screenFader.FadeInProgress())
 	{
@@ -221,7 +210,11 @@ void Game::UpdateScreenFade(const float deltaTime)
 		{
 			if (m_pendingState)
 			{
-				m_currentState->OnExit();
+				if (m_currentState)
+				{
+					m_currentState->OnExit();
+				}
+
 				m_currentState.reset();
 				m_currentState = std::move(m_pendingState);
 				m_currentState->OnEnter();
