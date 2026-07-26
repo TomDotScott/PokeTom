@@ -25,8 +25,9 @@ namespace maths
 		return a + t * (b - a);
 	}
 
-	template<std::integral T>
+	template <typename T>
 	T Clamp(T val, T min, T max)
+		requires std::is_arithmetic_v<T>
 	{
 		if (val < min)
 		{

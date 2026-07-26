@@ -15,6 +15,13 @@ public:
 	sf::Vector2f GetSize() const override;
 	void SetSize(const sf::Vector2f& size);
 
+	template <typename T>
+	T* GetChild(const std::string& name) const
+		requires (std::is_base_of_v<UiElement, T>)
+	{
+		return dynamic_cast<T*>(GetChild(name));
+	}
+
 	UiElement* GetChild(const std::string& name) const;
 	const std::vector<std::unique_ptr<UiElement>>& GetChildren() const;
 

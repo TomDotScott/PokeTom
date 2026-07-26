@@ -15,6 +15,8 @@
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
 #include "../Engine/Timer.h"
+#include "../Engine/UI/UiPanel.h"
+#include "../Engine/UI/UiProgressBar.h"
 #include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
@@ -135,7 +137,7 @@ Game::Game(sol::state& lua) :
 			.m_isTrainerBattle = false,
 		});
 
-		game_events::OnBattleEnd.Once([this](BattleEndContext /*ctx*/)
+		game_events::OnBattleEnd.Once([this](const BattleEndContext& /*ctx*/)
 		{
 			printf("DEBUG BATTLE ENDED!\n");
 
@@ -156,6 +158,18 @@ void Game::Update(const float deltaTime)
 #if !BUILD_MASTER
 	m_mapper.Update();
 #endif
+
+	auto* pBar = UIMANAGER.GetElement<UiPanel>("BATTLE_HUD_PANEL")->GetChild<UiProgressBar>("PLAYER_HP_BAR");
+	if (pBar->IsActive())
+	{
+		static float totalTime = 10.f;
+		static float elapsedTime = 0.f;
+
+
+		elapsedTime += deltaTime;
+
+		pBar->SetProgress(elapsedTime, totalTime, false);
+	}
 
 	if (m_screenFader.FadeInProgress())
 	{

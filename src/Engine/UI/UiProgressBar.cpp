@@ -1,8 +1,14 @@
 #include "UiProgressBar.h"
 
+#include "../Asserts.h"
+#include "../Maths.h"
+
 
 UiProgressBar::UiProgressBar(UiElement* parent) :
-	UiElement(eType::ProgressBar, parent)
+	UiElement(eType::ProgressBar, parent),
+	m_maxFillSize(0.f),
+	m_fillOrientation(eFillOrientation::Vertical),
+	m_progress(0.f)
 {
 }
 
@@ -37,13 +43,12 @@ bool UiProgressBar::LoadFromXML(const XmlNode& node)
 		return false;
 	}
 
-	eFillOrientation fillOrientation = eFillOrientation::Vertical;
 	const auto* orientationString = node.Child("FillOrientation");
 	if (orientationString != nullptr)
 	{
 		if (orientationString->m_Content == "horizontal")
 		{
-			fillOrientation = eFillOrientation::Horizontal;
+			m_fillOrientation = eFillOrientation::Horizontal;
 		}
 	}
 
@@ -73,19 +78,69 @@ bool UiProgressBar::LoadFromXML(const XmlNode& node)
 	sf::Vector2f size = { 32.f, 93.f };
 	if (sizeNode)
 	{
-		size.x = sizeNode->Attr("x", 0.f);
-		size.y = sizeNode->Attr("y", 0.f);
+		size = sizeNode->Attr("x", "y", sf::Vector2f{});
+	}
+
+	auto* marginNode = node.Child("margin");
+	sf::Vector2f margin = {};
+	if (marginNode)
+	{
+		margin = marginNode->Attr("x", "y", margin);
 	}
 
 	m_background.setSize(size);
-	m_fill.setSize(size - size / 4.f);
 
+	// Calculate the size based off the margin
+	const float xSize = size.x - margin.x * 2.f;
+	const float ySize = size.y - margin.y * 2.f;
+	const sf::Vector2f offsetVector{ xSize, ySize };
+
+	m_fill.setSize(offsetVector);
+
+	m_maxFillSize = m_fillOrientation == eFillOrientation::Horizontal ? m_fill.getSize().x : m_fill.getSize().y;
 
 	m_background.setPosition(m_position);
-	m_fill.setPosition(m_background.getPosition() + size / 4.f);
+	m_fill.setPosition(m_background.getPosition() + margin);
 
 	AddDrawable(&m_background);
 	AddDrawable(&m_fill);
 
 	return true;
+}
+
+void UiProgressBar::SetProgress(const float progress)
+{
+	ASSERT(progress >= 0.f && progress <= 1.0f);
+
+	m_progress = progress;
+	UpdateFill();
+}
+
+void UiProgressBar::SetProgress(const float val, const float maxVal, bool invert)
+{
+	ASSERT(maxVal > val);
+
+	float progress = val / maxVal;
+
+	if (invert)
+	{
+		progress = 1.0f - progress;
+	}
+
+	maths::Clamp(progress, 0.f, 1.0f);
+	SetProgress(progress);
+}
+
+void UiProgressBar::UpdateFill()
+{
+	const float newSize = m_progress * m_maxFillSize;
+
+	if (m_fillOrientation == eFillOrientation::Vertical)
+	{
+		m_fill.setSize({ m_fill.getSize().x, newSize });
+	}
+	else
+	{
+		m_fill.setSize({ newSize, m_fill.getSize().y });
+	}
 }

@@ -219,6 +219,7 @@ So that I can see what dialogue will look like!!!
       <fillorientation>horizontal</fillorientation>
       <position x="154" y="83" />
       <size x="156" y="16" />
+      <margin x="2" y="4"/>
       <scale x="3.2" y="3.2" />
       <layer>100</layer>
       <backgroundcolour>506858FF</backgroundcolour>

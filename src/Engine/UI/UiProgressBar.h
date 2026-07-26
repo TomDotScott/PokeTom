@@ -24,10 +24,21 @@ public:
 	void SetElementPosition(const sf::Vector2f& position) override;
 	bool LoadFromXML(const XmlNode& node) override;
 
+	// 0.0 - 1.0
+	void SetProgress(float progress);
+
+	void SetProgress(float val, float maxVal, bool invert);
+
 private:
 	sf::RectangleShape m_fill;
-	sf::RectangleShape m_background;
+	float m_maxFillSize;
 
+	sf::RectangleShape m_background;
+	eFillOrientation m_fillOrientation;
+
+	float m_progress;
+
+	void UpdateFill();
 };
 
 

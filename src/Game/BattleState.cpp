@@ -128,8 +128,8 @@ void BattleState::OnEnter()
 
 	m_UILayers[m_currentUILayer]->OnActivate(*this, UILayer::LayerResult{});
 
-	m_onBattleEndEventID = game_events::OnBattleEnd.On([this](BattleEndContext)
-		{
+	m_onBattleEndEventID = game_events::OnBattleEnd.On([this](const BattleEndContext&)
+	{
 			m_battleFinished = true;
 		});
 }
