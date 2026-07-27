@@ -3,6 +3,8 @@
 #include <iostream>
 #include <SFML/Graphics/RectangleShape.hpp>
 
+#include "../Engine/Asserts.h"
+#include "../Engine/EngineEvents.h"
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
 #include "../Engine/Globals.h"
@@ -11,8 +13,14 @@
 
 
 Renderer::Renderer() :
-	m_cameraView(sf::Vector2f(), static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize))
+	m_zoom(1.f),
+	m_cameraView(
+		sf::Vector2f(),
+		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize) / m_zoom)
 {
+	engine_events::OnWindowResized.On([this](const sf::Vector2u size) { OnScreenResized(size); });
+
+	OnScreenResized(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize);
 }
 
 void Renderer::SetCameraCentre(sf::Vector2f position, const sf::FloatRect worldBounds)
@@ -47,15 +55,31 @@ void Renderer::SetCameraCentre(sf::Vector2f position, const sf::FloatRect worldB
 	m_cameraView.setCenter(position);
 }
 
+void Renderer::SetZoom(const float zoom)
+{
+	ASSERT(zoom > 0.f);
+
+	m_zoom = zoom;
+
+	// recomputes size + viewport together
+	OnScreenResized(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize);
+}
+
+float Renderer::GetZoom() const
+{
+	return m_zoom;
+}
+
 
 void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>& visibleLevelRenderData)
 {
 	m_layerBatchers.clear();
 
 #if BUILD_DEBUG
-	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string {
+	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string
+	{
 		return levelName + "#" + layerName;
-		};
+	};
 #else
 	const auto generateLayerName = [](const hash_type& levelName, const hash_type& layerName) -> hash_type {
 		return levelName ^ layerName;
@@ -80,9 +104,10 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 		{
 			const std::vector<TileLayerData>& tileLayerData = renderData.m_TileLayerData;
 
-			const auto& layerData = std::ranges::find_if(renderData.m_TileLayerData, [&](const TileLayerData& a) {
+			const auto& layerData = std::ranges::find_if(renderData.m_TileLayerData, [&](const TileLayerData& a)
+			{
 				return generateLayerName(levelName, a.m_Name) == layerName;
-				});
+			});
 
 			if (layerData == tileLayerData.end())
 			{
@@ -98,13 +123,15 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 		}
 	}
 
-	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b) {
+	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b)
+	{
 		return a.m_ZIndex < b.m_ZIndex;
-		});
+	});
 }
 
-void Renderer::RenderLevel(sf::RenderWindow& window, const EntityRegistry& entities, const int entityZIndex) const
+void Renderer::RenderLevel(sf::RenderWindow& window, const EntityRegistry& entities, const int entityZIndex)
 {
+	m_cameraView.setViewport(GRAPHIC_SETTINGS.GetLetterboxViewport());
 	window.setView(m_cameraView);
 
 	for (const auto& layerBatcher : m_layerBatchers)
@@ -119,9 +146,9 @@ void Renderer::RenderLevel(sf::RenderWindow& window, const EntityRegistry& entit
 
 	// Reset the view
 	window.setView({
-		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
-		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
-		});
+		static_cast<sf::Vector2f>(REFERENCE_SCREEN_SIZE) / 2.f,
+		static_cast<sf::Vector2f>(REFERENCE_SCREEN_SIZE)
+	});
 }
 
 void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) const
@@ -150,7 +177,7 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 	sprite.setTextureRect({
 		{ static_cast<int>(currentFrame.m_TopLeftX), static_cast<int>(currentFrame.m_TopLeftY) },
 		{ static_cast<int>(currentFrame.m_SpriteWidth), static_cast<int>(currentFrame.m_SpriteHeight) }
-		});
+	});
 
 	const sf::FloatRect bounds = sprite.getLocalBounds();
 	const float w = bounds.size.x;
@@ -160,15 +187,33 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 
 	switch (animator.GetCurrentClip().m_SpriteAnchor)
 	{
-	case Animation::eSpriteAnchor::TOP_LEFT:      ox = 0.f;   oy = 0.f;   break;
-	case Animation::eSpriteAnchor::TOP_MIDDLE:    ox = w / 2.f; oy = 0.f;   break;
-	case Animation::eSpriteAnchor::TOP_RIGHT:     ox = w;     oy = 0.f;   break;
-	case Animation::eSpriteAnchor::MIDDLE_LEFT:   ox = 0.f;   oy = h / 2.f; break;
-	case Animation::eSpriteAnchor::MIDDLE_MIDDLE: ox = w / 2.f; oy = h / 2.f; break;
-	case Animation::eSpriteAnchor::MIDDLE_RIGHT:  ox = w;     oy = h / 2.f; break;
-	case Animation::eSpriteAnchor::BOTTOM_LEFT:   ox = 0.f;   oy = h;     break;
-	case Animation::eSpriteAnchor::BOTTOM_MIDDLE: ox = w / 2.f; oy = h;     break;
-	case Animation::eSpriteAnchor::BOTTOM_RIGHT:  ox = w;     oy = h;     break;
+	case Animation::eSpriteAnchor::TOP_LEFT: ox = 0.f;
+		oy = 0.f;
+		break;
+	case Animation::eSpriteAnchor::TOP_MIDDLE: ox = w / 2.f;
+		oy = 0.f;
+		break;
+	case Animation::eSpriteAnchor::TOP_RIGHT: ox = w;
+		oy = 0.f;
+		break;
+	case Animation::eSpriteAnchor::MIDDLE_LEFT: ox = 0.f;
+		oy = h / 2.f;
+		break;
+	case Animation::eSpriteAnchor::MIDDLE_MIDDLE: ox = w / 2.f;
+		oy = h / 2.f;
+		break;
+	case Animation::eSpriteAnchor::MIDDLE_RIGHT: ox = w;
+		oy = h / 2.f;
+		break;
+	case Animation::eSpriteAnchor::BOTTOM_LEFT: ox = 0.f;
+		oy = h;
+		break;
+	case Animation::eSpriteAnchor::BOTTOM_MIDDLE: ox = w / 2.f;
+		oy = h;
+		break;
+	case Animation::eSpriteAnchor::BOTTOM_RIGHT: ox = w;
+		oy = h;
+		break;
 	}
 
 	sprite.setOrigin({ ox, oy });
@@ -207,12 +252,20 @@ void Renderer::RenderEntities(sf::RenderWindow& window, const EntityRegistry& en
 	}
 
 	// Sort by Y position for correct draw order
-	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool {
+	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool
+	{
 		return a->GetPosition().y < b->GetPosition().y;
-		});
+	});
 
 	for (const auto& entity : renderables)
 	{
 		RenderEntity(window, entity);
 	}
+}
+
+void Renderer::OnScreenResized(const sf::Vector2u newSize)
+{
+	m_cameraView.setCenter(m_cameraView.getCenter());
+	m_cameraView.setViewport(GRAPHIC_SETTINGS.GetLetterboxViewport());
+	m_cameraView.setSize(static_cast<sf::Vector2f>(REFERENCE_SCREEN_SIZE) / m_zoom);
 }

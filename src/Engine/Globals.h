@@ -3,6 +3,7 @@
 #include <random>
 #include <span>
 #include <sstream>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #define RENDER_SPRITES 1
@@ -15,19 +16,24 @@ namespace sf
 class GraphicSettings
 {
 public:
+	GraphicSettings();
+
 	struct ScreenDetails
 	{
 		sf::Vector2u m_ScreenSize;
 		sf::Vector2u m_ScreenCentre;
 	};
 
-	void SetScreenSize(const sf::Vector2u& screenSize) { m_screenDetails = { screenSize, screenSize / 2u }; }
-
-	const ScreenDetails& GetScreenDetails() const { return m_screenDetails; }
-	ScreenDetails GetScreenDetails() { return m_screenDetails; }
+	const ScreenDetails& GetScreenDetails() const;
+	ScreenDetails GetScreenDetails();
+	sf::FloatRect GetLetterboxViewport() const;
 
 private:
 	ScreenDetails m_screenDetails;
+	sf::FloatRect m_letterboxViewport;
+
+	void SetScreenSize(sf::Vector2u screenSize);
+	sf::FloatRect ComputeLetterboxViewport(sf::Vector2u newScreenSize);
 };
 
 
@@ -71,16 +77,9 @@ extern bool OnlyWhitespace(const char* chr);
 // I don't like how this is needed for sf::Text to compile
 extern sf::Font DEFAULT_FONT;
 
-constexpr static sf::Vector2u REFERENCE_SCREEN_SIZE{ 768, 540 };
+constexpr static sf::Vector2u REFERENCE_SCREEN_SIZE{ 768, 576 };
 extern GraphicSettings GRAPHIC_SETTINGS;
 extern RandomRangeGenerator<double> RNG;
-
-#define SCALE_X (static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.x) / static_cast<float>(REFERENCE_SCREEN_SIZE.x))
-#define SCALE_Y (static_cast<float>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize.y) / static_cast<float>(REFERENCE_SCREEN_SIZE.y))
-
-// TODO: This would be better doing proper projection matrices. But I'm not a graphics programmer and this works for now...
-#define TRANSFORMED_SCALAR(x) ((x) * std::min(SCALE_X, SCALE_Y))
-#define TRANSFORMED_VECTOR(v) sf::Vector2f { TRANSFORMED_SCALAR((v).x), TRANSFORMED_SCALAR((v).y) }
 
 template<class... Ts>
 struct overloaded : Ts... { using Ts::operator()...; };

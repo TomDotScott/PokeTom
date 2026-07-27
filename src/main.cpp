@@ -10,6 +10,7 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
 
+#include "Engine/EngineEvents.h"
 #include "Engine/Language.h"
 #include "Engine/Stringtable.h"
 #include "Game/DialogueManager.h"
@@ -35,12 +36,8 @@ int main(int argc, char** argv)
 		sf::State::Fullscreen
 #endif
 	);
-
-	GRAPHIC_SETTINGS.SetScreenSize(window.getSize());
-
+	
 	window.setFramerateLimit(255);
-
-	Mouse::Get().SetRelativeWindow(&window);
 
 	sol::state lua;
 	lua.open_libraries(
@@ -57,6 +54,9 @@ int main(int argc, char** argv)
 	// Register all the Lua bindings
 	Game game{ lua };
 
+	engine_events::OnWindowResized.Fire(window.getSize());
+	Mouse::Get().SetRelativeWindow(&window);
+
 	constexpr sf::Color clearColour(0x2B2B2BFF);
 
 	while (window.isOpen())
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 			}
 			if (event->is<sf::Event::Resized>())
 			{
-				GRAPHIC_SETTINGS.SetScreenSize(window.getSize());
+				engine_events::OnWindowResized.Fire(window.getSize());
 			}
 		}
 
@@ -80,6 +80,9 @@ int main(int argc, char** argv)
 
 		const float deltaTime = Timer::Get().DeltaTime();
 		game.Update(deltaTime);
+
+		// Update the mouse position in the potentially resized window
+		UIMANAGER.Update(deltaTime, window);
 
 		window.clear(clearColour);
 

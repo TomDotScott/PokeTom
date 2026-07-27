@@ -18,7 +18,7 @@ public:
 	static constexpr int8_t k_bottomLayer = ~0x7F;
 
 	bool Load(const std::filesystem::path& path);
-	void Update();
+	void Update(float deltaTime, const sf::RenderWindow& window);
 
 	// TODO: There has to be a better way to do this? Maybe a renderer class with a vector of sf::drawables in order?
 	void RenderAll(sf::RenderWindow& window) const;
@@ -48,14 +48,17 @@ public:
 #endif
 
 private:
-	UiManager();
-
+	sf::View m_uiView;
 	std::unordered_map<std::string, std::unique_ptr<sf::Font>> m_fonts;
 
 	std::unordered_map<std::string, UiElement*> m_uiElements;
 	std::map<int8_t, std::set<std::string>> m_sortOrderElements;
 
 	InputMapper m_defaultUIInputs;
+
+	sf::Vector2f m_lastMousePositionInUiSpace;
+
+	UiManager();
 
 	bool LoadFromXML(const XmlNode& node) override;
 	bool LoadElement(const XmlNode& node);
@@ -66,6 +69,7 @@ private:
 	void RenderElement(sf::RenderWindow& window, const UiElement* uiElement, int8_t layer) const;
 
 	void OnLeftClickPressed();
+	void OnScreenResized(sf::Vector2u newSize);
 };
 
 #define UIMANAGER UiManager::Get()

@@ -44,17 +44,21 @@ public:
 	// Sets the position of the camera view, clamped to the width and height of the map
 	void SetCameraCentre(sf::Vector2f position, sf::FloatRect worldBounds);
 
+	void SetZoom(float zoom);
+	float GetZoom() const;
+
 	void BuildBatches(const std::unordered_map<hash_type, LevelRenderData>& visibleLevelRenderData);
-	void RenderLevel(sf::RenderWindow& window, const EntityRegistry& entities, int entityZIndex) const;
+	void RenderLevel(sf::RenderWindow& window, const EntityRegistry& entities, int entityZIndex);
 
 	void RenderEntity(sf::RenderWindow& window, const Entity* entity) const;
 
 private:
 	std::vector<LayerBatcher> m_layerBatchers;
-
+	float m_zoom;
 	sf::View m_cameraView;
 
 	void RenderEntities(sf::RenderWindow& window, const EntityRegistry& entities) const;
+	void OnScreenResized(sf::Vector2u newSize);
 };
 
 #endif

@@ -106,12 +106,7 @@ bool UiSprite::LoadTexture(const std::string& resourceID)
 
 	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(HASH(resourceID));
 
-	const sf::Vector2f scaleFactor = {
-		static_cast<float>(texture->getSize().x) / TRANSFORMED_SCALAR(texture->getSize().x),
-		static_cast<float>(texture->getSize().y) / TRANSFORMED_SCALAR(texture->getSize().y)
-	};
-
-	m_screenScaleFactor = { 1.f / scaleFactor.x, 1.f / scaleFactor.y };
+	m_screenScaleFactor = { 1.f, 1.f };
 
 	m_sprite = new sf::Sprite(*texture);
 	return true;

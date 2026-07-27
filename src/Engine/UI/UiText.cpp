@@ -162,7 +162,7 @@ bool UiText::LoadFromXML(const XmlNode& node)
 	const auto* sizeNode = node.Child("size");
 	if (sizeNode != nullptr)
 	{
-		m_text.setCharacterSize(TRANSFORMED_SCALAR(std::stol(sizeNode->m_Content)));
+		m_text.setCharacterSize(std::stol(sizeNode->m_Content));
 	}
 
 	AddDrawable(&m_text);

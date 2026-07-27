@@ -14,6 +14,7 @@
 #include "UiProgressBar.h"
 #include "UiSprite.h"
 #include "../Asserts.h"
+#include "../EngineEvents.h"
 #include "../CodeGen/Resources.hpp"
 #include "../Parsers/XML/XmlDocument.h"
 
@@ -30,11 +31,16 @@ void UiManager::DrawDebugText(sf::RenderWindow& window) const
 }
 #endif
 
-UiManager::UiManager()
+UiManager::UiManager() :
+	m_uiView(sf::Vector2f{ 0.f, 0.f },
+	         static_cast<sf::Vector2f>(REFERENCE_SCREEN_SIZE)
+	)
 {
 	m_defaultUIInputs.Map(0, eInputType::Mouse, static_cast<int>(sf::Mouse::Button::Left));
 
 	m_defaultUIInputs.OnButtonPressed(0, [this] { OnLeftClickPressed(); });
+
+	engine_events::OnWindowResized.On([this](const sf::Vector2u newSize) { OnScreenResized(newSize); });
 }
 
 UiManager& UiManager::Get()
@@ -139,7 +145,8 @@ bool UiManager::LoadElement(const XmlNode& node)
 
 void UiManager::InsertElementIntoLayer(const UiElement* current)
 {
-	const std::string parentName = (current->GetTopMostParent() != nullptr ? current->GetTopMostParent() : current)->GetName();
+	const std::string parentName = (current->GetTopMostParent() != nullptr ? current->GetTopMostParent() : current)->
+		GetName();
 
 	m_sortOrderElements[current->GetLayer()].insert(parentName);
 
@@ -153,11 +160,18 @@ void UiManager::InsertElementIntoLayer(const UiElement* current)
 	}
 }
 
-void UiManager::Update()
+void UiManager::Update(const float deltaTime, const sf::RenderWindow& window)
 {
-	m_defaultUIInputs.Update();
+	m_lastMousePositionInUiSpace = window.mapPixelToCoords(Mouse::Get().GetPosition(), m_uiView);
 
+	m_defaultUIInputs.Update();
 	// TODO: Animation!
+}
+
+void UiManager::OnScreenResized(sf::Vector2u /*newSize*/)
+{
+	m_uiView.setCenter(static_cast<sf::Vector2f>(REFERENCE_SCREEN_SIZE) / 2.f);
+	m_uiView.setViewport(GRAPHIC_SETTINGS.GetLetterboxViewport());
 }
 
 void UiManager::RenderAll(sf::RenderWindow& window) const
@@ -166,6 +180,11 @@ void UiManager::RenderAll(sf::RenderWindow& window) const
 	{
 		RenderLayer(window, i);
 	}
+
+	window.setView({
+		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenCentre),
+		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
+	});
 }
 
 bool UiManager::LoadFromXML(const XmlNode& node)
@@ -187,6 +206,8 @@ void UiManager::RenderLayer(sf::RenderWindow& window, const int8_t layer) const
 	{
 		return;
 	}
+
+	window.setView(m_uiView);
 
 #if UIMANAGER_DEBUG_SPEW
 	printf("Moving onto layer %d\n", layer);
@@ -267,12 +288,13 @@ void UiManager::OnLeftClickPressed()
 
 		auto& button = dynamic_cast<UiButton&>(*element);
 
-		const sf::Vector2f mousePosition = static_cast<sf::Vector2f>(Mouse::Get().GetPosition());
 		const sf::Vector2f topLeft = button.GetPosition();
 		const sf::Vector2f bottomRight = button.GetBottomRight();
 
-		const bool inWidth = mousePosition.x >= topLeft.x && mousePosition.x <= bottomRight.x;
-		const bool inHeight = mousePosition.y >= topLeft.y && mousePosition.y <= bottomRight.y;
+		const bool inWidth = m_lastMousePositionInUiSpace.x >= topLeft.x && m_lastMousePositionInUiSpace.x <=
+			bottomRight.x;
+		const bool inHeight = m_lastMousePositionInUiSpace.y >= topLeft.y && m_lastMousePositionInUiSpace.y <=
+			bottomRight.y;
 
 		if (inWidth && inHeight)
 		{
