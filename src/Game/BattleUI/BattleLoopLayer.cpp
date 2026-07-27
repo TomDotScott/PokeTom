@@ -170,13 +170,13 @@ void BattleLoopLayer::HealthbarAnimation::Start(PocketMonsterEntity* monster, co
 	m_maxHealth = monster->GetMaxHP();
 
 	const float percentage = damageDealt / static_cast<float>(m_maxHealth);
-	bool fast = true;
+	bool lotsOfDamage = true;
 	if (percentage > 0.25f)
 	{
-		fast = false;
+		lotsOfDamage = false;
 	}
 
-	m_duration = fast ? 2.f : 5.5f;
+	m_duration = lotsOfDamage ? 3.5f : 1.8f;
 }
 
 void BattleLoopLayer::HealthbarAnimation::Finish()
