@@ -199,8 +199,6 @@ void BattleLoopLayer::HealthbarAnimation::Update(const float deltaTime)
 	}
 
 	m_currentTime += deltaTime;
-
-	printf("BattleLoopLayer::HealthbarAnimation::Update - Fill=%f    , duration=%f\n", CalculateFill(), m_currentTime);
 	UpdateFill();
 }
 
@@ -262,6 +260,9 @@ void BattleLoopLayer::DoTurn(
 	// Perform the move and then queue the UI messages...
 	const Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
 
+	const uint16_t attackerHealthAfter = attacker->GetStats().m_HP;
+	const uint16_t defenderHealthAfter = defender->GetStats().m_HP;
+
 	// X used Y...
 	m_battleBeatQueue.emplace(TextBeat{
 		.m_MessageName = "MOVE NAME",
@@ -285,19 +286,22 @@ void BattleLoopLayer::DoTurn(
 		return;
 	}
 
-	if (defender->GetID() == playerMonsterEntityID)
+	if (defenderHealthBefore - defenderHealthAfter != 0)
 	{
-		m_battleBeatQueue.emplace(AnimationBeat{
-			.m_Start = [this, defender, defenderHealthBefore] { m_playerHealthAnimation.Start(defender, defenderHealthBefore); },
-			.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); }
-		});
-	}
-	else
-	{
-		m_battleBeatQueue.emplace(AnimationBeat{
-			.m_Start = [this, defender, defenderHealthBefore] { m_opponentHealthAnimation.Start(defender, defenderHealthBefore); },
-			.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); }
-		});
+		if (defender->GetID() == playerMonsterEntityID)
+		{
+			m_battleBeatQueue.emplace(AnimationBeat{
+				.m_Start = [this, defender, defenderHealthBefore] { m_playerHealthAnimation.Start(defender, defenderHealthBefore); },
+				.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); }
+				});
+		}
+		else
+		{
+			m_battleBeatQueue.emplace(AnimationBeat{
+				.m_Start = [this, defender, defenderHealthBefore] { m_opponentHealthAnimation.Start(defender, defenderHealthBefore); },
+				.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); }
+				});
+		}
 	}
 
 	// Effectiveness message (and healthbar animation)...

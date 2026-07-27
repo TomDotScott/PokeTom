@@ -130,8 +130,8 @@ void BattleState::OnEnter()
 
 	m_onBattleEndEventID = game_events::OnBattleEnd.On([this](const BattleEndContext&)
 	{
-			m_battleFinished = true;
-		});
+		m_battleFinished = true;
+	});
 }
 
 void BattleState::OnExit()

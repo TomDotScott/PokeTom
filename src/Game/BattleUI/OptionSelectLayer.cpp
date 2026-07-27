@@ -1,7 +1,10 @@
 #include "OptionSelectLayer.h"
 
+#include "../BattleState.h"
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
+#include "../../Engine/UI/UiProgressBar.h"
+#include "../../Game/Monsters/PocketMonsterEntity.h"
 
 OptionSelectLayer::OptionSelectLayer() :
 	UILayer(),
@@ -83,14 +86,30 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
 
-	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	auto* optionsUI = battleUI->GetChild<UiPanel>(OPTIONS_PANEL_NAME);
 	ASSERT(optionsUI != nullptr);
 
-	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	auto* moveUI = battleUI->GetChild<UiPanel>(MOVES_PANEL_NAME);
 	ASSERT(moveUI != nullptr);
 
 	optionsUI->OnActivate();
 	moveUI->OnDeactivate();
+
+	// Ensure the healthbars show the right value
+	UiProgressBar* playerPB = battleUI->GetChild<UiProgressBar>("PLAYER_HP_BAR");
+	UiProgressBar* oppPB = battleUI->GetChild<UiProgressBar>("OPPONENT_HP_BAR");
+
+	ASSERT(playerPB && oppPB);
+
+	const auto& entReg = state.GetGameContext().m_Entities;
+
+	PocketMonsterEntity* playerEntity = entReg.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
+	ASSERT(playerEntity);
+	playerPB->SetProgress(playerEntity->GetStats().m_HP, playerEntity->GetMaxHP(), false);
+
+	PocketMonsterEntity* oppEntity = entReg.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
+	ASSERT(oppEntity);
+	oppPB->SetProgress(oppEntity->GetStats().m_HP, oppEntity->GetMaxHP(), false);
 
 	OnSelectedOptionChanged(eSelectedOption::Fight);
 }
