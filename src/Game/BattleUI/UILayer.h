@@ -20,10 +20,11 @@ enum eUILayerType : uint8_t
 enum eUILayerNavigateButtons : uint8_t
 {
 	SELECT = 1 << 0,
-	UP = 1 << 1,
-	DOWN = 1 << 2,
-	LEFT = 1 << 3,
-	RIGHT = 1 << 4,
+	BACK = 1 << 1,
+	UP = 1 << 2,
+	DOWN = 1 << 3,
+	LEFT = 1 << 4,
+	RIGHT = 1 << 5,
 };
 
 constexpr const char* BATTLE_PANEL_NAME = "BATTLE_HUD_PANEL";
@@ -38,6 +39,7 @@ public:
 	bool IsFinished() const;
 	virtual void OnNavigateButtonPressed(eUILayerNavigateButtons button) = 0;
 	virtual void OnSelectButtonPressed() = 0;
+	virtual void OnBackButtonPressed() = 0;
 	virtual void Update(float deltaTime);
 	virtual ~UILayer() = default;
 

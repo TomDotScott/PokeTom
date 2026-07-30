@@ -11,12 +11,19 @@ MoveSelectLayer::MoveSelectLayer() :
 	m_playerMonster(nullptr),
 	m_opponentMonster(nullptr),
 	m_validMoves(),
-	m_selectedMove(eSelection::Move1)
+	m_selectedMove(eSelection::Move1),
+	m_backRequested(false)
 {
 }
 
 UILayer::LayerResult MoveSelectLayer::GetLayerResult() const
 {
+	if (m_backRequested)
+	{
+		return {
+			.m_NextLayer = OptionSelect
+		};
+	}
 	return {
 		.m_NextLayer = BattleLoop,
 		.m_ChosenMoveIndex = static_cast<uint8_t>(m_selectedMove),
@@ -100,9 +107,17 @@ void MoveSelectLayer::OnSelectButtonPressed()
 	m_finished = playerMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove));
 }
 
+void MoveSelectLayer::OnBackButtonPressed()
+{
+	m_finished = true;
+	m_backRequested = true;
+}
+
 void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
 	UILayer::OnActivate(state, prevLayerResult);
+
+	m_backRequested = false;
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
@@ -119,10 +134,12 @@ void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	moveUI->OnActivate();
 
 
-	this->m_playerMonster = state.GetGameContext().m_Entities.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
+	this->m_playerMonster = state.GetGameContext().m_Entities.Get<
+		PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
 	ASSERT(this->m_playerMonster != nullptr);
 
-	this->m_opponentMonster = state.GetGameContext().m_Entities.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
+	this->m_opponentMonster = state.GetGameContext().m_Entities.Get<PocketMonsterEntity>(
+		state.GetOpponentMonsterEntityID());
 	ASSERT(this->m_opponentMonster != nullptr);
 
 	// Set up the move text

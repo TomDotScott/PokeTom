@@ -25,9 +25,9 @@ UILayer::LayerResult OptionSelectLayer::GetLayerResult() const
 		return { .m_NextLayer = ItemSelect };
 	case eSelectedOption::Run:
 		return { .m_NextLayer = QuitBattle };
+	default:
+		return { .m_NextLayer = OptionSelect };
 	}
-
-	return { .m_NextLayer = OptionSelect };
 }
 
 void OptionSelectLayer::OnNavigateButtonPressed(const eUILayerNavigateButtons button)
@@ -80,6 +80,12 @@ void OptionSelectLayer::OnSelectButtonPressed()
 	m_finished = true;
 }
 
+void OptionSelectLayer::OnBackButtonPressed()
+{
+	m_finished = true;
+	m_selectedOption = eSelectedOption::None;
+}
+
 void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
 	UILayer::OnActivate(state, prevLayerResult);
@@ -110,7 +116,7 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	const uint16_t playerMaxHP = playerEntity->GetMaxHP();
 	playerPB->SetProgress(playerHP, playerMaxHP, false);
 
-	auto* hpText= battleUI->GetChild<UiText>("PLAYER_HP_TEXT");
+	auto* hpText = battleUI->GetChild<UiText>("PLAYER_HP_TEXT");
 	ASSERT(hpText);
 	hpText->SetText("%d/%d", playerHP, playerMaxHP);
 

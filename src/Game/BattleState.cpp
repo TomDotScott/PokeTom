@@ -37,6 +37,12 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 		static_cast<int>(sf::Keyboard::Key::Space)
 	);
 	m_inputMapper.Map(
+		BACK,
+		eInputType::Keyboard,
+		static_cast<int>(sf::Keyboard::Key::Backspace),
+		static_cast<int>(sf::Keyboard::Key::Escape)
+	);
+	m_inputMapper.Map(
 		UP,
 		eInputType::Keyboard,
 		static_cast<int>(sf::Keyboard::Key::W),
@@ -65,6 +71,7 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 	m_inputMapper.OnButtonPressed(LEFT, [this]() { OnNavigateButtonPressed(LEFT); });
 	m_inputMapper.OnButtonPressed(RIGHT, [this]() { OnNavigateButtonPressed(RIGHT); });
 	m_inputMapper.OnButtonPressed(SELECT, [this]() { OnSelectButtonPressed(); });
+	m_inputMapper.OnButtonPressed(BACK, [this]() { OnBackButtonPressed(); });
 
 	// SET UP PLAYER ENTITY AND PARTY
 	Entity* playerEntity = m_gameContext.m_Entities.Get(battleContext.m_PlayerEntityID);
@@ -245,4 +252,9 @@ void BattleState::OnNavigateButtonPressed(const eUILayerNavigateButtons button) 
 void BattleState::OnSelectButtonPressed() const
 {
 	m_UILayers[m_currentUILayer]->OnSelectButtonPressed();
+}
+
+void BattleState::OnBackButtonPressed() const
+{
+	m_UILayers[m_currentUILayer]->OnBackButtonPressed();
 }

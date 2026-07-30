@@ -1,6 +1,7 @@
 #include "InputMapper.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "../Asserts.h"
 
 InputMapper::GameAction::GameAction() :
 	PrimaryInput(eInputType::NONE, UNASSIGNED_BUTTON),
@@ -130,16 +131,19 @@ bool InputMapper::IsButtonReleased(const int inputID) const
 
 void InputMapper::OnButtonDown(const int inputID, const std::function<void()>& callback)
 {
+	ASSERT_MSG(m_inputs.contains(inputID), "No input %d associated for the InputMapper", inputID);
 	m_inputs.at(inputID).m_events.m_onHeld.On(callback);
 }
 
 void InputMapper::OnButtonPressed(const int inputID, const std::function<void()>& callback)
 {
+	ASSERT_MSG(m_inputs.contains(inputID), "No input %d associated for the InputMapper", inputID);
 	m_inputs.at(inputID).m_events.m_onPressed.On(callback);
 }
 
 void InputMapper::OnButtonReleased(const int inputID, const std::function<void()>& callback)
 {
+	ASSERT_MSG(m_inputs.contains(inputID), "No input %d associated for the InputMapper", inputID);
 	m_inputs.at(inputID).m_events.m_onReleased.On(callback);
 }
 

@@ -14,6 +14,7 @@ public:
 	LayerResult GetLayerResult() const override;
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) override;
 	void OnSelectButtonPressed() override;
+	void OnBackButtonPressed() override;
 	void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
 	void OnDeactivate() override;
 
@@ -31,6 +32,8 @@ private:
 		Move4
 	};
 	eSelection m_selectedMove;
+
+	bool m_backRequested;
 
 	void OnSelectedMoveChanged(eSelection newMove);
 };

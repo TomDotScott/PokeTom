@@ -228,6 +228,10 @@ void BattleLoopLayer::OnSelectButtonPressed()
 	}
 }
 
+void BattleLoopLayer::OnBackButtonPressed()
+{
+}
+
 float BattleLoopLayer::HealthbarAnimation::CalculateFill() const
 {
 	return maths::Lerp(static_cast<float>(m_healthBefore) / static_cast<float>(m_maxHealth),

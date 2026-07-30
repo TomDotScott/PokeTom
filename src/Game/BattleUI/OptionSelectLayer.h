@@ -14,12 +14,14 @@ public:
 	LayerResult GetLayerResult() const override;
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) override;
 	void OnSelectButtonPressed() override;
+	void OnBackButtonPressed() override;
 	void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
 	void OnDeactivate() override;
 
 private:
 	enum class eSelectedOption : uint8_t
 	{
+		None = -1,
 		Fight,
 		Monsters,
 		Bag,

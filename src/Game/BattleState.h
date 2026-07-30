@@ -47,6 +47,7 @@ private:
 
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) const;
 	void OnSelectButtonPressed() const;
+	void OnBackButtonPressed() const;
 };
 
 #endif // BATTLESTATE_H

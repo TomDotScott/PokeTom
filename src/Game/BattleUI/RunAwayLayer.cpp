@@ -20,6 +20,10 @@ void RunAwayLayer::OnSelectButtonPressed()
 	game_events::OnBattleEnd.Fire(m_endContext);
 }
 
+void RunAwayLayer::OnBackButtonPressed()
+{
+}
+
 void RunAwayLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
 	UILayer::OnActivate(state, prevLayerResult);
