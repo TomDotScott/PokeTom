@@ -3672,7 +3672,7 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 100,
+      "stat_change_chance": 10,
       "stat_change_target": "user"
     },
     {
