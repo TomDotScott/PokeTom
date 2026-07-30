@@ -3,14 +3,13 @@
 #include "../Engine/Asserts.h"
 #include "../Engine/Entity.h"
 #include "Monsters/PocketMonsterEntity.h"
-#include <iostream>
 
 namespace
 {
 	// Is the move critical? According to u/AxeVice it is a 1/24 chance!
 	RandomRangeGenerator<uint16_t> criticalRNG = RandomRangeGenerator<uint16_t>(1, 24);
 	RandomRangeGenerator<uint16_t> moveRNG = RandomRangeGenerator<uint16_t>(85, 100);
-	RandomRangeGenerator<uint16_t> accuracyRNG = RandomRangeGenerator<uint16_t>(0, 100);
+	RandomRangeGenerator<uint16_t> percentageRNG = RandomRangeGenerator<uint16_t>(0, 100);
 }
 
 
@@ -61,7 +60,7 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 	// TODO: Calculate this properly - for now, just do RNG based on the numbers!
 	if (m_accuracy.has_value())
 	{
-		if (m_accuracy.value() < accuracyRNG.Next())
+		if (m_accuracy.value() < percentageRNG.Next())
 		{
 			return {
 				.m_MoveMissed = true,
@@ -144,17 +143,84 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 
 		defenderMonster->TakeDamage(damageDealt);
 	}
-	else
+
+	std::optional<Outcome::StatChangeOutcome> changedStat = std::nullopt;
+	if (m_statChange.has_value())
 	{
-		// TODO: Status effects, stat bonuses, etc...
+		StatChange change = m_statChange.value();
+		const uint16_t rng = percentageRNG.Next();
+		const bool success = change.m_Chance > rng;
+		if (success)
+		{
+			bool affectedDefender = false;
+			bool affectedAttacker = false;
+
+			switch (m_target)
+			{
+			case eMoveTarget::AllPokemon:
+			case eMoveTarget::EntireField:
+				affectedDefender = true;
+				affectedAttacker = true;
+				break;
+			case eMoveTarget::Selected:
+			case eMoveTarget::AllOpponents:
+			case eMoveTarget::AllOther:
+			case eMoveTarget::OpponentField:
+				affectedDefender = true;
+				break;
+			case eMoveTarget::RandomOpponent:
+				// TODO:
+				break;
+			case eMoveTarget::SpecificMove:
+				// TODO:
+				break;
+			case eMoveTarget::Ally:
+			case eMoveTarget::UserAndAllies:
+			case eMoveTarget::UserOrAlly:
+			case eMoveTarget::UserField:
+			case eMoveTarget::User:
+				affectedAttacker = true;
+				break;
+			case eMoveTarget::Unknown:
+				ASSERT(false);
+				break;
+			}
+
+			std::vector<StatChange::StatStage> attackerChangedStats;
+			std::vector<StatChange::StatStage> defenderChangedStats;
+			attackerChangedStats.reserve(change.m_StatStages.size());
+			defenderChangedStats.reserve(change.m_StatStages.size());
+
+			for (const StatChange::StatStage& stat : change.m_StatStages)
+			{
+				if (affectedAttacker)
+				{
+					attackerMonster->ModifyStat(stat.m_Stat, stat.m_Stages);
+					attackerChangedStats.emplace_back(stat);
+				}
+
+				if (affectedDefender)
+				{
+					defenderMonster->ModifyStat(stat.m_Stat, stat.m_Stages);
+					defenderChangedStats.emplace_back(stat);
+				}
+			}
+
+			changedStat = Outcome::StatChangeOutcome{
+				.m_AttackerStatChanges = attackerChangedStats,
+				.m_DefenderStatChanges = defenderChangedStats
+			};
+		}
 	}
+
 
 	m_powerPoints--;
 	return {
 		.m_MoveMissed = false,
 		.m_IsCriticalHit = isCriticalHit,
 		.m_Damage = damageDealt,
-		.m_TypeMultiplier = typeMultiplier
+		.m_TypeMultiplier = typeMultiplier,
+		.m_StatChangeOutcome = changedStat
 	};
 }
 

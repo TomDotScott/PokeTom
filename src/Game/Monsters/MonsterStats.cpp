@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "../../Engine/Maths.h"
+#include "../../Engine/Stringtable.h"
 
 MonsterStats::MonsterStats(
 	const uint16_t hp,
@@ -107,6 +108,32 @@ uint16_t MonsterStats::GetNextStat(const MonsterStats base,
 	{
 		return lhs + 5;
 	}
+}
+
+std::string MonsterStats::GetStatString(eStat stat)
+{
+	switch (stat)
+	{
+	case eStat::HP:
+		return STRINGTABLE->GetString("STAT", "STAT_HP");
+	case eStat::Attack:
+		return STRINGTABLE->GetString("STAT", "STAT_ATTACK");
+	case eStat::Defense:
+		return STRINGTABLE->GetString("STAT", "STAT_DEFENSE");
+	case eStat::SpecialAttack:
+		return STRINGTABLE->GetString("STAT", "STAT_ATTACK_SPECIAL");
+	case eStat::SpecialDefense:
+		return STRINGTABLE->GetString("STAT", "STAT_DEFENSE_SPECIAL");
+	case eStat::Speed:
+		return STRINGTABLE->GetString("STAT", "STAT_SPEED");
+	case eStat::Accuracy:
+		return STRINGTABLE->GetString("STAT", "STAT_ACCURACY");
+	case eStat::Evasion:
+		return STRINGTABLE->GetString("STAT", "STAT_EVASION");
+	}
+
+	ASSERT_MSG(false, "Unknown stat %d", static_cast<int>(stat));
+	return "UNKNOWN_STAT";
 }
 
 MonsterStatComponent::MonsterStatComponent(const MonsterStats& currentStats) :

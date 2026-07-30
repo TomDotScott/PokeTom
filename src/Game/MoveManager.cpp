@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
-
 #include "../Engine/Asserts.h"
 
 
@@ -85,6 +84,53 @@ std::optional<MoveStatus> MoveManager::LoadStatusEffects(const nlohmann::json& m
 	};
 }
 
+std::optional<StatChange> MoveManager::LoadStatChange(const nlohmann::json& move)
+{
+	if (!move.contains("stat_changes"))
+	{
+		return std::nullopt;
+	}
+
+
+	const auto& statChangesJSON = move["stat_changes"];
+	std::vector<StatChange::StatStage> statStages;
+	statStages.reserve(statChangesJSON.size());
+
+	for (const auto& statChange : statChangesJSON)
+	{
+		ASSERT(statChange.contains("stat") && statChange.contains("stages"));
+
+		static std::unordered_map<std::string_view, MonsterStats::eStat> STAT_STRINGS{
+			{ "hp", MonsterStats::eStat::HP },
+			{ "attack", MonsterStats::eStat::Attack },
+			{ "defense", MonsterStats::eStat::Defense },
+			{ "special-attack", MonsterStats::eStat::SpecialAttack },
+			{ "special-defense", MonsterStats::eStat::SpecialDefense },
+			{ "speed", MonsterStats::eStat::Speed },
+			{ "accuracy", MonsterStats::eStat::Accuracy },
+			{ "evasion", MonsterStats::eStat::Evasion },
+		};
+
+		const MonsterStats::eStat stat = STAT_STRINGS.at(statChange["stat"]);
+		const int stages = statChange["stages"];
+
+		ASSERT(stages >= -6 && stages <= 6);
+
+		statStages.emplace_back(stat, stages);
+	}
+
+	int chance = 100;
+	if (move.contains("stat_change_chance"))
+	{
+		chance = move["stat_change_chance"];
+	}
+
+	return StatChange{
+		.m_StatStages = statStages,
+		.m_Chance = static_cast<uint8_t>(chance)
+	};
+}
+
 bool MoveManager::LoadJSON()
 {
 	std::ifstream f;
@@ -151,6 +197,7 @@ bool MoveManager::LoadJSON()
 		}
 
 		std::optional<MoveStatus> moveStatus = LoadStatusEffects(move);
+		std::optional<StatChange> statChange = LoadStatChange(move);
 
 		movesMap.emplace(moveID, Move(moveID,
 		                              idHash,
@@ -164,7 +211,7 @@ bool MoveManager::LoadJSON()
 		                              movePower,
 		                              moveAccuracy,
 		                              moveStatus,
-		                              std::nullopt
+		                              statChange
 		                 ));
 	}
 

@@ -345,7 +345,7 @@ void BattleLoopLayer::DoTurn(
 		}
 	}
 
-	// Effectiveness message (and healthbar animation)...
+	// Effectiveness message...
 	const float effectiveness = outcome.m_TypeMultiplier;
 	if (effectiveness != 1.0f)
 	{
@@ -371,6 +371,36 @@ void BattleLoopLayer::DoTurn(
 	}
 
 	// Any Stat Changes
+	if (outcome.m_StatChangeOutcome.has_value())
+	{
+		auto statChangeOutcome = outcome.m_StatChangeOutcome.value();
+
+		// TODO: Power up/down animation on the sprites - maybe a shader?
+		for (const auto& statChanges : statChangeOutcome.m_DefenderStatChanges)
+		{
+			// TODO: Queue AnimationBeat
+			m_battleBeatQueue.emplace(TextBeat{
+				.m_MessageName = "DEFENDER STAT CHANGE",
+				.m_OnShow = [this, defender, statChanges]()
+				{
+					ShowStatChangeText(defender, statChanges);
+				}
+			});
+		}
+
+		for (const auto& statChanges : statChangeOutcome.m_AttackerStatChanges)
+		{
+			// TODO: Queue AnimationBeat
+			m_battleBeatQueue.emplace(TextBeat{
+				.m_MessageName = "ATTACKER STAT CHANGE",
+				.m_OnShow = [this, attacker, statChanges]()
+				{
+					ShowStatChangeText(attacker, statChanges);
+				}
+			});
+		}
+	}
+
 	// Any Status Conditions
 	// Recoil or Health Drain/Gain?
 	// Faint Check
@@ -423,6 +453,7 @@ void BattleLoopLayer::AdvanceBeat()
 
 void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const uint8_t moveIdx) const
 {
+	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 	const std::string moveName = monster->GetMoveName(moveIdx);
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_MOVE_NAME"), monsterName, moveName).c_str());
@@ -430,6 +461,7 @@ void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const
 
 void BattleLoopLayer::ShowFaintText(const PocketMonsterEntity* monster) const
 {
+	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
 }
@@ -441,6 +473,7 @@ void BattleLoopLayer::ShowWhiteOutText()
 
 void BattleLoopLayer::ShowMissText(const PocketMonsterEntity* monster) const
 {
+	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_ATTACK_MISS"), monsterName).c_str());
 }
@@ -469,6 +502,48 @@ void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 	ASSERT(stringID != DEFAULT_HASH);
 
 	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), stringID).c_str());
+}
+
+void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage outcome)
+{
+	// TODO: Nicknames
+	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+
+	std::string statString = MonsterStats::GetStatString(outcome.m_Stat);
+
+	hash_type hashString = DEFAULT_HASH;
+	if (outcome.m_Stages > 0)
+	{
+		if (outcome.m_Stages < 2)
+		{
+			hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_1");
+		}
+		else if (outcome.m_Stages < 4)
+		{
+			hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_2");
+		}
+		else
+		{
+			hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_3");
+		}
+	}
+	else
+	{
+		if (outcome.m_Stages > -2)
+		{
+			hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_1");
+		}
+		else if (outcome.m_Stages > -4)
+		{
+			hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_2");
+		}
+		else
+		{
+			hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_3");
+		}
+	}
+
+	DialogueBox::SetText(STRINGTABLE->GetDynamicString(hashString, monsterName.c_str(), statString.c_str()).c_str());
 }
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,

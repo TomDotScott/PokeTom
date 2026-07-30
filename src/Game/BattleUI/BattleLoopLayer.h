@@ -97,6 +97,7 @@ private:
 	void ShowMissText(const PocketMonsterEntity* monster) const;
 	void ShowCriticalHitText() const;
 	void ShowEffectivenessText(float moveOutcome) const;
+	void ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage outcome);
 	Move::Outcome UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender, uint8_t moveIdx) const;
 	void OnMonsterFainted(const BattleState& state, const PocketMonsterEntity* monster, bool isPlayerMonster);
 };

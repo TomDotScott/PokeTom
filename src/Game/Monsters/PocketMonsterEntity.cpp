@@ -71,6 +71,14 @@ const MonsterStats& PocketMonsterEntity::GetBaseStats() const
 	return m_monsterInfo.GetBaseStats();
 }
 
+void PocketMonsterEntity::ModifyStat(const MonsterStats::eStat stat, const int stages)
+{
+	auto* msc = GetComponent<MonsterStatComponent>();
+	ASSERT(msc);
+
+	msc->ModifyStat(stat, stages);
+}
+
 uint8_t PocketMonsterEntity::GetLevel() const
 {
 	return m_currentLevel;

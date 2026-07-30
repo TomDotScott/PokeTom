@@ -2,6 +2,7 @@
 #define MONSTERSTATS_H
 #include <array>
 #include <cstdint>
+#include <string>
 
 #include "../../Engine/IUpdateable.h"
 
@@ -61,6 +62,8 @@ struct MonsterStats
 	                            const std::array<unsigned char, STAT_COUNT>& EVs,
 	                            const std::array<unsigned char, STAT_COUNT>& IVs
 	);
+
+	static std::string GetStatString(eStat stat);
 };
 
 class MonsterStatComponent : public IUpdateable

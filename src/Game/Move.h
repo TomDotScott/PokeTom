@@ -85,8 +85,17 @@ struct magic_enum::customize::enum_range<MoveStatus::eStatus>
 
 struct StatChange
 {
-	MonsterStats::eStat m_Stat;
-	int m_Stages;
+	struct StatStage
+	{
+		explicit StatStage(const MonsterStats::eStat stat, const int stages) : m_Stat(stat), m_Stages(stages)
+		{
+		}
+
+		MonsterStats::eStat m_Stat;
+		int m_Stages;
+	};
+
+	std::vector<StatStage> m_StatStages;
 	uint8_t m_Chance;
 };
 
@@ -116,6 +125,14 @@ public:
 		bool m_IsCriticalHit;
 		uint16_t m_Damage;
 		float m_TypeMultiplier;
+
+		struct StatChangeOutcome
+		{
+			std::vector<StatChange::StatStage> m_AttackerStatChanges;
+			std::vector<StatChange::StatStage> m_DefenderStatChanges;
+		};
+
+		std::optional<StatChangeOutcome> m_StatChangeOutcome;
 	};
 
 	Outcome Use(Entity& attacker, Entity& defender);

@@ -22,6 +22,7 @@ private:
 	std::unordered_map<uint32_t, Move> m_moves;
 
 	std::optional<MoveStatus> LoadStatusEffects(const nlohmann::json& move);
+	std::optional<StatChange> LoadStatChange(const nlohmann::json& move);
 	bool LoadJSON();
 	MoveManager() = default;
 };
