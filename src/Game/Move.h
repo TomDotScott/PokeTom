@@ -85,6 +85,13 @@ struct magic_enum::customize::enum_range<MoveStatus::eStatus>
 
 struct StatChange
 {
+	enum class eChangeAffects
+	{
+		User,
+		Target,
+		Both
+	};
+
 	struct StatStage
 	{
 		explicit StatStage(const MonsterStats::eStat stat, const int stages) : m_Stat(stat), m_Stages(stages)
@@ -97,6 +104,7 @@ struct StatChange
 
 	std::vector<StatStage> m_StatStages;
 	uint8_t m_Chance;
+	eChangeAffects m_AffectedParty;
 };
 
 class Move

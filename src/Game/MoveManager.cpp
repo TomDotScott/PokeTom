@@ -125,9 +125,32 @@ std::optional<StatChange> MoveManager::LoadStatChange(const nlohmann::json& move
 		chance = move["stat_change_chance"];
 	}
 
+	StatChange::eChangeAffects affects = StatChange::eChangeAffects::Target;
+	if (move.contains("stat_change_target"))
+	{
+		std::string target = move["stat_change_target"];
+		if (target == "user")
+		{
+			affects = StatChange::eChangeAffects::User;
+		}
+		else if (target == "target")
+		{
+			affects = StatChange::eChangeAffects::Target;
+		}
+		else if (target == "both")
+		{
+			affects = StatChange::eChangeAffects::Both;
+		}
+		else
+		{
+			ASSERT_MSG(false, "Unknown stat_change_target value %s", target.c_str());
+		}
+	}
+
 	return StatChange{
 		.m_StatStages = statStages,
-		.m_Chance = static_cast<uint8_t>(chance)
+		.m_Chance = static_cast<uint8_t>(chance),
+		.m_AffectedParty = affects
 	};
 }
 

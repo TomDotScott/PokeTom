@@ -6,7 +6,7 @@
 
 #include "../../Engine/IUpdateable.h"
 
-static constexpr unsigned STAT_COUNT = 6;
+static constexpr unsigned STAT_COUNT = 8;
 
 struct MonsterStats
 {
@@ -72,13 +72,15 @@ public:
 	MonsterStatComponent(const MonsterStats& currentStats);
 	void Update(float deltaTime) override;
 
+	void FullHeal(const MonsterStats& baseStats, uint8_t currentLevel, const std::array<uint8_t, STAT_COUNT>& IVs, const std::array<uint8_t, STAT_COUNT>& EVs);
+
 	void ResetAllModifiers();
 	void ResetModifier(MonsterStats::eStat stat);
 
 	void ModifyStat(MonsterStats::eStat stat, int stages);
 
 	bool IsFainted() const;
-	MonsterStats& GetStats();
+	MonsterStats GetStats() const;
 
 	uint16_t GetMaxHP() const;
 	void TakeDamage(uint16_t damage);
@@ -87,6 +89,8 @@ private:
 	std::array<int, STAT_COUNT> m_statModifiers;
 	MonsterStats m_stats;
 	uint16_t m_maxHP;
+
+	uint16_t GetModifiedStatValue(MonsterStats::eStat stat) const;
 };
 
 #endif // MONSTERSTATS_H

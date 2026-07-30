@@ -5,6 +5,42 @@
 #include "../../Engine/Maths.h"
 #include "../../Engine/Stringtable.h"
 
+namespace
+{
+	// Taken from https://bulbapedia.bulbagarden.net/wiki/Stat_modifier
+	constexpr std::array STAT_MULTIPLIERS = {
+		2.f / 8.f,
+		2.f / 7.f,
+		2.f / 6.f,
+		2.f / 5.f,
+		2.f / 4.f,
+		2.f / 3.f,
+		2.f / 2.f,
+		3.f / 2.f,
+		4.f / 2.f,
+		5.f / 2.f,
+		6.f / 2.f,
+		7.f / 2.f,
+		8.f / 2.f,
+	};
+
+	constexpr std::array ACCURACY_EVASION_MULTIPLIERS = {
+		3.f / 9.f,
+		3.f / 8.f,
+		3.f / 7.f,
+		3.f / 6.f,
+		3.f / 5.f,
+		3.f / 4.f,
+		3.f / 3.f,
+		4.f / 3.f,
+		5.f / 3.f,
+		6.f / 3.f,
+		7.f / 3.f,
+		8.f / 3.f,
+		9.f / 3.f,
+	};
+}
+
 MonsterStats::MonsterStats(
 	const uint16_t hp,
 	const uint16_t attack,
@@ -137,7 +173,7 @@ std::string MonsterStats::GetStatString(eStat stat)
 }
 
 MonsterStatComponent::MonsterStatComponent(const MonsterStats& currentStats) :
-	m_statModifiers{ 0, 0, 0, 0, 0, 0 },
+	m_statModifiers{ 0, 0, 0, 0, 0, 0, 0, 0 },
 	m_stats{ currentStats },
 	m_maxHP(m_stats.m_HP)
 {
@@ -147,9 +183,17 @@ void MonsterStatComponent::Update(const float deltaTime)
 {
 }
 
+void MonsterStatComponent::FullHeal(const MonsterStats& baseStats,
+                                    const uint8_t currentLevel,
+                                    const std::array<uint8_t, STAT_COUNT>& IVs,
+                                    const std::array<uint8_t, STAT_COUNT>& EVs)
+{
+	m_stats = MonsterStats::GetNextStat(baseStats, currentLevel, IVs, EVs);
+}
+
 void MonsterStatComponent::ResetAllModifiers()
 {
-	m_statModifiers = { 0, 0, 0, 0, 0, 0 };
+	m_statModifiers = { 0, 0, 0, 0, 0, 0, 0, 0 };
 }
 
 void MonsterStatComponent::ResetModifier(MonsterStats::eStat stat)
@@ -168,9 +212,20 @@ bool MonsterStatComponent::IsFainted() const
 	return m_stats.m_HP == 0;
 }
 
-MonsterStats& MonsterStatComponent::GetStats()
+MonsterStats MonsterStatComponent::GetStats() const
 {
-	return m_stats;
+	MonsterStats stats;
+
+	stats.m_HP = GetModifiedStatValue(MonsterStats::eStat::HP);
+	stats.m_Accuracy = static_cast<uint8_t>(GetModifiedStatValue(MonsterStats::eStat::Accuracy));
+	stats.m_Attack = GetModifiedStatValue(MonsterStats::eStat::Attack);
+	stats.m_Defense = GetModifiedStatValue(MonsterStats::eStat::Defense);
+	stats.m_Evasion = static_cast<uint8_t>(GetModifiedStatValue(MonsterStats::eStat::Evasion));
+	stats.m_SpAttack = GetModifiedStatValue(MonsterStats::eStat::SpecialAttack);
+	stats.m_SpDefense = GetModifiedStatValue(MonsterStats::eStat::SpecialDefense);
+	stats.m_Speed = GetModifiedStatValue(MonsterStats::eStat::Speed);
+
+	return stats;
 }
 
 uint16_t MonsterStatComponent::GetMaxHP() const
@@ -181,4 +236,40 @@ uint16_t MonsterStatComponent::GetMaxHP() const
 void MonsterStatComponent::TakeDamage(const uint16_t damage)
 {
 	m_stats.TakeDamage(damage);
+}
+
+uint16_t MonsterStatComponent::GetModifiedStatValue(MonsterStats::eStat stat) const
+{
+	const int modifier = m_statModifiers[static_cast<size_t>(stat)];
+
+	float val;
+	switch (stat)
+	{
+	case MonsterStats::eStat::HP:
+		val = static_cast<float>(m_stats.m_HP);
+		break;
+	case MonsterStats::eStat::Attack:
+		val = static_cast<float>(m_stats.m_Attack) * static_cast<float>(STAT_MULTIPLIERS[modifier + 6]);
+		break;
+	case MonsterStats::eStat::Defense:
+		val = static_cast<float>(m_stats.m_Defense) * static_cast<float>(STAT_MULTIPLIERS[modifier + 6]);
+		break;
+	case MonsterStats::eStat::SpecialAttack:
+		val = static_cast<float>(m_stats.m_SpAttack) * static_cast<float>(STAT_MULTIPLIERS[modifier + 6]);
+		break;
+	case MonsterStats::eStat::SpecialDefense:
+		val = static_cast<float>(m_stats.m_SpDefense) * static_cast<float>(STAT_MULTIPLIERS[modifier + 6]);
+		break;
+	case MonsterStats::eStat::Speed:
+		val = static_cast<float>(m_stats.m_Speed) * static_cast<float>(STAT_MULTIPLIERS[modifier + 6]);
+		break;
+	case MonsterStats::eStat::Accuracy:
+		val = static_cast<float>(m_stats.m_Accuracy) * static_cast<float>(ACCURACY_EVASION_MULTIPLIERS[modifier + 6]);
+		break;
+	case MonsterStats::eStat::Evasion:
+		val = static_cast<float>(m_stats.m_Evasion) * static_cast<float>(ACCURACY_EVASION_MULTIPLIERS[modifier + 6]);
+		break;
+	}
+
+	return static_cast<uint16_t>(std::round(val));
 }

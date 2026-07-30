@@ -58,7 +58,7 @@ hash_type PocketMonsterEntity::GetNameStringID() const
 	return m_monsterInfo.GetName();
 }
 
-MonsterStats& PocketMonsterEntity::GetStats()
+MonsterStats PocketMonsterEntity::GetStats()
 {
 	auto* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc != nullptr);
@@ -118,10 +118,22 @@ bool PocketMonsterEntity::IsFainted() const
 
 void PocketMonsterEntity::TakeDamage(const uint16_t damage)
 {
-	GetStats().TakeDamage(damage);
+	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
+	ASSERT(msc != nullptr);
+	msc->TakeDamage(damage);
 }
 
 void PocketMonsterEntity::FullHeal()
 {
-	GetStats() = MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs);
+	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
+	ASSERT(msc != nullptr);
+	msc->FullHeal(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs);
+}
+
+void PocketMonsterEntity::OnDeactivate()
+{
+	Entity::OnDeactivate();
+	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
+	ASSERT(msc != nullptr);
+	msc->ResetAllModifiers();
 }

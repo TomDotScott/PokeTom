@@ -16,7 +16,7 @@ public:
 
 	hash_type GetNameStringID() const;
 
-	MonsterStats& GetStats();
+	MonsterStats GetStats();
 	const MonsterStats& GetBaseStats() const;
 
 	void ModifyStat(MonsterStats::eStat stat, int stages);
@@ -34,6 +34,8 @@ public:
 	void TakeDamage(uint16_t damage);
 
 	void FullHeal();
+
+	void OnDeactivate() override;
 
 private:
 	PocketMonster m_monsterInfo;

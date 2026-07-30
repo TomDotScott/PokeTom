@@ -106,7 +106,7 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 
 		const float aOverD = attackStat / defenseStat;
 
-		float firstPart = levelModifier * static_cast<float>(m_power.value()) * aOverD / 50.f + 2.f;
+		const float firstPart = levelModifier * static_cast<float>(m_power.value()) * aOverD / 50.f + 2.f;
 
 		const float targets = 1.f;
 		const float pb = 1.f;
@@ -141,50 +141,48 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 		printf("DEALING %u HP of DAMAGE\n", damageDealt);
 #endif
 
-		defenderMonster->TakeDamage(damageDealt);
+		switch (m_target)
+		{
+		// TODO: Might be super effective against the user!
+		case eMoveTarget::AllPokemon:
+			break;
+		case eMoveTarget::EntireField:
+		case eMoveTarget::AllOther:
+		case eMoveTarget::AllOpponents:
+		case eMoveTarget::OpponentField:
+		case eMoveTarget::RandomOpponent:
+		case eMoveTarget::Selected:
+			defenderMonster->TakeDamage(damageDealt);
+			break;
+		case eMoveTarget::Ally:
+			// TODO: Needed?
+			break;
+		case eMoveTarget::SpecificMove:
+			// TODO:
+			break;
+		case eMoveTarget::UserField:
+		case eMoveTarget::UserOrAlly:
+		case eMoveTarget::UserAndAllies:
+		case eMoveTarget::User:
+			attackerMonster->TakeDamage(damageDealt);
+			break;
+		case eMoveTarget::Unknown:
+			ASSERT(false);
+			break;
+		}
 	}
 
 	std::optional<Outcome::StatChangeOutcome> changedStat = std::nullopt;
 	if (m_statChange.has_value())
 	{
-		StatChange change = m_statChange.value();
+		const StatChange change = m_statChange.value();
 		const uint16_t rng = percentageRNG.Next();
 		const bool success = change.m_Chance > rng;
 		if (success)
 		{
-			bool affectedDefender = false;
-			bool affectedAttacker = false;
-
-			switch (m_target)
-			{
-			case eMoveTarget::AllPokemon:
-			case eMoveTarget::EntireField:
-				affectedDefender = true;
-				affectedAttacker = true;
-				break;
-			case eMoveTarget::Selected:
-			case eMoveTarget::AllOpponents:
-			case eMoveTarget::AllOther:
-			case eMoveTarget::OpponentField:
-				affectedDefender = true;
-				break;
-			case eMoveTarget::RandomOpponent:
-				// TODO:
-				break;
-			case eMoveTarget::SpecificMove:
-				// TODO:
-				break;
-			case eMoveTarget::Ally:
-			case eMoveTarget::UserAndAllies:
-			case eMoveTarget::UserOrAlly:
-			case eMoveTarget::UserField:
-			case eMoveTarget::User:
-				affectedAttacker = true;
-				break;
-			case eMoveTarget::Unknown:
-				ASSERT(false);
-				break;
-			}
+			const bool affectsBoth = change.m_AffectedParty == StatChange::eChangeAffects::Both;
+			const bool affectsAttacker = affectsBoth || change.m_AffectedParty == StatChange::eChangeAffects::User;
+			const bool affectsDefender = affectsBoth || change.m_AffectedParty == StatChange::eChangeAffects::Target;
 
 			std::vector<StatChange::StatStage> attackerChangedStats;
 			std::vector<StatChange::StatStage> defenderChangedStats;
@@ -193,13 +191,13 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 
 			for (const StatChange::StatStage& stat : change.m_StatStages)
 			{
-				if (affectedAttacker)
+				if (affectsAttacker)
 				{
 					attackerMonster->ModifyStat(stat.m_Stat, stat.m_Stages);
 					attackerChangedStats.emplace_back(stat);
 				}
 
-				if (affectedDefender)
+				if (affectsDefender)
 				{
 					defenderMonster->ModifyStat(stat.m_Stat, stat.m_Stages);
 					defenderChangedStats.emplace_back(stat);

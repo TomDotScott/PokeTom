@@ -212,7 +212,8 @@
           "stat": "attack",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 15,
@@ -238,7 +239,7 @@
       "target": "Selected",
       "power": 40,
       "accuracy": 100,
-      "effect_description": "Inflicts regular damage and can hit Pok\u00e9mon in the air.",
+      "effect_description": "Inflicts regular damage and can hit Pokémon in the air.",
       "effect_category": "Damage"
     },
     {
@@ -263,7 +264,7 @@
       "pp": 20,
       "priority": -6,
       "target": "Selected",
-      "effect_description": "Immediately ends wild battles.  Forces trainers to switch Pok\u00e9mon.",
+      "effect_description": "Immediately ends wild battles.  Forces trainers to switch Pokémon.",
       "effect_category": "ForceSwitch"
     },
     {
@@ -418,7 +419,8 @@
           "stat": "accuracy",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 29,
@@ -586,7 +588,8 @@
           "stat": "defense",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 40,
@@ -652,7 +655,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 44,
@@ -687,7 +691,8 @@
           "stages": -1
         }
       ],
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 46,
@@ -697,7 +702,7 @@
       "pp": 20,
       "priority": -6,
       "target": "Selected",
-      "effect_description": "Immediately ends wild battles.  Forces trainers to switch Pok\u00e9mon.",
+      "effect_description": "Immediately ends wild battles.  Forces trainers to switch Pokémon.",
       "effect_category": "ForceSwitch",
       "sound_based": true
     },
@@ -782,7 +787,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 52,
@@ -929,7 +935,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 62,
@@ -949,7 +956,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 63,
@@ -1124,7 +1132,8 @@
           "stat": "special-attack",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 75,
@@ -1225,7 +1234,8 @@
           "stat": "speed",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 82,
@@ -1422,7 +1432,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 95,
@@ -1454,7 +1465,8 @@
           "stat": "attack",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 97,
@@ -1471,7 +1483,8 @@
           "stat": "speed",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 98,
@@ -1555,7 +1568,8 @@
           "stages": -2
         }
       ],
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 104,
@@ -1572,7 +1586,8 @@
           "stat": "evasion",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 105,
@@ -1601,7 +1616,8 @@
           "stat": "defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 107,
@@ -1618,7 +1634,8 @@
           "stat": "evasion",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 108,
@@ -1636,7 +1653,8 @@
           "stat": "accuracy",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 109,
@@ -1668,7 +1686,8 @@
           "stat": "defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 111,
@@ -1685,7 +1704,8 @@
           "stat": "defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 112,
@@ -1702,7 +1722,8 @@
           "stat": "defense",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 113,
@@ -1723,7 +1744,7 @@
       "pp": 30,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "Resets all Pok\u00e9mon's stats, accuracy, and evasion.",
+      "effect_description": "Resets all Pokémon's stats, accuracy, and evasion.",
       "effect_category": "Field"
     },
     {
@@ -1979,7 +2000,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 133,
@@ -1996,7 +2018,8 @@
           "stat": "special-defense",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 134,
@@ -2014,7 +2037,8 @@
           "stat": "accuracy",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 135,
@@ -2065,7 +2089,7 @@
       "target": "Selected",
       "power": 100,
       "accuracy": 100,
-      "effect_description": "Only works on sleeping Pok\u00e9mon.  Drains half the damage inflicted to heal the user.",
+      "effect_description": "Only works on sleeping Pokémon.  Drains half the damage inflicted to heal the user.",
       "effect_category": "Drain",
       "drain_percent": 50
     },
@@ -2173,7 +2197,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 146,
@@ -2225,7 +2250,8 @@
           "stat": "accuracy",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 149,
@@ -2265,7 +2291,8 @@
           "stat": "defense",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 152,
@@ -2383,7 +2410,8 @@
           "stat": "attack",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 160,
@@ -2555,7 +2583,7 @@
       "target": "Selected",
       "power": 60,
       "accuracy": 100,
-      "effect_description": "Has a 10% chance to burn the target.  Lets frozen Pok\u00e9mon thaw themselves.",
+      "effect_description": "Has a 10% chance to burn the target.  Lets frozen Pokémon thaw themselves.",
       "effect_category": "DamageStatus",
       "status_inflicted": "Burn",
       "status_chance": 10,
@@ -2641,7 +2669,8 @@
           "stat": "speed",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 179,
@@ -2725,7 +2754,8 @@
           "stat": "speed",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 185,
@@ -2800,7 +2830,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 190,
@@ -2821,7 +2852,8 @@
         }
       ],
       "stat_change_chance": 50,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 191,
@@ -2831,7 +2863,7 @@
       "pp": 20,
       "priority": 0,
       "target": "OpponentField",
-      "effect_description": "Scatters Spikes, hurting opposing Pok\u00e9mon that switch in.",
+      "effect_description": "Scatters Spikes, hurting opposing Pokémon that switch in.",
       "effect_category": "Field"
     },
     {
@@ -2906,7 +2938,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 197,
@@ -3011,7 +3044,8 @@
           "stat": "attack",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 205,
@@ -3060,7 +3094,8 @@
           "stat": "attack",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 208,
@@ -3123,7 +3158,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 212,
@@ -3242,7 +3278,7 @@
       "target": "Selected",
       "power": 100,
       "accuracy": 95,
-      "effect_description": "Has a 50% chance to burn the target.  Lets frozen Pok\u00e9mon thaw themselves.",
+      "effect_description": "Has a 50% chance to burn the target.  Lets frozen Pokémon thaw themselves.",
       "effect_category": "DamageStatus",
       "status_inflicted": "Burn",
       "status_chance": 50
@@ -3340,7 +3376,7 @@
       "target": "Selected",
       "power": 40,
       "accuracy": 100,
-      "effect_description": "Has double power against, and can hit, Pok\u00e9mon attempting to switch out.",
+      "effect_description": "Has double power against, and can hit, Pokémon attempting to switch out.",
       "effect_category": "Damage",
       "makes_contact": true
     },
@@ -3363,7 +3399,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 230,
@@ -3381,7 +3418,8 @@
           "stat": "evasion",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 231,
@@ -3402,7 +3440,8 @@
         }
       ],
       "stat_change_chance": 30,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 232,
@@ -3423,7 +3462,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 233,
@@ -3558,7 +3598,8 @@
       ],
       "stat_change_chance": 20,
       "makes_contact": true,
-      "bite_based": true
+      "bite_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 243,
@@ -3631,7 +3672,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 247,
@@ -3652,7 +3694,8 @@
         }
       ],
       "stat_change_chance": 20,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 248,
@@ -3686,7 +3729,8 @@
         }
       ],
       "stat_change_chance": 50,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 250,
@@ -3714,7 +3758,7 @@
       "priority": 0,
       "target": "Selected",
       "accuracy": 100,
-      "effect_description": "Hits once for every conscious Pok\u00e9mon the trainer has.",
+      "effect_description": "Hits once for every conscious Pokémon the trainer has.",
       "effect_category": "Damage",
       "min_hits": 6,
       "max_hits": 6
@@ -3744,7 +3788,7 @@
       "target": "RandomOpponent",
       "power": 90,
       "accuracy": 100,
-      "effect_description": "Forced to use this move for several turns.  Pok\u00e9mon cannot fall asleep in that time.",
+      "effect_description": "Forced to use this move for several turns.  Pokémon cannot fall asleep in that time.",
       "effect_category": "Damage",
       "sound_based": true
     },
@@ -3841,7 +3885,8 @@
           "stat": "special-attack",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 261,
@@ -3949,7 +3994,8 @@
           "stat": "special-defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 269,
@@ -4016,7 +4062,7 @@
       "pp": 20,
       "priority": 0,
       "target": "User",
-      "effect_description": "Randomly selects and uses one of the trainer's other Pok\u00e9mon's moves.",
+      "effect_description": "Randomly selects and uses one of the trainer's other Pokémon's moves.",
       "effect_category": "Unique"
     },
     {
@@ -4054,7 +4100,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 277,
@@ -4286,7 +4333,8 @@
           "stat": "special-attack",
           "stages": 3
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 295,
@@ -4306,7 +4354,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 50
+      "stat_change_chance": 50,
+      "stat_change_target": "target"
     },
     {
       "id": 296,
@@ -4327,7 +4376,8 @@
         }
       ],
       "stat_change_chance": 50,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 297,
@@ -4345,7 +4395,8 @@
           "stat": "attack",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 298,
@@ -4484,7 +4535,8 @@
         }
       ],
       "stat_change_chance": 50,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 307,
@@ -4534,7 +4586,8 @@
       ],
       "stat_change_chance": 20,
       "makes_contact": true,
-      "punch_based": true
+      "punch_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 310,
@@ -4592,7 +4645,8 @@
           "stat": "special-defense",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 314,
@@ -4626,7 +4680,8 @@
           "stages": -2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 316,
@@ -4658,7 +4713,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 318,
@@ -4694,7 +4750,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "user"
     },
     {
       "id": 319,
@@ -4713,7 +4770,8 @@
           "stages": -2
         }
       ],
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 320,
@@ -4751,7 +4809,8 @@
           "stat": "defense",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 322,
@@ -4772,7 +4831,8 @@
           "stat": "special-defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 323,
@@ -4894,7 +4954,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 30
+      "stat_change_chance": 30,
+      "stat_change_target": "target"
     },
     {
       "id": 331,
@@ -4955,7 +5016,8 @@
           "stat": "defense",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 335,
@@ -4984,7 +5046,8 @@
           "stages": 1
         }
       ],
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 337,
@@ -5033,7 +5096,8 @@
           "stat": "defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 340,
@@ -5070,7 +5134,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 342,
@@ -5162,7 +5227,8 @@
           "stat": "special-defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 348,
@@ -5198,7 +5264,8 @@
           "stat": "speed",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 350,
@@ -5277,7 +5344,8 @@
           "stages": -2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 355,
@@ -5348,7 +5416,8 @@
       ],
       "stat_change_chance": 100,
       "makes_contact": true,
-      "punch_based": true
+      "punch_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 360,
@@ -5386,7 +5455,7 @@
       "target": "Selected",
       "power": 65,
       "accuracy": 100,
-      "effect_description": "Has double power against Pok\u00e9mon that have less than half their max HP remaining.",
+      "effect_description": "Has double power against Pokémon that have less than half their max HP remaining.",
       "effect_category": "Damage"
     },
     {
@@ -5436,7 +5505,7 @@
       "pp": 15,
       "priority": 0,
       "target": "UserField",
-      "effect_description": "For three turns, friendly Pok\u00e9mon have doubled Speed.",
+      "effect_description": "For three turns, friendly Pokémon have doubled Speed.",
       "effect_category": "Field"
     },
     {
@@ -5447,7 +5516,7 @@
       "pp": 30,
       "priority": 0,
       "target": "UserOrAlly",
-      "effect_description": "Raises one of a friendly Pok\u00e9mon's stats at random by two stages.",
+      "effect_description": "Raises one of a friendly Pokémon's stats at random by two stages.",
       "effect_category": "Unique"
     },
     {
@@ -5459,7 +5528,7 @@
       "priority": 0,
       "target": "SpecificMove",
       "accuracy": 100,
-      "effect_description": "Strikes back at the last Pok\u00e9mon to hit the user this turn with 1.5\u00d7 the damage.",
+      "effect_description": "Strikes back at the last Pokémon to hit the user this turn with 1.5× the damage.",
       "effect_category": "Damage"
     },
     {
@@ -5499,7 +5568,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 371,
@@ -5747,7 +5817,7 @@
       "pp": 20,
       "priority": 0,
       "target": "OpponentField",
-      "effect_description": "Scatters poisoned spikes, poisoning opposing Pok\u00e9mon that switch in.",
+      "effect_description": "Scatters poisoned spikes, poisoning opposing Pokémon that switch in.",
       "effect_category": "Field"
     },
     {
@@ -5845,7 +5915,8 @@
           "stat": "speed",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 398,
@@ -5968,7 +6039,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 406,
@@ -6060,7 +6132,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 412,
@@ -6081,7 +6154,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 413,
@@ -6116,7 +6190,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 415,
@@ -6160,7 +6235,8 @@
           "stat": "special-attack",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 418,
@@ -6306,7 +6382,8 @@
         }
       ],
       "stat_change_chance": 30,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 427,
@@ -6355,7 +6432,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 30
+      "stat_change_chance": 30,
+      "stat_change_target": "target"
     },
     {
       "id": 430,
@@ -6375,7 +6453,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "target"
     },
     {
       "id": 431,
@@ -6414,7 +6493,7 @@
       "pp": 5,
       "priority": -7,
       "target": "EntireField",
-      "effect_description": "For five turns, slower Pok\u00e9mon will act before faster Pok\u00e9mon.",
+      "effect_description": "For five turns, slower Pokémon will act before faster Pokémon.",
       "effect_category": "Field"
     },
     {
@@ -6435,7 +6514,8 @@
           "stages": -2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 435,
@@ -6485,7 +6565,8 @@
           "stages": -2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 438,
@@ -6606,7 +6687,8 @@
           "stat": "special-attack",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 446,
@@ -6616,7 +6698,7 @@
       "pp": 20,
       "priority": 0,
       "target": "OpponentField",
-      "effect_description": "Causes damage when opposing Pok\u00e9mon switch in.",
+      "effect_description": "Causes damage when opposing Pokémon switch in.",
       "effect_category": "Field"
     },
     {
@@ -6695,7 +6777,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 70
+      "stat_change_chance": 70,
+      "stat_change_target": "user"
     },
     {
       "id": 452,
@@ -6759,7 +6842,8 @@
           "stat": "special-defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 456,
@@ -6907,7 +6991,8 @@
           "stages": -2
         }
       ],
-      "stat_change_chance": 40
+      "stat_change_chance": 40,
+      "stat_change_target": "target"
     },
     {
       "id": 466,
@@ -6943,7 +7028,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 10
+      "stat_change_chance": 10,
+      "stat_change_target": "user"
     },
     {
       "id": 467,
@@ -6979,7 +7065,8 @@
           "stat": "accuracy",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 469,
@@ -6989,7 +7076,7 @@
       "pp": 10,
       "priority": 3,
       "target": "UserField",
-      "effect_description": "Prevents any multi-target moves from hitting friendly Pok\u00e9mon this turn.",
+      "effect_description": "Prevents any multi-target moves from hitting friendly Pokémon this turn.",
       "effect_category": "Field"
     },
     {
@@ -7022,7 +7109,7 @@
       "pp": 10,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "All Pok\u00e9mon's Defense and Special Defense are swapped for 5 turns.",
+      "effect_description": "All Pokémon's Defense and Special Defense are swapped for 5 turns.",
       "effect_category": "Field"
     },
     {
@@ -7066,7 +7153,8 @@
           "stat": "speed",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 476,
@@ -7141,7 +7229,7 @@
       "target": "Selected",
       "power": 70,
       "accuracy": 100,
-      "effect_description": "Deals splash damage to Pok\u00e9mon next to the target.",
+      "effect_description": "Deals splash damage to Pokémon next to the target.",
       "effect_category": "Damage"
     },
     {
@@ -7182,7 +7270,8 @@
           "stat": "speed",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 484,
@@ -7207,7 +7296,7 @@
       "target": "AllOther",
       "power": 120,
       "accuracy": 100,
-      "effect_description": "Hits any Pok\u00e9mon that shares a type with the user.",
+      "effect_description": "Hits any Pokémon that shares a type with the user.",
       "effect_category": "Damage"
     },
     {
@@ -7254,7 +7343,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 489,
@@ -7279,7 +7369,8 @@
           "stat": "accuracy",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 490,
@@ -7300,7 +7391,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 491,
@@ -7321,7 +7413,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "ballistic": true
+      "ballistic": true,
+      "stat_change_target": "target"
     },
     {
       "id": 492,
@@ -7396,7 +7489,7 @@
       "target": "Selected",
       "power": 40,
       "accuracy": 100,
-      "effect_description": "Power increases by 100% for each consecutive use by any friendly Pok\u00e9mon, to a maximum of 200.",
+      "effect_description": "Power increases by 100% for each consecutive use by any friendly Pokémon, to a maximum of 200.",
       "effect_category": "Damage",
       "sound_based": true
     },
@@ -7436,7 +7529,7 @@
       "target": "Selected",
       "power": 20,
       "accuracy": 100,
-      "effect_description": "Power is higher the more the user's stats have been raised, to a maximum of 31\u00d7.",
+      "effect_description": "Power is higher the more the user's stats have been raised, to a maximum of 31×.",
       "effect_category": "Damage"
     },
     {
@@ -7447,7 +7540,7 @@
       "pp": 15,
       "priority": 3,
       "target": "UserField",
-      "effect_description": "Prevents any priority moves from hitting friendly Pok\u00e9mon this turn.",
+      "effect_description": "Prevents any priority moves from hitting friendly Pokémon this turn.",
       "effect_category": "Field"
     },
     {
@@ -7458,7 +7551,7 @@
       "pp": 15,
       "priority": 2,
       "target": "User",
-      "effect_description": "User switches places with the friendly Pok\u00e9mon opposite it.",
+      "effect_description": "User switches places with the friendly Pokémon opposite it.",
       "effect_category": "Unique"
     },
     {
@@ -7547,7 +7640,8 @@
           "stat": "speed",
           "stages": 2
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 509,
@@ -7559,7 +7653,7 @@
       "target": "Selected",
       "power": 60,
       "accuracy": 90,
-      "effect_description": "Ends wild battles.  Forces trainers to switch Pok\u00e9mon.",
+      "effect_description": "Ends wild battles.  Forces trainers to switch Pokémon.",
       "effect_category": "Damage",
       "makes_contact": true
     },
@@ -7623,7 +7717,7 @@
       "target": "Selected",
       "power": 70,
       "accuracy": 100,
-      "effect_description": "Has double power if a friendly Pok\u00e9mon fainted last turn.",
+      "effect_description": "Has double power if a friendly Pokémon fainted last turn.",
       "effect_category": "Damage",
       "makes_contact": true
     },
@@ -7676,7 +7770,7 @@
       "target": "Selected",
       "power": 80,
       "accuracy": 100,
-      "effect_description": "With Grass Pledge, halves opposing Pok\u00e9mon's Speed for four turns.",
+      "effect_description": "With Grass Pledge, halves opposing Pokémon's Speed for four turns.",
       "effect_category": "Damage"
     },
     {
@@ -7689,7 +7783,7 @@
       "target": "Selected",
       "power": 80,
       "accuracy": 100,
-      "effect_description": "With Water Pledge, doubles the effect chance of friendly Pok\u00e9mon's moves for four turns.",
+      "effect_description": "With Water Pledge, doubles the effect chance of friendly Pokémon's moves for four turns.",
       "effect_category": "Damage"
     },
     {
@@ -7702,7 +7796,7 @@
       "target": "Selected",
       "power": 80,
       "accuracy": 100,
-      "effect_description": "With Fire Pledge, damages opposing Pok\u00e9mon for 1/8 their max HP every turn for four turns.",
+      "effect_description": "With Fire Pledge, damages opposing Pokémon for 1/8 their max HP every turn for four turns.",
       "effect_category": "Damage"
     },
     {
@@ -7736,7 +7830,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 523,
@@ -7756,7 +7851,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 524,
@@ -7782,7 +7878,7 @@
       "target": "Selected",
       "power": 60,
       "accuracy": 90,
-      "effect_description": "Ends wild battles.  Forces trainers to switch Pok\u00e9mon.",
+      "effect_description": "Ends wild battles.  Forces trainers to switch Pokémon.",
       "effect_category": "Damage",
       "makes_contact": true
     },
@@ -7805,7 +7901,8 @@
           "stat": "special-attack",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 527,
@@ -7825,7 +7922,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 528,
@@ -7936,7 +8034,8 @@
         }
       ],
       "stat_change_chance": 50,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 535,
@@ -7969,7 +8068,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 50
+      "stat_change_chance": 50,
+      "stat_change_target": "target"
     },
     {
       "id": 537,
@@ -8001,7 +8101,8 @@
           "stat": "defense",
           "stages": 3
         }
-      ]
+      ],
+      "stat_change_target": "user"
     },
     {
       "id": 539,
@@ -8021,7 +8122,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 40
+      "stat_change_chance": 40,
+      "stat_change_target": "target"
     },
     {
       "id": 540,
@@ -8178,7 +8280,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 550,
@@ -8229,7 +8332,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 50
+      "stat_change_chance": 50,
+      "stat_change_target": "user"
     },
     {
       "id": 553,
@@ -8282,7 +8386,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 556,
@@ -8325,7 +8430,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 558,
@@ -8375,7 +8481,7 @@
       "pp": 10,
       "priority": 0,
       "target": "UserField",
-      "effect_description": "Protects all friendly Pok\u00e9mon from damaging moves.  Only works on the first turn after the user is sent out.",
+      "effect_description": "Protects all friendly Pokémon from damaging moves.  Only works on the first turn after the user is sent out.",
       "effect_category": "Field"
     },
     {
@@ -8399,7 +8505,7 @@
       "pp": 10,
       "priority": 0,
       "target": "AllPokemon",
-      "effect_description": "Raises the Attack and Special Attack of all []{type:grass} Pok\u00e9mon in battle.",
+      "effect_description": "Raises the Attack and Special Attack of all []{type:grass} Pokémon in battle.",
       "effect_category": "StatChange",
       "stat_changes": [
         {
@@ -8411,7 +8517,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "both"
     },
     {
       "id": 564,
@@ -8487,7 +8594,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 569,
@@ -8589,7 +8697,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 576,
@@ -8625,7 +8734,7 @@
       "pp": 10,
       "priority": 3,
       "target": "UserField",
-      "effect_description": "Protects all friendly Pok\u00e9mon from non-damaging moves.",
+      "effect_description": "Protects all friendly Pokémon from non-damaging moves.",
       "effect_category": "Field"
     },
     {
@@ -8636,7 +8745,7 @@
       "pp": 10,
       "priority": 0,
       "target": "AllPokemon",
-      "effect_description": "Raises the Defense of all []{type:grass} Pok\u00e9mon in battle.",
+      "effect_description": "Raises the Defense of all []{type:grass} Pokémon in battle.",
       "effect_category": "Unique",
       "stat_changes": [
         {
@@ -8644,7 +8753,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "both"
     },
     {
       "id": 580,
@@ -8654,7 +8764,7 @@
       "pp": 10,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "For five turns, heals all Pok\u00e9mon on the ground for 1/16 max HP each turn and strengthens their []{type:grass} moves to 1.5\u00d7 their power.",
+      "effect_description": "For five turns, heals all Pokémon on the ground for 1/16 max HP each turn and strengthens their []{type:grass} moves to 1.5× their power.",
       "effect_category": "Field"
     },
     {
@@ -8665,7 +8775,7 @@
       "pp": 10,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "For five turns, protects all Pok\u00e9mon on the ground from major status ailments and confusion, and halves the power of incoming []{type:dragon} moves.",
+      "effect_description": "For five turns, protects all Pokémon on the ground from major status ailments and confusion, and halves the power of incoming []{type:dragon} moves.",
       "effect_category": "Field"
     },
     {
@@ -8698,7 +8808,8 @@
         }
       ],
       "stat_change_chance": 10,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 584,
@@ -8731,7 +8842,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 30
+      "stat_change_chance": 30,
+      "stat_change_target": "target"
     },
     {
       "id": 586,
@@ -8755,7 +8867,7 @@
       "pp": 10,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "Prevents all Pok\u00e9mon from fleeing or switching out during the next turn.",
+      "effect_description": "Prevents all Pokémon from fleeing or switching out during the next turn.",
       "effect_category": "Field"
     },
     {
@@ -8766,7 +8878,7 @@
       "pp": 10,
       "priority": 4,
       "target": "User",
-      "effect_description": "Blocks damaging attacks and lowers attacking Pok\u00e9mon's Attack by two stages on contact.  Switches Aegislash to Shield Forme.",
+      "effect_description": "Blocks damaging attacks and lowers attacking Pokémon's Attack by two stages on contact.  Switches Aegislash to Shield Forme.",
       "effect_category": "Unique"
     },
     {
@@ -8785,7 +8897,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 590,
@@ -8804,7 +8917,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "target"
     },
     {
       "id": 591,
@@ -8824,7 +8938,8 @@
           "stages": 2
         }
       ],
-      "stat_change_chance": 50
+      "stat_change_chance": 50,
+      "stat_change_target": "user"
     },
     {
       "id": 592,
@@ -8863,7 +8978,7 @@
       "target": "Selected",
       "power": 15,
       "accuracy": 100,
-      "effect_description": "Hits 2\u20135 times.",
+      "effect_description": "Hits 2–5 times.",
       "effect_category": "Damage",
       "min_hits": 2,
       "max_hits": 5
@@ -8886,7 +9001,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 596,
@@ -8896,7 +9012,7 @@
       "pp": 10,
       "priority": 4,
       "target": "User",
-      "effect_description": "Blocks damaging attacks and damages attacking Pok\u00e9mon for 1/8 their max HP.",
+      "effect_description": "Blocks damaging attacks and damages attacking Pokémon for 1/8 their max HP.",
       "effect_category": "Unique"
     },
     {
@@ -8914,7 +9030,8 @@
           "stat": "special-defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 598,
@@ -8932,7 +9049,8 @@
           "stat": "special-attack",
           "stages": -2
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 599,
@@ -8959,7 +9077,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 600,
@@ -8997,7 +9116,8 @@
           "stages": 2
         }
       ],
-      "charge_turn": true
+      "charge_turn": true,
+      "stat_change_target": "user"
     },
     {
       "id": 602,
@@ -9007,7 +9127,7 @@
       "pp": 20,
       "priority": 0,
       "target": "UserAndAllies",
-      "effect_description": "Raises the Defense and Special Defense of all friendly Pok\u00e9mon with []{ability:plus} or []{ability:minus} by one stage.",
+      "effect_description": "Raises the Defense and Special Defense of all friendly Pokémon with []{ability:plus} or []{ability:minus} by one stage.",
       "effect_category": "StatChange",
       "stat_changes": [
         {
@@ -9018,7 +9138,8 @@
           "stat": "special-defense",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "both"
     },
     {
       "id": 603,
@@ -9039,7 +9160,7 @@
       "pp": 10,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "For five turns, prevents all Pok\u00e9mon on the ground from sleeping and strengthens their []{type:electric} moves to 1.5\u00d7 their power.",
+      "effect_description": "For five turns, prevents all Pokémon on the ground from sleeping and strengthens their []{type:electric} moves to 1.5× their power.",
       "effect_category": "Field"
     },
     {
@@ -9093,7 +9214,8 @@
           "stat": "attack",
           "stages": -1
         }
-      ]
+      ],
+      "stat_change_target": "target"
     },
     {
       "id": 609,
@@ -9163,7 +9285,8 @@
       ],
       "stat_change_chance": 100,
       "makes_contact": true,
-      "punch_based": true
+      "punch_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 613,
@@ -9189,7 +9312,7 @@
       "target": "AllOpponents",
       "power": 90,
       "accuracy": 100,
-      "effect_description": "Grounds the target, and hits even Flying-type or levitating Pok\u00e9mon.",
+      "effect_description": "Grounds the target, and hits even Flying-type or levitating Pokémon.",
       "effect_category": "Damage"
     },
     {
@@ -9282,7 +9405,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "user"
     },
     {
       "id": 621,
@@ -9301,7 +9425,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 659,
@@ -9311,7 +9436,7 @@
       "pp": 5,
       "priority": 0,
       "target": "User",
-      "effect_description": "Heals the user for \u00bd its max HP, or \u2154 during a sandstorm.",
+      "effect_description": "Heals the user for ½ its max HP, or ⅔ during a sandstorm.",
       "effect_category": "Healing",
       "healing_percent": 50
     },
@@ -9337,7 +9462,7 @@
       "pp": 10,
       "priority": 4,
       "target": "User",
-      "effect_description": "Grants the user protection for the rest of the turn and poisons any Pok\u00e9mon that tries to use a contact move on it.",
+      "effect_description": "Grants the user protection for the rest of the turn and poisons any Pokémon that tries to use a contact move on it.",
       "effect_category": "Unique"
     },
     {
@@ -9401,7 +9526,8 @@
       ],
       "stat_change_chance": 100,
       "makes_contact": true,
-      "punch_based": true
+      "punch_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 666,
@@ -9411,7 +9537,7 @@
       "pp": 10,
       "priority": 0,
       "target": "Selected",
-      "effect_description": "Heals the target for \u00bd its max HP, or \u2154 on Grassy Terrain.",
+      "effect_description": "Heals the target for ½ its max HP, or ⅔ on Grassy Terrain.",
       "effect_category": "Healing",
       "healing_percent": 50
     },
@@ -9446,7 +9572,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 669,
@@ -9506,7 +9633,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 673,
@@ -9527,7 +9655,7 @@
       "pp": 20,
       "priority": 0,
       "target": "UserAndAllies",
-      "effect_description": "Raises the Attack and Special Attack of all friendly Pok\u00e9mon with []{ability:plus} or []{ability:minus} by one stage.",
+      "effect_description": "Raises the Attack and Special Attack of all friendly Pokémon with []{ability:plus} or []{ability:minus} by one stage.",
       "effect_category": "StatChange",
       "stat_changes": [
         {
@@ -9538,7 +9666,8 @@
           "stat": "special-attack",
           "stages": 1
         }
-      ]
+      ],
+      "stat_change_target": "both"
     },
     {
       "id": 675,
@@ -9594,7 +9723,7 @@
       "pp": 10,
       "priority": 0,
       "target": "EntireField",
-      "effect_description": "Protects Pok\u00e9mon on the ground from priority moves and increases the power of their  Psychic moves by 50%.",
+      "effect_description": "Protects Pokémon on the ground from priority moves and increases the power of their  Psychic moves by 50%.",
       "effect_category": "Field"
     },
     {
@@ -9616,7 +9745,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 680,
@@ -9637,7 +9767,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 681,
@@ -9649,7 +9780,7 @@
       "target": "Selected",
       "power": 20,
       "accuracy": 100,
-      "effect_description": "Power is higher the more the user's stats have been raised, to a maximum of 31\u00d7.",
+      "effect_description": "Power is higher the more the user's stats have been raised, to a maximum of 31×.",
       "effect_category": "Damage",
       "makes_contact": true
     },
@@ -9747,7 +9878,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 689,
@@ -9770,7 +9902,7 @@
       "target": "Selected",
       "power": 100,
       "accuracy": 100,
-      "effect_description": "Inflicts a burn on any Pok\u00e9mon that makes contact before the attack.",
+      "effect_description": "Inflicts a burn on any Pokémon that makes contact before the attack.",
       "effect_category": "Damage",
       "ballistic": true
     },
@@ -9793,7 +9925,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 692,
@@ -9865,7 +9998,8 @@
           "stages": -2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 706,
@@ -9914,7 +10048,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 20
+      "stat_change_chance": 20,
+      "stat_change_target": "target"
     },
     {
       "id": 709,
@@ -9949,7 +10084,8 @@
         }
       ],
       "stat_change_chance": 20,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 711,
@@ -10026,7 +10162,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 716,
@@ -10192,7 +10329,8 @@
           "stages": 2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 748,
@@ -10226,7 +10364,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 750,
@@ -10354,7 +10493,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "sound_based": true
+      "sound_based": true,
+      "stat_change_target": "user"
     },
     {
       "id": 776,
@@ -10390,7 +10530,8 @@
           "stages": 2
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 778,
@@ -10410,7 +10551,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 779,
@@ -10492,7 +10634,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "user"
     },
     {
       "id": 784,
@@ -10513,7 +10656,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 785,
@@ -10561,7 +10705,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 788,
@@ -10581,7 +10726,8 @@
           "stages": -1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 789,
@@ -10602,7 +10748,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 790,
@@ -10843,7 +10990,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 807,
@@ -10919,7 +11067,8 @@
           "stages": 1
         }
       ],
-      "stat_change_chance": 100
+      "stat_change_chance": 100,
+      "stat_change_target": "target"
     },
     {
       "id": 812,
@@ -11106,7 +11255,8 @@
         }
       ],
       "stat_change_chance": 100,
-      "makes_contact": true
+      "makes_contact": true,
+      "stat_change_target": "target"
     },
     {
       "id": 824,

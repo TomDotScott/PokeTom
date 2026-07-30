@@ -205,6 +205,14 @@
             }
           }
         },
+        "stat_change_target": {
+          "type": "string",
+          "enum": [
+            "user",
+            "target",
+            "both"
+          ]
+        },
         "stat_change_chance": {
           "type": "integer",
           "minimum": 1,
@@ -274,6 +282,16 @@
         "self_ko": {
           "type": "boolean"
         }
+      },
+      "if": {
+        "required": [
+          "stat_changes"
+        ]
+      },
+      "then": {
+        "required": [
+          "stat_change_target"
+        ]
       }
     }
   }
