@@ -4,6 +4,7 @@
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
 #include "../../Engine/UI/UiProgressBar.h"
+#include "../../Engine/UI/UiText.h"
 #include "../../Game/Monsters/PocketMonsterEntity.h"
 
 OptionSelectLayer::OptionSelectLayer() :
@@ -83,7 +84,7 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 {
 	UILayer::OnActivate(state, prevLayerResult);
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
 
 	auto* optionsUI = battleUI->GetChild<UiPanel>(OPTIONS_PANEL_NAME);
@@ -105,7 +106,14 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 
 	PocketMonsterEntity* playerEntity = entReg.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
 	ASSERT(playerEntity);
-	playerPB->SetProgress(playerEntity->GetStats().m_HP, playerEntity->GetMaxHP(), false);
+	const uint16_t playerHP = playerEntity->GetStats().m_HP;
+	const uint16_t playerMaxHP = playerEntity->GetMaxHP();
+	playerPB->SetProgress(playerHP, playerMaxHP, false);
+
+	auto* hpText= battleUI->GetChild<UiText>("PLAYER_HP_TEXT");
+	ASSERT(hpText);
+	hpText->SetText("%d/%d", playerHP, playerMaxHP);
+
 
 	PocketMonsterEntity* oppEntity = entReg.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
 	ASSERT(oppEntity);

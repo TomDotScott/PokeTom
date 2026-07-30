@@ -120,7 +120,6 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 
 void BattleState::OnEnter()
 {
-	printf("Entered a battle!\n");
 	m_battleFinished = false;
 
 	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnActivate();

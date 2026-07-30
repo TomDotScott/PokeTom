@@ -237,5 +237,16 @@ So that I can see what dialogue will look like!!!
       <backgroundcolour>506858FF</backgroundcolour>
       <fillcolour>58D080FF</fillcolour>
     </ProgressBar>
+
+    <Text>
+      <name>PLAYER_HP_TEXT</name>
+      <string>69/420</string>
+      <alignment>right</alignment>
+      <colour>000000FF</colour>
+      <position x="637" y="305" />
+      <size>12</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
   </Panel>
 </ui>

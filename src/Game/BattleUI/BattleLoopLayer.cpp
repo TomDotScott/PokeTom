@@ -239,8 +239,22 @@ float BattleLoopLayer::HealthbarAnimation::CalculateFill() const
 void BattleLoopLayer::HealthbarAnimation::UpdateFill() const
 {
 	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
-	UiProgressBar* pb = battlePanel->GetChild<UiProgressBar>(
-		m_type == eAnimationType::Player ? "PLAYER_HP_BAR" : "OPPONENT_HP_BAR");
+	UiProgressBar* pb;
+	if (m_type == eAnimationType::Player)
+	{
+		auto* text = battlePanel->GetChild<UiText>("PLAYER_HP_TEXT");
+		ASSERT(text);
+
+		const float animHealth = std::round(CalculateFill() * static_cast<float>(m_maxHealth));
+		text->SetText("%d/%d", static_cast<int>(animHealth), m_maxHealth);
+
+		pb = battlePanel->GetChild<UiProgressBar>("PLAYER_HP_BAR");
+	}
+	else
+	{
+		pb = battlePanel->GetChild<UiProgressBar>(
+			"OPPONENT_HP_BAR");
+	}
 	ASSERT(pb);
 	pb->SetProgress(CalculateFill());
 }
@@ -291,16 +305,22 @@ void BattleLoopLayer::DoTurn(
 		if (defender->GetID() == playerMonsterEntityID)
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
-				.m_Start = [this, defender, defenderHealthBefore] { m_playerHealthAnimation.Start(defender, defenderHealthBefore); },
+				.m_Start = [this, defender, defenderHealthBefore]
+				{
+					m_playerHealthAnimation.Start(defender, defenderHealthBefore);
+				},
 				.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); }
-				});
+			});
 		}
 		else
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
-				.m_Start = [this, defender, defenderHealthBefore] { m_opponentHealthAnimation.Start(defender, defenderHealthBefore); },
+				.m_Start = [this, defender, defenderHealthBefore]
+				{
+					m_opponentHealthAnimation.Start(defender, defenderHealthBefore);
+				},
 				.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); }
-				});
+			});
 		}
 	}
 
