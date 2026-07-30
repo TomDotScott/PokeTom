@@ -34,11 +34,12 @@ private:
 		std::optional<std::function<void()>> m_OnDismiss = std::nullopt;
 	};
 
-	// Advance when the animation is finished
+	// Advance when the animation is finished, or when A is pressed
 	struct AnimationBeat
 	{
 		std::function<void()> m_Start;
 		std::function<bool()> m_IsComplete;
+		std::function<void()> m_FinishAnimation;
 	};
 
 	using BattleBeat = std::variant<TextBeat, AnimationBeat>;

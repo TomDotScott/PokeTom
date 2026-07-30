@@ -181,7 +181,10 @@ void BattleLoopLayer::HealthbarAnimation::Start(PocketMonsterEntity* monster, co
 
 void BattleLoopLayer::HealthbarAnimation::Finish()
 {
+	m_currentTime = m_duration;
+
 	UpdateFill();
+
 	m_finished = true;
 }
 
@@ -222,6 +225,18 @@ void BattleLoopLayer::OnSelectButtonPressed()
 		if (beat.m_OnDismiss.has_value())
 		{
 			beat.m_OnDismiss.value()();
+		}
+
+		AdvanceBeat();
+	}
+	else if (std::holds_alternative<AnimationBeat>(m_battleBeatQueue.front()))
+	{
+		auto beat = std::move(std::get<AnimationBeat>(m_battleBeatQueue.front()));
+		m_battleBeatQueue.pop();
+
+		if (!beat.m_IsComplete())
+		{
+			beat.m_FinishAnimation();
 		}
 
 		AdvanceBeat();
@@ -313,7 +328,8 @@ void BattleLoopLayer::DoTurn(
 				{
 					m_playerHealthAnimation.Start(defender, defenderHealthBefore);
 				},
-				.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); }
+				.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); },
+				.m_FinishAnimation = [this] { m_playerHealthAnimation.Finish(); }
 			});
 		}
 		else
@@ -323,7 +339,8 @@ void BattleLoopLayer::DoTurn(
 				{
 					m_opponentHealthAnimation.Start(defender, defenderHealthBefore);
 				},
-				.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); }
+				.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); },
+				.m_FinishAnimation = [this] { m_opponentHealthAnimation.Finish(); }
 			});
 		}
 	}
