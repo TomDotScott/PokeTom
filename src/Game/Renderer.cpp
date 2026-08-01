@@ -75,16 +75,19 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 {
 	m_layerBatchers.clear();
 
-#if BUILD_DEBUG
-	const auto generateLayerName = [](const std::string& levelName, const std::string& layerName) -> std::string
+	const auto generateLayerName = [](const hash_type& levelName, const hash_type& layerName) -> hash_type
 	{
+#if BUILD_DEBUG
 		return levelName + "#" + layerName;
-	};
 #else
-	const auto generateLayerName = [](const hash_type& levelName, const hash_type& layerName) -> hash_type {
-		return levelName ^ layerName;
-		};
+		hash_type combinedHash = levelName;
+
+		// boost::hash_combine pattern, stolen from https://gist.github.com/eugene-malashkin/884e225ff57aca1b9cbe
+		combinedHash ^= layerName + 0x9e3779b9 + (combinedHash << 6) + (combinedHash >> 2);
+
+		return combinedHash;
 #endif
+	};
 
 	std::unordered_map<hash_type, std::unordered_map<hash_type, std::vector<sf::Sprite>>> buckets;
 	for (const auto& [levelName, renderData] : visibleLevelRenderData)
@@ -100,25 +103,21 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 
 	for (const auto& [levelName, renderData] : visibleLevelRenderData)
 	{
-		for (auto& [layerName, textureGroup] : buckets)
+		for (const auto& layerMetaData : renderData.m_TileLayerData)
 		{
-			const std::vector<TileLayerData>& tileLayerData = renderData.m_TileLayerData;
-
-			const auto& layerData = std::ranges::find_if(renderData.m_TileLayerData, [&](const TileLayerData& a)
+			const hash_type key = generateLayerName(levelName, layerMetaData.m_Name);
+			if (auto it = buckets.find(key); it != buckets.end())
 			{
-				return generateLayerName(levelName, a.m_Name) == layerName;
-			});
-
-			if (layerData == tileLayerData.end())
-			{
-				continue;
-			}
-
-			for (auto& [texture, sprites] : textureGroup)
-			{
-				SpriteBatcher batcher(texture);
-				batcher.BatchSprites(sprites);
-				m_layerBatchers.push_back({ layerName, layerData->m_ZIndex, std::move(batcher) });
+				for (auto& [texture, sprites] : it->second)
+				{
+					SpriteBatcher batcher(texture);
+					batcher.BatchSprites(sprites);
+					m_layerBatchers.push_back({
+						key,
+						layerMetaData.m_ZIndex,
+						std::move(batcher)
+					});
+				}
 			}
 		}
 	}
