@@ -109,28 +109,8 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	const entity_id_t playerMonsterEntityID = playerMonster->GetID();
 
 	DoTurn(state, first, firstMonsterMoveIdx, second, playerMonsterEntityID);
+	DoTurn(state, second, secondMonsterMoveIdx, first, playerMonsterEntityID);
 
-	if (first->IsFainted())
-	{
-		OnMonsterFainted(state, first, first == playerMonster);
-	}
-	else if (second->IsFainted())
-	{
-		OnMonsterFainted(state, second, second == playerMonster);
-	}
-	else
-	{
-		DoTurn(state, second, secondMonsterMoveIdx, first, playerMonsterEntityID);
-
-		if (second->IsFainted())
-		{
-			OnMonsterFainted(state, second, second == playerMonster);
-		}
-		else if (first->IsFainted())
-		{
-			OnMonsterFainted(state, first, first == playerMonster);
-		}
-	}
 
 	AdvanceBeat();
 }
@@ -286,6 +266,11 @@ void BattleLoopLayer::DoTurn(
 	const entity_id_t playerMonsterEntityID
 )
 {
+	if (attacker->IsFainted())
+	{
+		return;
+	}
+
 	// TODO: Recoil and other effects
 	const uint16_t attackerHealthBefore = attacker->GetStats().m_HP;
 	const uint16_t defenderHealthBefore = defender->GetStats().m_HP;
@@ -339,7 +324,7 @@ void BattleLoopLayer::DoTurn(
 				{
 					m_opponentHealthAnimation.Start(defender, defenderHealthBefore);
 				},
-				.m_IsComplete = [&] { return !m_opponentHealthAnimation.IsPlaying(); },
+				.m_IsComplete = [this] { return !m_opponentHealthAnimation.IsPlaying(); },
 				.m_FinishAnimation = [this] { m_opponentHealthAnimation.Finish(); }
 			});
 		}
@@ -433,7 +418,7 @@ void BattleLoopLayer::AdvanceBeat()
 	}
 
 	std::visit(overloaded{
-		           [&](const TextBeat& beat)
+		           [](const TextBeat& beat)
 		           {
 			           if (beat.m_OnShow)
 			           {
@@ -441,7 +426,7 @@ void BattleLoopLayer::AdvanceBeat()
 				           // Waits for the A press in OnSelectButtonPressed
 			           }
 		           },
-		           [&](const AnimationBeat& beat)
+		           [](const AnimationBeat& beat)
 		           {
 			           if (beat.m_Start)
 			           {
@@ -598,7 +583,11 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 		}
 	});
 
-	if (!hasMonstersLeft)
+	if (hasMonstersLeft)
+	{
+		// TODO: XP Gain and Level up!
+	}
+	else
 	{
 		// Was it the player?
 		if (isPlayerMonster)
@@ -618,10 +607,13 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 		}
 		else
 		{
-			std::get<TextBeat>(m_battleBeatQueue.back()).m_OnDismiss = [&]()
-			{
-				game_events::OnBattleEnd.Fire(m_endContext);
-			};
+			m_battleBeatQueue.emplace(TextBeat{
+				.m_MessageName = "BATTLE END",
+				.m_OnShow = [this]()
+				{
+					game_events::OnBattleEnd.Fire(m_endContext);
+				}
+			});
 		}
 	}
 }
