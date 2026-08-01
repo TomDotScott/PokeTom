@@ -8,6 +8,8 @@
 #include "../BattleContext.h"
 #include "../Move.h"
 
+class UiText;
+class UiProgressBar;
 class PocketMonsterEntity;
 
 class BattleLoopLayer final : public UILayer
@@ -55,7 +57,7 @@ private:
 			Opponent
 		};
 
-		HealthbarAnimation(eAnimationType type);
+		explicit HealthbarAnimation(eAnimationType type);
 
 		void Start(PocketMonsterEntity* monster, uint16_t monsterHealthBefore);
 
@@ -65,6 +67,9 @@ private:
 		bool IsPlaying() const;
 
 	private:
+		UiProgressBar* m_progressBar;
+		UiText* m_hpText;
+
 		bool m_finished;
 		uint16_t m_healthBefore;
 

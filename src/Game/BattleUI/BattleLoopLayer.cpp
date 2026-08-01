@@ -126,6 +126,8 @@ void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons /*button*/
 }
 
 BattleLoopLayer::HealthbarAnimation::HealthbarAnimation(const eAnimationType type) :
+	m_progressBar(nullptr),
+	m_hpText(nullptr),
 	m_finished(true),
 	m_healthBefore(0),
 	m_currentHealth(0),
@@ -134,6 +136,21 @@ BattleLoopLayer::HealthbarAnimation::HealthbarAnimation(const eAnimationType typ
 	m_duration(0),
 	m_currentTime(0)
 {
+	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	if (m_type == eAnimationType::Player)
+	{
+		m_progressBar = battlePanel->GetChild<UiProgressBar>("PLAYER_HP_BAR");
+
+		UiText* text = battlePanel->GetChild<UiText>("PLAYER_HP_TEXT");
+		ASSERT(text);
+		m_hpText = text;
+		const float animHealth = std::round(CalculateFill() * static_cast<float>(m_maxHealth));
+		m_hpText->SetText("%d/%d", static_cast<int>(animHealth), m_maxHealth);
+	}
+	else
+	{
+		m_progressBar = battlePanel->GetChild<UiProgressBar>("OPPONENT_HP_BAR");
+	}
 }
 
 void BattleLoopLayer::HealthbarAnimation::Start(PocketMonsterEntity* monster, const uint16_t monsterHealthBefore)
@@ -237,25 +254,17 @@ float BattleLoopLayer::HealthbarAnimation::CalculateFill() const
 
 void BattleLoopLayer::HealthbarAnimation::UpdateFill() const
 {
-	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
-	UiProgressBar* pb;
+	ASSERT(m_progressBar);
+
 	if (m_type == eAnimationType::Player)
 	{
-		auto* text = battlePanel->GetChild<UiText>("PLAYER_HP_TEXT");
-		ASSERT(text);
+		ASSERT(m_hpText);
 
 		const float animHealth = std::round(CalculateFill() * static_cast<float>(m_maxHealth));
-		text->SetText("%d/%d", static_cast<int>(animHealth), m_maxHealth);
+		m_hpText->SetText("%d/%d", static_cast<int>(animHealth), m_maxHealth);
+	}
 
-		pb = battlePanel->GetChild<UiProgressBar>("PLAYER_HP_BAR");
-	}
-	else
-	{
-		pb = battlePanel->GetChild<UiProgressBar>(
-			"OPPONENT_HP_BAR");
-	}
-	ASSERT(pb);
-	pb->SetProgress(CalculateFill());
+	m_progressBar->SetProgress(CalculateFill());
 }
 
 void BattleLoopLayer::DoTurn(
