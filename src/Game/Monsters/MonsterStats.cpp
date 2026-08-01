@@ -148,24 +148,26 @@ uint16_t MonsterStats::GetNextStat(const MonsterStats base,
 
 std::string MonsterStats::GetStatString(eStat stat)
 {
+	const hash_type stGroup = HASH("STAT");
+
 	switch (stat)
 	{
 	case eStat::HP:
-		return STRINGTABLE->GetString("STAT", "STAT_HP");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_HP"));
 	case eStat::Attack:
-		return STRINGTABLE->GetString("STAT", "STAT_ATTACK");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_ATTACK"));
 	case eStat::Defense:
-		return STRINGTABLE->GetString("STAT", "STAT_DEFENSE");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_DEFENSE"));
 	case eStat::SpecialAttack:
-		return STRINGTABLE->GetString("STAT", "STAT_ATTACK_SPECIAL");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_ATTACK_SPECIAL"));
 	case eStat::SpecialDefense:
-		return STRINGTABLE->GetString("STAT", "STAT_DEFENSE_SPECIAL");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_DEFENSE_SPECIAL"));
 	case eStat::Speed:
-		return STRINGTABLE->GetString("STAT", "STAT_SPEED");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_SPEED"));
 	case eStat::Accuracy:
-		return STRINGTABLE->GetString("STAT", "STAT_ACCURACY");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_ACCURACY"));
 	case eStat::Evasion:
-		return STRINGTABLE->GetString("STAT", "STAT_EVASION");
+		return STRINGTABLE->GetString(stGroup, HASH("STAT_EVASION"));
 	}
 
 	ASSERT_MSG(false, "Unknown stat %d", static_cast<int>(stat));
