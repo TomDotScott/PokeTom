@@ -184,8 +184,8 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 			const bool affectsAttacker = affectsBoth || change.m_AffectedParty == StatChange::eChangeAffects::User;
 			const bool affectsDefender = affectsBoth || change.m_AffectedParty == StatChange::eChangeAffects::Target;
 
-			std::vector<StatChange::StatStage> attackerChangedStats;
-			std::vector<StatChange::StatStage> defenderChangedStats;
+			std::vector<stat_change_outcome> attackerChangedStats;
+			std::vector<stat_change_outcome> defenderChangedStats;
 			attackerChangedStats.reserve(change.m_StatStages.size());
 			defenderChangedStats.reserve(change.m_StatStages.size());
 
@@ -193,14 +193,18 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 			{
 				if (affectsAttacker)
 				{
-					attackerMonster->ModifyStat(stat.m_Stat, stat.m_Stages);
-					attackerChangedStats.emplace_back(stat);
+					attackerChangedStats.emplace_back(
+						stat,
+						attackerMonster->ModifyStat(stat.m_Stat, stat.m_Stages)
+					);
 				}
 
 				if (affectsDefender)
 				{
-					defenderMonster->ModifyStat(stat.m_Stat, stat.m_Stages);
-					defenderChangedStats.emplace_back(stat);
+					defenderChangedStats.emplace_back(
+						stat,
+						defenderMonster->ModifyStat(stat.m_Stat, stat.m_Stages)
+					);
 				}
 			}
 

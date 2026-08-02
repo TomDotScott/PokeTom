@@ -19,7 +19,7 @@ public:
 	MonsterStats GetStats();
 	const MonsterStats& GetBaseStats() const;
 
-	void ModifyStat(MonsterStats::eStat stat, int stages);
+	bool ModifyStat(MonsterStats::eStat stat, int stages);
 
 	uint8_t GetLevel() const;
 	uint16_t GetMaxHP() const;

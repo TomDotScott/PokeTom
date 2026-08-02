@@ -367,29 +367,29 @@ void BattleLoopLayer::DoTurn(
 	// Any Stat Changes
 	if (outcome.m_StatChangeOutcome.has_value())
 	{
-		auto statChangeOutcome = outcome.m_StatChangeOutcome.value();
+		const auto& [attackerStatChanges, defenderStatChanges] = outcome.m_StatChangeOutcome.value();
 
 		// TODO: Power up/down animation on the sprites - maybe a shader?
-		for (const auto& statChanges : statChangeOutcome.m_DefenderStatChanges)
+		for (const auto& statChanges : defenderStatChanges)
 		{
 			// TODO: Queue AnimationBeat
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_MessageName = "DEFENDER STAT CHANGE",
 				.m_OnShow = [this, defender, statChanges]()
 				{
-					ShowStatChangeText(defender, statChanges);
+					ShowStatChangeText(defender, statChanges.m_Stage, statChanges.m_Succeeded);
 				}
 			});
 		}
 
-		for (const auto& statChanges : statChangeOutcome.m_AttackerStatChanges)
+		for (const auto& statChanges : attackerStatChanges)
 		{
 			// TODO: Queue AnimationBeat
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_MessageName = "ATTACKER STAT CHANGE",
 				.m_OnShow = [this, attacker, statChanges]()
 				{
-					ShowStatChangeText(attacker, statChanges);
+					ShowStatChangeText(attacker, statChanges.m_Stage, statChanges.m_Succeeded);
 				}
 			});
 		}
@@ -498,42 +498,58 @@ void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), stringID).c_str());
 }
 
-void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage outcome)
+void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
+                                         const StatChange::StatStage statChangeInfo,
+                                         const bool succeeded)
 {
 	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
 
-	std::string statString = MonsterStats::GetStatString(outcome.m_Stat);
+	const std::string statString = MonsterStats::GetStatString(statChangeInfo.m_Stat);
 
 	hash_type hashString = DEFAULT_HASH;
-	if (outcome.m_Stages > 0)
+	if (statChangeInfo.m_Stages > 0)
 	{
-		if (outcome.m_Stages < 2)
+		if (succeeded)
 		{
-			hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_1");
-		}
-		else if (outcome.m_Stages < 4)
-		{
-			hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_2");
+			if (statChangeInfo.m_Stages < 2)
+			{
+				hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_1");
+			}
+			else if (statChangeInfo.m_Stages < 4)
+			{
+				hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_2");
+			}
+			else
+			{
+				hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_3");
+			}
 		}
 		else
 		{
-			hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_3");
+			hashString = HASH("MONSTER_STAT_CHANGE_MAX");
 		}
 	}
 	else
 	{
-		if (outcome.m_Stages > -2)
+		if (succeeded)
 		{
-			hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_1");
-		}
-		else if (outcome.m_Stages > -4)
-		{
-			hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_2");
+			if (statChangeInfo.m_Stages > -2)
+			{
+				hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_1");
+			}
+			else if (statChangeInfo.m_Stages > -4)
+			{
+				hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_2");
+			}
+			else
+			{
+				hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_3");
+			}
 		}
 		else
 		{
-			hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_3");
+			hashString = HASH("MONSTER_STAT_CHANGE_MIN");
 		}
 	}
 

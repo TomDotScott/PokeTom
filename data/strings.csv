@@ -39,10 +39,12 @@ MONSTER_ATTACK_MISS,DYNAMIC_STRING,"%1's attack missed!","","","",""
 MONSTER_STAT_CHANGE_INCREASE_1,DYNAMIC_STRING,"%1's %2 rose!","","","",""
 MONSTER_STAT_CHANGE_INCREASE_2,DYNAMIC_STRING,"%1's %2 sharply rose!","","","",""
 MONSTER_STAT_CHANGE_INCREASE_3,DYNAMIC_STRING,"%1's %2 rose drastically!","","","",""
+MONSTER_STAT_CHANGE_MAX,DYNAMIC_STRING,"%1's %2 could not get any higher!","","","",""
 
 MONSTER_STAT_CHANGE_DECREASE_1,DYNAMIC_STRING,"%1's %2 fell!","","","",""
 MONSTER_STAT_CHANGE_DECREASE_2,DYNAMIC_STRING,"%1's %2 harshly fell!","","","",""
 MONSTER_STAT_CHANGE_DECREASE_3,DYNAMIC_STRING,"%1's %2 severly fell!","","","",""
+MONSTER_STAT_CHANGE_MIN,DYNAMIC_STRING,"%1's %2 cannot get lower!","","","",""
 
 
 

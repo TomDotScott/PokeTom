@@ -77,7 +77,7 @@ public:
 	void ResetAllModifiers();
 	void ResetModifier(MonsterStats::eStat stat);
 
-	void ModifyStat(MonsterStats::eStat stat, int stages);
+	bool ModifyStat(MonsterStats::eStat stat, int stages);
 
 	bool IsFainted() const;
 	MonsterStats GetStats() const;

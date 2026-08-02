@@ -190,7 +190,7 @@ void MonsterStatComponent::FullHeal(const MonsterStats& baseStats,
                                     const std::array<uint8_t, STAT_COUNT>& IVs,
                                     const std::array<uint8_t, STAT_COUNT>& EVs)
 {
-	m_stats = MonsterStats::GetNextStat(baseStats, currentLevel, IVs, EVs);
+	m_stats = MonsterStats::GetNextStat(baseStats, currentLevel, EVs, IVs);
 }
 
 void MonsterStatComponent::ResetAllModifiers()
@@ -203,10 +203,13 @@ void MonsterStatComponent::ResetModifier(MonsterStats::eStat stat)
 	m_statModifiers[static_cast<size_t>(stat)] = 0;
 }
 
-void MonsterStatComponent::ModifyStat(MonsterStats::eStat stat, const int stages)
+bool MonsterStatComponent::ModifyStat(MonsterStats::eStat stat, const int stages)
 {
 	int& currentStage = m_statModifiers[static_cast<size_t>(stat)];
+	const int previousStage = currentStage;
 	currentStage = maths::Clamp(currentStage + stages, -6, 6);
+
+	return currentStage != previousStage;
 }
 
 bool MonsterStatComponent::IsFainted() const

@@ -94,7 +94,9 @@ struct StatChange
 
 	struct StatStage
 	{
-		explicit StatStage(const MonsterStats::eStat stat, const int stages) : m_Stat(stat), m_Stages(stages)
+		explicit StatStage(const MonsterStats::eStat stat, const int stages) :
+			m_Stat(stat),
+			m_Stages(stages)
 		{
 		}
 
@@ -136,12 +138,20 @@ public:
 
 		struct StatChangeOutcome
 		{
-			std::vector<StatChange::StatStage> m_AttackerStatChanges;
-			std::vector<StatChange::StatStage> m_DefenderStatChanges;
+			struct SucceededStage
+			{
+				StatChange::StatStage m_Stage;
+				bool m_Succeeded;
+			};
+
+			std::vector<SucceededStage> m_AttackerStatChanges;
+			std::vector<SucceededStage> m_DefenderStatChanges;
 		};
 
 		std::optional<StatChangeOutcome> m_StatChangeOutcome;
 	};
+
+	using stat_change_outcome = Outcome::StatChangeOutcome::SucceededStage;
 
 	Outcome Use(Entity& attacker, Entity& defender);
 
