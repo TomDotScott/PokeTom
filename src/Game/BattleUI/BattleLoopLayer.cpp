@@ -463,13 +463,13 @@ void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
 
 void BattleLoopLayer::ShowExperienceText(const monster_xp_t xpGained)
 {
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString("MONSTER_GAIN_EXPERIENCE", std::to_string(xpGained)).c_str());
+	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_GAIN_EXPERIENCE"), std::to_string(xpGained)).c_str());
 }
 
 void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const uint8_t level)
 {
 	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString("MONSTER_LEVEL_UP", monsterName, std::to_string(level)).c_str());
+	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_LEVEL_UP"), monsterName, std::to_string(level)).c_str());
 }
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
