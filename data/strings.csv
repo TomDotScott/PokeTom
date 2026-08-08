@@ -35,6 +35,8 @@ OPPONENT_SWITCH_MONSTER,DYNAMIC_STRING,"%1 switched out to %2!","","","",""
 MONSTER_FAINT,DYNAMIC_STRING,"%1 fainted.","","","",""
 MONSTER_MOVE_NAME,DYNAMIC_STRING,"%1 used %2!","","","",""
 MONSTER_ATTACK_MISS,DYNAMIC_STRING,"%1's attack missed!","","","",""
+MONSTER_GAIN_EXPERIENCE,DYNAMIC_STRING,"Gained %1 Exp. Points!","","","",""
+MONSTER_LEVEL_UP,DYNAMIC_STRING,"%1 grew to Lvl. %2!","","","",""
 
 MONSTER_STAT_CHANGE_INCREASE_1,DYNAMIC_STRING,"%1's %2 rose!","","","",""
 MONSTER_STAT_CHANGE_INCREASE_2,DYNAMIC_STRING,"%1's %2 sharply rose!","","","",""

@@ -17,7 +17,7 @@ namespace
 PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t level,
                                          EntityAnimationComponent::eAnimationName initialAnim) :
 	m_monsterInfo(PocketMonsterManager::Get()->GetMonsterDetails(monsterID)),
-	m_currentLevel(level)
+	m_currentXP(monster_xp::GetMaxExperienceForLevel(m_monsterInfo.GetExperienceGroup(), level))
 {
 	m_IVs = {
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
@@ -37,10 +37,10 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
 	};
 
-	AddComponent<MonsterStatComponent>(
-		MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs));
+	MonsterStats newStats = MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), GetLevel(), m_IVs, m_EVs);
+	AddComponent<MonsterStatComponent>(newStats);
 
-	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, 2, ~0U });
+	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, ~0U, ~0U });
 
 	std::string dictName = "MONSTER_" + std::to_string(monsterID) + "_BATTLE";
 
@@ -81,10 +81,10 @@ bool PocketMonsterEntity::ModifyStat(const MonsterStats::eStat stat, const int s
 
 uint8_t PocketMonsterEntity::GetLevel() const
 {
-	return m_currentLevel;
+	return monster_xp::GetLevelForExperience(m_monsterInfo.GetExperienceGroup(), m_currentXP);
 }
 
-uint16_t PocketMonsterEntity::GetMaxHP() const
+monster_hp_t PocketMonsterEntity::GetMaxHP() const
 {
 	auto* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc);
@@ -95,6 +95,16 @@ uint16_t PocketMonsterEntity::GetMaxHP() const
 monster_type PocketMonsterEntity::GetType() const
 {
 	return m_monsterInfo.GetType();
+}
+
+monster_xp::eGroup PocketMonsterEntity::GetExperienceGroup() const
+{
+	return m_monsterInfo.GetExperienceGroup();
+}
+
+monster_xp_t PocketMonsterEntity::GetExperienceYield() const
+{
+	return m_monsterInfo.GetExperienceYield();
 }
 
 std::string PocketMonsterEntity::GetMoveName(const uint8_t moveIdx) const
@@ -109,6 +119,11 @@ std::string PocketMonsterEntity::GetMoveName(const uint8_t moveIdx) const
 	return STRINGTABLE->GetString(HASH("MOVE"), move.GetNameStringTableID());
 }
 
+monster_xp_t PocketMonsterEntity::GetCurrentXP() const
+{
+	return m_currentXP;
+}
+
 bool PocketMonsterEntity::IsFainted() const
 {
 	const MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
@@ -116,7 +131,7 @@ bool PocketMonsterEntity::IsFainted() const
 	return msc->IsFainted();
 }
 
-void PocketMonsterEntity::TakeDamage(const uint16_t damage)
+void PocketMonsterEntity::TakeDamage(const monster_hp_t damage)
 {
 	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc != nullptr);
@@ -127,7 +142,18 @@ void PocketMonsterEntity::FullHeal()
 {
 	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc != nullptr);
-	msc->FullHeal(m_monsterInfo.GetBaseStats(), m_currentLevel, m_IVs, m_EVs);
+	msc->FullHeal(m_monsterInfo.GetBaseStats(), GetLevel(), m_IVs, m_EVs);
+}
+
+void PocketMonsterEntity::GainExperience(const monster_xp_t xp)
+{
+	m_currentXP += xp;
+}
+
+void PocketMonsterEntity::ApplyLevelUpStats(const uint8_t newLevel)
+{
+	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
+	msc->GrowToLevel(newLevel, m_monsterInfo.GetBaseStats(), m_IVs, m_EVs);
 }
 
 void PocketMonsterEntity::OnDeactivate()

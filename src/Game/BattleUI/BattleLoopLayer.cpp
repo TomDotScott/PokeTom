@@ -3,6 +3,7 @@
 #include <iostream>
 #include <frozen/unordered_map.h>
 
+#include "HealthbarAnimation.h"
 #include "../BattleState.h"
 #include "../DialogueBox.h"
 #include "../GameEvents.h"
@@ -21,6 +22,7 @@ BattleLoopLayer::BattleLoopLayer() :
 	m_playerSwitchedOut(false),
 	m_opponentSwitchedOut(false),
 	m_playerHealthAnimation(HealthbarAnimation::eAnimationType::Player),
+	m_playerExperienceBar(UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME)->GetChild<UiProgressBar>("PLAYER_XP_BAR")),
 	m_opponentHealthAnimation(HealthbarAnimation::eAnimationType::Opponent),
 	m_endContext()
 {
@@ -36,6 +38,8 @@ void BattleLoopLayer::Update(const float deltaTime)
 	UILayer::Update(deltaTime);
 
 	m_playerHealthAnimation.Update(deltaTime);
+	m_playerExperienceBar.Update(deltaTime);
+
 	m_opponentHealthAnimation.Update(deltaTime);
 
 	if (!m_battleBeatQueue.empty())
@@ -62,8 +66,12 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	PocketMonsterEntity* playerMonster = entities.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
 	ASSERT(playerMonster != nullptr);
 
+	m_playerHealthAnimation.SetMonster(playerMonster);
+
 	PocketMonsterEntity* opponentMonster = entities.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
 	ASSERT(opponentMonster != nullptr);
+
+	m_opponentHealthAnimation.SetMonster(opponentMonster);
 
 	m_endContext = BattleEndContext{
 		.m_LevelHash = state.GetBattleContext().m_LevelHash,
@@ -125,88 +133,6 @@ void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons /*button*/
 {
 }
 
-BattleLoopLayer::HealthbarAnimation::HealthbarAnimation(const eAnimationType type) :
-	m_progressBar(nullptr),
-	m_hpText(nullptr),
-	m_finished(true),
-	m_healthBefore(0),
-	m_currentHealth(0),
-	m_maxHealth(0),
-	m_type(type),
-	m_duration(0),
-	m_currentTime(0)
-{
-	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
-	if (m_type == eAnimationType::Player)
-	{
-		m_progressBar = battlePanel->GetChild<UiProgressBar>("PLAYER_HP_BAR");
-
-		UiText* text = battlePanel->GetChild<UiText>("PLAYER_HP_TEXT");
-		ASSERT(text);
-		m_hpText = text;
-		const float animHealth = std::round(CalculateFill() * static_cast<float>(m_maxHealth));
-		m_hpText->SetText("%d/%d", static_cast<int>(animHealth), m_maxHealth);
-	}
-	else
-	{
-		m_progressBar = battlePanel->GetChild<UiProgressBar>("OPPONENT_HP_BAR");
-	}
-}
-
-void BattleLoopLayer::HealthbarAnimation::Start(PocketMonsterEntity* monster, const uint16_t monsterHealthBefore)
-{
-	m_finished = false;
-
-	m_currentTime = 0.f;
-
-	m_healthBefore = monsterHealthBefore;
-	m_currentHealth = monster->GetStats().m_HP;
-
-	const float damageDealt = static_cast<float>(monsterHealthBefore) - static_cast<float>(monster->GetStats().m_HP);
-
-	m_maxHealth = monster->GetMaxHP();
-
-	const float percentage = damageDealt / static_cast<float>(m_maxHealth);
-	bool lotsOfDamage = true;
-	if (percentage > 0.25f)
-	{
-		lotsOfDamage = false;
-	}
-
-	m_duration = lotsOfDamage ? 3.5f : 1.8f;
-}
-
-void BattleLoopLayer::HealthbarAnimation::Finish()
-{
-	m_currentTime = m_duration;
-
-	UpdateFill();
-
-	m_finished = true;
-}
-
-void BattleLoopLayer::HealthbarAnimation::Update(const float deltaTime)
-{
-	if (m_finished)
-	{
-		return;
-	}
-
-	if (m_currentTime > m_duration)
-	{
-		Finish();
-		return;
-	}
-
-	m_currentTime += deltaTime;
-	UpdateFill();
-}
-
-bool BattleLoopLayer::HealthbarAnimation::IsPlaying() const
-{
-	return !m_finished;
-}
-
 void BattleLoopLayer::OnSelectButtonPressed()
 {
 	if (m_battleBeatQueue.empty())
@@ -244,29 +170,6 @@ void BattleLoopLayer::OnBackButtonPressed()
 {
 }
 
-float BattleLoopLayer::HealthbarAnimation::CalculateFill() const
-{
-	return maths::Lerp(static_cast<float>(m_healthBefore) / static_cast<float>(m_maxHealth),
-	                   static_cast<float>(m_currentHealth) / static_cast<float>(m_maxHealth),
-	                   m_currentTime / m_duration
-	);
-}
-
-void BattleLoopLayer::HealthbarAnimation::UpdateFill() const
-{
-	ASSERT(m_progressBar);
-
-	if (m_type == eAnimationType::Player)
-	{
-		ASSERT(m_hpText);
-
-		const float animHealth = std::round(CalculateFill() * static_cast<float>(m_maxHealth));
-		m_hpText->SetText("%d/%d", static_cast<int>(animHealth), m_maxHealth);
-	}
-
-	m_progressBar->SetProgress(CalculateFill());
-}
-
 void BattleLoopLayer::DoTurn(
 	const BattleState& state,
 	PocketMonsterEntity* attacker,
@@ -281,18 +184,18 @@ void BattleLoopLayer::DoTurn(
 	}
 
 	// TODO: Recoil and other effects
-	const uint16_t attackerHealthBefore = attacker->GetStats().m_HP;
-	const uint16_t defenderHealthBefore = defender->GetStats().m_HP;
+	const monster_hp_t attackerHealthBefore = attacker->GetStats().m_HP;
+	const monster_hp_t defenderHealthBefore = defender->GetStats().m_HP;
 
 	// Perform the move and then queue the UI messages...
 	const Move::Outcome outcome = UseMove(attacker, defender, selectedMoveIdx);
 
-	const uint16_t attackerHealthAfter = attacker->GetStats().m_HP;
-	const uint16_t defenderHealthAfter = defender->GetStats().m_HP;
+	const monster_hp_t attackerHealthAfter = attacker->GetStats().m_HP;
+	const monster_hp_t defenderHealthAfter = defender->GetStats().m_HP;
 
 	// X used Y...
 	m_battleBeatQueue.emplace(TextBeat{
-		.m_MessageName = "MOVE NAME",
+		.m_BeatName = "MOVE NAME",
 		.m_OnShow = [this, attacker, selectedMoveIdx]()
 		{
 			ShowMoveNameText(attacker, selectedMoveIdx);
@@ -303,7 +206,7 @@ void BattleLoopLayer::DoTurn(
 	if (outcome.m_MoveMissed)
 	{
 		m_battleBeatQueue.emplace(TextBeat{
-			.m_MessageName = "THE MOVE MISSED!",
+			.m_BeatName = "THE MOVE MISSED!",
 			.m_OnShow = [this, attacker]()
 			{
 				ShowMissText(attacker);
@@ -318,9 +221,10 @@ void BattleLoopLayer::DoTurn(
 		if (defender->GetID() == playerMonsterEntityID)
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
-				.m_Start = [this, defender, defenderHealthBefore]
+				.m_BeatName = "PLAYER_HEALTH_BAR",
+				.m_Start = [this, defenderHealthBefore]
 				{
-					m_playerHealthAnimation.Start(defender, defenderHealthBefore);
+					m_playerHealthAnimation.Start(defenderHealthBefore);
 				},
 				.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); },
 				.m_FinishAnimation = [this] { m_playerHealthAnimation.Finish(); }
@@ -329,9 +233,10 @@ void BattleLoopLayer::DoTurn(
 		else
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
-				.m_Start = [this, defender, defenderHealthBefore]
+				.m_BeatName = "OPP_HEALTH_BAR",
+				.m_Start = [this, defenderHealthBefore]
 				{
-					m_opponentHealthAnimation.Start(defender, defenderHealthBefore);
+					m_opponentHealthAnimation.Start(defenderHealthBefore);
 				},
 				.m_IsComplete = [this] { return !m_opponentHealthAnimation.IsPlaying(); },
 				.m_FinishAnimation = [this] { m_opponentHealthAnimation.Finish(); }
@@ -344,7 +249,7 @@ void BattleLoopLayer::DoTurn(
 	if (effectiveness != 1.0f)
 	{
 		m_battleBeatQueue.emplace(TextBeat{
-			.m_MessageName = "IMMUNE/VERY/NOT VERY EFFECTIVE TEXT",
+			.m_BeatName = "IMMUNE/VERY/NOT VERY EFFECTIVE TEXT",
 			.m_OnShow = [this, effectiveness]()
 			{
 				ShowEffectivenessText(effectiveness);
@@ -356,7 +261,7 @@ void BattleLoopLayer::DoTurn(
 	if (outcome.m_IsCriticalHit)
 	{
 		m_battleBeatQueue.emplace(TextBeat{
-			.m_MessageName = "CRITICAL HIT!",
+			.m_BeatName = "CRITICAL HIT!",
 			.m_OnShow = [this]()
 			{
 				ShowCriticalHitText();
@@ -374,7 +279,7 @@ void BattleLoopLayer::DoTurn(
 		{
 			// TODO: Queue AnimationBeat
 			m_battleBeatQueue.emplace(TextBeat{
-				.m_MessageName = "DEFENDER STAT CHANGE",
+				.m_BeatName = "DEFENDER STAT CHANGE",
 				.m_OnShow = [this, defender, statChanges]()
 				{
 					ShowStatChangeText(defender, statChanges.m_Stage, statChanges.m_Succeeded);
@@ -386,7 +291,7 @@ void BattleLoopLayer::DoTurn(
 		{
 			// TODO: Queue AnimationBeat
 			m_battleBeatQueue.emplace(TextBeat{
-				.m_MessageName = "ATTACKER STAT CHANGE",
+				.m_BeatName = "ATTACKER STAT CHANGE",
 				.m_OnShow = [this, attacker, statChanges]()
 				{
 					ShowStatChangeText(attacker, statChanges.m_Stage, statChanges.m_Succeeded);
@@ -556,6 +461,17 @@ void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(hashString, monsterName.c_str(), statString.c_str()).c_str());
 }
 
+void BattleLoopLayer::ShowExperienceText(const monster_xp_t xpGained)
+{
+	DialogueBox::SetText(STRINGTABLE->GetDynamicString("MONSTER_GAIN_EXPERIENCE", std::to_string(xpGained)).c_str());
+}
+
+void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const uint8_t level)
+{
+	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	DialogueBox::SetText(STRINGTABLE->GetDynamicString("MONSTER_LEVEL_UP", monsterName, std::to_string(level)).c_str());
+}
+
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
                                        PocketMonsterEntity* defender,
                                        const uint8_t moveIdx) const
@@ -583,6 +499,98 @@ Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
 	return outcome;
 }
 
+void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEntity* playerMonster,
+                                          const PocketMonsterEntity* opponentMonster)
+{
+	const monster_xp_t playerBeforeXP = playerMonster->GetCurrentXP();
+
+	m_battleBeatQueue.emplace(TextBeat{
+		.m_BeatName = "AWARDING XP",
+		.m_OnShow = [this, gainedXP]()
+		{
+			ShowExperienceText(gainedXP);
+		},
+	});
+
+	const uint8_t currentLevel = playerMonster->GetLevel();
+	const auto playerExpGroup = playerMonster->GetExperienceGroup();
+
+	const monster_xp_t newValue = playerBeforeXP + gainedXP;
+	const uint8_t newLevel = monster_xp::GetLevelForExperience(playerExpGroup, newValue);
+
+	bool firstIncrease = true;
+	for (int i = 0; i <= newLevel - currentLevel; ++i)
+	{
+		if (!firstIncrease)
+		{
+			m_battleBeatQueue.emplace(TextBeat{
+				.m_BeatName = "LEVEL UP TEXT",
+				.m_OnShow = [this, playerMonster, currentLevel, i]()
+				{
+					const uint8_t lvl = currentLevel + static_cast<uint8_t>(i);
+					ShowLevelUpText(playerMonster, lvl);
+					playerMonster->ApplyLevelUpStats(lvl);
+					RefreshPlayerUI(playerMonster, lvl);
+				},
+			});
+		}
+
+		monster_xp_t beforeValue;
+		monster_xp_t maxValue;
+		if (firstIncrease)
+		{
+			beforeValue = playerMonster->GetCurrentXP();
+			maxValue = monster_xp::GetMaxExperienceForLevel(
+				playerExpGroup,
+				currentLevel + static_cast<uint8_t>(i) + 1
+			);
+		}
+		else
+		{
+			beforeValue = monster_xp::GetMaxExperienceForLevel(
+				playerExpGroup,
+				currentLevel + static_cast<uint8_t>(i)
+			);
+			maxValue = monster_xp::GetMaxExperienceForLevel(
+				playerExpGroup,
+				currentLevel + static_cast<uint8_t>(i) + 1
+			);
+		}
+
+		const monster_xp_t clampedLevelXp = maths::Clamp(newValue, beforeValue, maxValue);
+
+		m_battleBeatQueue.emplace(AnimationBeat{
+			.m_BeatName = "XP_BAR",
+			.m_Start = [this, firstIncrease, currentLevel, playerExpGroup, beforeValue, clampedLevelXp, maxValue]
+			{
+				monster_xp_t levelStartXP;
+				monster_xp_t normalizedBefore;
+				if (firstIncrease)
+				{
+					levelStartXP = monster_xp::GetMaxExperienceForLevel(
+						playerExpGroup, currentLevel);
+					normalizedBefore = beforeValue - levelStartXP;
+				}
+				else
+				{
+					levelStartXP = beforeValue;
+					normalizedBefore = 0; // post-level-up, so just start from empty
+				}
+
+				const monster_xp_t levelRange = maxValue - levelStartXP;
+
+				const monster_xp_t normalizedEnd = clampedLevelXp - levelStartXP;
+
+				m_playerExperienceBar.Start(normalizedBefore, normalizedEnd, levelRange, 1.2f);
+			},
+			.m_IsComplete = [this] { return !m_playerExperienceBar.IsPlaying(); },
+			.m_FinishAnimation = [this] { m_playerExperienceBar.Finish(); }
+		});
+
+		firstIncrease = false;
+	}
+}
+
 void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
                                        const PocketMonsterEntity* monster,
                                        const bool isPlayerMonster)
@@ -601,24 +609,43 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 	const bool hasMonstersLeft = isPlayerMonster ? playerMPC->HasMonstersLeft() : opponentMPC->HasMonstersLeft();
 
 	m_battleBeatQueue.emplace(TextBeat{
-		.m_MessageName = "MONSTER FAINTED",
+		.m_BeatName = "MONSTER FAINTED",
 		.m_OnShow = [this, monster]()
 		{
 			ShowFaintText(monster);
 		}
 	});
 
-	if (hasMonstersLeft)
+	if (!isPlayerMonster)
 	{
-		// TODO: XP Gain and Level up!
+		auto* playerMonster = playerMPC->GetActiveMonster();
+
+		// TODO:
+		const bool isTrainerBattle = false;
+		const bool isHoldingLuckyEgg = false;
+		const int numberOfPartakingMonsters = 1;
+
+		monster_xp_t gainedXP = monster_xp::GetExperienceGain(
+			isTrainerBattle,
+			monster->GetExperienceYield(),
+			isHoldingLuckyEgg,
+			monster->GetLevel(),
+			playerMonster->GetLevel(),
+			numberOfPartakingMonsters
+		);
+
+		UpdateExperienceBar(gainedXP, playerMonster, monster);
+
+		playerMonster->GainExperience(gainedXP);
 	}
-	else
+
+	if (!hasMonstersLeft)
 	{
 		// Was it the player?
 		if (isPlayerMonster)
 		{
 			m_battleBeatQueue.emplace(TextBeat{
-				.m_MessageName = "FASTEST FAINTED",
+				.m_BeatName = "FASTEST FAINTED",
 				.m_OnShow = [this]()
 				{
 					ShowWhiteOutText();
@@ -633,7 +660,7 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 		else
 		{
 			m_battleBeatQueue.emplace(TextBeat{
-				.m_MessageName = "BATTLE END",
+				.m_BeatName = "BATTLE END",
 				.m_OnShow = [this]()
 				{
 					game_events::OnBattleEnd.Fire(m_endContext);
@@ -641,4 +668,25 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 			});
 		}
 	}
+}
+
+void BattleLoopLayer::RefreshPlayerUI(PocketMonsterEntity* playerMonster, const uint8_t currentLevel)
+{
+	auto* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battlePanel);
+
+	UiProgressBar* playerPB = battlePanel->GetChild<UiProgressBar>("PLAYER_HP_BAR");
+	ASSERT(playerPB);
+
+	const monster_hp_t playerHP = playerMonster->GetStats().m_HP;
+	const monster_hp_t playerMaxHP = playerMonster->GetMaxHP();
+	playerPB->SetProgress(playerHP, playerMaxHP, false);
+
+	auto* hpText = battlePanel->GetChild<UiText>("PLAYER_HP_TEXT");
+	ASSERT(hpText);
+	hpText->SetText("%d/%d", playerHP, playerMaxHP);
+
+	auto* levelText = battlePanel->GetChild<UiText>("PLAYER_LEVEL_TEXT");
+	ASSERT(levelText);
+	levelText->SetText("%d", currentLevel);
 }

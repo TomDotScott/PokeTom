@@ -110,7 +110,7 @@ bool UiProgressBar::LoadFromXML(const XmlNode& node)
 
 void UiProgressBar::SetProgress(const float progress)
 {
-	m_progress = progress;
+	m_progress = maths::Clamp(progress, 0.f, 1.f);
 	UpdateFill();
 }
 

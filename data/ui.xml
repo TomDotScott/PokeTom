@@ -248,5 +248,27 @@ So that I can see what dialogue will look like!!!
       <font>TEXT_BOX</font>
       <layer>100</layer>
     </Text>
+
+    <Text>
+      <name>PLAYER_LEVEL_TEXT</name>
+      <string>100</string>
+      <alignment>right</alignment>
+      <colour>000000FF</colour>
+      <position x="670" y="256" />
+      <size>18</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
+    <ProgressBar>
+      <name>PLAYER_XP_BAR</name>
+      <fillorientation>horizontal</fillorientation>
+      <position x="516" y="333" />
+      <size x="205" y="6" />
+      <margin x="0" y="0"/>
+      <layer>100</layer>
+      <backgroundcolour>FFFFFF00</backgroundcolour>
+      <fillcolour>67BACCFF</fillcolour>
+    </ProgressBar>
   </Panel>
 </ui>

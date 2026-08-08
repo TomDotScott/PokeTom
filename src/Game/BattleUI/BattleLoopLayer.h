@@ -4,13 +4,10 @@
 #include <cstdint>
 #include <queue>
 
+#include "HealthbarAnimation.h"
 #include "UILayer.h"
 #include "../BattleContext.h"
 #include "../Move.h"
-
-class UiText;
-class UiProgressBar;
-class PocketMonsterEntity;
 
 class BattleLoopLayer final : public UILayer
 {
@@ -31,7 +28,7 @@ private:
 	// Advance when A is pressed
 	struct TextBeat
 	{
-		std::string m_MessageName;
+		std::string m_BeatName;
 		std::function<void()> m_OnShow;
 		std::optional<std::function<void()>> m_OnDismiss = std::nullopt;
 	};
@@ -39,6 +36,7 @@ private:
 	// Advance when the animation is finished, or when A is pressed
 	struct AnimationBeat
 	{
+		std::string m_BeatName;
 		std::function<void()> m_Start;
 		std::function<bool()> m_IsComplete;
 		std::function<void()> m_FinishAnimation;
@@ -47,45 +45,9 @@ private:
 	using BattleBeat = std::variant<TextBeat, AnimationBeat>;
 	std::queue<BattleBeat> m_battleBeatQueue;
 
-	class HealthbarAnimation
-	{
-	public:
-		enum class eAnimationType
-		{
-			None,
-			Player,
-			Opponent
-		};
-
-		explicit HealthbarAnimation(eAnimationType type);
-
-		void Start(PocketMonsterEntity* monster, uint16_t monsterHealthBefore);
-
-		void Finish();
-		void Update(float deltaTime);
-
-		bool IsPlaying() const;
-
-	private:
-		UiProgressBar* m_progressBar;
-		UiText* m_hpText;
-
-		bool m_finished;
-		uint16_t m_healthBefore;
-
-		uint16_t m_currentHealth;
-		uint16_t m_maxHealth;
-
-		eAnimationType m_type;
-
-		float m_duration;
-		float m_currentTime;
-
-		float CalculateFill() const;
-		void UpdateFill() const;
-	};
-
 	HealthbarAnimation m_playerHealthAnimation;
+	AnimatedProgressBar<monster_xp_t> m_playerExperienceBar;
+
 	HealthbarAnimation m_opponentHealthAnimation;
 
 	BattleEndContext m_endContext;
@@ -103,7 +65,13 @@ private:
 	void ShowCriticalHitText() const;
 	void ShowEffectivenessText(float moveOutcome) const;
 	void ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage statChangeInfo, bool succeeded);
+	void ShowExperienceText(monster_xp_t xpGained);
+	void ShowLevelUpText(const PocketMonsterEntity* monster, uint8_t level);
+
 	Move::Outcome UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender, uint8_t moveIdx) const;
+	void UpdateExperienceBar(monster_xp_t xpGained, PocketMonsterEntity* playerMonster, const PocketMonsterEntity* opponentMonster);
 	void OnMonsterFainted(const BattleState& state, const PocketMonsterEntity* monster, bool isPlayerMonster);
+
+	void RefreshPlayerUI(PocketMonsterEntity* playerMonster, uint8_t currentLevel);
 };
 #endif // BATTLELOOPLAYER_H

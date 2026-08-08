@@ -1,12 +1,12 @@
 #ifndef MONSTERSTATS_H
 #define MONSTERSTATS_H
 #include <array>
-#include <cstdint>
 #include <string>
 
 #include "../../Engine/IUpdateable.h"
 
 static constexpr unsigned STAT_COUNT = 8;
+using monster_hp_t = uint16_t;
 
 struct MonsterStats
 {
@@ -24,19 +24,19 @@ struct MonsterStats
 
 	MonsterStats() = default;
 
-	MonsterStats(uint16_t hp,
+	MonsterStats(monster_hp_t hp,
 	             uint16_t attack,
 	             uint16_t defense,
 	             uint16_t spAttack,
 	             uint16_t spDefense,
 	             uint16_t speed);
 
-	void TakeDamage(uint16_t damage);
+	void TakeDamage(monster_hp_t damage);
 
 	void Log() const;
 
 
-	uint16_t m_HP;
+	monster_hp_t m_HP;
 	uint16_t m_Attack;
 	uint16_t m_Defense;
 	uint16_t m_SpAttack;
@@ -82,13 +82,15 @@ public:
 	bool IsFainted() const;
 	MonsterStats GetStats() const;
 
-	uint16_t GetMaxHP() const;
-	void TakeDamage(uint16_t damage);
+	monster_hp_t GetMaxHP() const;
+	void TakeDamage(monster_hp_t damage);
+
+	void GrowToLevel(uint8_t newLevel, const MonsterStats& baseStats, const std::array<uint8_t, STAT_COUNT>& IVs, const std::array<uint8_t, STAT_COUNT>& EVs);
 
 private:
 	std::array<int, STAT_COUNT> m_statModifiers;
 	MonsterStats m_stats;
-	uint16_t m_maxHP;
+	monster_hp_t m_maxHP;
 
 	uint16_t GetModifiedStatValue(MonsterStats::eStat stat) const;
 };

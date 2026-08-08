@@ -4,6 +4,7 @@
 
 #include "MonsterStats.h"
 #include "MonsterTypes.h"
+#include "MonsterXP.h"
 #include "../../Engine/Hash.h"
 
 // Size 7 as there are 7 eevee-lutions in Gen5!
@@ -13,11 +14,13 @@ using evolution_tree = std::array<int, 7>;
 class PocketMonster
 {
 public:
-	PocketMonster(uint32_t id,
-				  monster_type type,
-				  const MonsterStats& stats,
-				  const evolution_tree& prevEvolutions,
-				  const evolution_tree& nextEvolutions
+	explicit PocketMonster(uint32_t id,
+	                       monster_type type,
+	                       monster_xp::eGroup experienceGroup,
+	                       monster_xp_t experienceYield,
+	                       const MonsterStats& stats,
+	                       const evolution_tree& prevEvolutions,
+	                       const evolution_tree& nextEvolutions
 	);
 
 	uint32_t GetID() const;
@@ -25,6 +28,9 @@ public:
 
 	const MonsterStats& GetBaseStats() const;
 	uint32_t GetType() const;
+
+	monster_xp::eGroup GetExperienceGroup() const;
+	monster_xp_t GetExperienceYield() const;
 
 private:
 	uint32_t m_id;
@@ -34,6 +40,9 @@ private:
 #endif
 
 	monster_type m_type;
+
+	monster_xp::eGroup m_experienceGroup;
+	monster_xp_t m_experienceYield;
 
 	evolution_tree m_nextEvolutions;
 	evolution_tree m_prevEvolutions;

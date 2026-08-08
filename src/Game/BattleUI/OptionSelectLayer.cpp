@@ -1,6 +1,7 @@
 #include "OptionSelectLayer.h"
 
 #include "../BattleState.h"
+#include "../../Engine/Maths.h"
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
 #include "../../Engine/UI/UiProgressBar.h"
@@ -112,13 +113,27 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 
 	PocketMonsterEntity* playerEntity = entReg.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
 	ASSERT(playerEntity);
-	const uint16_t playerHP = playerEntity->GetStats().m_HP;
-	const uint16_t playerMaxHP = playerEntity->GetMaxHP();
+	const monster_hp_t playerHP = playerEntity->GetStats().m_HP;
+	const monster_hp_t playerMaxHP = playerEntity->GetMaxHP();
 	playerPB->SetProgress(playerHP, playerMaxHP, false);
 
 	auto* hpText = battleUI->GetChild<UiText>("PLAYER_HP_TEXT");
 	ASSERT(hpText);
 	hpText->SetText("%d/%d", playerHP, playerMaxHP);
+
+	const uint8_t currentLevel = playerEntity->GetLevel();
+	auto* levelText = battleUI->GetChild<UiText>("PLAYER_LEVEL_TEXT");
+	ASSERT(levelText);
+	levelText->SetText("%d", currentLevel);
+
+	auto* xpBar = battleUI->GetChild<UiProgressBar>("PLAYER_XP_BAR");
+	ASSERT(xpBar);
+
+	const monster_xp_t prevLevelXP = monster_xp::GetMaxExperienceForLevel(playerEntity->GetExperienceGroup(), currentLevel);
+	const monster_xp_t nextLevelXP = GetMaxExperienceForLevel(playerEntity->GetExperienceGroup(), currentLevel + 1);
+	const monster_xp_t a = playerEntity->GetCurrentXP() - prevLevelXP;
+	const monster_xp_t b = nextLevelXP - prevLevelXP;
+	xpBar->SetProgress(static_cast<float>(a) / static_cast<float>(b));
 
 
 	PocketMonsterEntity* oppEntity = entReg.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());

@@ -7,6 +7,8 @@
 
 PocketMonster::PocketMonster(const uint32_t id,
                              const monster_type type,
+                             const monster_xp::eGroup experienceGroup,
+                             const monster_xp_t experienceYield,
                              const MonsterStats& stats,
                              const evolution_tree& prevEvolutions,
                              const evolution_tree& nextEvolutions) :
@@ -17,6 +19,8 @@ PocketMonster::PocketMonster(const uint32_t id,
 #endif
 
 	m_type(type),
+	m_experienceGroup(experienceGroup),
+	m_experienceYield(experienceYield),
 	m_nextEvolutions(nextEvolutions),
 	m_prevEvolutions(prevEvolutions),
 	m_baseStats(stats)
@@ -42,4 +46,14 @@ const MonsterStats& PocketMonster::GetBaseStats() const
 uint32_t PocketMonster::GetType() const
 {
 	return m_type;
+}
+
+monster_xp::eGroup PocketMonster::GetExperienceGroup() const
+{
+	return m_experienceGroup;
+}
+
+monster_xp_t PocketMonster::GetExperienceYield() const
+{
+	return m_experienceYield;
 }

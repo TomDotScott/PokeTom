@@ -59,7 +59,7 @@ MonsterStats::MonsterStats(
 {
 }
 
-void MonsterStats::TakeDamage(const uint16_t damage)
+void MonsterStats::TakeDamage(const monster_hp_t damage)
 {
 	if (damage > m_HP)
 	{
@@ -233,14 +233,29 @@ MonsterStats MonsterStatComponent::GetStats() const
 	return stats;
 }
 
-uint16_t MonsterStatComponent::GetMaxHP() const
+monster_hp_t MonsterStatComponent::GetMaxHP() const
 {
 	return m_maxHP;
 }
 
-void MonsterStatComponent::TakeDamage(const uint16_t damage)
+void MonsterStatComponent::TakeDamage(const monster_hp_t damage)
 {
 	m_stats.TakeDamage(damage);
+}
+
+void MonsterStatComponent::GrowToLevel(
+	const uint8_t newLevel,
+	const MonsterStats& baseStats,
+	const std::array<uint8_t, STAT_COUNT>& IVs,
+	const std::array<uint8_t, STAT_COUNT>& EVs
+)
+{
+	const monster_hp_t before = m_stats.m_HP;
+
+	m_stats = MonsterStats::GetNextStat(baseStats, newLevel, EVs, IVs);
+	m_maxHP = m_stats.m_HP;
+
+	m_stats.m_HP = before;
 }
 
 uint16_t MonsterStatComponent::GetModifiedStatValue(MonsterStats::eStat stat) const
