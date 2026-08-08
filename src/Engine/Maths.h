@@ -1,5 +1,6 @@
 #ifndef MATHS_H
 #define MATHS_H
+#include <type_traits>
 #include <SFML/System/Vector2.hpp>
 
 namespace maths
