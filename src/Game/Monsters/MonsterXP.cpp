@@ -120,5 +120,5 @@ monster_xp_t monster_xp::GetExperienceGain(
 
 	const float result = lhs * rhs;
 
-	return static_cast<monster_xp_t>(maths::Clamp(result, result, 100000.f));
+	return static_cast<monster_xp_t>(maths::Clamp(result, 0.f, 100000.f));
 }
