@@ -1,5 +1,6 @@
 #include "PocketMonsterEntity.h"
 
+#include "MonsterStats.h"
 #include "PocketMonsterManager.h"
 #include "../MoveComponent.h"
 #include "../MoveManager.h"
@@ -9,7 +10,7 @@
 
 namespace
 {
-	RandomRangeGenerator<short> SIXTEEN_BIT_GENERATOR(0, 0xFF);
+	RandomRangeGenerator<short> IV_GENERATOR(0, 0x1F);
 	RandomRangeGenerator<uint64_t> SIXTY_FOUR_BIT_GENERATOR(0, 0xFFFFFFFFFFFFFFFF);
 }
 
@@ -20,24 +21,30 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 	m_currentXP(monster_xp::GetMaxExperienceForLevel(m_monsterInfo.GetExperienceGroup(), level))
 {
 	m_IVs = {
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
+		static_cast<uint8_t>(IV_GENERATOR.Next()),
+		static_cast<uint8_t>(IV_GENERATOR.Next()),
+		static_cast<uint8_t>(IV_GENERATOR.Next()),
+		static_cast<uint8_t>(IV_GENERATOR.Next()),
+		static_cast<uint8_t>(IV_GENERATOR.Next()),
+		static_cast<uint8_t>(IV_GENERATOR.Next()),
 	};
 
-	m_EVs = {
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-		static_cast<uint8_t>(SIXTEEN_BIT_GENERATOR.Next()),
-	};
+	// HP is a special case, taking the least significant bit of the rest of the stats and creating binary from that
+	uint8_t hpIV = 0x0;
+	for (size_t stat = static_cast<size_t>(MonsterStats::eStat::Attack);
+	     stat <= static_cast<size_t>(MonsterStats::eStat::Speed);
+	     ++stat)
+	{
+		const uint8_t insertBit = m_IVs[stat] & 1;
+		const size_t insertPos = stat - 1;
+		const size_t operand = insertBit << insertPos;
+		hpIV |= operand;
+	}
+	m_IVs[static_cast<size_t>(MonsterStats::eStat::HP)] = hpIV;
 
-	MonsterStats newStats = MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), GetLevel(), m_IVs, m_EVs);
+	m_EVs = {};
+
+	MonsterStats newStats = MonsterStats::GetNextStat(m_monsterInfo.GetBaseStats(), GetLevel(), m_EVs, m_IVs);
 	AddComponent<MonsterStatComponent>(newStats);
 
 	AddComponent<MoveComponent>(this, std::array<uint32_t, 4>{ 33, 45, ~0U, ~0U });
