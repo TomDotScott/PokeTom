@@ -70,7 +70,6 @@ void HealthbarAnimation::SetMonster(PocketMonsterEntity* monster)
 	{
 		ASSERT(m_hpText);
 
-		const float animHealth = std::round(CalculateFill() * static_cast<float>(m_maximumValue));
-		m_hpText->SetText("%d/%d", static_cast<int>(animHealth), m_maximumValue);
+		m_hpText->SetText("%d/%d", monster->GetStats().m_HP, m_maximumValue);
 	}
 }

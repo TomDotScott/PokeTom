@@ -32,6 +32,8 @@ public:
 		m_maximumValue = maxValue;
 
 		m_duration = duration;
+
+		UpdateFill();
 	}
 
 
