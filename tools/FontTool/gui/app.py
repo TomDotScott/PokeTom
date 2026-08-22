@@ -29,6 +29,7 @@ Workflow
 
 from __future__ import annotations
 
+import copy
 import sys
 import os
 from pathlib import Path
@@ -85,6 +86,11 @@ class App(tk.Tk):
         self._dirty: bool = False           # unsaved changes?
         # Last rubber-band selection (image-space) — used for "Set Font Area".
         self._last_selection: tuple[int, int, int, int] | None = None
+
+        # Undo/redo history: snapshots of _font_data taken before each edit.
+        self._undo_stack: list[FontData] = []
+        self._redo_stack: list[FontData] = []
+        self._undo_limit = 100
 
         self._build_ui()
         self._bind_shortcuts()
@@ -155,6 +161,11 @@ class App(tk.Tk):
         # Edit
         edit_menu = tk.Menu(menubar, tearoff=False)
         menubar.add_cascade(label="Edit", menu=edit_menu)
+        edit_menu.add_command(label="Undo", command=self._cmd_undo,
+                              accelerator="Ctrl+Z")
+        edit_menu.add_command(label="Redo", command=self._cmd_redo,
+                              accelerator="Ctrl+Y")
+        edit_menu.add_separator()
         edit_menu.add_command(label="Edit Font Metadata…",
                               command=self._cmd_edit_meta, accelerator="Ctrl+M")
         edit_menu.add_command(label="Set Font Area from selection…",
@@ -173,6 +184,9 @@ class App(tk.Tk):
         self.bind("<Control-o>", lambda _e: self._cmd_open_yaml())
         self.bind("<Control-s>", lambda _e: self._cmd_export())
         self.bind("<Control-m>", lambda _e: self._cmd_edit_meta())
+        self.bind("<Control-z>", lambda _e: self._cmd_undo())
+        self.bind("<Control-y>", lambda _e: self._cmd_redo())
+        self.bind("<Control-Shift-Z>", lambda _e: self._cmd_redo())
 
     # ── File commands ─────────────────────────────────────────────────────────
 
@@ -230,6 +244,7 @@ class App(tk.Tk):
         self._pil_image = img
         self._image_path = path
         self._font_data.texture = name
+        self._reset_history()
         self._sheet.load_image(img)
         self._refresh_overlays()
         self._refresh_panel()
@@ -268,6 +283,7 @@ class App(tk.Tk):
         except Exception as exc:
             messagebox.showerror("Error", f"Could not load JSON:\n{exc}")
             return
+        self._reset_history()
         self._refresh_panel()
         self._refresh_overlays()
         self._status(f"Loaded {Path(path).name}  ({len(self._font_data.glyphs)} glyphs).")
@@ -277,6 +293,41 @@ class App(tk.Tk):
             if not messagebox.askyesno("Quit", "You have unsaved changes. Quit anyway?"):
                 return
         self.destroy()
+
+    # ── Undo / redo ───────────────────────────────────────────────────────────
+
+    def _snapshot_before_change(self) -> None:
+        """Push the current font_data onto the undo stack before mutating it."""
+        self._undo_stack.append(copy.deepcopy(self._font_data))
+        if len(self._undo_stack) > self._undo_limit:
+            self._undo_stack.pop(0)
+        self._redo_stack.clear()
+
+    def _reset_history(self) -> None:
+        self._undo_stack.clear()
+        self._redo_stack.clear()
+
+    def _cmd_undo(self) -> None:
+        if not self._undo_stack:
+            self._status("Nothing to undo.")
+            return
+        self._redo_stack.append(copy.deepcopy(self._font_data))
+        self._font_data = self._undo_stack.pop()
+        self._dirty = True
+        self._refresh_panel()
+        self._refresh_overlays()
+        self._status("Undo.")
+
+    def _cmd_redo(self) -> None:
+        if not self._redo_stack:
+            self._status("Nothing to redo.")
+            return
+        self._undo_stack.append(copy.deepcopy(self._font_data))
+        self._font_data = self._redo_stack.pop()
+        self._dirty = True
+        self._refresh_panel()
+        self._refresh_overlays()
+        self._status("Redo.")
 
     # ── Edit commands ─────────────────────────────────────────────────────────
 
@@ -289,6 +340,7 @@ class App(tk.Tk):
         self.wait_window(dlg)
         if dlg.result is None:
             return
+        self._snapshot_before_change()
         self._font_data.reference_height = dlg.result["reference_height"]
         self._font_data.line_height = dlg.result["line_height"]
         self._dirty = True
@@ -308,6 +360,7 @@ class App(tk.Tk):
         if dlg.result is None:
             return
         r = dlg.result
+        self._snapshot_before_change()
         self._font_data.font_area = FontArea(
             x=r["x"], y=r["y"], width=r["width"], height=r["height"]
         )
@@ -320,6 +373,7 @@ class App(tk.Tk):
             return
         if not messagebox.askyesno("Clear", "Delete all defined glyphs?"):
             return
+        self._snapshot_before_change()
         self._font_data.glyphs.clear()
         self._dirty = True
         self._refresh_panel()
@@ -348,6 +402,7 @@ class App(tk.Tk):
         advance = dlg.result["advance"]
 
         glyph = GlyphData(char=char, x=x, y=y, width=w, height=h, advance=advance)
+        self._snapshot_before_change()
         self._font_data.add_or_replace(glyph)
         self._dirty = True
         self._refresh_panel()
@@ -358,16 +413,39 @@ class App(tk.Tk):
     # ── Glyph panel callbacks ─────────────────────────────────────────────────
 
     def _on_glyph_selected(self, char: str) -> None:
+        self._sheet.select_overlay(char)
         self._status(f"Selected: '{char}'")
 
     def _on_glyph_delete(self, char: str) -> None:
         if not messagebox.askyesno("Delete", f"Remove glyph '{char}'?"):
             return
+        self._snapshot_before_change()
         self._font_data.remove(char)
         self._dirty = True
         self._refresh_panel()
         self._refresh_overlays()
         self._status(f"Deleted glyph '{char}'.")
+
+    # ── Overlay editing callbacks (from SheetCanvas) ──────────────────────────
+
+    def _on_overlay_edited(self, char: str, x: int, y: int, w: int, h: int) -> None:
+        """Called when the user resizes/moves an existing glyph box on the canvas."""
+        glyph = self._font_data.find_glyph(char)
+        if glyph is None:
+            return
+        self._snapshot_before_change()
+        glyph.x, glyph.y, glyph.width, glyph.height = x, y, w, h
+        self._dirty = True
+        self._refresh_panel()
+        self._refresh_overlays()
+        self._panel.select_char(char)
+        self._status(f"Glyph '{char}' bounds updated  ({w}×{h} px at {x},{y}).")
+
+    def _on_overlay_selected(self, char: object) -> None:
+        if char is None:
+            return
+        self._panel.select_char(str(char))
+        self._status(f"Selected: '{char}'")
 
     # ── Refresh helpers ───────────────────────────────────────────────────────
 
@@ -377,7 +455,7 @@ class App(tk.Tk):
     def _refresh_overlays(self) -> None:
         """Push glyph rectangles to the sheet canvas as overlays."""
         overlays = [
-            (g.x, g.y, g.width, g.height, "#00FF88")
+            (g.char, g.x, g.y, g.width, g.height, "#00FF88")
             for g in self._font_data.glyphs
         ]
         self._sheet.set_overlays(overlays)
