@@ -13,10 +13,11 @@
 #include "Engine/EngineEvents.h"
 #include "Engine/Language.h"
 #include "Engine/Stringtable.h"
+#include "Engine/Rendering/BitMapFont.h"
 #include "Game/DialogueManager.h"
 #include "Game/LuaRegistry.h"
 
-GraphicSettings GRAPHIC_SETTINGS{ };
+GraphicSettings GRAPHIC_SETTINGS{};
 RandomRangeGenerator<double> RNG = RandomRangeGenerator(0.0, 1.0);
 
 eLanguage CHOSEN_LANGUAGE = eLanguage::English;
@@ -36,7 +37,7 @@ int main(int argc, char** argv)
 		sf::State::Fullscreen
 #endif
 	);
-	
+
 	window.setFramerateLimit(255);
 
 	sol::state lua;
@@ -58,6 +59,22 @@ int main(int argc, char** argv)
 	Mouse::Get().SetRelativeWindow(&window);
 
 	constexpr sf::Color clearColour(0x2B2B2BFF);
+
+	const glyph_table_t test{
+		{ 'H', { { { 219, 120 }, { 7, 16 } }, 5 } },
+		{ 'E', { { { 198, 120 }, { 7, 16 } }, 5 } },
+		{ 'L', { { { 246, 120 }, { 7, 16 } }, 5 } },
+		{ 'O', { { { 267, 120 }, { 7, 16 } }, 5 } },
+		{ 'W', { { { 322, 120 }, { 7, 16 } }, 5 } },
+		{ 'R', { { { 288, 120 }, { 7, 16 } }, 5 } },
+		{ 'D', { { { 191, 120 }, { 7, 16 } }, 5 } },
+		{ ' ', { { { 256, 152 }, { 7, 16 } }, 5 } },
+	};
+
+	BitMapFont testString(HASH("BATTLE_HUD"), sf::IntRect{ { 171, 120 }, { 190, 64 } }, test, 16, 4);
+	auto vertArray = testString.BuildText("HELLO WORLD", { 0, 0 });
+
+	testString.SetFontSize(26.f);
 
 	while (window.isOpen())
 	{
@@ -87,6 +104,8 @@ int main(int argc, char** argv)
 		window.clear(clearColour);
 
 		game.Render(window);
+
+		testString.Render(window, { 462, 242 }, vertArray);
 
 		window.display();
 	}
