@@ -49,6 +49,12 @@ _ZOOM_MIN = 0.1
 _ZOOM_MAX = 16.0
 _ZOOM_STEP = 1.2
 
+# Pixel-grid overlay.
+_GRID_COLOUR = "#5a5a5a"
+# Only draw the grid once pixels are big enough on screen to be useful;
+# below this zoom the lines would just be visual noise.
+_GRID_MIN_ZOOM = 4.0
+
 
 class SheetCanvas(ttk.Frame):
     """
@@ -203,8 +209,8 @@ class SheetCanvas(ttk.Frame):
             )
         )
 
-        # Draw overlays.
-        for (x, y, w, h, colour) in self._overlays:
+        self._draw_grid()
+
             cx0, cy0 = self._img_to_canvas(x, y)
             cx1, cy1 = self._img_to_canvas(x + w, y + h)
             self._canvas.create_rectangle(
@@ -228,6 +234,23 @@ class SheetCanvas(ttk.Frame):
             return 0, 0
         iw, ih = self._pil_image.size
         return int(max(0, min(x, iw))), int(max(0, min(y, ih)))
+
+    def _snap_to_pixel_img(self, cx: float, cy: float) -> tuple[int, int]:
+        """Snap canvas coords to the nearest image-pixel boundary (image space)."""
+        ix, iy = self._canvas_to_img(cx, cy)
+        ix, iy = round(ix), round(iy)
+        if self._pil_image is not None:
+            iw, ih = self._pil_image.size
+            ix = max(0, min(ix, iw))
+            iy = max(0, min(iy, ih))
+        return ix, iy
+
+    def _snap_to_pixel(self, cx: float, cy: float) -> tuple[float, float]:
+        """
+        Snap canvas coords to the nearest image-pixel boundary, returned back
+        in canvas coords. Used so drag selections land exactly on pixel edges.
+        """
+        return self._img_to_canvas(*self._snap_to_pixel_img(cx, cy))
 
     # ── Rubber-band selection ─────────────────────────────────────────────────
 

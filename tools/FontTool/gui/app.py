@@ -100,7 +100,12 @@ class App(tk.Tk):
         pane.pack(fill=tk.BOTH, expand=True)
 
         # Left: sheet canvas.
-        self._sheet = SheetCanvas(pane, on_selection=self._on_region_selected)
+        self._sheet = SheetCanvas(
+            pane,
+            on_selection=self._on_region_selected,
+            on_overlay_edit=self._on_overlay_edited,
+            on_overlay_select=self._on_overlay_selected,
+        )
         pane.add(self._sheet, weight=1)
 
         # Right: glyph panel (fixed width).
