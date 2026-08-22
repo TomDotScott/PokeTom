@@ -94,3 +94,6 @@ src/Engine/CodeGen/
 # Ignore python venv SFML folder
 .venv/
 
+# Ignore temporary Python stuff
+**/__pycache__/
+
