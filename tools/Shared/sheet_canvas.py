@@ -76,10 +76,14 @@ _GRID_MIN_ZOOM = 4.0
 
 # Resize handles on a selected overlay box.
 _HANDLE_SIZE_PX = 6        # square handle side length, in canvas pixels
-_HANDLE_HIT_PX = 8         # click tolerance around a handle, in canvas pixels
+_HANDLE_HIT_PX = 10        # click tolerance around a handle, in canvas pixels
 _HANDLE_FILL = "#FFFFFF"
 _HANDLE_OUTLINE = "#000000"
 _SELECTED_COLOUR = "#FFCC00"
+
+# Extra tolerance (canvas pixels) so clicking just outside a box's edge still
+# selects it — small/thin glyph boxes are fiddly to hit exactly otherwise.
+_OVERLAY_HIT_BUFFER_PX = 5
 
 # Cursor shown for each handle while hovering.
 _HANDLE_CURSORS = {
@@ -237,7 +241,7 @@ class SheetCanvas(ttk.Frame):
         """Select (or, with ``None``, deselect) an overlay by id."""
         valid_ids = {o[0] for o in self._overlays}
         self._selected_overlay_id = overlay_id if overlay_id in valid_ids else None
-        self._redraw()
+        self._redraw_overlays()
 
     # ── Drawing ───────────────────────────────────────────────────────────────
 
@@ -255,12 +259,11 @@ class SheetCanvas(ttk.Frame):
         self._redraw()
 
     def _redraw(self) -> None:
-        """Rebuild the canvas: image then overlays."""
+        """Rebuild the canvas: image, grid, then overlays."""
         if self._pil_image is None:
             return
 
         self._canvas.delete("image")
-        self._canvas.delete("overlay")
 
         iw, ih = self._pil_image.size
         nw = max(1, int(iw * self._zoom))
@@ -283,11 +286,20 @@ class SheetCanvas(ttk.Frame):
         )
 
         self._draw_grid()
+        self._redraw_overlays()
 
-        # Draw overlays. The selected one is drawn last (on top) and, if a
-        # drag is in progress, uses the live pending box instead of its
-        # committed bounds.
+    def _redraw_overlays(self) -> None:
+        """
+        Redraw only the overlay rectangles + selection handles, leaving the
+        (expensive-to-rebuild) base image and grid untouched. This is what
+        runs on every mouse-move while resizing/moving a box, so it needs to
+        stay cheap.
+        """
+        self._canvas.delete("overlay")
         self._canvas.delete("handle")
+
+        # The selected overlay is drawn last (on top) and, if a drag is in
+        # progress, uses the live pending box instead of its committed bounds.
         others = [o for o in self._overlays if o[0] != self._selected_overlay_id]
         selected = next((o for o in self._overlays if o[0] == self._selected_overlay_id), None)
 
@@ -403,14 +415,25 @@ class SheetCanvas(ttk.Frame):
                 return name
         return None
 
+    def _point_in_box(
+        self, ix: float, iy: float, x: int, y: int, w: int, h: int, buf: float = 0.0
+    ) -> bool:
+        return (x - buf) <= ix <= (x + w + buf) and (y - buf) <= iy <= (y + h + buf)
+
     def _overlay_at_canvas_point(
         self, cx: float, cy: float
     ) -> Optional[tuple[object, int, int, int, int, str]]:
-        """Return the topmost overlay whose box contains (cx, cy), if any."""
+        """
+        Return the topmost overlay whose box contains (cx, cy), if any.
+
+        Grows each box by ``_OVERLAY_HIT_BUFFER_PX`` canvas pixels on every
+        side so small or thin glyph boxes are easier to click on.
+        """
         ix, iy = self._canvas_to_img(cx, cy)
+        buf = _OVERLAY_HIT_BUFFER_PX / self._zoom if self._zoom else 0
         for overlay in reversed(self._overlays):
             _id, x, y, w, h, _colour = overlay
-            if x <= ix <= x + w and y <= iy <= y + h:
+            if self._point_in_box(ix, iy, x, y, w, h, buf):
                 return overlay
         return None
 
@@ -435,7 +458,8 @@ class SheetCanvas(ttk.Frame):
             if selected is not None:
                 ix, iy = self._canvas_to_img(event.x, event.y)
                 _id, x, y, w, h, _colour = selected
-                if x <= ix <= x + w and y <= iy <= y + h:
+                buf = _OVERLAY_HIT_BUFFER_PX / self._zoom if self._zoom else 0
+                if self._point_in_box(ix, iy, x, y, w, h, buf):
                     self._begin_move(event)
                     return
 
@@ -524,7 +548,7 @@ class SheetCanvas(ttk.Frame):
 
     def _select_overlay(self, overlay_id: Optional[object]) -> None:
         self._selected_overlay_id = overlay_id
-        self._redraw()
+        self._redraw_overlays()
         if self._on_overlay_select is not None:
             self._on_overlay_select(overlay_id)
 
@@ -583,7 +607,7 @@ class SheetCanvas(ttk.Frame):
             new_y = max(0, min(oy + dy, ih_img - oh))
             self._pending_overlay_box = (int(new_x), int(new_y), ow, oh)
 
-        self._redraw()
+        self._redraw_overlays()
 
     def _finish_edit_drag(self) -> None:
         overlay_id = self._selected_overlay_id
@@ -604,7 +628,7 @@ class SheetCanvas(ttk.Frame):
             if o[0] == overlay_id:
                 self._overlays[i] = (overlay_id, x, y, w, h, o[5])
                 break
-        self._redraw()
+        self._redraw_overlays()
 
         if self._on_overlay_edit is not None:
             self._on_overlay_edit(overlay_id, x, y, w, h)
@@ -621,7 +645,8 @@ class SheetCanvas(ttk.Frame):
             if selected is not None:
                 ix, iy = self._canvas_to_img(event.x, event.y)
                 _id, x, y, w, h, _colour = selected
-                if x <= ix <= x + w and y <= iy <= y + h:
+                buf = _OVERLAY_HIT_BUFFER_PX / self._zoom if self._zoom else 0
+                if self._point_in_box(ix, iy, x, y, w, h, buf):
                     self._canvas.configure(cursor="fleur")
                     return
         self._canvas.configure(cursor="crosshair")
