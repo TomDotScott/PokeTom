@@ -251,6 +251,17 @@ So that I can see what dialogue will look like!!!
       <fillcolour>58D080FF</fillcolour>
     </ProgressBar>
 
+    <Text>
+      <name>OPPONENT_LEVEL_TEXT</name>
+      <string>100</string>
+      <alignment>right</alignment>
+      <colour>000000FF</colour>
+      <position x="260" y="60" />
+      <size>18</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
     <Sprite>
       <name>PLAYER_HP</name>
       <position x="414" y="227" />
@@ -287,7 +298,7 @@ So that I can see what dialogue will look like!!!
       <string>100</string>
       <alignment>right</alignment>
       <colour>000000FF</colour>
-      <position x="670" y="256" />
+      <position x="670" y="255" />
       <size>18</size>
       <font>TEXT_BOX</font>
       <layer>100</layer>

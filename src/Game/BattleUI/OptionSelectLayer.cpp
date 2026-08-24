@@ -161,6 +161,11 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	ASSERT(oppEntity);
 	oppPB->SetProgress(oppEntity->GetStats().m_HP, oppEntity->GetMaxHP(), false);
 
+	const uint8_t oppCurrentLevel = oppEntity->GetLevel();
+	auto* oppLevelText = battleUI->GetChild<UiText>("OPPONENT_LEVEL_TEXT");
+	ASSERT(oppLevelText);
+	oppLevelText->SetText("%d", oppCurrentLevel);
+
 	OnSelectedOptionChanged(eSelectedOption::Fight);
 }
 
