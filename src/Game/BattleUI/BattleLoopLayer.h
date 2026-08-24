@@ -26,6 +26,8 @@ private:
 	bool m_playerSwitchedOut;
 	bool m_opponentSwitchedOut;
 
+	UiText* m_textBoxText;
+
 	// Advance when A is pressed
 	struct TextBeat
 	{
@@ -59,15 +61,15 @@ private:
 	void AdvanceBeat();
 	void ShowMoveNameText(const PocketMonsterEntity* monster, uint8_t moveIdx) const;
 	void ShowFaintText(const PocketMonsterEntity* monster) const;
-	void ShowWhiteOutText();
+	void ShowWhiteOutText() const;
 
 	// TODO: Moves can miss for more than just accuracy (defending monster's evasion stat, attacks failing when used in sequence - i.e. trying to burn a monster that's already burned - and protect/detect. We need to have a case for each of these situations!
 	void ShowMissText(const PocketMonsterEntity* monster) const;
 	void ShowCriticalHitText() const;
 	void ShowEffectivenessText(float moveOutcome) const;
-	void ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage statChangeInfo, bool succeeded);
-	void ShowExperienceText(monster_xp_t xpGained);
-	void ShowLevelUpText(const PocketMonsterEntity* monster, uint8_t level);
+	void ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage statChangeInfo, bool succeeded) const;
+	void ShowExperienceText(monster_xp_t xpGained) const;
+	void ShowLevelUpText(const PocketMonsterEntity* monster, uint8_t level) const;
 
 	Move::Outcome UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender, uint8_t moveIdx) const;
 	void UpdateExperienceBar(monster_xp_t xpGained, PocketMonsterEntity* playerMonster, const PocketMonsterEntity* opponentMonster);

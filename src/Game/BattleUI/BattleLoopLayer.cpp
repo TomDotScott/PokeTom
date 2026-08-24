@@ -5,11 +5,12 @@
 
 #include "HealthbarAnimation.h"
 #include "../BattleState.h"
-#include "../DialogueBox.h"
 #include "../GameEvents.h"
 #include "../../Engine/Maths.h"
 #include "../../Engine/Stringtable.h"
-#include "../../Engine/UI/UiProgressBar.h"
+#include "../../Engine/UI/UiManager.h"
+#include "../../Engine/UI/UiPanel.h"
+#include "../../Engine/UI/UiText.h"
 #include "../Monsters/MonsterPartyComponent.h"
 #include "../Monsters/PocketMonsterEntity.h"
 
@@ -54,7 +55,13 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 {
 	UILayer::OnActivate(state, prevLayerResult);
 
-	DialogueBox::SetVisible(true);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	ASSERT(textBoxText != nullptr);
+	m_textBoxText = textBoxText;
+	m_textBoxText->OnActivate();
 
 	const EntityRegistry& entities = state.GetGameContext().m_Entities;
 
@@ -121,7 +128,7 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 void BattleLoopLayer::OnDeactivate()
 {
 	UILayer::OnDeactivate();
-	DialogueBox::SetVisible(false);
+	m_textBoxText->OnDeactivate();
 }
 
 void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons /*button*/)
@@ -354,31 +361,31 @@ void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const
 	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 	const std::string moveName = monster->GetMoveName(moveIdx);
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_MOVE_NAME"), monsterName, moveName).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_MOVE_NAME"), monsterName, moveName).c_str());
 }
 
 void BattleLoopLayer::ShowFaintText(const PocketMonsterEntity* monster) const
 {
 	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
 }
 
-void BattleLoopLayer::ShowWhiteOutText()
+void BattleLoopLayer::ShowWhiteOutText() const
 {
-	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), HASH("PLAYER_WHITE_OUT")).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetString(HASH("BATTLE"), HASH("PLAYER_WHITE_OUT")).c_str());
 }
 
 void BattleLoopLayer::ShowMissText(const PocketMonsterEntity* monster) const
 {
 	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_ATTACK_MISS"), monsterName).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_ATTACK_MISS"), monsterName).c_str());
 }
 
 void BattleLoopLayer::ShowCriticalHitText() const
 {
-	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), HASH("MOVE_CRITICAL")).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetString(HASH("BATTLE"), HASH("MOVE_CRITICAL")).c_str());
 }
 
 void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
@@ -399,12 +406,12 @@ void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 
 	ASSERT(stringID != DEFAULT_HASH);
 
-	DialogueBox::SetText(STRINGTABLE->GetString(HASH("BATTLE"), stringID).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetString(HASH("BATTLE"), stringID).c_str());
 }
 
 void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
                                          const StatChange::StatStage statChangeInfo,
-                                         const bool succeeded)
+                                         const bool succeeded) const
 {
 	// TODO: Nicknames
 	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
@@ -457,18 +464,18 @@ void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
 		}
 	}
 
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString(hashString, monsterName.c_str(), statString.c_str()).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(hashString, monsterName.c_str(), statString.c_str()).c_str());
 }
 
-void BattleLoopLayer::ShowExperienceText(const monster_xp_t xpGained)
+void BattleLoopLayer::ShowExperienceText(const monster_xp_t xpGained) const
 {
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_GAIN_EXPERIENCE"), std::to_string(xpGained)).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_GAIN_EXPERIENCE"), std::to_string(xpGained)).c_str());
 }
 
-void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const uint8_t level)
+void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const uint8_t level) const
 {
 	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
-	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_LEVEL_UP"), monsterName, std::to_string(level)).c_str());
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_LEVEL_UP"), monsterName, std::to_string(level)).c_str());
 }
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
