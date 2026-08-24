@@ -30,6 +30,21 @@ void UiText::SetTextSize(const unsigned size)
 	m_text.setCharacterSize(size);
 }
 
+void UiText::SetColour(const sf::Color colour)
+{
+	m_text.setFillColor(colour);
+}
+
+void UiText::SetColour(const uint32_t colour)
+{
+	SetColour(sf::Color{ colour });
+}
+
+void UiText::SetColour(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a)
+{
+	SetColour(sf::Color{ r, g, b, a });
+}
+
 void UiText::SetElementPosition(const sf::Vector2f& position)
 {
 	m_absolutePosition = position;

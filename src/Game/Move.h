@@ -156,6 +156,9 @@ public:
 	Outcome Use(Entity& attacker, Entity& defender);
 
 	unsigned GetPPRemaining() const;
+	unsigned GetMaxPP() const;
+
+	monster_type GetType() const;
 
 	bool IsValid() const;
 
@@ -169,6 +172,7 @@ private:
 	monster_type m_type;
 	eMoveCategory m_category;
 	unsigned m_powerPoints;
+	unsigned m_maxPowerPoints;
 	int m_priority;
 	eMoveTarget m_target;
 	eEffectCategory m_effectCategory;

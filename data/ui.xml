@@ -196,6 +196,28 @@ So that I can see what dialogue will look like!!!
         <font>TEXT_BOX</font>
         <layer>3</layer>
       </Text>
+
+      <Text>
+        <name>MOVE_PP</name>
+        <string>69/420</string>
+        <alignment>right</alignment>
+        <colour>000000FF</colour>
+        <position x="600" y="55" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
+
+      <Text>
+        <name>MOVE_TYPE</name>
+        <string>PSYCH</string>
+        <alignment>left</alignment>
+        <colour>000000FF</colour>
+        <position x="615" y="105" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
     </Panel>
 
     <Sprite>

@@ -33,6 +33,7 @@ Move::Move(const uint32_t id,
 	m_type(type),
 	m_category(category),
 	m_powerPoints(powerPoints),
+	m_maxPowerPoints(powerPoints),
 	m_priority(priority),
 	m_target(target),
 	m_effectCategory(effectCategory),
@@ -229,6 +230,16 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 unsigned Move::GetPPRemaining() const
 {
 	return m_powerPoints;
+}
+
+unsigned Move::GetMaxPP() const
+{
+	return m_maxPowerPoints;
+}
+
+monster_type Move::GetType() const
+{
+	return m_type;
 }
 
 bool Move::IsValid() const

@@ -39,6 +39,10 @@ public:
 
 	void SetTextSize(unsigned size);
 
+	void SetColour(sf::Color colour);
+	void SetColour(uint32_t colour);
+	void SetColour(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
+
 	void SetElementPosition(const sf::Vector2f& position) override;
 	void RecalculatePositionAfterParentMoved() override;
 

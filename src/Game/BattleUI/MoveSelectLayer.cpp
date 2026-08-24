@@ -201,6 +201,7 @@ void MoveSelectLayer::OnSelectedMoveChanged(const eSelection newMove)
 	const auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
 	ASSERT(moveSelectUI != nullptr);
 
+	// Update the arrow
 	auto* move1 = moveSelectUI->GetChild("MOVE_1_ARROW");
 	ASSERT(move1 != nullptr);
 
@@ -231,6 +232,102 @@ void MoveSelectLayer::OnSelectedMoveChanged(const eSelection newMove)
 		break;
 	case eSelection::Move4:
 		move4->OnActivate();
+		break;
+	}
+
+	// Update the PP/Type text
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+	const Move& move = moveComponent->GetMove(static_cast<uint8_t>(newMove));
+
+
+	auto* ppText = moveSelectUI->GetChild<UiText>("MOVE_PP");
+	ASSERT(ppText != nullptr);
+
+	const unsigned currentPP = move.GetPPRemaining();
+	const unsigned maxPP = move.GetMaxPP();
+	ppText->SetText("%u/%u", currentPP, maxPP);
+
+	auto* typeText = moveSelectUI->GetChild<UiText>("MOVE_TYPE");
+	ASSERT(typeText != nullptr);
+
+	// TODO: This is horrible...
+	switch (move.GetType())
+	{
+	case NORMAL:
+		typeText->SetText("NRM");
+		typeText->SetColour(0xa8a878FF);
+		break;
+	case FIRE:
+		typeText->SetText("FIR");
+		typeText->SetColour(0xf08030FF);
+		break;
+	case WATER:
+		typeText->SetText("WTR");
+		typeText->SetColour(0x6890f0FF);
+		break;
+	case ELECTRIC:
+		typeText->SetText("ELE");
+		typeText->SetColour(0xf8b010FF);
+		break;
+	case GRASS:
+		typeText->SetText("GRS");
+		typeText->SetColour(0x78c850FF);
+		break;
+	case ICE:
+		typeText->SetText("ICE");
+		typeText->SetColour(0x98d8d8FF);
+		break;
+	case FIGHTING:
+		typeText->SetText("FGT");
+		typeText->SetColour(0xe83000FF);
+		break;
+	case POISON:
+		typeText->SetText("PSN");
+		typeText->SetColour(0xa040a0FF);
+		break;
+	case GROUND:
+		typeText->SetText("GRD");
+		typeText->SetColour(0xb8a038FF);
+		break;
+	case FLYING:
+		typeText->SetText("FLY");
+		typeText->SetColour(0x507888FF);
+		break;
+	case PSYCHIC:
+		typeText->SetText("PSY");
+		typeText->SetColour(0xf85888FF);
+		break;
+	case BUG:
+		typeText->SetText("BUG");
+		typeText->SetColour(0xd8e030FF);
+		break;
+	case ROCK:
+		typeText->SetText("RCK");
+		typeText->SetColour(0x404040FF);
+		break;
+	case GHOST:
+		typeText->SetText("GHO");
+		typeText->SetColour(0x507888FF);
+		break;
+	case DRAGON:
+		typeText->SetText("DRG");
+		typeText->SetColour(0x6890f0FF);
+		break;
+	case STEEL:
+		typeText->SetText("STL");
+		typeText->SetColour(0xa8a878FF);
+		break;
+	case DARK:
+		typeText->SetText("DRK");
+		typeText->SetColour(0xa040a0FF);
+		break;
+	case FAIRY:
+		typeText->SetText("FAI");
+		typeText->SetColour(0xf85888FF);
+		break;
+	default:
+		ASSERT_MSG(false, "UNKNOWN TYPE COMBINATION %u", move.GetType());
 		break;
 	}
 }
