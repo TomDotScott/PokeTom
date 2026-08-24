@@ -87,6 +87,11 @@ void OptionSelectLayer::OnBackButtonPressed()
 	m_selectedOption = eSelectedOption::None;
 }
 
+void OptionSelectLayer::OnMoreInfoButtonPressed()
+{
+	// TODO: Show a Dialog with the buttons?
+}
+
 void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
 	UILayer::OnActivate(state, prevLayerResult);

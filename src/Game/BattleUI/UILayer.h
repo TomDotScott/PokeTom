@@ -25,11 +25,14 @@ enum eUILayerNavigateButtons : uint8_t
 	DOWN = 1 << 3,
 	LEFT = 1 << 4,
 	RIGHT = 1 << 5,
+	MORE_INFO = 1 << 6
 };
 
 constexpr const char* BATTLE_PANEL_NAME = "BATTLE_HUD_PANEL";
 constexpr const char* OPTIONS_PANEL_NAME = "BATTLE_OPTIONS";
 constexpr const char* MOVES_PANEL_NAME = "MOVE_OPTIONS";
+constexpr const char* BATTLE_TEXT_NAME = "TEXT_BOX_TEXT";
+
 
 
 class UILayer
@@ -40,6 +43,7 @@ public:
 	virtual void OnNavigateButtonPressed(eUILayerNavigateButtons button) = 0;
 	virtual void OnSelectButtonPressed() = 0;
 	virtual void OnBackButtonPressed() = 0;
+	virtual void OnMoreInfoButtonPressed() = 0;
 	virtual void Update(float deltaTime);
 	virtual ~UILayer() = default;
 

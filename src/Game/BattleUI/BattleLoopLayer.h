@@ -17,6 +17,7 @@ public:
 	void Update(float deltaTime) override;
 	void OnSelectButtonPressed() override;
 	void OnBackButtonPressed() override;
+	void OnMoreInfoButtonPressed() override;
 	void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
 	void OnDeactivate() override;
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) override;

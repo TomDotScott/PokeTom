@@ -1,6 +1,7 @@
 #include "MoveSelectLayer.h"
 
 #include "../BattleState.h"
+#include "../MoveManager.h"
 #include "../../Engine/Asserts.h"
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
@@ -12,7 +13,8 @@ MoveSelectLayer::MoveSelectLayer() :
 	m_opponentMonster(nullptr),
 	m_validMoves(),
 	m_selectedMove(eSelection::Move1),
-	m_backRequested(false)
+	m_backRequested(false),
+	m_isShowingMoveText(false)
 {
 }
 
@@ -32,6 +34,11 @@ UILayer::LayerResult MoveSelectLayer::GetLayerResult() const
 
 void MoveSelectLayer::OnNavigateButtonPressed(const eUILayerNavigateButtons button)
 {
+	if (m_isShowingMoveText)
+	{
+		return;
+	}
+
 	const bool upDown = button & (UP | DOWN);
 	const bool leftRight = button & (LEFT | RIGHT);
 
@@ -99,6 +106,12 @@ void MoveSelectLayer::OnNavigateButtonPressed(const eUILayerNavigateButtons butt
 
 void MoveSelectLayer::OnSelectButtonPressed()
 {
+	if (m_isShowingMoveText)
+	{
+		DismissMoveDescription();
+		return;
+	}
+
 	ASSERT(this->m_playerMonster != nullptr);
 
 	const MoveComponent* playerMoveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
@@ -109,8 +122,25 @@ void MoveSelectLayer::OnSelectButtonPressed()
 
 void MoveSelectLayer::OnBackButtonPressed()
 {
+	if (m_isShowingMoveText)
+	{
+		DismissMoveDescription();
+		return;
+	}
+
 	m_finished = true;
 	m_backRequested = true;
+}
+
+void MoveSelectLayer::OnMoreInfoButtonPressed()
+{
+	if (m_isShowingMoveText)
+	{
+		return;
+	}
+
+	ShowMoveDescription();
+	m_isShowingMoveText = true;
 }
 
 void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
@@ -121,8 +151,6 @@ void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& pr
 
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
-
-	battleUI->GetChild("TEXT_BOX")->OnDeactivate();
 
 	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
 	ASSERT(optionsUI != nullptr);
@@ -182,8 +210,6 @@ void MoveSelectLayer::OnDeactivate()
 
 	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
-
-	battleUI->GetChild("TEXT_BOX")->OnActivate();
 
 	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
 	ASSERT(moveUI != nullptr);
@@ -330,4 +356,43 @@ void MoveSelectLayer::OnSelectedMoveChanged(const eSelection newMove)
 		ASSERT_MSG(false, "UNKNOWN TYPE COMBINATION %u", move.GetType());
 		break;
 	}
+}
+
+void MoveSelectLayer::ShowMoveDescription()
+{
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	ASSERT(moveSelectUI != nullptr);
+	moveSelectUI->OnDeactivate();
+
+	auto* moveDescriptionText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	ASSERT(moveDescriptionText);
+	moveDescriptionText->OnActivate();
+
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+	const Move& move = moveComponent->GetMove(static_cast<uint8_t>(m_selectedMove));
+	moveDescriptionText->SetText(move.GetDescriptionStringTableID());
+
+	m_isShowingMoveText = true;
+}
+
+void MoveSelectLayer::DismissMoveDescription()
+{
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
+	auto* moveDescriptionText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	ASSERT(moveDescriptionText);
+	moveDescriptionText->OnDeactivate();
+
+	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	ASSERT(moveSelectUI != nullptr);
+
+	moveSelectUI->OnActivate();
+	OnSelectedMoveChanged(m_selectedMove);
+
+	m_isShowingMoveText = false;
 }

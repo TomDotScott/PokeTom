@@ -15,6 +15,7 @@ public:
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) override;
 	void OnSelectButtonPressed() override;
 	void OnBackButtonPressed() override;
+	void OnMoreInfoButtonPressed() override;
 	void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
 	void OnDeactivate() override;
 
@@ -34,7 +35,10 @@ private:
 	eSelection m_selectedMove;
 
 	bool m_backRequested;
+	bool m_isShowingMoveText;
 
 	void OnSelectedMoveChanged(eSelection newMove);
+	void ShowMoveDescription();
+	void DismissMoveDescription();
 };
 #endif // MOVESELECTLAYER_H

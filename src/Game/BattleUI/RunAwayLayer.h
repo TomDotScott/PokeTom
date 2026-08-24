@@ -14,6 +14,7 @@ public:
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) override;
 	void OnSelectButtonPressed() override;
 	void OnBackButtonPressed() override;
+	void OnMoreInfoButtonPressed() override;
 	void OnActivate(const BattleState& state, const LayerResult& prevLayerResult) override;
 	void OnDeactivate() override;
 

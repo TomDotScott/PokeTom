@@ -34,8 +34,6 @@ private:
 	entity_id_t m_playerMonsterEntityID;
 	entity_id_t m_opponentMonsterEntityID;
 
-	bool m_isInBattleLoop;
-
 	eUILayerType m_currentUILayer;
 
 	InputMapper m_inputMapper;
@@ -48,6 +46,7 @@ private:
 	void OnNavigateButtonPressed(eUILayerNavigateButtons button) const;
 	void OnSelectButtonPressed() const;
 	void OnBackButtonPressed() const;
+	void OnMoreInfoButtonPressed() const;
 };
 
 #endif // BATTLESTATE_H

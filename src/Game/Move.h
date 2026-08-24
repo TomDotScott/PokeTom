@@ -158,11 +158,14 @@ public:
 	unsigned GetPPRemaining() const;
 	unsigned GetMaxPP() const;
 
+	uint32_t GetID() const;
+
 	monster_type GetType() const;
 
 	bool IsValid() const;
 
 	hash_type GetNameStringTableID() const;
+	hash_type GetDescriptionStringTableID() const;
 
 private:
 	bool m_valid = false;

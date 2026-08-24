@@ -237,6 +237,11 @@ unsigned Move::GetMaxPP() const
 	return m_maxPowerPoints;
 }
 
+uint32_t Move::GetID() const
+{
+	return m_id;
+}
+
 monster_type Move::GetType() const
 {
 	return m_type;
@@ -250,4 +255,9 @@ bool Move::IsValid() const
 hash_type Move::GetNameStringTableID() const
 {
 	return m_stringTableID;
+}
+
+std::string Move::GetDescriptionStringTableID() const
+{
+	return m_descriptionStringTableID;
 }

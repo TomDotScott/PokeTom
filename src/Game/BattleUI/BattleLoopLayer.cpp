@@ -170,6 +170,10 @@ void BattleLoopLayer::OnBackButtonPressed()
 {
 }
 
+void BattleLoopLayer::OnMoreInfoButtonPressed()
+{
+}
+
 void BattleLoopLayer::DoTurn(
 	const BattleState& state,
 	PocketMonsterEntity* attacker,

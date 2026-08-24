@@ -24,6 +24,10 @@ void RunAwayLayer::OnBackButtonPressed()
 {
 }
 
+void RunAwayLayer::OnMoreInfoButtonPressed()
+{
+}
+
 void RunAwayLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
 	UILayer::OnActivate(state, prevLayerResult);

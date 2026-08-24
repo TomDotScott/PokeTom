@@ -62,6 +62,17 @@ So that I can see what dialogue will look like!!!
       <layer>1</layer>
     </Sprite>
 
+    <Text>
+      <name>TEXT_BOX_TEXT</name>
+      <string>If I can see this text, something has gone very wrong!</string>
+      <alignment>left</alignment>
+      <colour>FFFFFFFF</colour>
+      <position x="30" y="400" />
+      <size>22</size>
+      <font>TEXT_BOX</font>
+      <layer>3</layer>
+    </Text>
+
     <Panel>
       <name>BATTLE_OPTIONS</name>
       <position x="384" y="358" />

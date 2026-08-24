@@ -4,7 +4,6 @@
 
 #include "DialogueBox.h"
 #include "GameEvents.h"
-#include "MoveComponent.h"
 #include "../Engine/Stringtable.h"
 #include "../Engine/Animation/AnimationComponent.h"
 #include "BattleUI/BattleLoopLayer.h"
@@ -16,7 +15,6 @@
 
 BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& battleContext) :
 	m_gameContext(gameContext),
-	m_isInBattleLoop(false),
 	m_currentUILayer(OptionSelect)
 {
 	m_battleContext = battleContext;
@@ -65,6 +63,11 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 		static_cast<int>(sf::Keyboard::Key::D),
 		static_cast<int>(sf::Keyboard::Key::Right)
 	);
+	m_inputMapper.Map(
+		MORE_INFO,
+		eInputType::Keyboard,
+		static_cast<int>(sf::Keyboard::Key::I)
+	);
 
 	m_inputMapper.OnButtonPressed(UP, [this]() { OnNavigateButtonPressed(UP); });
 	m_inputMapper.OnButtonPressed(DOWN, [this]() { OnNavigateButtonPressed(DOWN); });
@@ -72,6 +75,7 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 	m_inputMapper.OnButtonPressed(RIGHT, [this]() { OnNavigateButtonPressed(RIGHT); });
 	m_inputMapper.OnButtonPressed(SELECT, [this]() { OnSelectButtonPressed(); });
 	m_inputMapper.OnButtonPressed(BACK, [this]() { OnBackButtonPressed(); });
+	m_inputMapper.OnButtonPressed(MORE_INFO, [this]() { OnMoreInfoButtonPressed(); });
 
 	// SET UP PLAYER ENTITY AND PARTY
 	Entity* playerEntity = m_gameContext.m_Entities.Get(battleContext.m_PlayerEntityID);
@@ -257,4 +261,9 @@ void BattleState::OnSelectButtonPressed() const
 void BattleState::OnBackButtonPressed() const
 {
 	m_UILayers[m_currentUILayer]->OnBackButtonPressed();
+}
+
+void BattleState::OnMoreInfoButtonPressed() const
+{
+	m_UILayers[m_currentUILayer]->OnMoreInfoButtonPressed();
 }
