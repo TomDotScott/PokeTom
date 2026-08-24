@@ -1,9 +1,10 @@
 #include "RunAwayLayer.h"
 #include "../BattleState.h"
-#include "../DialogueBox.h"
 #include "../GameEvents.h"
-#include "../../Engine/UI/UiManager.h"
 #include "../../Engine/Stringtable.h"
+#include "../../Engine/UI/UiManager.h"
+#include "../../Engine/UI/UiPanel.h"
+#include "../../Engine/UI/UiText.h"
 
 
 UILayer::LayerResult RunAwayLayer::GetLayerResult() const
@@ -40,21 +41,24 @@ void RunAwayLayer::OnActivate(const BattleState& state, const LayerResult& prevL
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	ASSERT(battleUI != nullptr);
 
+	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	ASSERT(textBoxText != nullptr);
+	textBoxText->OnActivate();
+
 	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
 	ASSERT(optionsUI != nullptr);
 
 	optionsUI->OnDeactivate();
 
-	DialogueBox::SetText("%s got away safely!\n",
+	// TODO: Add to the stringtable!
+	textBoxText->SetText("%s got away safely!\n",
 	                     STRINGTABLE->GetString(HASH("CHARACTER"), HASH("PLAYER_NAME")).c_str());
-	DialogueBox::SetVisible(true);
 }
 
 void RunAwayLayer::OnDeactivate()
 {
 	UILayer::OnDeactivate();
 
-	DialogueBox::SetVisible(false);
 	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
 	battleUI->OnDeactivate();
 }
