@@ -2,6 +2,8 @@
 
 #include "../BattleState.h"
 #include "../../Engine/Maths.h"
+#include "../../Engine/Stringtable.h"
+#include "../../Engine/StringUtils.h"
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
 #include "../../Engine/UI/UiProgressBar.h"
@@ -116,17 +118,31 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 
 	const auto& entReg = state.GetGameContext().m_Entities;
 
-	PocketMonsterEntity* playerEntity = entReg.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
-	ASSERT(playerEntity);
-	const monster_hp_t playerHP = playerEntity->GetStats().m_HP;
-	const monster_hp_t playerMaxHP = playerEntity->GetMaxHP();
+	PocketMonsterEntity* playerMonster = entReg.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
+	ASSERT(playerMonster);
+
+	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	ASSERT(textBoxText != nullptr);
+	textBoxText->OnActivate();
+
+	// TODO: Monster Nicknames!
+	const std::string playerMonsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, playerMonster->GetNameStringID());
+	const std::string chooseOptionString = STRINGTABLE->GetDynamicString(HASH("PLAYER_CHOOSE_OPTION"), playerMonsterName.c_str());
+	// TODO: Do I need to make the width data driven?
+	const string_utils::text_pages chooseOptionText = string_utils::WrapToPages(chooseOptionString, 10, 3);
+	ASSERT(chooseOptionText.size() == 1);
+	textBoxText->SetText(chooseOptionText[0].c_str());
+
+
+	const monster_hp_t playerHP = playerMonster->GetStats().m_HP;
+	const monster_hp_t playerMaxHP = playerMonster->GetMaxHP();
 	playerPB->SetProgress(playerHP, playerMaxHP, false);
 
 	auto* hpText = battleUI->GetChild<UiText>("PLAYER_HP_TEXT");
 	ASSERT(hpText);
 	hpText->SetText("%d/%d", playerHP, playerMaxHP);
 
-	const uint8_t currentLevel = playerEntity->GetLevel();
+	const uint8_t currentLevel = playerMonster->GetLevel();
 	auto* levelText = battleUI->GetChild<UiText>("PLAYER_LEVEL_TEXT");
 	ASSERT(levelText);
 	levelText->SetText("%d", currentLevel);
@@ -134,9 +150,9 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	auto* xpBar = battleUI->GetChild<UiProgressBar>("PLAYER_XP_BAR");
 	ASSERT(xpBar);
 
-	const monster_xp_t prevLevelXP = monster_xp::GetMaxExperienceForLevel(playerEntity->GetExperienceGroup(), currentLevel);
-	const monster_xp_t nextLevelXP = GetMaxExperienceForLevel(playerEntity->GetExperienceGroup(), currentLevel + 1);
-	const monster_xp_t a = playerEntity->GetCurrentXP() - prevLevelXP;
+	const monster_xp_t prevLevelXP = monster_xp::GetMaxExperienceForLevel(playerMonster->GetExperienceGroup(), currentLevel);
+	const monster_xp_t nextLevelXP = GetMaxExperienceForLevel(playerMonster->GetExperienceGroup(), currentLevel + 1);
+	const monster_xp_t a = playerMonster->GetCurrentXP() - prevLevelXP;
 	const monster_xp_t b = nextLevelXP - prevLevelXP;
 	xpBar->SetProgress(static_cast<float>(a) / static_cast<float>(b));
 

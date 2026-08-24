@@ -160,9 +160,12 @@ void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
 	ASSERT(moveUI != nullptr);
 
-	optionsUI->OnDeactivate();
-	moveUI->OnActivate();
+	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	ASSERT(textBoxText != nullptr);
 
+	optionsUI->OnDeactivate();
+	textBoxText->OnDeactivate();
+	moveUI->OnActivate();
 
 	this->m_playerMonster = state.GetGameContext().m_Entities.Get<
 		PocketMonsterEntity>(state.GetPlayerMonsterEntityID());

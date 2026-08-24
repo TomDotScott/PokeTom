@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <optional>
+#include "../../Engine/Hash.h"
 
 class BattleState;
 
@@ -33,7 +34,7 @@ constexpr const char* OPTIONS_PANEL_NAME = "BATTLE_OPTIONS";
 constexpr const char* MOVES_PANEL_NAME = "MOVE_OPTIONS";
 constexpr const char* BATTLE_TEXT_NAME = "TEXT_BOX_TEXT";
 
-
+const static hash_type STRING_MONSTER_NAME_GRP = HASH("MONSTER_NAME");
 
 class UILayer
 {

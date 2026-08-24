@@ -13,11 +13,6 @@
 #include "../Monsters/MonsterPartyComponent.h"
 #include "../Monsters/PocketMonsterEntity.h"
 
-namespace
-{
-	const hash_type MONSTER_NAME_GROUP = HASH("MONSTER_NAME");
-}
-
 BattleLoopLayer::BattleLoopLayer() :
 	m_playerSwitchedOut(false),
 	m_opponentSwitchedOut(false),
@@ -357,7 +352,7 @@ void BattleLoopLayer::AdvanceBeat()
 void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const uint8_t moveIdx) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 	const std::string moveName = monster->GetMoveName(moveIdx);
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_MOVE_NAME"), monsterName, moveName).c_str());
 }
@@ -365,7 +360,7 @@ void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const
 void BattleLoopLayer::ShowFaintText(const PocketMonsterEntity* monster) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
 }
 
@@ -377,7 +372,7 @@ void BattleLoopLayer::ShowWhiteOutText()
 void BattleLoopLayer::ShowMissText(const PocketMonsterEntity* monster) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_ATTACK_MISS"), monsterName).c_str());
 }
 
@@ -412,7 +407,7 @@ void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
                                          const bool succeeded)
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 
 	const std::string statString = MonsterStats::GetStatString(statChangeInfo.m_Stat);
 
@@ -472,7 +467,7 @@ void BattleLoopLayer::ShowExperienceText(const monster_xp_t xpGained)
 
 void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const uint8_t level)
 {
-	const std::string monsterName = STRINGTABLE->GetString(MONSTER_NAME_GROUP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 	DialogueBox::SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_LEVEL_UP"), monsterName, std::to_string(level)).c_str());
 }
 
@@ -491,12 +486,12 @@ Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
 	const Move::Outcome outcome = moveComponent->UseMove(moveIdx, *defender);
 
 #if BUILD_DEBUG
-	std::cout << STRINGTABLE->GetString(MONSTER_NAME_GROUP, attacker->GetNameStringID()) << " stats:\n";
+	std::cout << STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, attacker->GetNameStringID()) << " stats:\n";
 	attacker->GetStats().Log();
 
 	std::cout << "\n";
 
-	std::cout << STRINGTABLE->GetString(MONSTER_NAME_GROUP, defender->GetNameStringID()) << " stats:\n";
+	std::cout << STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, defender->GetNameStringID()) << " stats:\n";
 	defender->GetStats().Log();
 #endif
 

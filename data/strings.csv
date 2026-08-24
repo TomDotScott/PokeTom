@@ -29,7 +29,7 @@ STAT_EVASION,STAT,"Evasion","","","",""
 
 
 
-
+PLAYER_CHOOSE_OPTION,DYNAMIC_STRING,"What will %1 do?","","","",""
 PLAYER_SWITCH_MONSTER,DYNAMIC_STRING,"Go, %1!","","","",""
 OPPONENT_SWITCH_MONSTER,DYNAMIC_STRING,"%1 switched out to %2!","","","",""
 MONSTER_FAINT,DYNAMIC_STRING,"%1 fainted.","","","",""
