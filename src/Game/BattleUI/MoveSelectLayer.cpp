@@ -3,6 +3,7 @@
 #include "../BattleState.h"
 #include "../MoveManager.h"
 #include "../../Engine/Asserts.h"
+#include "../../Engine/Stringtable.h"
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
 #include "../../Engine/UI/UiText.h"
@@ -14,7 +15,8 @@ MoveSelectLayer::MoveSelectLayer() :
 	m_validMoves(),
 	m_selectedMove(eSelection::Move1),
 	m_backRequested(false),
-	m_isShowingMoveText(false)
+	m_isShowingDescriptionText(false),
+	m_descriptionIndex(0)
 {
 }
 
@@ -34,7 +36,7 @@ UILayer::LayerResult MoveSelectLayer::GetLayerResult() const
 
 void MoveSelectLayer::OnNavigateButtonPressed(const eUILayerNavigateButtons button)
 {
-	if (m_isShowingMoveText)
+	if (m_isShowingDescriptionText)
 	{
 		return;
 	}
@@ -106,9 +108,9 @@ void MoveSelectLayer::OnNavigateButtonPressed(const eUILayerNavigateButtons butt
 
 void MoveSelectLayer::OnSelectButtonPressed()
 {
-	if (m_isShowingMoveText)
+	if (m_isShowingDescriptionText)
 	{
-		DismissMoveDescription();
+		UpdateDescriptionText();
 		return;
 	}
 
@@ -122,7 +124,7 @@ void MoveSelectLayer::OnSelectButtonPressed()
 
 void MoveSelectLayer::OnBackButtonPressed()
 {
-	if (m_isShowingMoveText)
+	if (m_isShowingDescriptionText)
 	{
 		DismissMoveDescription();
 		return;
@@ -134,13 +136,13 @@ void MoveSelectLayer::OnBackButtonPressed()
 
 void MoveSelectLayer::OnMoreInfoButtonPressed()
 {
-	if (m_isShowingMoveText)
+	if (m_isShowingDescriptionText)
 	{
 		return;
 	}
 
 	ShowMoveDescription();
-	m_isShowingMoveText = true;
+	m_isShowingDescriptionText = true;
 }
 
 void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
@@ -367,16 +369,33 @@ void MoveSelectLayer::ShowMoveDescription()
 	ASSERT(moveSelectUI != nullptr);
 	moveSelectUI->OnDeactivate();
 
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+	const Move& move = moveComponent->GetMove(static_cast<uint8_t>(m_selectedMove));
+	m_currentMoveDescription = string_utils::WrapToPages(STRINGTABLE->GetString(move.GetDescriptionStringTableID()), 32, 2);
+	m_descriptionIndex = 0;
+
+	UpdateDescriptionText();
+	m_isShowingDescriptionText = true;
+}
+
+void MoveSelectLayer::UpdateDescriptionText()
+{
+	if (m_descriptionIndex >= m_currentMoveDescription.size())
+	{
+		DismissMoveDescription();
+		return;
+	}
+
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	ASSERT(battleUI != nullptr);
+
 	auto* moveDescriptionText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
 	ASSERT(moveDescriptionText);
 	moveDescriptionText->OnActivate();
 
-	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
-	ASSERT(moveComponent != nullptr);
-	const Move& move = moveComponent->GetMove(static_cast<uint8_t>(m_selectedMove));
-	moveDescriptionText->SetText(move.GetDescriptionStringTableID());
-
-	m_isShowingMoveText = true;
+	moveDescriptionText->SetText(m_currentMoveDescription[m_descriptionIndex].c_str());
+	m_descriptionIndex++;
 }
 
 void MoveSelectLayer::DismissMoveDescription()
@@ -394,5 +413,5 @@ void MoveSelectLayer::DismissMoveDescription()
 	moveSelectUI->OnActivate();
 	OnSelectedMoveChanged(m_selectedMove);
 
-	m_isShowingMoveText = false;
+	m_isShowingDescriptionText = false;
 }

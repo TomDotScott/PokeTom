@@ -4,6 +4,7 @@
 #include "../MoveComponent.h"
 
 #include "UILayer.h"
+#include "../../Engine/StringUtils.h"
 
 class PocketMonsterEntity;
 
@@ -35,10 +36,13 @@ private:
 	eSelection m_selectedMove;
 
 	bool m_backRequested;
-	bool m_isShowingMoveText;
+	bool m_isShowingDescriptionText;
+	unsigned m_descriptionIndex;
+	string_utils::text_pages m_currentMoveDescription;
 
 	void OnSelectedMoveChanged(eSelection newMove);
 	void ShowMoveDescription();
+	void UpdateDescriptionText();
 	void DismissMoveDescription();
 };
 #endif // MOVESELECTLAYER_H
