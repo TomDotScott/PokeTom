@@ -165,6 +165,8 @@ void Game::Update(const float deltaTime)
 			m_currentState->Update(deltaTime);
 		}
 	}
+
+	m_context.m_Renderer.UpdateAnimatedTiles(deltaTime);
 }
 
 void Game::Render(sf::RenderWindow& window) const

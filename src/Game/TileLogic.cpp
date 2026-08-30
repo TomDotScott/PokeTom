@@ -57,6 +57,7 @@ std::vector<TileRenderData> TileLogic::BuildRenderData(const sf::Vector2i& offse
 		renderData.m_SpriteSheetResourceName = tile.m_ParentSheet->GetSpriteSheetResourceName();
 		renderData.m_LayerName = tile.m_LayerName;
 		renderData.m_ZIndex = m_zIndexes.at(tile.m_LayerName);
+		renderData.m_AnimatedFrames = tile.m_Definition->m_Animation;
 
 		// TODO: Assert that these are equal to 32... Not sure these calls are needed outside of Engine-side code
 		const int tileWidth = tile.m_ParentSheet->GetTileWidth();

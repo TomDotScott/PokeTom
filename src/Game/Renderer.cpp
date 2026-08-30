@@ -70,12 +70,32 @@ float Renderer::GetZoom() const
 	return m_zoom;
 }
 
+void Renderer::UpdateAnimatedTiles(const float deltaTime)
+{
+	for (auto& type : m_animatedTileTypes)
+	{
+		type.m_ElapsedMS += deltaTime;
+
+		const float duration = static_cast<float>(type.m_Frames[type.m_CurrentFrame].m_durationMS) / 1000.f;
+
+		// Only update the UVs of the vertices when the frame actually changes
+		if (type.m_ElapsedMS >= duration)
+		{
+			type.m_ElapsedMS = 0;
+			type.m_CurrentFrame = (type.m_CurrentFrame + 1) % type.m_Frames.size();
+			PatchUVs(type);
+		}
+	}
+}
+
 
 void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>& visibleLevelRenderData)
 {
 	m_layerBatchers.clear();
+	m_animTypeIndices.clear();
+	m_animatedTileTypes.clear();
 
-	const auto generateLayerName = [](const hash_type& levelName, const hash_type& layerName) -> hash_type
+	const auto CombineHashes = [](const hash_type& levelName, const hash_type& layerName) -> hash_type
 	{
 #if BUILD_DEBUG
 		return levelName + "#" + layerName;
@@ -89,40 +109,98 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 #endif
 	};
 
-	std::unordered_map<hash_type, std::unordered_map<hash_type, std::vector<sf::Sprite>>> buckets;
-	for (const auto& [levelName, renderData] : visibleLevelRenderData)
+	struct LayerAccumulator
 	{
+		int m_zIndex = 0;
+		std::unordered_map<hash_type, std::vector<sf::Sprite>> m_byTexture;
+	};
+	std::unordered_map<hash_type, LayerAccumulator> layerMap;
+
+	for (const auto& [levelHash, renderData] : visibleLevelRenderData)
+	{
+		std::unordered_map<hash_type, int> layerZIndexes;
+		for (const auto& layerData : renderData.m_TileLayerData)
+		{
+			layerZIndexes[layerData.m_Name] = layerData.m_ZIndex;
+		}
+
 		for (const auto& tile : renderData.m_TileRenderData)
 		{
+			const hash_type key = CombineHashes(levelHash, tile.m_LayerName);
+			if (tile.m_AnimatedFrames.has_value())
+			{
+				const hash_type tileTypeKey = CombineHashes(
+					tile.m_SpriteSheetResourceName,
+#if BUILD_DEBUG
+					std::to_string(tile.m_LocalID)
+#else
+					tile.m_LocalID
+#endif
+				);
+
+				auto [it, inserted] = m_animTypeIndices.emplace(tileTypeKey, m_animatedTileTypes.size());
+				if (inserted)
+				{
+					AnimatedTileType type;
+					type.m_Texture = TEXTUREMANAGER.GetTexture(tile.m_SpriteSheetResourceName);
+					type.m_TileSize = tile.m_TextureRect.size;
+					type.m_TextureTilesPerRow = type.m_Texture->getSize().x / type.m_TileSize.x;
+					type.m_Frames = tile.m_AnimatedFrames.value();
+					type.m_ZIndex = tile.m_ZIndex;
+					type.m_Vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
+					m_animatedTileTypes.emplace_back(std::move(type));
+
+					PatchUVs(m_animatedTileTypes.back());
+				}
+
+				AnimatedTileType& type = m_animatedTileTypes[it->second];
+				const size_t startIndex = type.m_Vertices.getVertexCount();
+
+				type.m_Vertices.resize(startIndex + 6);
+				const sf::Vector2f p = tile.m_Position;
+				const float width = static_cast<float>(type.m_TileSize.x);
+				const float height = static_cast<float>(type.m_TileSize.y);
+
+				// Triangle 1 (TL, TR, BL)
+				type.m_Vertices[startIndex + 0].position = p;
+				type.m_Vertices[startIndex + 1].position = { p.x + width, p.y };
+				type.m_Vertices[startIndex + 2].position = { p.x, p.y + height };
+				// Triangle 2 (TR, BR, BL)
+				type.m_Vertices[startIndex + 3].position = { p.x + width, p.y };
+				type.m_Vertices[startIndex + 4].position = { p.x + width, p.y + height };
+				type.m_Vertices[startIndex + 5].position = { p.x, p.y + height };
+
+
+				// We've got the vertex data now so don't need to set up the sprites
+				continue;
+			}
+
+			auto& accumulator = layerMap[key];
+			accumulator.m_zIndex = layerZIndexes[tile.m_LayerName];
+
 			sf::Sprite sprite(*TEXTUREMANAGER.GetTexture(tile.m_SpriteSheetResourceName));
 			sprite.setTextureRect(tile.m_TextureRect);
 			sprite.setPosition(tile.m_Position);
-			buckets[generateLayerName(levelName, tile.m_LayerName)][tile.m_SpriteSheetResourceName].push_back(sprite);
+			accumulator.m_byTexture[tile.m_SpriteSheetResourceName].emplace_back(std::move(sprite));
 		}
 	}
 
-	for (const auto& [levelName, renderData] : visibleLevelRenderData)
+	for (auto& [key, accumulator] : layerMap)
 	{
-		for (const auto& layerMetaData : renderData.m_TileLayerData)
+		for (auto& [textureHash, sprites] : accumulator.m_byTexture)
 		{
-			const hash_type key = generateLayerName(levelName, layerMetaData.m_Name);
-			if (auto it = buckets.find(key); it != buckets.end())
-			{
-				for (auto& [texture, sprites] : it->second)
-				{
-					SpriteBatcher batcher(texture);
-					batcher.BatchSprites(sprites);
-					m_layerBatchers.push_back({
-						key,
-						layerMetaData.m_ZIndex,
-						std::move(batcher)
-					});
-				}
-			}
+			SpriteBatcher batcher(textureHash);
+			batcher.BatchSprites(sprites);
+			m_layerBatchers.emplace_back(key, accumulator.m_zIndex, batcher);
 		}
 	}
 
 	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b)
+	{
+		return a.m_ZIndex < b.m_ZIndex;
+	});
+
+	std::ranges::sort(m_animatedTileTypes, [](const auto& a, const auto& b)
 	{
 		return a.m_ZIndex < b.m_ZIndex;
 	});
@@ -133,15 +211,36 @@ void Renderer::RenderLevel(sf::RenderWindow& window, const EntityRegistry& entit
 	m_cameraView.setViewport(GRAPHIC_SETTINGS.GetLetterboxViewport());
 	window.setView(m_cameraView);
 
-	for (const auto& layerBatcher : m_layerBatchers)
-	{
-		window.draw(layerBatcher.m_SpriteBatcher);
+	auto staticTileIterator = m_layerBatchers.begin();
+	auto animatedTileIterator = m_animatedTileTypes.begin();
 
-		if (layerBatcher.m_ZIndex == entityZIndex)
+	while (staticTileIterator != m_layerBatchers.end() ||
+		animatedTileIterator != m_animatedTileTypes.end())
+	{
+		const int staticZ = (staticTileIterator != m_layerBatchers.end()) ? staticTileIterator->m_ZIndex : INT_MAX;
+		const int animZ = (animatedTileIterator != m_animatedTileTypes.end())
+			                  ? animatedTileIterator->m_ZIndex
+			                  : INT_MAX;
+
+		if (staticZ <= animZ)
+		{
+			window.draw(staticTileIterator->m_SpriteBatcher);
+			++staticTileIterator;
+		}
+		else
+		{
+			sf::RenderStates states;
+			states.texture = animatedTileIterator->m_Texture;
+			window.draw(animatedTileIterator->m_Vertices, states);
+			++animatedTileIterator;
+		}
+
+		if (staticZ == entityZIndex)
 		{
 			RenderEntities(window, entities);
 		}
 	}
+
 
 	// Reset the view
 	window.setView({
@@ -267,4 +366,27 @@ void Renderer::OnScreenResized(const sf::Vector2u newSize)
 	m_cameraView.setCenter(m_cameraView.getCenter());
 	m_cameraView.setViewport(GRAPHIC_SETTINGS.GetLetterboxViewport());
 	m_cameraView.setSize(static_cast<sf::Vector2f>(REFERENCE_SCREEN_SIZE) / m_zoom);
+}
+
+void Renderer::PatchUVs(AnimatedTileType& type)
+{
+	const uint32_t localID = type.m_Frames[type.m_CurrentFrame].m_TileID;
+	const int col = localID % type.m_TextureTilesPerRow;
+	const int row = localID / type.m_TextureTilesPerRow;
+	const float u = static_cast<float>(col * type.m_TileSize.x);
+	const float v = static_cast<float>(row * type.m_TileSize.y);
+	const float w = static_cast<float>(type.m_TileSize.x);
+	const float h = static_cast<float>(type.m_TileSize.y);
+
+	const size_t count = type.m_Vertices.getVertexCount();
+	for (size_t i = 0; i < count; i += 6)
+	{
+		type.m_Vertices[i + 0].texCoords = { u, v }; // TL
+		type.m_Vertices[i + 1].texCoords = { u + w, v }; // TR
+		type.m_Vertices[i + 2].texCoords = { u, v + h }; // BL
+
+		type.m_Vertices[i + 3].texCoords = { u + w, v }; // TR
+		type.m_Vertices[i + 4].texCoords = { u + w, v + h }; // BR
+		type.m_Vertices[i + 5].texCoords = { u, v + h }; // BL
+	}
 }

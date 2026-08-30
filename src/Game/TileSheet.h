@@ -12,6 +12,12 @@ class TileSheet
 public:
 	struct TileDefinition
 	{
+		struct AnimFrame
+		{
+			uint32_t m_TileID;
+			uint32_t m_durationMS;
+		};
+
 		enum Properties : uint32_t
 		{
 			None = 0,
@@ -31,6 +37,8 @@ public:
 		uint32_t m_LocalID;
 		uint32_t m_Flags;
 		hash_type m_ParentTileSetName;
+
+		std::optional<std::vector<AnimFrame>> m_Animation = std::nullopt;
 	};
 
 	explicit TileSheet(const std::shared_ptr<TSX>& tsxParser, uint32_t firstGID);
