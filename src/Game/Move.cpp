@@ -257,7 +257,7 @@ hash_type Move::GetNameStringTableID() const
 	return m_stringTableID;
 }
 
-std::string Move::GetDescriptionStringTableID() const
+hash_type Move::GetDescriptionStringTableID() const
 {
 	return m_descriptionStringTableID;
 }
