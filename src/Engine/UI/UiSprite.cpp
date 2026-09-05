@@ -82,7 +82,7 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 
 	ASSERT(m_sprite);
 
-	m_sprite->setPosition(m_position);
+	m_sprite->setPosition(GetPosition());
 	SetScale(m_scaleFactorFromXml);
 	AddDrawable(m_sprite);
 	return true;

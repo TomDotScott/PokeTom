@@ -1,6 +1,7 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Vector2.hpp>
 
 class GameObject
@@ -14,17 +15,22 @@ public:
 
 	virtual void OnDeactivate();
 
-	const sf::Vector2f& GetPosition() const { return m_position; }
-	sf::Vector2f GetPosition() { return m_position; }
+	sf::Vector2f GetPosition() const;
 	void SetPosition(const sf::Vector2f& position);
 	void SetPosition(float x, float y);
+
+	sf::Angle GetRotation() const;
+	void SetRotation(const sf::Angle& angle);
+
+	sf::Vector2f GetScale() const;
+	void SetScale(const sf::Vector2f& scale);
 
 	uint32_t GetID() const;
 
 	bool IsActive() const { return m_isActive; }
 
 protected:
-	sf::Vector2f m_position;
+	sf::Transformable m_transformable;
 
 private:
 	bool m_isActive;

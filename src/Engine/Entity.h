@@ -70,15 +70,11 @@ public:
 	sf::Vector2f GetSize();
 	const sf::Vector2f& GetSize() const;
 
-	sf::Vector2f GetScale();
-	const sf::Vector2f& GetScale() const;
 
-	void SetScale(const sf::Vector2f& scale);
 
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
 	sf::Vector2f m_size;
-	sf::Vector2f m_scale;
 
 	void OnEntityActivate();
 	void OnEntityDeactivate();

@@ -80,7 +80,7 @@ bool UiPanel::LoadFromXML(const XmlNode& node)
 	if (!LoadChildrenOfType<UiPanel>(node, "Panel")) { return false; }
 	if (!LoadChildrenOfType<UiProgressBar>(node, "ProgressBar")) { return false; }
 
-	SetElementPosition(m_position);
+	SetElementPosition(GetPosition());
 	return true;
 }
 

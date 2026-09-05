@@ -99,7 +99,7 @@ bool UiProgressBar::LoadFromXML(const XmlNode& node)
 
 	m_maxFillSize = m_fillOrientation == eFillOrientation::Horizontal ? m_fill.getSize().x : m_fill.getSize().y;
 
-	m_background.setPosition(m_position);
+	m_background.setPosition(GetPosition());
 	m_fill.setPosition(m_background.getPosition() + margin);
 
 	AddDrawable(&m_background);
