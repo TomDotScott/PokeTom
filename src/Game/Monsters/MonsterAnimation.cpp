@@ -57,6 +57,5 @@ void MonsterAnimation::ApplyFrame(const Keyframe& frame) const
 	m_monster->SetOffsetScale(frame.m_Scale);
 	m_monster->SetOffsetRotation(frame.m_Rotation);
 
-
-	// sf::Sprite& sprite = animComp->GetSprite();
+	m_monster->SetShaderVariable("flashAmount", frame.m_Opacity);
 }

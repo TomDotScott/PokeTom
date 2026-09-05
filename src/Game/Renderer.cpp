@@ -343,7 +343,18 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 
 	sprite.setScale(spriteScale);
 
-	window.draw(sprite);
+	if (sf::Shader* shader = entity->GetShader())
+	{
+		shader->setUniform("texture", sf::Shader::CurrentTexture);
+
+		sf::RenderStates states;
+		states.shader = shader;
+		window.draw(sprite, states);
+	}
+	else
+	{
+		window.draw(sprite);
+	}
 }
 
 void Renderer::RenderEntities(sf::RenderWindow& window, const EntityRegistry& entities) const

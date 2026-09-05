@@ -1,5 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
+#include <SFML/Graphics/Shader.hpp>
+
+#include "Asserts.h"
 #include "Gameobject.h"
 #include "IUpdateable.h"
 #include "Animation/AnimationPlayer.h"
@@ -79,11 +82,23 @@ public:
 	void SetOffsetScale(const sf::Vector2f& scale);
 	sf::Vector2f GetOffsetScale() const;
 
+	bool LoadShader(const std::string_view& shaderResourceName, sf::Shader::Type) const;
+	sf::Shader* GetShader() const;
+	template<typename T>
+	void SetShaderVariable(const std::string& uniformName, T value)
+	{
+		ASSERT(m_shaders.has_value());
+		m_shaders.value().setUniform(uniformName, value);
+	}
+
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
 	sf::Vector2f m_size;
 
 	sf::Transformable m_animationOffset;
+
+	// TODO: Have multiple shader passes? Idk, I'm not a graphics programmer
+	mutable std::optional<sf::Shader> m_shaders;
 
 	void OnEntityActivate();
 	void OnEntityDeactivate();

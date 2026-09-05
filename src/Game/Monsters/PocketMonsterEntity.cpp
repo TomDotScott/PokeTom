@@ -53,6 +53,9 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 
 	AddComponent<EntityAnimationComponent>(this, dictName, initialAnim);
 	SetScale(GetScale() * 2.f);
+
+	// Make sure we have the correct shaders loaded
+	ASSERT(LoadShader("HIT_FLASH", sf::Shader::Type::Fragment));
 }
 
 uint32_t PocketMonsterEntity::GetMonsterID() const

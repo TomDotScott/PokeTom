@@ -1,6 +1,11 @@
 #include "Entity.h"
+
+#include <SFML/Graphics/Shader.hpp>
+
+#include "Asserts.h"
 #include "GridMovementComponent.h"
 #include "Animation/AnimationComponent.h"
+#include "../Engine/CodeGen/Resources.hpp"
 
 Entity::Entity() : Entity(sf::Vector2f{}, sf::Vector2f{})
 {
@@ -108,6 +113,24 @@ void Entity::SetOffsetScale(const sf::Vector2f& scale)
 sf::Vector2f Entity::GetOffsetScale() const
 {
 	return m_animationOffset.getScale();
+}
+
+bool Entity::LoadShader(const std::string_view& shaderResourceName, const sf::Shader::Type type) const
+{
+	ASSERT(!m_shaders.has_value());
+
+	m_shaders = sf::Shader();
+	return m_shaders.value().loadFromFile(GET_SHADER_PATH(shaderResourceName), type);
+}
+
+sf::Shader* Entity::GetShader() const
+{
+	if (m_shaders.has_value())
+	{
+		return &m_shaders.value();
+	}
+
+	return nullptr;
 }
 
 void Entity::OnPlayerInteractPressed()

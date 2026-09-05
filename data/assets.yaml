@@ -30,6 +30,10 @@ fonts:
   - name: TEXT_BOX
     source: fonts/Pokemon-Classic.ttf
 
+shaders:
+  - name: HIT_FLASH
+    source: shaders/hit_flash.frag
+
 animations:
   - name: PLAYER_BOY
     source: animation/player_boy.xml
