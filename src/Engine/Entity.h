@@ -70,11 +70,20 @@ public:
 	sf::Vector2f GetSize();
 	const sf::Vector2f& GetSize() const;
 
+	void SetOffsetPosition(const sf::Vector2f& position);
+	sf::Vector2f GetOffsetPosition() const;
 
+	void SetOffsetRotation(const sf::Angle& angle);
+	sf::Angle GetOffsetRotation() const;
+
+	void SetOffsetScale(const sf::Vector2f& scale);
+	sf::Vector2f GetOffsetScale() const;
 
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
 	sf::Vector2f m_size;
+
+	sf::Transformable m_animationOffset;
 
 	void OnEntityActivate();
 	void OnEntityDeactivate();

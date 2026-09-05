@@ -315,7 +315,17 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 	}
 
 	sprite.setOrigin({ ox, oy });
-	sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });
+
+	const sf::Vector2f offsetPosition = entity->GetPosition() + entity->GetOffsetPosition();
+	const sf::Vector2f offsetScale = {
+		entity->GetScale().x * entity->GetOffsetScale().x,
+		entity->GetScale().y * entity->GetOffsetScale().y
+	};
+	const sf::Angle offsetRotation = entity->GetRotation() + entity->GetOffsetRotation();
+
+	sprite.setPosition(offsetPosition + sf::Vector2f{ 16, 0 });
+	sprite.setScale(offsetScale);
+	sprite.setRotation(offsetRotation);
 
 	/*sprite.setOrigin({ sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2 });
 	sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });*/

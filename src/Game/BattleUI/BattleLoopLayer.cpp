@@ -4,6 +4,7 @@
 #include <frozen/unordered_map.h>
 
 #include "HealthbarAnimation.h"
+#include "../BattleAnimationClips.h"
 #include "../BattleState.h"
 #include "../GameEvents.h"
 #include "../../Engine/Maths.h"
@@ -17,6 +18,7 @@
 BattleLoopLayer::BattleLoopLayer() :
 	m_playerSwitchedOut(false),
 	m_opponentSwitchedOut(false),
+	m_textBoxText(nullptr),
 	m_playerHealthAnimation(HealthbarAnimation::eAnimationType::Player),
 	m_playerExperienceBar(UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME)->GetChild<UiProgressBar>("PLAYER_XP_BAR")),
 	m_opponentHealthAnimation(HealthbarAnimation::eAnimationType::Opponent),
@@ -35,8 +37,10 @@ void BattleLoopLayer::Update(const float deltaTime)
 
 	m_playerHealthAnimation.Update(deltaTime);
 	m_playerExperienceBar.Update(deltaTime);
+	m_playerAnimation.Update(deltaTime);
 
 	m_opponentHealthAnimation.Update(deltaTime);
+	m_opponentAnimation.Update(deltaTime);
 
 	if (!m_battleBeatQueue.empty())
 	{
@@ -69,11 +73,13 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	ASSERT(playerMonster != nullptr);
 
 	m_playerHealthAnimation.SetMonster(playerMonster);
+	m_playerAnimation.SetMonster(playerMonster);
 
 	PocketMonsterEntity* opponentMonster = entities.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
 	ASSERT(opponentMonster != nullptr);
 
 	m_opponentHealthAnimation.SetMonster(opponentMonster);
+	m_opponentAnimation.SetMonster(opponentMonster);
 
 	m_endContext = BattleEndContext{
 		.m_LevelHash = state.GetBattleContext().m_LevelHash,
@@ -224,7 +230,18 @@ void BattleLoopLayer::DoTurn(
 
 	if (defenderHealthBefore - defenderHealthAfter != 0)
 	{
-		if (defender->GetID() == playerMonsterEntityID)
+		const bool isPlayerDamaged = defender->GetID() == playerMonsterEntityID;
+
+		MonsterAnimation& hitAnimation = isPlayerDamaged ? m_playerAnimation : m_opponentAnimation;
+
+		m_battleBeatQueue.emplace(AnimationBeat{
+			.m_BeatName = isPlayerDamaged ? "PLAYER_HIT_FLASH" : "OPPONENT_HIT_FLASH",
+			.m_Start = [&hitAnimation] { hitAnimation.Play(battle_animations::HitFlash()); },
+			.m_IsComplete = [&hitAnimation] { return !hitAnimation.IsPlaying(); },
+			.m_FinishAnimation = [&hitAnimation] { hitAnimation.Finish(); }
+		});
+
+		if (isPlayerDamaged)
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
 				.m_BeatName = "PLAYER_HEALTH_BAR",

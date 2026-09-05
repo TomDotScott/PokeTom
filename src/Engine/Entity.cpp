@@ -11,6 +11,7 @@ Entity::Entity(const sf::Vector2f& position, const sf::Vector2f& size) :
 	IUpdateable(),
 	m_size(size)
 {
+	SetScale({ 2.f, 2.f });
 }
 
 Entity::~Entity()
@@ -79,13 +80,34 @@ const sf::Vector2f& Entity::GetSize() const
 	return m_size;
 }
 
+void Entity::SetOffsetPosition(const sf::Vector2f& position)
 {
+	m_animationOffset.setPosition(position);
 }
 
+sf::Vector2f Entity::GetOffsetPosition() const
 {
+	return m_animationOffset.getPosition();
 }
 
+void Entity::SetOffsetRotation(const sf::Angle& angle)
 {
+	m_animationOffset.setRotation(angle);
+}
+
+sf::Angle Entity::GetOffsetRotation() const
+{
+	return m_animationOffset.getRotation();
+}
+
+void Entity::SetOffsetScale(const sf::Vector2f& scale)
+{
+	m_animationOffset.setScale(scale);
+}
+
+sf::Vector2f Entity::GetOffsetScale() const
+{
+	return m_animationOffset.getScale();
 }
 
 void Entity::OnPlayerInteractPressed()

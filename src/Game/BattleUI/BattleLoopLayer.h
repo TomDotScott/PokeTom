@@ -8,6 +8,7 @@
 #include "UILayer.h"
 #include "../BattleContext.h"
 #include "../Move.h"
+#include "../Monsters/MonsterAnimation.h"
 
 class BattleLoopLayer final : public UILayer
 {
@@ -49,9 +50,11 @@ private:
 	std::queue<BattleBeat> m_battleBeatQueue;
 
 	HealthbarAnimation m_playerHealthAnimation;
+	MonsterAnimation m_playerAnimation;
 	AnimatedProgressBar<monster_xp_t> m_playerExperienceBar;
 
 	HealthbarAnimation m_opponentHealthAnimation;
+	MonsterAnimation m_opponentAnimation;
 
 	BattleEndContext m_endContext;
 
