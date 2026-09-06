@@ -33,6 +33,8 @@ fonts:
 shaders:
   - name: HIT_FLASH
     source: shaders/hit_flash.frag
+  - name: STAT_CHANGE
+    source: shaders/stat_change.frag
 
 animations:
   - name: PLAYER_BOY

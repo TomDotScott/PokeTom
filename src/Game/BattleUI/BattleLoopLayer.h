@@ -42,6 +42,7 @@ private:
 	{
 		std::string m_BeatName;
 		std::function<void()> m_Start;
+		std::function<void(float)> m_Update;
 		std::function<bool()> m_IsComplete;
 		std::function<void()> m_FinishAnimation;
 	};
@@ -50,11 +51,9 @@ private:
 	std::queue<BattleBeat> m_battleBeatQueue;
 
 	HealthbarAnimation m_playerHealthAnimation;
-	MonsterAnimation m_playerAnimation;
 	AnimatedProgressBar<monster_xp_t> m_playerExperienceBar;
 
 	HealthbarAnimation m_opponentHealthAnimation;
-	MonsterAnimation m_opponentAnimation;
 
 	BattleEndContext m_endContext;
 

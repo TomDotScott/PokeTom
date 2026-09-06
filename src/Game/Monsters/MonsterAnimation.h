@@ -7,17 +7,52 @@ class MonsterAnimation
 {
 public:
 	MonsterAnimation();
+	virtual ~MonsterAnimation() = default;
+
+	virtual void Play() = 0;
 	void SetMonster(PocketMonsterEntity* monster);
-	void Play(std::vector<Keyframe> clip);
 	void Update(float deltaTime);
 	void Finish();
 	bool IsPlaying() const;
 
-private:
+protected:
 	PocketMonsterEntity* m_monster;
 	KeyframeAnimation m_animation;
 
-	void ApplyFrame(const Keyframe& frame) const;
+	virtual void UpdateShader(const Keyframe& frame);
+	void Play(std::vector<Keyframe> clip);
+
+private:
+	void ApplyFrame(const Keyframe& frame);
+};
+
+class DamageAnimation : public MonsterAnimation
+{
+public:
+	void Play() override;
+
+protected:
+	void UpdateShader(const Keyframe& frame) override;
+};
+
+class StatAnimation : public MonsterAnimation
+{
+public:
+	enum class AnimationType
+	{
+		Increase,
+		Decrease
+	};
+
+	explicit StatAnimation(AnimationType type);
+
+	void Play() override;
+
+protected:
+	void UpdateShader(const Keyframe& frame) override;
+
+private:
+	AnimationType m_type;
 };
 
 #endif // MONSTERHITANIMATION_H

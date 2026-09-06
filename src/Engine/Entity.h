@@ -82,14 +82,17 @@ public:
 	void SetOffsetScale(const sf::Vector2f& scale);
 	sf::Vector2f GetOffsetScale() const;
 
-	bool LoadShader(const std::string_view& shaderResourceName, sf::Shader::Type) const;
-	sf::Shader* GetShader() const;
+	bool LoadShader(const std::string_view& shaderResourceName, sf::Shader::Type);
+	sf::Shader* GetShader(const std::string_view& shaderResourceName);
 	template<typename T>
-	void SetShaderVariable(const std::string& uniformName, T value)
+	void SetShaderVariable(const std::string_view& shaderResourceName, const std::string& uniformName, T value)
 	{
-		ASSERT(m_shaders.has_value());
-		m_shaders.value().setUniform(uniformName, value);
+		ASSERT(m_shaders.contains(shaderResourceName));
+		ASSERT(m_currentShader == shaderResourceName);
+		m_shaders.at(shaderResourceName).setUniform(uniformName, value);
 	}
+	void SetCurrentShader(const std::string_view& shaderResourceName);
+	sf::Shader* GetCurrentShader();
 
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
@@ -97,8 +100,8 @@ private:
 
 	sf::Transformable m_animationOffset;
 
-	// TODO: Have multiple shader passes? Idk, I'm not a graphics programmer
-	mutable std::optional<sf::Shader> m_shaders;
+	std::unordered_map<std::string_view, sf::Shader> m_shaders;
+	std::string_view m_currentShader;
 
 	void OnEntityActivate();
 	void OnEntityDeactivate();

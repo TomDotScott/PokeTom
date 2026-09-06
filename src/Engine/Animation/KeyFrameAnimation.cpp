@@ -64,6 +64,11 @@ bool KeyframeAnimation::IsPlaying() const
 	return m_playing;
 }
 
+float KeyframeAnimation::GetElapsedTime() const
+{
+	return m_elapsedTime;
+}
+
 Keyframe KeyframeAnimation::Evaluate(float t) const
 {
 	ASSERT(!m_keyframes.empty());

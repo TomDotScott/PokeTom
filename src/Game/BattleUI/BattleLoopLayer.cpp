@@ -35,17 +35,12 @@ void BattleLoopLayer::Update(const float deltaTime)
 {
 	UILayer::Update(deltaTime);
 
-	m_playerHealthAnimation.Update(deltaTime);
-	m_playerExperienceBar.Update(deltaTime);
-	m_playerAnimation.Update(deltaTime);
-
-	m_opponentHealthAnimation.Update(deltaTime);
-	m_opponentAnimation.Update(deltaTime);
-
 	if (!m_battleBeatQueue.empty())
 	{
-		if (auto* anim = std::get_if<AnimationBeat>(&m_battleBeatQueue.front()))
+		if (const auto* anim = std::get_if<AnimationBeat>(&m_battleBeatQueue.front()))
 		{
+			anim->m_Update(deltaTime);
+
 			if (anim->m_IsComplete())
 			{
 				m_battleBeatQueue.pop();
@@ -73,13 +68,11 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 	ASSERT(playerMonster != nullptr);
 
 	m_playerHealthAnimation.SetMonster(playerMonster);
-	m_playerAnimation.SetMonster(playerMonster);
 
 	PocketMonsterEntity* opponentMonster = entities.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
 	ASSERT(opponentMonster != nullptr);
 
 	m_opponentHealthAnimation.SetMonster(opponentMonster);
-	m_opponentAnimation.SetMonster(opponentMonster);
 
 	m_endContext = BattleEndContext{
 		.m_LevelHash = state.GetBattleContext().m_LevelHash,
@@ -232,13 +225,21 @@ void BattleLoopLayer::DoTurn(
 	{
 		const bool isPlayerDamaged = defender->GetID() == playerMonsterEntityID;
 
-		MonsterAnimation& hitAnimation = isPlayerDamaged ? m_playerAnimation : m_opponentAnimation;
+		// TODO: Fix this hacky mess
+		DamageAnimation* damageAnim = new DamageAnimation();
+		damageAnim->SetMonster(defender);
 
 		m_battleBeatQueue.emplace(AnimationBeat{
 			.m_BeatName = isPlayerDamaged ? "PLAYER_HIT_FLASH" : "OPPONENT_HIT_FLASH",
-			.m_Start = [&hitAnimation] { hitAnimation.Play(battle_animations::HitFlash()); },
-			.m_IsComplete = [&hitAnimation] { return !hitAnimation.IsPlaying(); },
-			.m_FinishAnimation = [&hitAnimation] { hitAnimation.Finish(); }
+			.m_Start = [damageAnim] { damageAnim->Play(); },
+			.m_Update = [damageAnim](const float deltaTime) { damageAnim->Update(deltaTime); },
+			.m_IsComplete = [damageAnim] { return !damageAnim->IsPlaying(); },
+			.m_FinishAnimation = [damageAnim]
+			{
+				// TODO: Ew....
+				damageAnim->Finish();
+				delete damageAnim;
+			}
 		});
 
 		if (isPlayerDamaged)
@@ -248,6 +249,10 @@ void BattleLoopLayer::DoTurn(
 				.m_Start = [this, defenderHealthBefore]
 				{
 					m_playerHealthAnimation.Start(defenderHealthBefore);
+				},
+				.m_Update = [this](const float deltaTime)
+				{
+					m_playerHealthAnimation.Update(deltaTime);
 				},
 				.m_IsComplete = [this] { return !m_playerHealthAnimation.IsPlaying(); },
 				.m_FinishAnimation = [this] { m_playerHealthAnimation.Finish(); }
@@ -260,6 +265,10 @@ void BattleLoopLayer::DoTurn(
 				.m_Start = [this, defenderHealthBefore]
 				{
 					m_opponentHealthAnimation.Start(defenderHealthBefore);
+				},
+				.m_Update = [this](const float deltaTime)
+				{
+					m_opponentHealthAnimation.Update(deltaTime);
 				},
 				.m_IsComplete = [this] { return !m_opponentHealthAnimation.IsPlaying(); },
 				.m_FinishAnimation = [this] { m_opponentHealthAnimation.Finish(); }
@@ -300,7 +309,29 @@ void BattleLoopLayer::DoTurn(
 		// TODO: Power up/down animation on the sprites - maybe a shader?
 		for (const auto& statChanges : defenderStatChanges)
 		{
-			// TODO: Queue AnimationBeat
+			const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
+				                                        ? StatAnimation::AnimationType::Increase
+				                                        : StatAnimation::AnimationType::Decrease;
+
+			const bool isPlayer = defender->GetID() == playerMonsterEntityID;
+
+			// TODO: Fix this hacky mess
+			StatAnimation* statAnimation = new StatAnimation(animType);
+			statAnimation->SetMonster(defender);
+
+			m_battleBeatQueue.emplace(AnimationBeat{
+				.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
+				.m_Start = [statAnimation] { statAnimation->Play(); },
+				.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
+				.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
+				.m_FinishAnimation = [statAnimation]
+				{
+					// TODO: Ew....
+					statAnimation->Finish();
+					delete statAnimation;
+				}
+			});
+
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "DEFENDER STAT CHANGE",
 				.m_OnShow = [this, defender, statChanges]()
@@ -312,7 +343,30 @@ void BattleLoopLayer::DoTurn(
 
 		for (const auto& statChanges : attackerStatChanges)
 		{
-			// TODO: Queue AnimationBeat
+			const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
+				                                        ? StatAnimation::AnimationType::Increase
+				                                        : StatAnimation::AnimationType::Decrease;
+
+			const bool isPlayer = attacker->GetID() == playerMonsterEntityID;
+
+			// TODO: Fix this hacky mess
+			StatAnimation* statAnimation = new StatAnimation(animType);
+			statAnimation->SetMonster(attacker);
+
+			m_battleBeatQueue.emplace(AnimationBeat{
+				.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
+				.m_Start = [statAnimation] { statAnimation->Play(); },
+				.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
+				.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
+				.m_FinishAnimation = [statAnimation]
+				{
+					// TODO: Ew....
+					statAnimation->Finish();
+					delete statAnimation;
+				}
+			});
+
+
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "ATTACKER STAT CHANGE",
 				.m_OnShow = [this, attacker, statChanges]()
@@ -605,6 +659,10 @@ void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEn
 				const monster_xp_t normalizedEnd = clampedLevelXp - levelStartXP;
 
 				m_playerExperienceBar.Start(normalizedBefore, normalizedEnd, levelRange, 1.2f);
+			},
+			.m_Update = [this](const float deltaTime)
+			{
+				m_playerExperienceBar.Update(deltaTime);
 			},
 			.m_IsComplete = [this] { return !m_playerExperienceBar.IsPlaying(); },
 			.m_FinishAnimation = [this] { m_playerExperienceBar.Finish(); }

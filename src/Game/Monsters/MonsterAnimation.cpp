@@ -4,7 +4,10 @@
 
 #include "../BattleAnimationClips.h"
 #include "../../Engine/Asserts.h"
+#include "../../Engine/CodeGen/Resources.hpp"
 
+static constexpr std::string_view DAMAGE_SHADER = "HIT_FLASH";
+static constexpr std::string_view STAT_CHANGE_SHADER = "STAT_CHANGE";
 
 MonsterAnimation::MonsterAnimation():
 	m_monster(nullptr),
@@ -44,7 +47,12 @@ bool MonsterAnimation::IsPlaying() const
 	return m_animation.IsPlaying();
 }
 
-void MonsterAnimation::ApplyFrame(const Keyframe& frame) const
+void MonsterAnimation::UpdateShader(const Keyframe& frame)
+{
+	return;
+}
+
+void MonsterAnimation::ApplyFrame(const Keyframe& frame)
 {
 	ASSERT(m_monster != nullptr);
 
@@ -57,5 +65,54 @@ void MonsterAnimation::ApplyFrame(const Keyframe& frame) const
 	m_monster->SetOffsetScale(frame.m_Scale);
 	m_monster->SetOffsetRotation(frame.m_Rotation);
 
-	m_monster->SetShaderVariable("flashAmount", frame.m_Opacity);
+	UpdateShader(frame);
+}
+
+void DamageAnimation::Play()
+{
+	m_monster->SetCurrentShader(DAMAGE_SHADER);
+	MonsterAnimation::Play(battle_animations::HitFlash());
+}
+
+void DamageAnimation::UpdateShader(const Keyframe& frame)
+{
+	m_monster->SetShaderVariable(DAMAGE_SHADER, "flashAmount", frame.m_Opacity);
+}
+
+StatAnimation::StatAnimation(const AnimationType type) :
+	m_type(type)
+{
+}
+
+void StatAnimation::Play()
+{
+	m_monster->SetCurrentShader(STAT_CHANGE_SHADER);
+	MonsterAnimation::Play(m_type == AnimationType::Increase
+		                       ? battle_animations::StatIncrease()
+		                       : battle_animations::StatDecrease());
+}
+
+void StatAnimation::UpdateShader(const Keyframe& frame)
+{
+	sf::Shader* currentShader = m_monster->GetCurrentShader();
+
+	currentShader->setUniform("tintColour",
+	                          m_type == AnimationType::Increase
+		                          ? sf::Glsl::Vec3(1.f, 0.5f, 0.1f)
+		                          : sf::Glsl::Vec3(0.2f, 0.6f, 1.f)
+	);
+
+	currentShader->setUniform("opacity", frame.m_Opacity);
+
+	const float elapsed = m_animation.GetElapsedTime();
+
+	currentShader->setUniform("scrollOffset",
+	                          std::fmod(elapsed * (m_type == AnimationType::Increase ? 1.2f : -1.2f), 1.f)
+	);
+
+	currentShader->setUniform("rowCount", 4.f);
+	currentShader->setUniform("thickness", 0.15f);
+	currentShader->setUniform("chevronWidth", 0.35f);
+
+	MonsterAnimation::UpdateShader(frame);
 }

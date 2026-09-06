@@ -38,6 +38,8 @@ public:
 
 	bool IsPlaying() const;
 
+	float GetElapsedTime() const;
+
 private:
 	std::vector<Keyframe> m_keyframes;
 	float m_elapsedTime;

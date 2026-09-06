@@ -115,22 +115,38 @@ sf::Vector2f Entity::GetOffsetScale() const
 	return m_animationOffset.getScale();
 }
 
-bool Entity::LoadShader(const std::string_view& shaderResourceName, const sf::Shader::Type type) const
+bool Entity::LoadShader(const std::string_view& shaderResourceName, const sf::Shader::Type type)
 {
-	ASSERT(!m_shaders.has_value());
+	ASSERT(!m_shaders.contains(shaderResourceName));
 
-	m_shaders = sf::Shader();
-	return m_shaders.value().loadFromFile(GET_SHADER_PATH(shaderResourceName), type);
+	m_shaders[shaderResourceName] = sf::Shader();
+
+	return m_shaders.at(shaderResourceName).loadFromFile(GET_SHADER_PATH(shaderResourceName), type);
 }
 
-sf::Shader* Entity::GetShader() const
+void Entity::SetCurrentShader(const std::string_view& shaderResourceName)
 {
-	if (m_shaders.has_value())
+	m_currentShader = shaderResourceName;
+}
+
+sf::Shader* Entity::GetShader(const std::string_view& shaderResourceName)
+{
+	if (m_shaders.contains(shaderResourceName))
 	{
-		return &m_shaders.value();
+		return &m_shaders.at(shaderResourceName);
 	}
 
 	return nullptr;
+}
+
+sf::Shader* Entity::GetCurrentShader()
+{
+	if (m_currentShader.empty())
+	{
+		return nullptr;
+	}
+
+	return GetShader(m_currentShader);
 }
 
 void Entity::OnPlayerInteractPressed()

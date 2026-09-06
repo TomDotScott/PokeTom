@@ -343,7 +343,8 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 
 	sprite.setScale(spriteScale);
 
-	if (sf::Shader* shader = entity->GetShader())
+	// HACKY!!!
+	if (sf::Shader* shader = const_cast<Entity*>(entity)->GetCurrentShader())
 	{
 		shader->setUniform("texture", sf::Shader::CurrentTexture);
 
