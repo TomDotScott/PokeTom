@@ -23,6 +23,10 @@ textures:
     source: sprites/monsters/shinx.png
   - name: BATTLE_SPRITE_MONSTER_507
     source: sprites/monsters/herdier.png
+  - name: STAT_INCREASE_ARROWS
+    source: sprites/battle_animations/stat_increase.png
+  - name: STAT_DECREASE_ARROWS
+    source: sprites/battle_animations/stat_decrease.png
 
 fonts:
   - name: DEFAULT

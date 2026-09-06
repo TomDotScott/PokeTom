@@ -4,6 +4,7 @@
 
 #include "../BattleAnimationClips.h"
 #include "../../Engine/Asserts.h"
+#include "../../Engine/TextureManager.h"
 #include "../../Engine/CodeGen/Resources.hpp"
 
 static constexpr std::string_view DAMAGE_SHADER = "HIT_FLASH";
@@ -96,23 +97,21 @@ void StatAnimation::UpdateShader(const Keyframe& frame)
 {
 	sf::Shader* currentShader = m_monster->GetCurrentShader();
 
-	currentShader->setUniform("tintColour",
-	                          m_type == AnimationType::Increase
-		                          ? sf::Glsl::Vec3(1.f, 0.5f, 0.1f)
-		                          : sf::Glsl::Vec3(0.2f, 0.6f, 1.f)
-	);
+	const sf::Texture* arrowTex = TEXTUREMANAGER.GetTexture(m_type == AnimationType::Increase
+		                                                        ? "STAT_INCREASE_ARROWS"
+		                                                        : "STAT_DECREASE_ARROWS");
+	currentShader->setUniform("arrowTexture", *arrowTex);
 
 	currentShader->setUniform("opacity", frame.m_Opacity);
 
 	const float elapsed = m_animation.GetElapsedTime();
 
+	constexpr float scrollSpeed = 0.4f;
 	currentShader->setUniform("scrollOffset",
-	                          std::fmod(elapsed * (m_type == AnimationType::Increase ? 1.2f : -1.2f), 1.f)
+	                          std::fmod(elapsed * (m_type == AnimationType::Increase ? scrollSpeed : -scrollSpeed), 1.f)
 	);
 
-	currentShader->setUniform("rowCount", 4.f);
-	currentShader->setUniform("thickness", 0.15f);
-	currentShader->setUniform("chevronWidth", 0.35f);
+	currentShader->setUniform("arrowTiling", sf::Glsl::Vec2(4.f, 4.f));
 
 	MonsterAnimation::UpdateShader(frame);
 }
