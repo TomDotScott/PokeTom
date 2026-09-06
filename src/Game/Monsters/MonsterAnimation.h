@@ -6,11 +6,10 @@
 class MonsterAnimation
 {
 public:
-	MonsterAnimation();
+	MonsterAnimation(PocketMonsterEntity* monster);
 	virtual ~MonsterAnimation() = default;
 
 	virtual void Play() = 0;
-	void SetMonster(PocketMonsterEntity* monster);
 	void Update(float deltaTime);
 	void Finish();
 	bool IsPlaying() const;
@@ -29,6 +28,8 @@ private:
 class DamageAnimation : public MonsterAnimation
 {
 public:
+	explicit DamageAnimation(PocketMonsterEntity* monster);
+
 	void Play() override;
 
 protected:
@@ -44,7 +45,7 @@ public:
 		Decrease
 	};
 
-	explicit StatAnimation(AnimationType type);
+	explicit StatAnimation(PocketMonsterEntity* monster, AnimationType type);
 
 	void Play() override;
 

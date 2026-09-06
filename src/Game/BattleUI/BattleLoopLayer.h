@@ -41,6 +41,7 @@ private:
 	struct AnimationBeat
 	{
 		std::string m_BeatName;
+		std::unique_ptr<MonsterAnimation> m_MonsterEntityAnimation;
 		std::function<void()> m_Start;
 		std::function<void(float)> m_Update;
 		std::function<bool()> m_IsComplete;

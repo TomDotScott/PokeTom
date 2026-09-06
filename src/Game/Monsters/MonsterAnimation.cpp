@@ -10,16 +10,10 @@
 static constexpr std::string_view DAMAGE_SHADER = "HIT_FLASH";
 static constexpr std::string_view STAT_CHANGE_SHADER = "STAT_CHANGE";
 
-MonsterAnimation::MonsterAnimation():
-	m_monster(nullptr),
+MonsterAnimation::MonsterAnimation(PocketMonsterEntity* monster):
+	m_monster(monster),
 	m_animation()
 {
-}
-
-void MonsterAnimation::SetMonster(PocketMonsterEntity* monster)
-{
-	ASSERT(monster != nullptr);
-	m_monster = monster;
 }
 
 void MonsterAnimation::Play(std::vector<Keyframe> clip)
@@ -69,6 +63,11 @@ void MonsterAnimation::ApplyFrame(const Keyframe& frame)
 	UpdateShader(frame);
 }
 
+DamageAnimation::DamageAnimation(PocketMonsterEntity* monster) :
+	MonsterAnimation(monster)
+{
+}
+
 void DamageAnimation::Play()
 {
 	m_monster->SetCurrentShader(DAMAGE_SHADER);
@@ -80,7 +79,8 @@ void DamageAnimation::UpdateShader(const Keyframe& frame)
 	m_monster->SetShaderVariable(DAMAGE_SHADER, "flashAmount", frame.m_Opacity);
 }
 
-StatAnimation::StatAnimation(const AnimationType type) :
+StatAnimation::StatAnimation(PocketMonsterEntity* monster, const AnimationType type) :
+	MonsterAnimation(monster),
 	m_type(type)
 {
 }

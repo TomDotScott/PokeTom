@@ -4,7 +4,6 @@
 #include <frozen/unordered_map.h>
 
 #include "HealthbarAnimation.h"
-#include "../BattleAnimationClips.h"
 #include "../BattleState.h"
 #include "../GameEvents.h"
 #include "../../Engine/Maths.h"
@@ -226,26 +225,23 @@ void BattleLoopLayer::DoTurn(
 		const bool isPlayerDamaged = defender->GetID() == playerMonsterEntityID;
 
 		// TODO: Fix this hacky mess
-		DamageAnimation* damageAnim = new DamageAnimation();
-		damageAnim->SetMonster(defender);
+		auto dmgAnim = std::make_unique<DamageAnimation>(attacker);
+		DamageAnimation* dmgAnimation = dmgAnim.get();
 
 		m_battleBeatQueue.emplace(AnimationBeat{
 			.m_BeatName = isPlayerDamaged ? "PLAYER_HIT_FLASH" : "OPPONENT_HIT_FLASH",
-			.m_Start = [damageAnim] { damageAnim->Play(); },
-			.m_Update = [damageAnim](const float deltaTime) { damageAnim->Update(deltaTime); },
-			.m_IsComplete = [damageAnim] { return !damageAnim->IsPlaying(); },
-			.m_FinishAnimation = [damageAnim]
-			{
-				// TODO: Ew....
-				damageAnim->Finish();
-				delete damageAnim;
-			}
+			.m_MonsterEntityAnimation = std::move(dmgAnim),
+			.m_Start = [dmgAnimation] { dmgAnimation->Play(); },
+			.m_Update = [dmgAnimation](const float deltaTime) { dmgAnimation->Update(deltaTime); },
+			.m_IsComplete = [dmgAnimation] { return !dmgAnimation->IsPlaying(); },
+			.m_FinishAnimation = [dmgAnimation] { dmgAnimation->Finish(); }
 		});
 
 		if (isPlayerDamaged)
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
 				.m_BeatName = "PLAYER_HEALTH_BAR",
+				.m_MonsterEntityAnimation = nullptr,
 				.m_Start = [this, defenderHealthBefore]
 				{
 					m_playerHealthAnimation.Start(defenderHealthBefore);
@@ -262,6 +258,7 @@ void BattleLoopLayer::DoTurn(
 		{
 			m_battleBeatQueue.emplace(AnimationBeat{
 				.m_BeatName = "OPP_HEALTH_BAR",
+				.m_MonsterEntityAnimation = nullptr,
 				.m_Start = [this, defenderHealthBefore]
 				{
 					m_opponentHealthAnimation.Start(defenderHealthBefore);
@@ -310,26 +307,21 @@ void BattleLoopLayer::DoTurn(
 		for (const auto& statChanges : defenderStatChanges)
 		{
 			const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
-				                                        ? StatAnimation::AnimationType::Increase
-				                                        : StatAnimation::AnimationType::Decrease;
+				                                              ? StatAnimation::AnimationType::Increase
+				                                              : StatAnimation::AnimationType::Decrease;
 
 			const bool isPlayer = defender->GetID() == playerMonsterEntityID;
 
-			// TODO: Fix this hacky mess
-			StatAnimation* statAnimation = new StatAnimation(animType);
-			statAnimation->SetMonster(defender);
+			auto statAnim = std::make_unique<StatAnimation>(defender, animType);
+			StatAnimation* statAnimation = statAnim.get();
 
 			m_battleBeatQueue.emplace(AnimationBeat{
 				.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
+				.m_MonsterEntityAnimation = std::move(statAnim),
 				.m_Start = [statAnimation] { statAnimation->Play(); },
 				.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
 				.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
-				.m_FinishAnimation = [statAnimation]
-				{
-					// TODO: Ew....
-					statAnimation->Finish();
-					delete statAnimation;
-				}
+				.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
 			});
 
 			m_battleBeatQueue.emplace(TextBeat{
@@ -344,26 +336,21 @@ void BattleLoopLayer::DoTurn(
 		for (const auto& statChanges : attackerStatChanges)
 		{
 			const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
-				                                        ? StatAnimation::AnimationType::Increase
-				                                        : StatAnimation::AnimationType::Decrease;
+				                                              ? StatAnimation::AnimationType::Increase
+				                                              : StatAnimation::AnimationType::Decrease;
 
 			const bool isPlayer = attacker->GetID() == playerMonsterEntityID;
 
-			// TODO: Fix this hacky mess
-			StatAnimation* statAnimation = new StatAnimation(animType);
-			statAnimation->SetMonster(attacker);
+			auto statAnim = std::make_unique<StatAnimation>(attacker, animType);
+			StatAnimation* statAnimation = statAnim.get();
 
 			m_battleBeatQueue.emplace(AnimationBeat{
 				.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
+				.m_MonsterEntityAnimation = std::move(statAnim),
 				.m_Start = [statAnimation] { statAnimation->Play(); },
 				.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
 				.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
-				.m_FinishAnimation = [statAnimation]
-				{
-					// TODO: Ew....
-					statAnimation->Finish();
-					delete statAnimation;
-				}
+				.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
 			});
 
 
@@ -638,6 +625,7 @@ void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEn
 
 		m_battleBeatQueue.emplace(AnimationBeat{
 			.m_BeatName = "XP_BAR",
+			.m_MonsterEntityAnimation = nullptr,
 			.m_Start = [this, firstIncrease, currentLevel, playerExpGroup, beforeValue, clampedLevelXp, maxValue]
 			{
 				monster_xp_t levelStartXP;
