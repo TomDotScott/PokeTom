@@ -225,7 +225,7 @@ void BattleLoopLayer::DoTurn(
 		const bool isPlayerDamaged = defender->GetID() == playerMonsterEntityID;
 
 		// TODO: Fix this hacky mess
-		auto dmgAnim = std::make_unique<DamageAnimation>(attacker);
+		auto dmgAnim = std::make_unique<DamageAnimation>(defender);
 		DamageAnimation* dmgAnimation = dmgAnim.get();
 
 		m_battleBeatQueue.emplace(AnimationBeat{
