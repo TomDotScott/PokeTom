@@ -20,6 +20,11 @@ void UiText::SetText(hash_type stringTableID)
 	SetText(STRINGTABLE->GetString(stringTableID).c_str());
 }
 
+void UiText::SetStyle(const uint32_t style)
+{
+	m_text.setStyle(style);
+}
+
 const char* UiText::GetText() const
 {
 	return m_text.getString().toAnsiString().c_str();
@@ -131,6 +136,25 @@ bool UiText::LoadFromXML(const XmlNode& node)
 	{
 		m_text.setString(stringNode->m_Content);
 	}
+
+	uint32_t fontStyle = 0;
+	if (stringNode->Attr("bold", false))
+	{
+		fontStyle |= sf::Text::Style::Bold;
+	}
+	if (stringNode->Attr("italic", false))
+	{
+		fontStyle |= sf::Text::Style::Italic;
+	}
+	if (stringNode->Attr("strikethrough", false))
+	{
+		fontStyle |= sf::Text::Style::StrikeThrough;
+	}
+	if (stringNode->Attr("underlined", false))
+	{
+		fontStyle |= sf::Text::Style::Underlined;
+	}
+	SetStyle(fontStyle);
 
 	const auto* alignmentNode = node.Child("alignment");
 	if (alignmentNode == nullptr)

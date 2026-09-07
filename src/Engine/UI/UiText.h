@@ -35,6 +35,9 @@ public:
 
 	void SetText(hash_type stringTableID);
 
+	// Bitmask of sf::Text::Style
+	void SetStyle(uint32_t style);
+
 	const char* GetText() const;
 
 	void SetTextSize(unsigned size);
