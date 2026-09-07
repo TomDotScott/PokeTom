@@ -7,6 +7,8 @@
 #include "../../Engine/TextureManager.h"
 #include "../../Engine/CodeGen/Resources.hpp"
 
+#define DEBUG_MONSTER_ANIMATION 0
+
 static constexpr std::string_view DAMAGE_SHADER = "HIT_FLASH";
 static constexpr std::string_view STAT_CHANGE_SHADER = "STAT_CHANGE";
 
@@ -54,7 +56,9 @@ void MonsterAnimation::ApplyFrame(const Keyframe& frame)
 	auto* animComp = m_monster->GetComponent<EntityAnimationComponent>();
 	ASSERT(animComp != nullptr);
 
+#if DEBUG_MONSTER_ANIMATION
 	frame.Print();
+#endif
 
 	m_monster->SetOffsetPosition(frame.m_Offset);
 	m_monster->SetOffsetScale(frame.m_Scale);
