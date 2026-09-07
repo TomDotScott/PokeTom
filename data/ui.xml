@@ -239,6 +239,17 @@ So that I can see what dialogue will look like!!!
       <layer>16</layer>
     </Sprite>
 
+    <Text>
+      <name>OPPONENT_MONSTER_NAME</name>
+      <string bold="True" italic="True">CRABOMINABLE</string>
+      <alignment>left</alignment>
+      <colour>000000FF</colour>
+      <position x="48" y="63" />
+      <size>20</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
     <ProgressBar>
       <name>OPPONENT_HP_BAR</name>
       <fillorientation>horizontal</fillorientation>
@@ -269,6 +280,17 @@ So that I can see what dialogue will look like!!!
       <texture topLeftX="3" topLeftY="44" spriteWidth="104" spriteHeight="37">BATTLE_HUD</texture>
       <layer>16</layer>
     </Sprite>
+
+    <Text>
+      <name>PLAYER_MONSTER_NAME</name>
+      <string bold="True" italic="True">CRABOMINABLE</string>
+      <alignment>left</alignment>
+      <colour>000000FF</colour>
+      <position x="459" y="255" />
+      <size>20</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
 
     <ProgressBar>
       <name>PLAYER_HP_BAR</name>

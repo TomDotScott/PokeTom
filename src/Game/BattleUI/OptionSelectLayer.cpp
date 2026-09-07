@@ -133,6 +133,9 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	ASSERT(chooseOptionText.size() == 1);
 	textBoxText->SetText(chooseOptionText[0].c_str());
 
+	auto* playerNameText = battleUI->GetChild<UiText>("PLAYER_MONSTER_NAME");
+	ASSERT(playerNameText);
+	playerNameText->SetText("%s", playerMonsterName.c_str());
 
 	const monster_hp_t playerHP = playerMonster->GetStats().m_HP;
 	const monster_hp_t playerMaxHP = playerMonster->GetMaxHP();
@@ -160,6 +163,12 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	PocketMonsterEntity* oppEntity = entReg.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
 	ASSERT(oppEntity);
 	oppPB->SetProgress(oppEntity->GetStats().m_HP, oppEntity->GetMaxHP(), false);
+
+	const std::string oppMonsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, playerMonster->GetNameStringID());
+
+	auto* nameText = battleUI->GetChild<UiText>("OPPONENT_MONSTER_NAME");
+	ASSERT(nameText);
+	nameText->SetText("%s", oppMonsterName.c_str());
 
 	const uint8_t oppCurrentLevel = oppEntity->GetLevel();
 	auto* oppLevelText = battleUI->GetChild<UiText>("OPPONENT_LEVEL_TEXT");
