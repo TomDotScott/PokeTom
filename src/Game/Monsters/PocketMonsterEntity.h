@@ -3,6 +3,7 @@
 
 #include "MonsterXP.h"
 #include "PocketMonster.h"
+#include "../StatusEffects.h"
 #include "../../Engine/Entity.h"
 #include "../../Engine/Animation/AnimationComponent.h"
 
@@ -33,6 +34,8 @@ public:
 
 	std::string GetMoveName(uint8_t moveIdx) const;
 
+	bool ApplyStatusEffect(eStatusEffect statusEffect);
+
 
 	bool IsFainted() const;
 	void TakeDamage(monster_hp_t damage);
@@ -52,6 +55,10 @@ private:
 	monster_xp_t m_currentXP;
 	std::array<uint8_t, STAT_COUNT> m_EVs;
 	std::array<uint8_t, STAT_COUNT> m_IVs;
+
+	// Burn, Frozen, Paralysed, Poison, Toxic, Sleep
+	eStatusEffect m_nonVolatileStatus;
+	uint32_t m_volatileStatuses;
 };
 
 #endif // POCKETMONSTERENTITY_H

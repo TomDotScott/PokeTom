@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
+
+#include "StatusEffects.h"
 #include "../Engine/Asserts.h"
 
 
@@ -54,7 +56,7 @@ std::optional<MoveStatus> MoveManager::LoadStatusEffects(const nlohmann::json& m
 	unsigned status = 0U;
 	for (const auto& ss : statusStrings)
 	{
-		const auto statusEnum = magic_enum::enum_cast<MoveStatus::eStatus>(
+		const auto statusEnum = magic_enum::enum_cast<eStatusEffect>(
 			ss,
 			magic_enum::case_insensitive
 		);
@@ -72,14 +74,13 @@ std::optional<MoveStatus> MoveManager::LoadStatusEffects(const nlohmann::json& m
 	}
 
 	uint8_t statusChance = 100;
-	const bool moveHasStatusChance = move.contains("status_chance");
-	if (moveHasStatusChance)
+	if (move.contains("status_chance"))
 	{
 		statusChance = move["status_chance"];
 	}
 
 	return MoveStatus{
-		.m_Status = status,
+		.m_StatusEffects = status,
 		.m_Chance = statusChance
 	};
 }

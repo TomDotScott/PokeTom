@@ -3,6 +3,7 @@
 #include "MoveManager.h"
 #include "../Engine/Asserts.h"
 #include "../Engine/Entity.h"
+#include "Monsters/PocketMonsterEntity.h"
 
 
 MoveComponent::MoveComponent(Entity* owner, const std::array<uint32_t, MOVE_COUNT>& moves) :
@@ -36,7 +37,7 @@ Move::Outcome MoveComponent::UseMove(const uint8_t moveIdx, Entity& target)
 
 	if (CanUseMove(moveIdx))
 	{
-		return m_moves[moveIdx].Use(*m_owner, target);
+		return m_moves[moveIdx].Use(dynamic_cast<PocketMonsterEntity&>(*m_owner), dynamic_cast<PocketMonsterEntity&>(target));
 	}
 
 	ASSERT(false);

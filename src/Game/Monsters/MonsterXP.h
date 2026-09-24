@@ -9,7 +9,7 @@ using monster_xp_t = uint64_t;
 
 namespace monster_xp
 {
-	constexpr uint64_t LEVEL_COUNT = 100;
+	constexpr uint64_t LEVEL_COUNT = 101;
 
 	enum class eGroup : char
 	{

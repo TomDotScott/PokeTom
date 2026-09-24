@@ -73,6 +73,7 @@ private:
 	void ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage statChangeInfo, bool succeeded) const;
 	void ShowExperienceText(monster_xp_t xpGained) const;
 	void ShowLevelUpText(const PocketMonsterEntity* monster, uint8_t level) const;
+	void ShowStatusEffectText(const PocketMonsterEntity* monster, eStatusEffect statusEffect);
 
 	Move::Outcome UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender, uint8_t moveIdx) const;
 	void UpdateExperienceBar(monster_xp_t xpGained, PocketMonsterEntity* playerMonster, const PocketMonsterEntity* opponentMonster);

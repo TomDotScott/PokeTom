@@ -160,17 +160,17 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	xpBar->SetProgress(static_cast<float>(a) / static_cast<float>(b));
 
 
-	PocketMonsterEntity* oppEntity = entReg.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
-	ASSERT(oppEntity);
-	oppPB->SetProgress(oppEntity->GetStats().m_HP, oppEntity->GetMaxHP(), false);
+	PocketMonsterEntity* oppMonster = entReg.Get<PocketMonsterEntity>(state.GetOpponentMonsterEntityID());
+	ASSERT(oppMonster);
+	oppPB->SetProgress(oppMonster->GetStats().m_HP, oppMonster->GetMaxHP(), false);
 
-	const std::string oppMonsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, playerMonster->GetNameStringID());
+	const std::string oppMonsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, oppMonster->GetNameStringID());
 
 	auto* nameText = battleUI->GetChild<UiText>("OPPONENT_MONSTER_NAME");
 	ASSERT(nameText);
 	nameText->SetText("%s", oppMonsterName.c_str());
 
-	const uint8_t oppCurrentLevel = oppEntity->GetLevel();
+	const uint8_t oppCurrentLevel = oppMonster->GetLevel();
 	auto* oppLevelText = battleUI->GetChild<UiText>("OPPONENT_LEVEL_TEXT");
 	ASSERT(oppLevelText);
 	oppLevelText->SetText("%d", oppCurrentLevel);

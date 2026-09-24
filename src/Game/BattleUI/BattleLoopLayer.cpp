@@ -298,12 +298,38 @@ void BattleLoopLayer::DoTurn(
 		});
 	}
 
+	// Were any status effects applied?
+	if (outcome.m_StatusEffect.has_value() && outcome.m_StatusEffect.value().m_Flags != NoStatus)
+	{
+		auto [affectsDefender, statusEffectFlags] = outcome.m_StatusEffect.value();
+
+		// For every effect, queue a message
+		for (unsigned i = 0; i < NUM_STATUS_EFFECTS; ++i)
+		{
+			const uint32_t bit = (1u << i);
+
+			if ((statusEffectFlags & bit) == 0U)
+			{
+				continue;
+			}
+
+			eStatusEffect effect = static_cast<eStatusEffect>(bit);
+
+			m_battleBeatQueue.emplace(TextBeat{
+				.m_BeatName = "STATUS EFFECT",
+				.m_OnShow = [this, affectsDefender, effect, defender, attacker]()
+				{
+					ShowStatusEffectText(affectsDefender ? defender : attacker, effect);
+				}
+			});
+		}
+	}
+
 	// Any Stat Changes
 	if (outcome.m_StatChangeOutcome.has_value())
 	{
 		const auto& [attackerStatChanges, defenderStatChanges] = outcome.m_StatChangeOutcome.value();
 
-		// TODO: Power up/down animation on the sprites - maybe a shader?
 		for (const auto& statChanges : defenderStatChanges)
 		{
 			const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
@@ -534,6 +560,78 @@ void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const 
 {
 	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_LEVEL_UP"), monsterName, std::to_string(level)).c_str());
+}
+
+void BattleLoopLayer::ShowStatusEffectText(const PocketMonsterEntity* monster, const eStatusEffect statusEffect)
+{
+	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+
+	hash_type effectHash;
+	switch (statusEffect)
+	{
+	case Burn:
+		effectHash = HASH("STAT_EFFECT_BURN_INF");
+		break;
+	case Freeze:
+		effectHash = HASH("STAT_EFFECT_FREEZE_INF");
+		break;
+	case Paralysis:
+		effectHash = HASH("STAT_EFFECT_PARALYSIS_INF");
+		break;
+	case Poison:
+		effectHash = HASH("STAT_EFFECT_POISON_INF");
+		break;
+	case Sleep:
+		effectHash = HASH("STAT_EFFECT_SLEEP_INF");
+		break;
+	case Confusion:
+		effectHash = HASH("STAT_EFFECT_CONFUSION_INF");
+		break;
+	case Infatuation:
+		effectHash = HASH("STAT_EFFECT_INFATUATION_INF");
+		break;
+	case Trap:
+		effectHash = HASH("STAT_EFFECT_TRAP_INF");
+		break;
+	case Disable:
+		effectHash = HASH("STAT_EFFECT_DISABLE_INF");
+		break;
+	case Embargo:
+		effectHash = HASH("STAT_EFFECT_EMBARGO_INF");
+		break;
+	case HealBlock:
+		effectHash = HASH("STAT_EFFECT_HEALBLOCK_INF");
+		break;
+	case Ingrain:
+		effectHash = HASH("STAT_EFFECT_INGRAIN_INF");
+		break;
+	case LeechSeed:
+		effectHash = HASH("STAT_EFFECT_LEECHSEED_INF");
+		break;
+	case Nightmare:
+		effectHash = HASH("STAT_EFFECT_NIGHTMARE_INF");
+		break;
+	case NoTypeImmunity:
+		effectHash = HASH("STAT_EFFECT_NOTYPEIMMUNITY_INF");
+		break;
+	case PerishSong:
+		effectHash = HASH("STAT_EFFECT_PERISHSONG_INF");
+		break;
+	case Silence:
+		effectHash = HASH("STAT_EFFECT_SILENCE_TICK");
+		break;
+	case Torment:
+		effectHash = HASH("STAT_EFFECT_TORMENT_INF");
+		break;
+	case Yawn:
+		effectHash = HASH("STAT_EFFECT_YAWN_INF");
+		break;
+	case Toxic:
+		effectHash = HASH("STAT_EFFECT_TOXIC_INF");
+		break;
+	}
+
+	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(effectHash, monsterName).c_str());
 }
 
 Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,

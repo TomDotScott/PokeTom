@@ -16,9 +16,11 @@ namespace
 
 
 PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t level,
-                                         EntityAnimationComponent::eAnimationName initialAnim) :
+	EntityAnimationComponent::eAnimationName initialAnim) :
 	m_monsterInfo(PocketMonsterManager::Get()->GetMonsterDetails(monsterID)),
-	m_currentXP(monster_xp::GetMaxExperienceForLevel(m_monsterInfo.GetExperienceGroup(), level))
+	m_currentXP(monster_xp::GetMaxExperienceForLevel(m_monsterInfo.GetExperienceGroup(), level)),
+	m_nonVolatileStatus(NoStatus),
+	m_volatileStatuses(NoStatus)
 {
 	m_IVs = {
 		static_cast<uint8_t>(IV_GENERATOR.Next()),
@@ -130,6 +132,29 @@ std::string PocketMonsterEntity::GetMoveName(const uint8_t moveIdx) const
 	return STRINGTABLE->GetString(HASH("MOVE"), move.GetNameStringTableID());
 }
 
+bool PocketMonsterEntity::ApplyStatusEffect(const eStatusEffect statusEffect)
+{
+	if (IsNonVolatileStatus(statusEffect))
+	{
+		if (m_nonVolatileStatus == NoStatus)
+		{
+			m_nonVolatileStatus = statusEffect;
+			return true;
+		}
+
+		return false;
+	}
+
+	// Do we have the status already?
+	if (m_volatileStatuses & statusEffect)
+	{
+		return false;
+	}
+
+	m_volatileStatuses |= statusEffect;
+	return true;
+}
+
 monster_xp_t PocketMonsterEntity::GetCurrentXP() const
 {
 	return m_currentXP;
@@ -173,4 +198,6 @@ void PocketMonsterEntity::OnDeactivate()
 	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc != nullptr);
 	msc->ResetAllModifiers();
+
+	m_volatileStatuses = NoStatus;
 }

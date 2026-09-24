@@ -1,9 +1,11 @@
 #ifndef MOVE_H
 #define MOVE_H
+#include "StatusEffects.h"
 #include "../Engine/Hash.h"
 #include "Monsters/MonsterStats.h"
 #include "Monsters/MonsterTypes.h"
 
+class PocketMonsterEntity;
 class Entity;
 
 enum class eMoveCategory : uint8_t
@@ -48,39 +50,10 @@ enum class eMoveTarget : uint8_t
 
 struct MoveStatus
 {
-	enum eStatus
-	{
-		Burn = 1 << 0,
-		Freeze = 1 << 1,
-		Paralysis = 1 << 2,
-		Poison = 1 << 3,
-		Sleep = 1 << 4,
-		Confusion = 1 << 5,
-		Infatuation = 1 << 6,
-		Trap = 1 << 7,
-		Disable = 1 << 8,
-		Embargo = 1 << 9,
-		HealBlock = 1 << 10,
-		Ingrain = 1 << 11,
-		LeechSeed = 1 << 12,
-		Nightmare = 1 << 13,
-		NoTypeImmunity = 1 << 14,
-		PerishSong = 1 << 15,
-		Silence = 1 << 16,
-		Torment = 1 << 17,
-		Yawn = 1 << 18,
-	};
-
 	// Mask of eStatus flags
-	uint32_t m_Status;
+	uint32_t m_StatusEffects;
 
 	unsigned char m_Chance;
-};
-
-template <>
-struct magic_enum::customize::enum_range<MoveStatus::eStatus>
-{
-	static constexpr bool is_flags = true;
 };
 
 struct StatChange
@@ -149,11 +122,21 @@ public:
 		};
 
 		std::optional<StatChangeOutcome> m_StatChangeOutcome;
+
+		struct StatusEffect
+		{
+			bool m_AffectsDefender;
+
+			// A bitmask of eStatusEffect
+			uint32_t m_Flags;
+		};
+		
+		std::optional<StatusEffect> m_StatusEffect;
 	};
 
 	using stat_change_outcome = Outcome::StatChangeOutcome::SucceededStage;
 
-	Outcome Use(Entity& attacker, Entity& defender);
+	Outcome Use(PocketMonsterEntity& attacker, PocketMonsterEntity& defender);
 
 	unsigned GetPPRemaining() const;
 	unsigned GetMaxPP() const;
@@ -184,6 +167,14 @@ private:
 	std::optional<uint8_t> m_accuracy; // 0-100
 	std::optional<MoveStatus> m_status;
 	std::optional<StatChange> m_statChange;
+
+	// Returns the total amount of damage done
+	uint16_t ApplyDamage(PocketMonsterEntity& attacker, PocketMonsterEntity& defender, float typeMultiplier,
+	                     bool isCriticalHit) const;
+
+	std::optional<Outcome::StatChangeOutcome> ApplyStatChange(PocketMonsterEntity& attacker, PocketMonsterEntity& defender) const;
+
+	std::optional<Outcome::StatusEffect> ApplyStatusEffect(PocketMonsterEntity& attacker, PocketMonsterEntity& defender) const;
 };
 
 

@@ -1393,7 +1393,7 @@
       "accuracy": 90,
       "effect_description": "MOVE_TOXIC_DESCR",
       "effect_category": "Status",
-      "status_inflicted": "Poison",
+      "status_inflicted": "Toxic",
       "binding_min_turns": 15,
       "binding_max_turns": 15
     },
@@ -4509,7 +4509,7 @@
       "accuracy": 100,
       "effect_description": "MOVE_POISON_FANG_DESCR",
       "effect_category": "DamageStatus",
-      "status_inflicted": "Poison",
+      "status_inflicted": "Toxic",
       "status_chance": 50,
       "binding_min_turns": 15,
       "binding_max_turns": 15,
