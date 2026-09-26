@@ -33,10 +33,7 @@ BattleLoopLayer::BattleLoopLayer() :
 {
 }
 
-UILayer::LayerResult BattleLoopLayer::GetLayerResult() const
-{
-	return { .m_NextLayer = OptionSelect };
-}
+UILayer::LayerResult BattleLoopLayer::GetLayerResult() const { return { .m_NextLayer = OptionSelect }; }
 
 void BattleLoopLayer::Update(const float deltaTime)
 {
@@ -145,20 +142,14 @@ void BattleLoopLayer::OnNavigateButtonPressed(eUILayerNavigateButtons /*button*/
 
 void BattleLoopLayer::OnSelectButtonPressed()
 {
-	if (m_battleBeatQueue.empty())
-	{
-		return;
-	}
+	if (m_battleBeatQueue.empty()) { return; }
 
 	if (std::holds_alternative<TextBeat>(m_battleBeatQueue.front()))
 	{
 		auto beat = std::move(std::get<TextBeat>(m_battleBeatQueue.front()));
 		m_battleBeatQueue.pop();
 
-		if (beat.m_OnDismiss.has_value())
-		{
-			beat.m_OnDismiss.value()();
-		}
+		if (beat.m_OnDismiss.has_value()) { beat.m_OnDismiss.value()(); }
 
 		AdvanceBeat();
 	}
@@ -167,10 +158,7 @@ void BattleLoopLayer::OnSelectButtonPressed()
 		auto beat = std::move(std::get<AnimationBeat>(m_battleBeatQueue.front()));
 		m_battleBeatQueue.pop();
 
-		if (!beat.m_IsComplete())
-		{
-			beat.m_FinishAnimation();
-		}
+		if (!beat.m_IsComplete()) { beat.m_FinishAnimation(); }
 
 		AdvanceBeat();
 	}
@@ -192,10 +180,7 @@ void BattleLoopLayer::DoTurn(
 	const entity_id_t playerMonsterEntityID
 )
 {
-	if (attacker->IsFainted())
-	{
-		return;
-	}
+	if (attacker->IsFainted()) { return; }
 
 	// See if the user is affected by a status condition
 	if (attacker->HasStatusCondition())
@@ -210,20 +195,14 @@ void BattleLoopLayer::DoTurn(
 			{
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "FROZEN AND CANT MOVE",
-					.m_OnShow = [this, attacker]()
-					{
-						ShowFrozenSolidText(attacker);
-					}
+					.m_OnShow = [this, attacker]() { ShowFrozenSolidText(attacker); }
 				});
 				return;
 			}
 
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "THAWED OUT",
-				.m_OnShow = [this, attacker]()
-				{
-					ShowThawedOutText(attacker);
-				}
+				.m_OnShow = [this, attacker]() { ShowThawedOutText(attacker); }
 			});
 
 			cured = true;
@@ -235,10 +214,7 @@ void BattleLoopLayer::DoTurn(
 				// TODO: Shader effect
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "PARALYSED AND CANT MOVE",
-					.m_OnShow = [this, attacker]()
-					{
-						ShowParalysedText(attacker);
-					}
+					.m_OnShow = [this, attacker]() { ShowParalysedText(attacker); }
 				});
 				return;
 			}
@@ -250,29 +226,20 @@ void BattleLoopLayer::DoTurn(
 			{
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "ASLEEP AND CANT MOVE",
-					.m_OnShow = [this, attacker]()
-					{
-						ShowAsleepText(attacker);
-					}
+					.m_OnShow = [this, attacker]() { ShowAsleepText(attacker); }
 				});
 				return;
 			}
 
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "WOKE UP",
-				.m_OnShow = [this, attacker]()
-				{
-					ShowWokeUpText(attacker);
-				}
+				.m_OnShow = [this, attacker]() { ShowWokeUpText(attacker); }
 			});
 
 			cured = true;
 		}
 
-		if (cured)
-		{
-			attacker->ClearNonVolatileStatusCondition();
-		}
+		if (cured) { attacker->ClearNonVolatileStatusCondition(); }
 	}
 
 	// TODO: Recoil and other effects
@@ -288,10 +255,7 @@ void BattleLoopLayer::DoTurn(
 	// X used Y...
 	m_battleBeatQueue.emplace(TextBeat{
 		.m_BeatName = "MOVE NAME",
-		.m_OnShow = [this, attacker, selectedMoveIdx]()
-		{
-			ShowMoveNameText(attacker, selectedMoveIdx);
-		}
+		.m_OnShow = [this, attacker, selectedMoveIdx]() { ShowMoveNameText(attacker, selectedMoveIdx); }
 	});
 
 	// The move hits or misses...
@@ -299,10 +263,7 @@ void BattleLoopLayer::DoTurn(
 	{
 		m_battleBeatQueue.emplace(TextBeat{
 			.m_BeatName = "THE MOVE MISSED!",
-			.m_OnShow = [this, attacker]()
-			{
-				ShowMissText(attacker);
-			}
+			.m_OnShow = [this, attacker]() { ShowMissText(attacker); }
 		});
 
 		return;
@@ -319,70 +280,13 @@ void BattleLoopLayer::DoTurn(
 		m_battleBeatQueue.emplace(AnimationBeat{
 			.m_BeatName = isPlayerDamaged ? "PLAYER_HIT_FLASH" : "OPPONENT_HIT_FLASH",
 			.m_MonsterEntityAnimation = std::move(dmgAnim),
-			.m_Start = [dmgAnimation]
-			{
-				dmgAnimation->Play();
-			},
-			.m_Update = [dmgAnimation](const float deltaTime)
-			{
-				dmgAnimation->Update(deltaTime);
-			},
-			.m_IsComplete = [dmgAnimation]
-			{
-				return !dmgAnimation->IsPlaying();
-			},
-			.m_FinishAnimation = [dmgAnimation]
-			{
-				dmgAnimation->Finish();
-			}
+			.m_Start = [dmgAnimation] { dmgAnimation->Play(); },
+			.m_Update = [dmgAnimation](const float deltaTime) { dmgAnimation->Update(deltaTime); },
+			.m_IsComplete = [dmgAnimation] { return !dmgAnimation->IsPlaying(); },
+			.m_FinishAnimation = [dmgAnimation] { dmgAnimation->Finish(); }
 		});
 
-		if (isPlayerDamaged)
-		{
-			m_battleBeatQueue.emplace(AnimationBeat{
-				.m_BeatName = "PLAYER_HEALTH_BAR",
-				.m_MonsterEntityAnimation = nullptr,
-				.m_Start = [this, defenderHealthBefore, defenderHealthAfter]
-				{
-					m_playerHealthAnimation.Start(defenderHealthBefore, defenderHealthAfter);
-				},
-				.m_Update = [this](const float deltaTime)
-				{
-					m_playerHealthAnimation.Update(deltaTime);
-				},
-				.m_IsComplete = [this]
-				{
-					return !m_playerHealthAnimation.IsPlaying();
-				},
-				.m_FinishAnimation = [this]
-				{
-					m_playerHealthAnimation.Finish();
-				}
-			});
-		}
-		else
-		{
-			m_battleBeatQueue.emplace(AnimationBeat{
-				.m_BeatName = "OPP_HEALTH_BAR",
-				.m_MonsterEntityAnimation = nullptr,
-				.m_Start = [this, defenderHealthBefore, defenderHealthAfter]
-				{
-					m_opponentHealthAnimation.Start(defenderHealthBefore, defenderHealthAfter);
-				},
-				.m_Update = [this](const float deltaTime)
-				{
-					m_opponentHealthAnimation.Update(deltaTime);
-				},
-				.m_IsComplete = [this]
-				{
-					return !m_opponentHealthAnimation.IsPlaying();
-				},
-				.m_FinishAnimation = [this]
-				{
-					m_opponentHealthAnimation.Finish();
-				}
-			});
-		}
+		QueueHealthbarBeat(defenderHealthBefore, defenderHealthAfter, isPlayerDamaged);
 	}
 
 	// Effectiveness message...
@@ -391,10 +295,7 @@ void BattleLoopLayer::DoTurn(
 	{
 		m_battleBeatQueue.emplace(TextBeat{
 			.m_BeatName = "IMMUNE/VERY/NOT VERY EFFECTIVE TEXT",
-			.m_OnShow = [this, effectiveness]()
-			{
-				ShowEffectivenessText(effectiveness);
-			}
+			.m_OnShow = [this, effectiveness]() { ShowEffectivenessText(effectiveness); }
 		});
 	}
 
@@ -403,10 +304,7 @@ void BattleLoopLayer::DoTurn(
 	{
 		m_battleBeatQueue.emplace(TextBeat{
 			.m_BeatName = "CRITICAL HIT!",
-			.m_OnShow = [this]()
-			{
-				ShowCriticalHitText();
-			}
+			.m_OnShow = [this]() { ShowCriticalHitText(); }
 		});
 	}
 
@@ -422,17 +320,13 @@ void BattleLoopLayer::DoTurn(
 			{
 				const uint32_t bit = (1u << i);
 
-				if ((statusEffectFlags & bit) == 0U)
-				{
-					continue;
-				}
+				if ((statusEffectFlags & bit) == 0U) { continue; }
 
 				eStatusEffect effect = static_cast<eStatusEffect>(bit);
 
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "STATUS EFFECT",
-					.m_OnShow = [this, affectsDefender, effect, defender, attacker]()
-					{
+					.m_OnShow = [this, affectsDefender, effect, defender, attacker]() {
 						ShowStatusEffectText(affectsDefender ? defender : attacker, effect);
 					}
 				});
@@ -458,28 +352,15 @@ void BattleLoopLayer::DoTurn(
 				m_battleBeatQueue.emplace(AnimationBeat{
 					.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
 					.m_MonsterEntityAnimation = std::move(statAnim),
-					.m_Start = [statAnimation]
-					{
-						statAnimation->Play();
-					},
-					.m_Update = [statAnimation](const float deltaTime)
-					{
-						statAnimation->Update(deltaTime);
-					},
-					.m_IsComplete = [statAnimation]
-					{
-						return !statAnimation->IsPlaying();
-					},
-					.m_FinishAnimation = [statAnimation]
-					{
-						statAnimation->Finish();
-					}
+					.m_Start = [statAnimation] { statAnimation->Play(); },
+					.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
+					.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
+					.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
 				});
 
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "DEFENDER STAT CHANGE",
-					.m_OnShow = [this, defender, statChanges]()
-					{
+					.m_OnShow = [this, defender, statChanges]() {
 						ShowStatChangeText(defender, statChanges.m_Stage, statChanges.m_Succeeded);
 					}
 				});
@@ -499,29 +380,16 @@ void BattleLoopLayer::DoTurn(
 				m_battleBeatQueue.emplace(AnimationBeat{
 					.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
 					.m_MonsterEntityAnimation = std::move(statAnim),
-					.m_Start = [statAnimation]
-					{
-						statAnimation->Play();
-					},
-					.m_Update = [statAnimation](const float deltaTime)
-					{
-						statAnimation->Update(deltaTime);
-					},
-					.m_IsComplete = [statAnimation]
-					{
-						return !statAnimation->IsPlaying();
-					},
-					.m_FinishAnimation = [statAnimation]
-					{
-						statAnimation->Finish();
-					}
+					.m_Start = [statAnimation] { statAnimation->Play(); },
+					.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
+					.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
+					.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
 				});
 
 
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "ATTACKER STAT CHANGE",
-					.m_OnShow = [this, attacker, statChanges]()
-					{
+					.m_OnShow = [this, attacker, statChanges]() {
 						ShowStatChangeText(attacker, statChanges.m_Stage, statChanges.m_Succeeded);
 					}
 				});
@@ -556,24 +424,15 @@ void BattleLoopLayer::DoEndOfTurnStatus(const BattleState& state,
                                         PocketMonsterEntity* monster,
                                         const entity_id_t playerMonsterEntityID)
 {
-	if (monster->IsFainted())
-	{
-		return;
-	}
+	if (monster->IsFainted()) { return; }
 
 	// If either of them have a status condition, there's additional text and damage that has to be applied
-	if (!monster->HasStatusCondition())
-	{
-		return;
-	}
+	if (!monster->HasStatusCondition()) { return; }
 
 	constexpr uint32_t damagingConditionFlags = Burn | Poison | Toxic;
 	eStatusEffect monsterCondition = monster->GetNonVolatileStatusCondition();
 
-	if (!(monsterCondition & damagingConditionFlags))
-	{
-		return;
-	}
+	if (!(monsterCondition & damagingConditionFlags)) { return; }
 
 	const monster_hp_t healthBefore = monster->GetStats().m_HP;
 	monster_hp_t damageToDeal = monster->GetBaseStats().m_HP / static_cast<monster_hp_t>(8);
@@ -591,58 +450,10 @@ void BattleLoopLayer::DoEndOfTurnStatus(const BattleState& state,
 
 	m_battleBeatQueue.emplace(TextBeat{
 		.m_BeatName = "STATUS EFFECT DAMAGE",
-		.m_OnShow = [this, monster, monsterCondition]()
-		{
-			ShowStatusEffectDamageText(monster, monsterCondition);
-		}
+		.m_OnShow = [this, monster, monsterCondition]() { ShowStatusEffectDamageText(monster, monsterCondition); }
 	});
 
-	if (isPlayerMonster)
-	{
-		m_battleBeatQueue.emplace(AnimationBeat{
-			.m_BeatName = "PLAYER_HEALTH_BAR",
-			.m_MonsterEntityAnimation = nullptr,
-			.m_Start = [this, healthBefore, healthAfter]
-			{
-				m_playerHealthAnimation.Start(healthBefore, healthAfter);
-			},
-			.m_Update = [this](const float deltaTime)
-			{
-				m_playerHealthAnimation.Update(deltaTime);
-			},
-			.m_IsComplete = [this]
-			{
-				return !m_playerHealthAnimation.IsPlaying();
-			},
-			.m_FinishAnimation = [this]
-			{
-				m_playerHealthAnimation.Finish();
-			}
-		});
-	}
-	else
-	{
-		m_battleBeatQueue.emplace(AnimationBeat{
-			.m_BeatName = "OPP_HEALTH_BAR",
-			.m_MonsterEntityAnimation = nullptr,
-			.m_Start = [this, healthBefore, healthAfter]
-			{
-				m_opponentHealthAnimation.Start(healthBefore, healthAfter);
-			},
-			.m_Update = [this](const float deltaTime)
-			{
-				m_opponentHealthAnimation.Update(deltaTime);
-			},
-			.m_IsComplete = [this]
-			{
-				return !m_opponentHealthAnimation.IsPlaying();
-			},
-			.m_FinishAnimation = [this]
-			{
-				m_opponentHealthAnimation.Finish();
-			}
-		});
-	}
+	QueueHealthbarBeat(healthBefore, healthAfter, isPlayerMonster);
 
 	if (monster->IsFainted())
 	{
@@ -652,6 +463,19 @@ void BattleLoopLayer::DoEndOfTurnStatus(const BattleState& state,
 			isPlayerMonster
 		);
 	}
+}
+
+void BattleLoopLayer::QueueHealthbarBeat(monster_hp_t before, monster_hp_t after, bool isPlayer)
+{
+	HealthbarAnimation& anim = isPlayer ? m_playerHealthAnimation : m_opponentHealthAnimation;
+
+	m_battleBeatQueue.emplace(AnimationBeat{
+		.m_BeatName = "HEALTHBAR",
+		.m_Start = [&anim, before, after] { anim.Start(before, after); },
+		.m_Update = [&anim](const float deltaTime) { anim.Update(deltaTime); },
+		.m_IsComplete = [&anim] { return !anim.IsPlaying(); },
+		.m_FinishAnimation = [&anim] { anim.Finish(); }
+	});
 }
 
 
@@ -664,21 +488,14 @@ void BattleLoopLayer::AdvanceBeat()
 	}
 
 	std::visit(overloaded{
-		           [](const TextBeat& beat)
-		           {
+		           [](const TextBeat& beat) {
 			           if (beat.m_OnShow)
 			           {
 				           beat.m_OnShow();
 				           // Waits for the A press in OnSelectButtonPressed
 			           }
 		           },
-		           [](const AnimationBeat& beat)
-		           {
-			           if (beat.m_Start)
-			           {
-				           beat.m_Start();
-			           }
-		           }
+		           [](const AnimationBeat& beat) { if (beat.m_Start) { beat.m_Start(); } }
 	           }, m_battleBeatQueue.front());
 }
 
@@ -717,18 +534,9 @@ void BattleLoopLayer::ShowCriticalHitText() const
 void BattleLoopLayer::ShowEffectivenessText(const float moveOutcome) const
 {
 	hash_type stringID = DEFAULT_HASH;
-	if (moveOutcome == 0.f)
-	{
-		stringID = HASH("MOVE_IMMUNE");
-	}
-	else if (moveOutcome <= 0.5f)
-	{
-		stringID = HASH("MOVE_NOT_VERY_EFFECTIVE");
-	}
-	else if (moveOutcome > 1.0f)
-	{
-		stringID = HASH("MOVE_SUPER_EFFECTIVE");
-	}
+	if (moveOutcome == 0.f) { stringID = HASH("MOVE_IMMUNE"); }
+	else if (moveOutcome <= 0.5f) { stringID = HASH("MOVE_NOT_VERY_EFFECTIVE"); }
+	else if (moveOutcome > 1.0f) { stringID = HASH("MOVE_SUPER_EFFECTIVE"); }
 
 	ASSERT(stringID != DEFAULT_HASH);
 
@@ -749,45 +557,21 @@ void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
 	{
 		if (succeeded)
 		{
-			if (statChangeInfo.m_Stages < 2)
-			{
-				hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_1");
-			}
-			else if (statChangeInfo.m_Stages < 4)
-			{
-				hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_2");
-			}
-			else
-			{
-				hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_3");
-			}
+			if (statChangeInfo.m_Stages < 2) { hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_1"); }
+			else if (statChangeInfo.m_Stages < 4) { hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_2"); }
+			else { hashString = HASH("MONSTER_STAT_CHANGE_INCREASE_3"); }
 		}
-		else
-		{
-			hashString = HASH("MONSTER_STAT_CHANGE_MAX");
-		}
+		else { hashString = HASH("MONSTER_STAT_CHANGE_MAX"); }
 	}
 	else
 	{
 		if (succeeded)
 		{
-			if (statChangeInfo.m_Stages > -2)
-			{
-				hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_1");
-			}
-			else if (statChangeInfo.m_Stages > -4)
-			{
-				hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_2");
-			}
-			else
-			{
-				hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_3");
-			}
+			if (statChangeInfo.m_Stages > -2) { hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_1"); }
+			else if (statChangeInfo.m_Stages > -4) { hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_2"); }
+			else { hashString = HASH("MONSTER_STAT_CHANGE_DECREASE_3"); }
 		}
-		else
-		{
-			hashString = HASH("MONSTER_STAT_CHANGE_MIN");
-		}
+		else { hashString = HASH("MONSTER_STAT_CHANGE_MIN"); }
 	}
 
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(hashString, monsterName.c_str(), statString.c_str()).c_str());
@@ -968,10 +752,7 @@ void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEn
 
 	m_battleBeatQueue.emplace(TextBeat{
 		.m_BeatName = "AWARDING XP",
-		.m_OnShow = [this, gainedXP]()
-		{
-			ShowExperienceText(gainedXP);
-		},
+		.m_OnShow = [this, gainedXP]() { ShowExperienceText(gainedXP); },
 	});
 
 	const uint8_t currentLevel = playerMonster->GetLevel();
@@ -987,8 +768,7 @@ void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEn
 		{
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "LEVEL UP TEXT",
-				.m_OnShow = [this, playerMonster, currentLevel, i]()
-				{
+				.m_OnShow = [this, playerMonster, currentLevel, i]() {
 					const uint8_t lvl = currentLevel + static_cast<uint8_t>(i);
 					ShowLevelUpText(playerMonster, lvl);
 					playerMonster->ApplyLevelUpStats(lvl);
@@ -1024,8 +804,7 @@ void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEn
 		m_battleBeatQueue.emplace(AnimationBeat{
 			.m_BeatName = "XP_BAR",
 			.m_MonsterEntityAnimation = nullptr,
-			.m_Start = [this, firstIncrease, currentLevel, playerExpGroup, beforeValue, clampedLevelXp, maxValue]
-			{
+			.m_Start = [this, firstIncrease, currentLevel, playerExpGroup, beforeValue, clampedLevelXp, maxValue] {
 				monster_xp_t levelStartXP;
 				monster_xp_t normalizedBefore;
 				if (firstIncrease)
@@ -1046,18 +825,9 @@ void BattleLoopLayer::UpdateExperienceBar(monster_xp_t gainedXP, PocketMonsterEn
 
 				m_playerExperienceBar.Start(normalizedBefore, normalizedEnd, levelRange, 1.2f);
 			},
-			.m_Update = [this](const float deltaTime)
-			{
-				m_playerExperienceBar.Update(deltaTime);
-			},
-			.m_IsComplete = [this]
-			{
-				return !m_playerExperienceBar.IsPlaying();
-			},
-			.m_FinishAnimation = [this]
-			{
-				m_playerExperienceBar.Finish();
-			}
+			.m_Update = [this](const float deltaTime) { m_playerExperienceBar.Update(deltaTime); },
+			.m_IsComplete = [this] { return !m_playerExperienceBar.IsPlaying(); },
+			.m_FinishAnimation = [this] { m_playerExperienceBar.Finish(); }
 		});
 
 		firstIncrease = false;
@@ -1083,10 +853,7 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 
 	m_battleBeatQueue.emplace(TextBeat{
 		.m_BeatName = "MONSTER FAINTED",
-		.m_OnShow = [this, monster]()
-		{
-			ShowFaintText(monster);
-		}
+		.m_OnShow = [this, monster]() { ShowFaintText(monster); }
 	});
 
 	if (!isPlayerMonster)
@@ -1119,12 +886,8 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 		{
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "FASTEST FAINTED",
-				.m_OnShow = [this]()
-				{
-					ShowWhiteOutText();
-				},
-				.m_OnDismiss = [this]()
-				{
+				.m_OnShow = [this]() { ShowWhiteOutText(); },
+				.m_OnDismiss = [this]() {
 					m_endContext.m_SendPlayerToHospital = true;
 					game_events::OnBattleEnd.Fire(m_endContext);
 				}
@@ -1134,10 +897,7 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 		{
 			m_battleBeatQueue.emplace(TextBeat{
 				.m_BeatName = "BATTLE END",
-				.m_OnShow = [this]()
-				{
-					game_events::OnBattleEnd.Fire(m_endContext);
-				}
+				.m_OnShow = [this]() { game_events::OnBattleEnd.Fire(m_endContext); }
 			});
 		}
 	}

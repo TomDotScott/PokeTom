@@ -63,6 +63,8 @@ private:
 
 	void DoEndOfTurnStatus(const BattleState& state, PocketMonsterEntity* monster, entity_id_t playerMonsterEntityID);
 
+	void QueueHealthbarBeat(monster_hp_t before, monster_hp_t after, bool isPlayer);
+
 	void AdvanceBeat();
 	void ShowMoveNameText(const PocketMonsterEntity* monster, uint8_t moveIdx) const;
 	void ShowFaintText(const PocketMonsterEntity* monster) const;
