@@ -278,7 +278,7 @@ void BattleLoopLayer::DoTurn(
 		DamageAnimation* dmgAnimation = dmgAnim.get();
 
 		m_battleBeatQueue.emplace(AnimationBeat{
-			.m_BeatName = isPlayerDamaged ? "PLAYER_HIT_FLASH" : "OPPONENT_HIT_FLASH",
+			.m_BeatName = "HIT_FLASH",
 			.m_MonsterEntityAnimation = std::move(dmgAnim),
 			.m_Start = [dmgAnimation] { dmgAnimation->Play(); },
 			.m_Update = [dmgAnimation](const float deltaTime) { dmgAnimation->Update(deltaTime); },
@@ -337,63 +337,8 @@ void BattleLoopLayer::DoTurn(
 		if (outcome.m_StatChangeOutcome.has_value())
 		{
 			const auto& [attackerStatChanges, defenderStatChanges] = outcome.m_StatChangeOutcome.value();
-
-			for (const auto& statChanges : defenderStatChanges)
-			{
-				const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
-					                                              ? StatAnimation::AnimationType::Increase
-					                                              : StatAnimation::AnimationType::Decrease;
-
-				const bool isPlayer = defender->GetID() == playerMonsterEntityID;
-
-				auto statAnim = std::make_unique<StatAnimation>(defender, animType);
-				StatAnimation* statAnimation = statAnim.get();
-
-				m_battleBeatQueue.emplace(AnimationBeat{
-					.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
-					.m_MonsterEntityAnimation = std::move(statAnim),
-					.m_Start = [statAnimation] { statAnimation->Play(); },
-					.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
-					.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
-					.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
-				});
-
-				m_battleBeatQueue.emplace(TextBeat{
-					.m_BeatName = "DEFENDER STAT CHANGE",
-					.m_OnShow = [this, defender, statChanges]() {
-						ShowStatChangeText(defender, statChanges.m_Stage, statChanges.m_Succeeded);
-					}
-				});
-			}
-
-			for (const auto& statChanges : attackerStatChanges)
-			{
-				const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
-					                                              ? StatAnimation::AnimationType::Increase
-					                                              : StatAnimation::AnimationType::Decrease;
-
-				const bool isPlayer = attacker->GetID() == playerMonsterEntityID;
-
-				auto statAnim = std::make_unique<StatAnimation>(attacker, animType);
-				StatAnimation* statAnimation = statAnim.get();
-
-				m_battleBeatQueue.emplace(AnimationBeat{
-					.m_BeatName = isPlayer ? "PLAYER_STAT_CHANGE" : "OPPONENT_STAT_CHANGE",
-					.m_MonsterEntityAnimation = std::move(statAnim),
-					.m_Start = [statAnimation] { statAnimation->Play(); },
-					.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
-					.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
-					.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
-				});
-
-
-				m_battleBeatQueue.emplace(TextBeat{
-					.m_BeatName = "ATTACKER STAT CHANGE",
-					.m_OnShow = [this, attacker, statChanges]() {
-						ShowStatChangeText(attacker, statChanges.m_Stage, statChanges.m_Succeeded);
-					}
-				});
-			}
+			QueueStatChangeBeats(attacker, attackerStatChanges);
+			QueueStatChangeBeats(defender, defenderStatChanges);
 		}
 	}
 
@@ -476,6 +421,36 @@ void BattleLoopLayer::QueueHealthbarBeat(monster_hp_t before, monster_hp_t after
 		.m_IsComplete = [&anim] { return !anim.IsPlaying(); },
 		.m_FinishAnimation = [&anim] { anim.Finish(); }
 	});
+}
+
+void BattleLoopLayer::QueueStatChangeBeats(PocketMonsterEntity* target,
+                                           const std::vector<Move::stat_change_outcome>& changes)
+{
+	for (const auto& statChanges : changes)
+	{
+		const StatAnimation::AnimationType animType = statChanges.m_Stage.m_Stages > 0
+			                                              ? StatAnimation::AnimationType::Increase
+			                                              : StatAnimation::AnimationType::Decrease;
+
+		auto statAnim = std::make_unique<StatAnimation>(target, animType);
+		StatAnimation* statAnimation = statAnim.get();
+
+		m_battleBeatQueue.emplace(AnimationBeat{
+			.m_BeatName = "STAT ARROWS",
+			.m_MonsterEntityAnimation = std::move(statAnim),
+			.m_Start = [statAnimation] { statAnimation->Play(); },
+			.m_Update = [statAnimation](const float deltaTime) { statAnimation->Update(deltaTime); },
+			.m_IsComplete = [statAnimation] { return !statAnimation->IsPlaying(); },
+			.m_FinishAnimation = [statAnimation] { statAnimation->Finish(); }
+		});
+
+		m_battleBeatQueue.emplace(TextBeat{
+			.m_BeatName = "STAT CHANGE TEXT",
+			.m_OnShow = [this, target, statChanges]() {
+				ShowStatChangeText(target, statChanges.m_Stage, statChanges.m_Succeeded);
+			}
+		});
+	}
 }
 
 
