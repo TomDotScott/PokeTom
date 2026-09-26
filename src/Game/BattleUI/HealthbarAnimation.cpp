@@ -27,14 +27,13 @@ HealthbarAnimation::HealthbarAnimation(const eAnimationType type) :
 	}
 }
 
-void HealthbarAnimation::Start(const monster_hp_t monsterHealthBefore)
+void HealthbarAnimation::Start(const monster_hp_t monsterHealthBefore, const monster_hp_t monsterHealthAfter)
 {
 	ASSERT(m_monster);
 
-	const monster_hp_t currentHP = m_monster->GetStats().m_HP;
 	const monster_hp_t maxHP = m_monster->GetMaxHP();
 
-	const float damageDealt = static_cast<float>(monsterHealthBefore) - static_cast<float>(currentHP);
+	const float damageDealt = static_cast<float>(monsterHealthBefore) - static_cast<float>(monsterHealthAfter);
 
 	const float percentage = damageDealt / static_cast<float>(maxHP);
 	bool lotsOfDamage = true;
@@ -45,7 +44,7 @@ void HealthbarAnimation::Start(const monster_hp_t monsterHealthBefore)
 
 	const float duration = lotsOfDamage ? 3.5f : 1.8f;
 
-	AnimatedProgressBar::Start(monsterHealthBefore, currentHP, maxHP, duration);
+	AnimatedProgressBar::Start(monsterHealthBefore, monsterHealthAfter, maxHP, duration);
 }
 
 void HealthbarAnimation::UpdateFill() const

@@ -132,27 +132,71 @@ std::string PocketMonsterEntity::GetMoveName(const uint8_t moveIdx) const
 	return STRINGTABLE->GetString(HASH("MOVE"), move.GetNameStringTableID());
 }
 
-bool PocketMonsterEntity::ApplyStatusEffect(const eStatusEffect statusEffect)
+bool PocketMonsterEntity::ApplyStatusEffect(const eStatusEffect statusEffect, const bool force)
 {
-	if (IsNonVolatileStatus(statusEffect))
+	if (!IsNonVolatileStatus(statusEffect))
 	{
-		if (m_nonVolatileStatus == NoStatus)
+		// Do we have the status already?
+		if (m_volatileStatuses & statusEffect)
 		{
-			m_nonVolatileStatus = statusEffect;
-			return true;
+			return false;
 		}
 
-		return false;
+		m_volatileStatuses |= statusEffect;
+		return true;
 	}
 
-	// Do we have the status already?
-	if (m_volatileStatuses & statusEffect)
+	if (m_nonVolatileStatus == NoStatus)
 	{
-		return false;
+		if (!force)
+		{
+			const monster_type type = m_monsterInfo.GetType();
+			if ((type & FIRE) && statusEffect == Burn)
+			{
+				return false;
+			}
+			if ((type & ELECTRIC) && statusEffect == Paralysis)
+			{
+				return false;
+			}
+			if ((type & ICE) && statusEffect == Freeze)
+			{
+				return false;
+			}
+			if ((type & POISON) && (statusEffect == Poison || statusEffect == Toxic))
+			{
+				return false;
+			}
+		}
+
+		m_nonVolatileStatus = statusEffect;
+		return true;
 	}
 
-	m_volatileStatuses |= statusEffect;
-	return true;
+	return false;
+}
+
+bool PocketMonsterEntity::HasStatusCondition() const
+{
+	const bool hasNonVolatileStatus = m_nonVolatileStatus != NoStatus;
+	const bool hasVolatileStatus = m_volatileStatuses != NoStatus;
+
+	return hasNonVolatileStatus || hasVolatileStatus;
+}
+
+eStatusEffect PocketMonsterEntity::GetNonVolatileStatusCondition() const
+{
+	return m_nonVolatileStatus;
+}
+
+void PocketMonsterEntity::ClearNonVolatileStatusCondition()
+{
+	m_nonVolatileStatus = NoStatus;
+}
+
+uint32_t PocketMonsterEntity::GetVolatileStatusEffectFlags() const
+{
+	return m_volatileStatuses;
 }
 
 monster_xp_t PocketMonsterEntity::GetCurrentXP() const

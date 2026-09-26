@@ -61,6 +61,8 @@ private:
 	void DoTurn(const BattleState& state, PocketMonsterEntity* attacker, uint8_t selectedMoveIdx,
 	            PocketMonsterEntity* defender, entity_id_t playerMonsterEntityID);
 
+	void DoEndOfTurnStatus(const BattleState& state, PocketMonsterEntity* monster, entity_id_t playerMonsterEntityID);
+
 	void AdvanceBeat();
 	void ShowMoveNameText(const PocketMonsterEntity* monster, uint8_t moveIdx) const;
 	void ShowFaintText(const PocketMonsterEntity* monster) const;
@@ -73,7 +75,15 @@ private:
 	void ShowStatChangeText(const PocketMonsterEntity* monster, StatChange::StatStage statChangeInfo, bool succeeded) const;
 	void ShowExperienceText(monster_xp_t xpGained) const;
 	void ShowLevelUpText(const PocketMonsterEntity* monster, uint8_t level) const;
+
+
 	void ShowStatusEffectText(const PocketMonsterEntity* monster, eStatusEffect statusEffect);
+	void ShowStatusEffectDamageText(const PocketMonsterEntity* monster, eStatusEffect statusEffect);
+	void ShowFrozenSolidText(const PocketMonsterEntity* monster);
+	void ShowThawedOutText(const PocketMonsterEntity* monster);
+	void ShowAsleepText(const PocketMonsterEntity* monster);
+	void ShowWokeUpText(const PocketMonsterEntity* monster);
+	void ShowParalysedText(const PocketMonsterEntity* monster);
 
 	Move::Outcome UseMove(PocketMonsterEntity* attacker, PocketMonsterEntity* defender, uint8_t moveIdx) const;
 	void UpdateExperienceBar(monster_xp_t xpGained, PocketMonsterEntity* playerMonster, const PocketMonsterEntity* opponentMonster);

@@ -2363,7 +2363,8 @@
       "priority": 0,
       "target": "User",
       "effect_description": "MOVE_REST_DESCR",
-      "effect_category": "Unique"
+      "effect_category": "Unique",
+      "status_inflicted": "Sleep"
     },
     {
       "id": 157,

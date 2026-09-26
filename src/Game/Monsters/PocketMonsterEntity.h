@@ -34,8 +34,11 @@ public:
 
 	std::string GetMoveName(uint8_t moveIdx) const;
 
-	bool ApplyStatusEffect(eStatusEffect statusEffect);
-
+	bool ApplyStatusEffect(eStatusEffect statusEffect, bool force = false);
+	bool HasStatusCondition() const;
+	eStatusEffect GetNonVolatileStatusCondition() const;
+	void ClearNonVolatileStatusCondition();
+	uint32_t GetVolatileStatusEffectFlags() const;
 
 	bool IsFainted() const;
 	void TakeDamage(monster_hp_t damage);
@@ -58,6 +61,8 @@ private:
 
 	// Burn, Frozen, Paralysed, Poison, Toxic, Sleep
 	eStatusEffect m_nonVolatileStatus;
+
+	// Cleared on switch out or end of battle
 	uint32_t m_volatileStatuses;
 };
 

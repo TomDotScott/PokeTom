@@ -20,7 +20,7 @@ public:
 
 	void SetMonster(PocketMonsterEntity* monster);
 
-	void Start(monster_hp_t monsterHealthBefore);
+	void Start(monster_hp_t monsterHealthBefore, monster_hp_t monsterHealthAfter);
 
 private:
 	UiText* m_hpText;
