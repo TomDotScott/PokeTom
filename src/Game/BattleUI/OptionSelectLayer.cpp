@@ -1,5 +1,6 @@
 #include "OptionSelectLayer.h"
 
+#include "BattleUiHelpers.h"
 #include "../BattleState.h"
 #include "../../Engine/Maths.h"
 #include "../../Engine/Stringtable.h"
@@ -94,17 +95,18 @@ void OptionSelectLayer::OnMoreInfoButtonPressed()
 	// TODO: Show a Dialog with the buttons?
 }
 
+// TODO: This function is doing wayyyyyyy too much...
 void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
 {
 	UILayer::OnActivate(state, prevLayerResult);
 
-	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* optionsUI = battleUI->GetChild<UiPanel>(OPTIONS_PANEL_NAME);
+	auto* optionsUI = battleUI->GetChild<UiPanel>(panel_names::OPTIONS_PANEL);
 	ASSERT(optionsUI != nullptr);
 
-	auto* moveUI = battleUI->GetChild<UiPanel>(MOVES_PANEL_NAME);
+	auto* moveUI = battleUI->GetChild<UiPanel>(panel_names::MOVES_PANEL);
 	ASSERT(moveUI != nullptr);
 
 	optionsUI->OnActivate();
@@ -121,12 +123,12 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	PocketMonsterEntity* playerMonster = entReg.Get<PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
 	ASSERT(playerMonster);
 
-	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	auto* textBoxText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
 	ASSERT(textBoxText != nullptr);
 	textBoxText->OnActivate();
 
 	// TODO: Monster Nicknames!
-	const std::string playerMonsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, playerMonster->GetNameStringID());
+	const std::string playerMonsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, playerMonster->GetNameStringID());
 	const std::string chooseOptionString = STRINGTABLE->GetDynamicString(HASH("PLAYER_CHOOSE_OPTION"), playerMonsterName.c_str());
 	// TODO: Do I need to make the width data driven?
 	const string_utils::text_pages chooseOptionText = string_utils::WrapToPages(chooseOptionString, 10, 3);
@@ -150,6 +152,8 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	ASSERT(levelText);
 	levelText->SetText("%d", currentLevel);
 
+	status_icon_utils::UpdateStatusIcon(playerMonster->GetNonVolatileStatusCondition(), true);
+
 	auto* xpBar = battleUI->GetChild<UiProgressBar>("PLAYER_XP_BAR");
 	ASSERT(xpBar);
 
@@ -164,7 +168,7 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	ASSERT(oppMonster);
 	oppPB->SetProgress(oppMonster->GetStats().m_HP, oppMonster->GetMaxHP(), false);
 
-	const std::string oppMonsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, oppMonster->GetNameStringID());
+	const std::string oppMonsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, oppMonster->GetNameStringID());
 
 	auto* nameText = battleUI->GetChild<UiText>("OPPONENT_MONSTER_NAME");
 	ASSERT(nameText);
@@ -175,6 +179,8 @@ void OptionSelectLayer::OnActivate(const BattleState& state, const LayerResult& 
 	ASSERT(oppLevelText);
 	oppLevelText->SetText("%d", oppCurrentLevel);
 
+	status_icon_utils::UpdateStatusIcon(oppMonster->GetNonVolatileStatusCondition(), false);
+
 	OnSelectedOptionChanged(eSelectedOption::Fight);
 }
 
@@ -182,10 +188,10 @@ void OptionSelectLayer::OnDeactivate()
 {
 	UILayer::OnDeactivate();
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::OPTIONS_PANEL));
 	ASSERT(optionsUI != nullptr);
 
 	optionsUI->OnDeactivate();
@@ -195,10 +201,10 @@ void OptionSelectLayer::OnSelectedOptionChanged(const eSelectedOption newOption)
 {
 	m_selectedOption = newOption;
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::OPTIONS_PANEL));
 	ASSERT(optionsUI != nullptr);
 
 	auto* fightArrow = optionsUI->GetChild("FIGHT_ARROW");

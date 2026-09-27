@@ -80,7 +80,7 @@ private:
 	void ShowLevelUpText(const PocketMonsterEntity* monster, uint8_t level) const;
 
 
-	void ShowStatusEffectText(const PocketMonsterEntity* monster, eStatusEffect statusEffect);
+	void ShowStatusEffectText(const PocketMonsterEntity* monster, eStatusEffect statusEffect, bool isPlayerMonster);
 	void ShowStatusEffectDamageText(const PocketMonsterEntity* monster, eStatusEffect statusEffect);
 	void ShowFrozenSolidText(const PocketMonsterEntity* monster);
 	void ShowThawedOutText(const PocketMonsterEntity* monster);

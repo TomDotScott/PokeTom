@@ -1,5 +1,6 @@
 #include "MoveSelectLayer.h"
 
+#include "BattleUiHelpers.h"
 #include "../BattleState.h"
 #include "../MoveManager.h"
 #include "../../Engine/Asserts.h"
@@ -151,16 +152,16 @@ void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& pr
 
 	m_backRequested = false;
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::OPTIONS_PANEL));
 	ASSERT(optionsUI != nullptr);
 
-	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
 	ASSERT(moveUI != nullptr);
 
-	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	auto* textBoxText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
 	ASSERT(textBoxText != nullptr);
 
 	optionsUI->OnDeactivate();
@@ -213,10 +214,10 @@ void MoveSelectLayer::OnDeactivate()
 {
 	UILayer::OnDeactivate();
 
-	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
 	ASSERT(moveUI != nullptr);
 
 	moveUI->OnDeactivate();
@@ -226,10 +227,10 @@ void MoveSelectLayer::OnSelectedMoveChanged(const eSelection newMove)
 {
 	m_selectedMove = newMove;
 
-	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	const auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	const auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
 	ASSERT(moveSelectUI != nullptr);
 
 	// Update the arrow
@@ -365,10 +366,10 @@ void MoveSelectLayer::OnSelectedMoveChanged(const eSelection newMove)
 
 void MoveSelectLayer::ShowMoveDescription()
 {
-	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
 	ASSERT(moveSelectUI != nullptr);
 	moveSelectUI->OnDeactivate();
 
@@ -390,10 +391,10 @@ void MoveSelectLayer::UpdateDescriptionText()
 		return;
 	}
 
-	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* moveDescriptionText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	auto* moveDescriptionText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
 	ASSERT(moveDescriptionText);
 	moveDescriptionText->OnActivate();
 
@@ -403,14 +404,14 @@ void MoveSelectLayer::UpdateDescriptionText()
 
 void MoveSelectLayer::DismissMoveDescription()
 {
-	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* moveDescriptionText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	auto* moveDescriptionText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
 	ASSERT(moveDescriptionText);
 	moveDescriptionText->OnDeactivate();
 
-	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(MOVES_PANEL_NAME));
+	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
 	ASSERT(moveSelectUI != nullptr);
 
 	moveSelectUI->OnActivate();

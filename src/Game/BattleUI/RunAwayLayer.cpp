@@ -1,4 +1,6 @@
 #include "RunAwayLayer.h"
+
+#include "BattleUiHelpers.h"
 #include "../BattleState.h"
 #include "../GameEvents.h"
 #include "../../Engine/Stringtable.h"
@@ -38,14 +40,14 @@ void RunAwayLayer::OnActivate(const BattleState& state, const LayerResult& prevL
 		.m_PlayerPosition = state.GetBattleContext().m_PlayerPosition,
 	};
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	auto* textBoxText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
 	ASSERT(textBoxText != nullptr);
 	textBoxText->OnActivate();
 
-	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(OPTIONS_PANEL_NAME));
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::OPTIONS_PANEL));
 	ASSERT(optionsUI != nullptr);
 
 	optionsUI->OnDeactivate();
@@ -59,6 +61,6 @@ void RunAwayLayer::OnDeactivate()
 {
 	UILayer::OnDeactivate();
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	battleUI->OnDeactivate();
 }

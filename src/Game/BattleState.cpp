@@ -7,6 +7,7 @@
 #include "../Engine/Stringtable.h"
 #include "../Engine/Animation/AnimationComponent.h"
 #include "BattleUI/BattleLoopLayer.h"
+#include "BattleUI/BattleUiHelpers.h"
 #include "BattleUI/MoveSelectLayer.h"
 #include "BattleUI/OptionSelectLayer.h"
 #include "BattleUI/RunAwayLayer.h"
@@ -133,7 +134,7 @@ void BattleState::OnEnter()
 {
 	m_battleFinished = false;
 
-	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnActivate();
+	UIMANAGER.GetElement(panel_names::BATTLE_PANEL)->OnActivate();
 	DialogueBox::SetVisible(false);
 
 	m_UILayers[m_currentUILayer]->OnActivate(*this, UILayer::LayerResult{});
@@ -150,7 +151,7 @@ void BattleState::OnExit()
 
 	DialogueBox::SetVisible(false);
 
-	UIMANAGER.GetElement(BATTLE_PANEL_NAME)->OnDeactivate();
+	UIMANAGER.GetElement(panel_names::BATTLE_PANEL)->OnDeactivate();
 
 	m_UILayers[m_currentUILayer]->OnDeactivate();
 

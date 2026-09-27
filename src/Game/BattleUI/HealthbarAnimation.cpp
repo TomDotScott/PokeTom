@@ -1,5 +1,6 @@
 #include "HealthbarAnimation.h"
 
+#include "BattleUiHelpers.h"
 #include "UILayer.h"
 #include "../../Engine/UI/UiManager.h"
 #include "../../Engine/UI/UiPanel.h"
@@ -9,16 +10,16 @@
 
 HealthbarAnimation::HealthbarAnimation(const eAnimationType type) :
 	AnimatedProgressBar<monster_hp_t>(type == eAnimationType::Player
-		                                  ? UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME)->GetChild<UiProgressBar>(
+		                                  ? UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL)->GetChild<UiProgressBar>(
 			                                  "PLAYER_HP_BAR")
-		                                  : UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME)->GetChild<UiProgressBar>(
+		                                  : UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL)->GetChild<UiProgressBar>(
 			                                  "OPPONENT_HP_BAR")
 	),
 	m_hpText(nullptr),
 	m_monster(nullptr),
 	m_type(type)
 {
-	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	const UiPanel* battlePanel = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	if (m_type == eAnimationType::Player)
 	{
 		UiText* text = battlePanel->GetChild<UiText>("PLAYER_HP_TEXT");

@@ -17,6 +17,8 @@ textures:
     source: sprites/ui/dialogue_box.png
   - name: BATTLE_HUD
     source: sprites/ui/battle_hud.png
+  - name: STATUS_ICONS
+    source: sprites/ui/status_icons.png
   - name: BATTLE_BACKGROUNDS
     source: sprites/ui/battle_backgrounds.png
   - name: BATTLE_SPRITE_MONSTER_403

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <frozen/unordered_map.h>
 
+#include "BattleUiHelpers.h"
 #include "HealthbarAnimation.h"
 #include "../BattleState.h"
 #include "../GameEvents.h"
@@ -27,7 +28,7 @@ BattleLoopLayer::BattleLoopLayer() :
 	m_opponentSwitchedOut(false),
 	m_textBoxText(nullptr),
 	m_playerHealthAnimation(HealthbarAnimation::eAnimationType::Player),
-	m_playerExperienceBar(UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME)->GetChild<UiProgressBar>("PLAYER_XP_BAR")),
+	m_playerExperienceBar(UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL)->GetChild<UiProgressBar>("PLAYER_XP_BAR")),
 	m_opponentHealthAnimation(HealthbarAnimation::eAnimationType::Opponent),
 	m_endContext()
 {
@@ -58,10 +59,10 @@ void BattleLoopLayer::OnActivate(const BattleState& state, const LayerResult& pr
 {
 	UILayer::OnActivate(state, prevLayerResult);
 
-	auto* battleUI = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battleUI != nullptr);
 
-	auto* textBoxText = battleUI->GetChild<UiText>(BATTLE_TEXT_NAME);
+	auto* textBoxText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
 	ASSERT(textBoxText != nullptr);
 	m_textBoxText = textBoxText;
 	m_textBoxText->OnActivate();
@@ -239,7 +240,11 @@ void BattleLoopLayer::DoTurn(
 			cured = true;
 		}
 
-		if (cured) { attacker->ClearNonVolatileStatusCondition(); }
+		if (cured)
+		{
+			attacker->ClearNonVolatileStatusCondition();
+			status_icon_utils::UpdateStatusIcon(attacker->GetNonVolatileStatusCondition(), true);
+		}
 	}
 
 	// TODO: Recoil and other effects
@@ -326,8 +331,11 @@ void BattleLoopLayer::DoTurn(
 
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "STATUS EFFECT",
-					.m_OnShow = [this, affectsDefender, effect, defender, attacker]() {
-						ShowStatusEffectText(affectsDefender ? defender : attacker, effect);
+					.m_OnShow = [this, affectsDefender, effect, defender, attacker, playerMonsterEntityID]() {
+						ShowStatusEffectText(affectsDefender ? defender : attacker,
+						                     effect,
+						                     affectsDefender ? defender->GetID() == playerMonsterEntityID : attacker->GetID() == playerMonsterEntityID
+						);
 					}
 				});
 			}
@@ -477,7 +485,7 @@ void BattleLoopLayer::AdvanceBeat()
 void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const uint8_t moveIdx) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	const std::string moveName = monster->GetMoveName(moveIdx);
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_MOVE_NAME"), monsterName, moveName).c_str());
 }
@@ -485,7 +493,7 @@ void BattleLoopLayer::ShowMoveNameText(const PocketMonsterEntity* monster, const
 void BattleLoopLayer::ShowFaintText(const PocketMonsterEntity* monster) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_FAINT"), monsterName).c_str());
 }
 
@@ -497,7 +505,7 @@ void BattleLoopLayer::ShowWhiteOutText() const
 void BattleLoopLayer::ShowMissText(const PocketMonsterEntity* monster) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_ATTACK_MISS"), monsterName).c_str());
 }
 
@@ -523,7 +531,7 @@ void BattleLoopLayer::ShowStatChangeText(const PocketMonsterEntity* monster,
                                          const bool succeeded) const
 {
 	// TODO: Nicknames
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 
 	const std::string statString = MonsterStats::GetStatString(statChangeInfo.m_Stat);
 
@@ -559,13 +567,14 @@ void BattleLoopLayer::ShowExperienceText(const monster_xp_t xpGained) const
 
 void BattleLoopLayer::ShowLevelUpText(const PocketMonsterEntity* monster, const uint8_t level) const
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("MONSTER_LEVEL_UP"), monsterName, std::to_string(level)).c_str());
 }
 
-void BattleLoopLayer::ShowStatusEffectText(const PocketMonsterEntity* monster, const eStatusEffect statusEffect)
+void BattleLoopLayer::ShowStatusEffectText(const PocketMonsterEntity* monster, const eStatusEffect statusEffect,
+                                           bool isPlayerMonster)
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 
 	hash_type effectHash;
 	switch (statusEffect)
@@ -636,6 +645,8 @@ void BattleLoopLayer::ShowStatusEffectText(const PocketMonsterEntity* monster, c
 	const string_utils::text_pages statusText = string_utils::WrapToPages(statusConditionString, 40, 3);
 	ASSERT(statusText.size() == 1);
 	m_textBoxText->SetText(statusText[0].c_str());
+
+	status_icon_utils::UpdateStatusIcon(statusEffect, isPlayerMonster);
 }
 
 void BattleLoopLayer::ShowStatusEffectDamageText(const PocketMonsterEntity* monster, eStatusEffect statusEffect)
@@ -654,7 +665,7 @@ void BattleLoopLayer::ShowStatusEffectDamageText(const PocketMonsterEntity* mons
 		return;
 	}
 
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 
 	const std::string statusConditionString = STRINGTABLE->GetDynamicString(effectHash, monsterName);
 	const string_utils::text_pages statusText = string_utils::WrapToPages(statusConditionString, 40, 3);
@@ -665,31 +676,31 @@ void BattleLoopLayer::ShowStatusEffectDamageText(const PocketMonsterEntity* mons
 
 void BattleLoopLayer::ShowFrozenSolidText(const PocketMonsterEntity* monster)
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("STAT_EFFECT_FREEZE_TICK"), monsterName).c_str());
 }
 
 void BattleLoopLayer::ShowThawedOutText(const PocketMonsterEntity* monster)
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("STAT_EFFECT_FREEZE_END"), monsterName).c_str());
 }
 
 void BattleLoopLayer::ShowAsleepText(const PocketMonsterEntity* monster)
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("STAT_EFFECT_SLEEP_TICK"), monsterName).c_str());
 }
 
 void BattleLoopLayer::ShowWokeUpText(const PocketMonsterEntity* monster)
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("STAT_EFFECT_SLEEP_END"), monsterName).c_str());
 }
 
 void BattleLoopLayer::ShowParalysedText(const PocketMonsterEntity* monster)
 {
-	const std::string monsterName = STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, monster->GetNameStringID());
+	const std::string monsterName = STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, monster->GetNameStringID());
 	m_textBoxText->SetText(STRINGTABLE->GetDynamicString(HASH("STAT_EFFECT_PARALYSIS_TICK"), monsterName).c_str());
 }
 
@@ -708,12 +719,12 @@ Move::Outcome BattleLoopLayer::UseMove(PocketMonsterEntity* attacker,
 	const Move::Outcome outcome = moveComponent->UseMove(moveIdx, *defender);
 
 #if BUILD_DEBUG
-	std::cout << STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, attacker->GetNameStringID()) << " stats:\n";
+	std::cout << STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, attacker->GetNameStringID()) << " stats:\n";
 	attacker->GetStats().Log();
 
 	std::cout << "\n";
 
-	std::cout << STRINGTABLE->GetString(STRING_MONSTER_NAME_GRP, defender->GetNameStringID()) << " stats:\n";
+	std::cout << STRINGTABLE->GetString(stringtable_groups::MONSTER_NAME, defender->GetNameStringID()) << " stats:\n";
 	defender->GetStats().Log();
 #endif
 
@@ -880,7 +891,7 @@ void BattleLoopLayer::OnMonsterFainted(const BattleState& state,
 
 void BattleLoopLayer::RefreshPlayerUI(PocketMonsterEntity* playerMonster, const uint8_t currentLevel)
 {
-	auto* battlePanel = UIMANAGER.GetElement<UiPanel>(BATTLE_PANEL_NAME);
+	auto* battlePanel = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
 	ASSERT(battlePanel);
 
 	UiProgressBar* playerPB = battlePanel->GetChild<UiProgressBar>("PLAYER_HP_BAR");
