@@ -10,7 +10,6 @@
 UiSprite::UiSprite(UiElement* parent) :
 	UiElement(eType::Sprite, parent),
 	m_sprite(nullptr),
-	m_screenScaleFactor(1.f, 1.f),
 	m_scaleFactorFromXml(1.f, 1.f)
 {
 }
@@ -34,8 +33,7 @@ void UiSprite::RecalculatePositionAfterParentMoved()
 
 void UiSprite::SetScale(const sf::Vector2f& scale) const
 {
-	const sf::Vector2f overallScale{ m_screenScaleFactor.x * scale.y, m_screenScaleFactor.x * scale.y };
-	m_sprite->setScale(overallScale);
+	m_sprite->setScale(scale);
 }
 
 sf::Vector2f UiSprite::GetSize() const
@@ -88,6 +86,14 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 	return true;
 }
 
+// TODO: What implications does setting it to a MUCH larger texture have?
+void UiSprite::SetTexture(hash_type resourceID, const sf::IntRect textureBounds)
+{
+	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(resourceID);
+	m_sprite->setTexture(*texture, true);
+	m_sprite->setTextureRect(textureBounds);
+}
+
 bool UiSprite::LoadTexture(const std::string& resourceID)
 {
 	const auto texturePath = GET_TEXTURE_PATH(resourceID);
@@ -105,8 +111,6 @@ bool UiSprite::LoadTexture(const std::string& resourceID)
 	}
 
 	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(HASH(resourceID));
-
-	m_screenScaleFactor = { 1.f, 1.f };
 
 	m_sprite = new sf::Sprite(*texture);
 	return true;
