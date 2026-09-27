@@ -36,7 +36,9 @@ So that I can see what dialogue will look like!!!
       <name>DIALOGUE_BOX</name>
       <position x="132" y="0" />
       <scale x="2" y="2" />
-      <texture>DIALOGUE_BOX</texture>
+      <textures>
+        <texture textureResourceName="DIALOGUE_BOX"/>
+      </textures>
       <layer>63</layer>
     </Sprite>
   </Panel>
@@ -50,7 +52,9 @@ So that I can see what dialogue will look like!!!
       <name>BACKGROUND</name>
       <position x="0" y="0" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="249" topLeftY="6" spriteWidth="240" spriteHeight="112">BATTLE_BACKGROUNDS</texture>
+      <textures>
+        <texture id="GRASS_PLAINS" topLeftX="249" topLeftY="6" width="240" height="112" textureResourceName="BATTLE_BACKGROUNDS"/>
+      </textures>
       <layer>-128</layer>
     </Sprite>
 
@@ -58,7 +62,9 @@ So that I can see what dialogue will look like!!!
       <name>TEXT_BOX</name>
       <position x="0" y="358" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="297" topLeftY="56" spriteWidth="240" spriteHeight="48">BATTLE_HUD</texture>
+      <textures>
+        <texture topLeftX="297" topLeftY="56" width="240" height="48" textureResourceName="BATTLE_HUD"/>
+      </textures>
       <layer>1</layer>
     </Sprite>
 
@@ -83,7 +89,9 @@ So that I can see what dialogue will look like!!!
         <position x="0" y="0" />
         <scale x="3.2" y="3.2" />
         <layer>2</layer>
-        <texture topLeftX="146" topLeftY="4" spriteWidth="120" spriteHeight="48">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="146" topLeftY="4" width="120" height="48" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
@@ -91,7 +99,9 @@ So that I can see what dialogue will look like!!!
         <position x="26" y="42" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
@@ -99,7 +109,9 @@ So that I can see what dialogue will look like!!!
         <position x="26" y="93" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
@@ -107,7 +119,9 @@ So that I can see what dialogue will look like!!!
         <position x="205" y="42" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
@@ -115,7 +129,9 @@ So that I can see what dialogue will look like!!!
         <position x="205" y="93" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
     </Panel>
 
@@ -128,7 +144,9 @@ So that I can see what dialogue will look like!!!
         <name>MOVE_TEXTBOX_BG</name>
         <position x="0" y="0" />
         <scale x="3.2" y="3.2" />
-        <texture topLeftX="297" topLeftY="4" spriteWidth="240" spriteHeight="48">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="297" topLeftY="4" width="240" height="48" textureResourceName="BATTLE_HUD"/>
+        </textures>
         <layer>2</layer>
       </Sprite>
 
@@ -137,7 +155,9 @@ So that I can see what dialogue will look like!!!
         <position x="27" y="27" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Text>
@@ -156,7 +176,9 @@ So that I can see what dialogue will look like!!!
         <position x="256" y="27" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Text>
@@ -175,7 +197,9 @@ So that I can see what dialogue will look like!!!
         <position x="27" y="95" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Text>
@@ -194,7 +218,9 @@ So that I can see what dialogue will look like!!!
         <position x="256" y="95" />
         <scale x="3.2" y="3.2" />
         <layer>3</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Text>
@@ -235,7 +261,9 @@ So that I can see what dialogue will look like!!!
       <name>OPPONENT_HP</name>
       <position x="32" y="32" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="3" topLeftY="3" spriteWidth="100" spriteHeight="29">BATTLE_HUD</texture>
+      <textures>
+        <texture topLeftX="3" topLeftY="3" width="100" height="29" textureResourceName="BATTLE_HUD"/>
+      </textures>
       <layer>16</layer>
     </Sprite>
 
@@ -243,7 +271,13 @@ So that I can see what dialogue will look like!!!
       <name>OPPONENT_STATUS_ICON</name>
       <position x="46" y="80" />
       <scale x="2.75" y="2.75" />
-      <texture topLeftX="0" topLeftY="0" spriteWidth="20" spriteHeight="8">STATUS_ICONS</texture>
+      <textures>
+        <texture id="Poison" topLeftX="0" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Paralysis" topLeftX="20" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Sleep" topLeftX="40" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Burn" topLeftX="0" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Freeze" topLeftX="20" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+      </textures>
       <layer>16</layer>
     </Sprite>
 
@@ -285,7 +319,9 @@ So that I can see what dialogue will look like!!!
       <name>PLAYER_HP</name>
       <position x="414" y="227" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="3" topLeftY="44" spriteWidth="104" spriteHeight="37">BATTLE_HUD</texture>
+      <textures>
+        <texture topLeftX="3" topLeftY="44" width="104" height="37" textureResourceName="BATTLE_HUD"/>
+      </textures>
       <layer>16</layer>
     </Sprite>
 
@@ -316,7 +352,13 @@ So that I can see what dialogue will look like!!!
       <name>PLAYER_STATUS_ICON</name>
       <position x="456" y="275" />
       <scale x="2.75" y="2.75" />
-      <texture topLeftX="0" topLeftY="0" spriteWidth="20" spriteHeight="8">STATUS_ICONS</texture>
+      <textures>
+        <texture id="Poison" topLeftX="0" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Paralysis" topLeftX="20" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Sleep" topLeftX="40" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Burn" topLeftX="0" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Freeze" topLeftX="20" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+      </textures>
       <layer>16</layer>
     </Sprite>
 

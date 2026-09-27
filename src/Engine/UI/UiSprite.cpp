@@ -3,14 +3,14 @@
 #include <iostream>
 
 #include "../Asserts.h"
-#include "../Globals.h"
 #include "../TextureManager.h"
 #include "../CodeGen/Resources.hpp"
 
 UiSprite::UiSprite(UiElement* parent) :
 	UiElement(eType::Sprite, parent),
 	m_sprite(nullptr),
-	m_scaleFactorFromXml(1.f, 1.f)
+	m_textures({ std::nullopt }),
+	m_numAssignedTextures(0)
 {
 }
 
@@ -48,70 +48,115 @@ bool UiSprite::LoadFromXML(const XmlNode& node)
 		return false;
 	}
 
-	const auto* textureNode = node.Child("Texture");
-	if (textureNode == nullptr)
+	const auto* texturesNode = node.Child("Textures");
+	ASSERT(texturesNode);
+
+	if (texturesNode == nullptr)
 	{
 		return false;
 	}
 
-	if (!LoadTexture(textureNode->m_Content))
+	for (const auto& textureNode : texturesNode->Children("texture"))
 	{
-		return false;
+		const bool loaded = LoadTextureNode(textureNode);
+		ASSERT(loaded, "Texture failed to load. See the logs for more info");
+
+		if (!loaded)
+		{
+			return false;
+		}
 	}
 
-	sf::IntRect spriteBounds = {{0, 0}, sf::Vector2<int>(m_sprite->getTexture().getSize())};
-	const auto topLeftX = textureNode->Attr("topLeftX", ~0U);
-	const auto topLeftY = textureNode->Attr("topLeftY", ~0U);
-	const auto width = textureNode->Attr("spriteWidth", ~0U);
-	const auto height = textureNode->Attr("spriteHeight", ~0U);
-	if (topLeftX ^ topLeftY ^ width ^ height)
-	{
-		spriteBounds.position = sf::Vector2i{ static_cast<int>(topLeftX), static_cast<int>(topLeftY) };
-		spriteBounds.size = sf::Vector2i{ static_cast<int>(width), static_cast<int>(height) };
-	}
+	const auto& firstTextureInfo = m_textures[0];
 
-	m_sprite->setTextureRect(spriteBounds);
+	ASSERT(firstTextureInfo.has_value(), "Something has gone wrong. The first texture in the list was not loaded properly!");
 
+	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(firstTextureInfo.value().m_ResourceName);
+
+	// TODO: This probably doesn't have to be heap allocated!
+	m_sprite = new sf::Sprite(*texture);
+
+	m_sprite->setTextureRect(firstTextureInfo.value().m_TextureBounds);
+
+	sf::Vector2f scale{ 1, 1 };
 	const auto* scaleNode = node.Child("scale");
 	if (scaleNode != nullptr)
 	{
-		m_scaleFactorFromXml = scaleNode->Attr("x", "y", { 1, 1 });
+		scale = scaleNode->Attr("x", "y", { 1, 1 });
 	}
 
 	ASSERT(m_sprite);
 
 	m_sprite->setPosition(GetPosition());
-	SetScale(m_scaleFactorFromXml);
+	SetScale(scale);
 	AddDrawable(m_sprite);
 	return true;
 }
 
-// TODO: What implications does setting it to a MUCH larger texture have?
-void UiSprite::SetTexture(hash_type resourceID, const sf::IntRect textureBounds)
+void UiSprite::SetTexture(const size_t textureIndex)
 {
-	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(resourceID);
+	ASSERT(textureIndex < 32);
+
+	std::optional<TextureInfo>& textureInfoOpt = m_textures[textureIndex];
+	ASSERT(textureInfoOpt.has_value());
+	TextureInfo& textureInfo = textureInfoOpt.value();
+
+
+	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(textureInfo.m_ResourceName);
 	m_sprite->setTexture(*texture, true);
-	m_sprite->setTextureRect(textureBounds);
+	m_sprite->setTextureRect(textureInfo.m_TextureBounds);
 }
 
-bool UiSprite::LoadTexture(const std::string& resourceID)
+void UiSprite::SetTexture(const std::string& textureID)
 {
-	const auto texturePath = GET_TEXTURE_PATH(resourceID);
+	ASSERT(m_textureNameIndexes.contains(textureID));
+	SetTexture(m_textureNameIndexes.at(textureID));
+}
+
+bool UiSprite::LoadTextureNode(const XmlNode* node)
+{
+	const std::string resourceID = node->Attr("textureResourceName", std::string{ "" });
+
+	ASSERT(!resourceID.empty());
+	if (resourceID.empty())
+	{
+		return false;
+	}
+
+	const std::filesystem::path texturePath = GET_TEXTURE_PATH(resourceID);
 	if (!std::filesystem::exists(texturePath))
 	{
-		std::cerr << "Path: " << texturePath << " does not exist!\n";
+		ASSERT(false, "Path : %s does not exist!", texturePath.c_str());
 		return false;
 	}
 
-	// Load the texture into the TextureManager
+	// Load the texture into the TextureManager if it's not there already
 	if (!TEXTUREMANAGER.LoadTexture(HASH(resourceID), texturePath))
 	{
-		std::cerr << "Failed to load texture: " << texturePath << "\n";
+		ASSERT(false, "Failed to load texture : %s", texturePath.c_str());
 		return false;
 	}
 
-	const sf::Texture* texture = TEXTUREMANAGER.GetTexture(HASH(resourceID));
+	m_textures[m_numAssignedTextures] = TextureInfo{};
+	TextureInfo& currentTexture = m_textures[m_numAssignedTextures].value();
+	currentTexture.m_ResourceName = HASH(resourceID.c_str());
 
-	m_sprite = new sf::Sprite(*texture);
+	const auto topLeftX = node->Attr("topLeftX", ~0U);
+	const auto topLeftY = node->Attr("topLeftY", ~0U);
+	const auto width = node->Attr("width", ~0U);
+	const auto height = node->Attr("height", ~0U);
+	if (topLeftX ^ topLeftY ^ width ^ height)
+	{
+		currentTexture.m_TextureBounds.position = sf::Vector2i{ static_cast<int>(topLeftX), static_cast<int>(topLeftY) };
+		currentTexture.m_TextureBounds.size = sf::Vector2i{ static_cast<int>(width), static_cast<int>(height) };
+	}
+
+	const std::string textureID = node->Attr("id", std::string{ "" });
+	if (!textureID.empty())
+	{
+		m_textureNameIndexes[textureID] = m_numAssignedTextures;
+	}
+
+	m_numAssignedTextures++;
 	return true;
 }
