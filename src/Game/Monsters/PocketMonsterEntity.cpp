@@ -73,10 +73,16 @@ hash_type PocketMonsterEntity::GetNameStringID() const
 
 MonsterStats PocketMonsterEntity::GetStats()
 {
-	auto* msc = GetComponent<MonsterStatComponent>();
+	const auto* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc != nullptr);
 
-	return msc->GetStats();
+	MonsterStats stats = msc->GetStats();
+	if (m_nonVolatileStatus == Paralysis)
+	{
+		stats.m_Speed /= 2;
+	}
+
+	return stats;
 }
 
 const MonsterStats& PocketMonsterEntity::GetBaseStats() const
@@ -223,6 +229,8 @@ void PocketMonsterEntity::FullHeal()
 	MonsterStatComponent* msc = GetComponent<MonsterStatComponent>();
 	ASSERT(msc != nullptr);
 	msc->FullHeal(m_monsterInfo.GetBaseStats(), GetLevel(), m_IVs, m_EVs);
+
+	ClearNonVolatileStatusCondition();
 }
 
 void PocketMonsterEntity::GainExperience(const monster_xp_t xp)

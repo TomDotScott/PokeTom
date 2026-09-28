@@ -129,6 +129,7 @@ hash_type Move::GetDescriptionStringTableID() const
 	return m_descriptionStringTableID;
 }
 
+// https://bulbapedia.bulbagarden.net/wiki/Damage
 uint16_t Move::ApplyDamage(PocketMonsterEntity& attacker,
                            PocketMonsterEntity& defender,
                            const float typeMultiplier,
@@ -169,8 +170,7 @@ uint16_t Move::ApplyDamage(PocketMonsterEntity& attacker,
 		const float random = static_cast<float>(moveRNG.Next()) / 100.f;
 		const float stab = m_type & attacker.GetType() ? 1.5f : 1.0f;
 
-		// TODO:
-		const float burn = 1.f;
+		const float burn = attacker.GetNonVolatileStatusCondition() == Burn ? 0.5f : 1.f;
 
 		// TODO:
 		const float other = 1.f;
