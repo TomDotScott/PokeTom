@@ -116,7 +116,7 @@ BattleState::BattleState(GameContext& gameContext, const BattleBeginContext& bat
 
 	// TODO: Dynamically position them based on the sprites
 	playerMonster->SetPosition({ 206, 389 });
-	opponentMonster->SetPosition({ 600, 236 });
+	opponentMonster->SetPosition({ 550, 232 });
 
 
 	std::cout << "Battle begun! Player monster: Level " << static_cast<int>(playerMonster->GetLevel()) << " " <<

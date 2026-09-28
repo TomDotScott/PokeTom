@@ -56,4 +56,18 @@ private:
 	AnimationType m_type;
 };
 
+class StatusEffectAnimation : public MonsterAnimation
+{
+public:
+	explicit StatusEffectAnimation(PocketMonsterEntity* monster);
+	void Play() override;
+	~StatusEffectAnimation() noexcept override = default;
+
+protected:
+	void UpdateShader(const Keyframe& frame) override;
+
+private:
+	eStatusEffect m_effect;
+};
+
 #endif // MONSTERHITANIMATION_H

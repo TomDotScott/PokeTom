@@ -41,6 +41,8 @@ shaders:
     source: shaders/hit_flash.frag
   - name: STAT_CHANGE
     source: shaders/stat_change.frag
+  - name: STATUS_FLASH
+    source: shaders/status_flash.frag
 
 animations:
   - name: PLAYER_BOY

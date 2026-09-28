@@ -329,12 +329,16 @@ void BattleLoopLayer::DoTurn(
 
 				eStatusEffect effect = static_cast<eStatusEffect>(bit);
 
+				QueueStatusEffectAnimation(affectsDefender ? defender : attacker);
+
 				m_battleBeatQueue.emplace(TextBeat{
 					.m_BeatName = "STATUS EFFECT",
 					.m_OnShow = [this, affectsDefender, effect, defender, attacker, playerMonsterEntityID]() {
 						ShowStatusEffectText(affectsDefender ? defender : attacker,
 						                     effect,
-						                     affectsDefender ? defender->GetID() == playerMonsterEntityID : attacker->GetID() == playerMonsterEntityID
+						                     affectsDefender
+							                     ? defender->GetID() == playerMonsterEntityID
+							                     : attacker->GetID() == playerMonsterEntityID
 						);
 					}
 				});
@@ -372,6 +376,21 @@ void BattleLoopLayer::DoTurn(
 	}
 }
 
+void BattleLoopLayer::QueueStatusEffectAnimation(PocketMonsterEntity* monster)
+{
+	auto statusAnim = std::make_unique<StatusEffectAnimation>(monster);
+	StatusEffectAnimation* effectAnimation = statusAnim.get();
+
+	m_battleBeatQueue.emplace(AnimationBeat{
+		.m_BeatName = "STATUS EFFECT",
+		.m_MonsterEntityAnimation = std::move(statusAnim),
+		.m_Start = [effectAnimation] { effectAnimation->Play(); },
+		.m_Update = [effectAnimation](const float deltaTime) { effectAnimation->Update(deltaTime); },
+		.m_IsComplete = [effectAnimation] { return !effectAnimation->IsPlaying(); },
+		.m_FinishAnimation = [effectAnimation] { effectAnimation->Finish(); }
+	});
+}
+
 // TODO: Support the volatile conditions (leech seed, ingrain, etc...)
 void BattleLoopLayer::DoEndOfTurnStatus(const BattleState& state,
                                         PocketMonsterEntity* monster,
@@ -405,6 +424,8 @@ void BattleLoopLayer::DoEndOfTurnStatus(const BattleState& state,
 		.m_BeatName = "STATUS EFFECT DAMAGE",
 		.m_OnShow = [this, monster, monsterCondition]() { ShowStatusEffectDamageText(monster, monsterCondition); }
 	});
+
+	QueueStatusEffectAnimation(monster);
 
 	QueueHealthbarBeat(healthBefore, healthAfter, isPlayerMonster);
 

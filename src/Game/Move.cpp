@@ -308,7 +308,9 @@ std::optional<Move::Outcome::StatusEffect> Move::ApplyStatusEffect(PocketMonster
 			continue;
 		}
 
-		if (targetEntity.ApplyStatusEffect(static_cast<eStatusEffect>(bit)))
+		bool forceChange = m_id == 156 && targetEntity.GetNonVolatileStatusCondition() != Sleep; // REST
+
+		if (targetEntity.ApplyStatusEffect(static_cast<eStatusEffect>(bit), forceChange))
 		{
 			appliedStatuses |= bit;
 		}

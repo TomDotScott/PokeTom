@@ -65,6 +65,7 @@ private:
 
 	void QueueHealthbarBeat(monster_hp_t before, monster_hp_t after, bool isPlayer);
 	void QueueStatChangeBeats(PocketMonsterEntity* target, const std::vector<Move::stat_change_outcome>& changes);
+	void QueueStatusEffectAnimation(PocketMonsterEntity* monster);
 
 	void AdvanceBeat();
 	void ShowMoveNameText(const PocketMonsterEntity* monster, uint8_t moveIdx) const;

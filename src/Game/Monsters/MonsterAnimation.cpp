@@ -11,8 +11,10 @@
 
 static constexpr std::string_view DAMAGE_SHADER = "HIT_FLASH";
 static constexpr std::string_view STAT_CHANGE_SHADER = "STAT_CHANGE";
+static constexpr std::string_view STATUS_SHADER = "STATUS_FLASH";
 
-MonsterAnimation::MonsterAnimation(PocketMonsterEntity* monster):
+
+MonsterAnimation::MonsterAnimation(PocketMonsterEntity* monster) :
 	m_monster(monster),
 	m_animation()
 {
@@ -118,4 +120,63 @@ void StatAnimation::UpdateShader(const Keyframe& frame)
 	currentShader->setUniform("arrowTiling", sf::Glsl::Vec2(4.f, 4.f));
 
 	MonsterAnimation::UpdateShader(frame);
+}
+
+namespace
+{
+	sf::Glsl::Vec3 get_status_flash_colour(const eStatusEffect condition)
+	{
+		switch (condition)
+		{
+		case Burn:
+			return { 1.f, 0.05f, 0.05f };
+		case Paralysis:
+			return { 1.f, 0.85f, 0.05f };
+		case Toxic:
+		case Poison:
+			return { 0.6f, 0.05f, 0.75f };
+		case Freeze:
+			return { 0.1f, 0.85f, 0.85f };
+		default:
+			return { 1.0f, 1.0f, 1.0f };
+		}
+	}
+}
+
+StatusEffectAnimation::StatusEffectAnimation(PocketMonsterEntity* monster) :
+	MonsterAnimation(monster),
+	m_effect(NoStatus)
+{
+	m_effect = monster->GetNonVolatileStatusCondition();
+}
+
+void StatusEffectAnimation::Play()
+{
+	m_monster->SetCurrentShader(STATUS_SHADER);
+
+	switch (m_effect)
+	{
+	case Burn:
+		MonsterAnimation::Play(battle_animations::Burn());
+		break;
+	case Freeze:
+		MonsterAnimation::Play(battle_animations::Freeze());
+		break;
+	case Paralysis:
+		MonsterAnimation::Play(battle_animations::Paralysis());
+		break;
+	case Toxic:
+	case Poison:
+		MonsterAnimation::Play(battle_animations::Poison());
+		break;
+	case Sleep:
+		MonsterAnimation::Play(battle_animations::Sleep());
+		break;
+	}
+}
+
+void StatusEffectAnimation::UpdateShader(const Keyframe& frame)
+{
+	m_monster->SetShaderVariable(STATUS_SHADER, "flashColour", get_status_flash_colour(m_effect));
+	m_monster->SetShaderVariable(STATUS_SHADER, "flashAmount", frame.m_Opacity);
 }

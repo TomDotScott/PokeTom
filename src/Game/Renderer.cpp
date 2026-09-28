@@ -281,54 +281,49 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 	const float w = bounds.size.x;
 	const float h = bounds.size.y;
 
-	float ox = 0.f, oy = 0.f;
+	//float ox = 0.f, oy = 0.f;
 
-	switch (animator.GetCurrentClip().m_SpriteAnchor)
-	{
-	case Animation::eSpriteAnchor::TOP_LEFT: ox = 0.f;
-		oy = 0.f;
-		break;
-	case Animation::eSpriteAnchor::TOP_MIDDLE: ox = w / 2.f;
-		oy = 0.f;
-		break;
-	case Animation::eSpriteAnchor::TOP_RIGHT: ox = w;
-		oy = 0.f;
-		break;
-	case Animation::eSpriteAnchor::MIDDLE_LEFT: ox = 0.f;
-		oy = h / 2.f;
-		break;
-	case Animation::eSpriteAnchor::MIDDLE_MIDDLE: ox = w / 2.f;
-		oy = h / 2.f;
-		break;
-	case Animation::eSpriteAnchor::MIDDLE_RIGHT: ox = w;
-		oy = h / 2.f;
-		break;
-	case Animation::eSpriteAnchor::BOTTOM_LEFT: ox = 0.f;
-		oy = h;
-		break;
-	case Animation::eSpriteAnchor::BOTTOM_MIDDLE: ox = w / 2.f;
-		oy = h;
-		break;
-	case Animation::eSpriteAnchor::BOTTOM_RIGHT: ox = w;
-		oy = h;
-		break;
-	}
+	//switch (animator.GetCurrentClip().m_SpriteAnchor)
+	//{
+	//case Animation::eSpriteAnchor::TOP_LEFT: ox = 0.f;
+	//	oy = 0.f;
+	//	break;
+	//case Animation::eSpriteAnchor::TOP_MIDDLE: ox = w / 2.f;
+	//	oy = 0.f;
+	//	break;
+	//case Animation::eSpriteAnchor::TOP_RIGHT: ox = w;
+	//	oy = 0.f;
+	//	break;
+	//case Animation::eSpriteAnchor::MIDDLE_LEFT: ox = 0.f;
+	//	oy = h / 2.f;
+	//	break;
+	//case Animation::eSpriteAnchor::MIDDLE_MIDDLE: ox = w / 2.f;
+	//	oy = h / 2.f;
+	//	break;
+	//case Animation::eSpriteAnchor::MIDDLE_RIGHT: ox = w;
+	//	oy = h / 2.f;
+	//	break;
+	//case Animation::eSpriteAnchor::BOTTOM_LEFT: ox = 0.f;
+	//	oy = h;
+	//	break;
+	//case Animation::eSpriteAnchor::BOTTOM_MIDDLE: ox = w / 2.f;
+	//	oy = h;
+	//	break;
+	//case Animation::eSpriteAnchor::BOTTOM_RIGHT: ox = w;
+	//	oy = h;
+	//	break;
+	//}
+
+	float ox = w / 2.f;
+	float oy = h;
 
 	sprite.setOrigin({ ox, oy });
 
 	const sf::Vector2f offsetPosition = entity->GetPosition() + entity->GetOffsetPosition();
-	const sf::Vector2f offsetScale = {
-		entity->GetScale().x * entity->GetOffsetScale().x,
-		entity->GetScale().y * entity->GetOffsetScale().y
-	};
 	const sf::Angle offsetRotation = entity->GetRotation() + entity->GetOffsetRotation();
 
 	sprite.setPosition(offsetPosition + sf::Vector2f{ 16, 0 });
-	sprite.setScale(offsetScale);
 	sprite.setRotation(offsetRotation);
-
-	/*sprite.setOrigin({ sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2 });
-	sprite.setPosition(entity->GetPosition() + sf::Vector2f{ 16, 0 });*/
 
 	sf::Vector2f spriteScale = entity->GetScale();
 	if (currentFrame.m_SpriteFlippedHorizontal)
@@ -341,7 +336,12 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 		spriteScale.y *= -1;
 	}
 
-	sprite.setScale(spriteScale);
+	const sf::Vector2f offsetScale = {
+		spriteScale.x * entity->GetOffsetScale().x,
+		spriteScale.y * entity->GetOffsetScale().y
+	};
+
+	sprite.setScale(offsetScale);
 
 	// HACKY!!!
 	if (sf::Shader* shader = const_cast<Entity*>(entity)->GetCurrentShader())

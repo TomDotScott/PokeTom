@@ -11,7 +11,7 @@ struct Keyframe
 {
 	float m_Time = 0.f;
 	sf::Vector2f m_Offset = { 0.f, 0.f };
-	sf::Vector2f m_Scale = { 0.f, 0.f };
+	sf::Vector2f m_Scale = { 1.f, 1.f };
 	sf::Angle m_Rotation = sf::Angle::Zero;
 	float m_Opacity = 1.f;
 	sf::Color m_Colour = sf::Color::White;

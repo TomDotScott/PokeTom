@@ -59,6 +59,7 @@ PocketMonsterEntity::PocketMonsterEntity(const uint32_t monsterID, const uint8_t
 	// Make sure we have the correct shaders loaded
 	ASSERT(LoadShader("HIT_FLASH", sf::Shader::Type::Fragment));
 	ASSERT(LoadShader("STAT_CHANGE", sf::Shader::Type::Fragment));
+	ASSERT(LoadShader("STATUS_FLASH", sf::Shader::Type::Fragment));
 }
 
 uint32_t PocketMonsterEntity::GetMonsterID() const
@@ -175,6 +176,11 @@ bool PocketMonsterEntity::ApplyStatusEffect(const eStatusEffect statusEffect, co
 			}
 		}
 
+		m_nonVolatileStatus = statusEffect;
+		return true;
+	}
+	if (force)
+	{
 		m_nonVolatileStatus = statusEffect;
 		return true;
 	}
