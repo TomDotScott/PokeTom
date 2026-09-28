@@ -1,6 +1,11 @@
 #include "Entity.h"
+
+#include <SFML/Graphics/Shader.hpp>
+
+#include "Asserts.h"
 #include "GridMovementComponent.h"
 #include "Animation/AnimationComponent.h"
+#include "../Engine/CodeGen/Resources.hpp"
 
 Entity::Entity() : Entity(sf::Vector2f{}, sf::Vector2f{})
 {
@@ -9,9 +14,9 @@ Entity::Entity() : Entity(sf::Vector2f{}, sf::Vector2f{})
 Entity::Entity(const sf::Vector2f& position, const sf::Vector2f& size) :
 	GameObject(position),
 	IUpdateable(),
-	m_size(size),
-	m_scale({ 2.f, 2.f })
+	m_size(size)
 {
+	SetScale({ 2.f, 2.f });
 }
 
 Entity::~Entity()
@@ -80,19 +85,68 @@ const sf::Vector2f& Entity::GetSize() const
 	return m_size;
 }
 
-sf::Vector2f Entity::GetScale()
+void Entity::SetOffsetPosition(const sf::Vector2f& position)
 {
-	return m_scale;
+	m_animationOffset.setPosition(position);
 }
 
-const sf::Vector2f& Entity::GetScale() const
+sf::Vector2f Entity::GetOffsetPosition() const
 {
-	return m_scale;
+	return m_animationOffset.getPosition();
 }
 
-void Entity::SetScale(const sf::Vector2f& scale)
+void Entity::SetOffsetRotation(const sf::Angle& angle)
 {
-	m_scale = scale;
+	m_animationOffset.setRotation(angle);
+}
+
+sf::Angle Entity::GetOffsetRotation() const
+{
+	return m_animationOffset.getRotation();
+}
+
+void Entity::SetOffsetScale(const sf::Vector2f& scale)
+{
+	m_animationOffset.setScale(scale);
+}
+
+sf::Vector2f Entity::GetOffsetScale() const
+{
+	return m_animationOffset.getScale();
+}
+
+bool Entity::LoadShader(const std::string_view& shaderResourceName, const sf::Shader::Type type)
+{
+	ASSERT(!m_shaders.contains(shaderResourceName));
+
+	m_shaders[shaderResourceName] = sf::Shader();
+
+	return m_shaders.at(shaderResourceName).loadFromFile(GET_SHADER_PATH(shaderResourceName), type);
+}
+
+void Entity::SetCurrentShader(const std::string_view& shaderResourceName)
+{
+	m_currentShader = shaderResourceName;
+}
+
+sf::Shader* Entity::GetShader(const std::string_view& shaderResourceName)
+{
+	if (m_shaders.contains(shaderResourceName))
+	{
+		return &m_shaders.at(shaderResourceName);
+	}
+
+	return nullptr;
+}
+
+sf::Shader* Entity::GetCurrentShader()
+{
+	if (m_currentShader.empty())
+	{
+		return nullptr;
+	}
+
+	return GetShader(m_currentShader);
 }
 
 void Entity::OnPlayerInteractPressed()

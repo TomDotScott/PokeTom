@@ -1,0 +1,421 @@
+#include "MoveSelectLayer.h"
+
+#include "BattleUiHelpers.h"
+#include "../BattleState.h"
+#include "../MoveManager.h"
+#include "../../Engine/Asserts.h"
+#include "../../Engine/Stringtable.h"
+#include "../../Engine/UI/UiManager.h"
+#include "../../Engine/UI/UiPanel.h"
+#include "../../Engine/UI/UiText.h"
+#include "../Monsters/PocketMonsterEntity.h"
+
+MoveSelectLayer::MoveSelectLayer() :
+	m_playerMonster(nullptr),
+	m_opponentMonster(nullptr),
+	m_validMoves(),
+	m_selectedMove(eSelection::Move1),
+	m_backRequested(false),
+	m_isShowingDescriptionText(false),
+	m_descriptionIndex(0)
+{
+}
+
+UILayer::LayerResult MoveSelectLayer::GetLayerResult() const
+{
+	if (m_backRequested)
+	{
+		return {
+			.m_NextLayer = OptionSelect
+		};
+	}
+	return {
+		.m_NextLayer = BattleLoop,
+		.m_ChosenMoveIndex = static_cast<uint8_t>(m_selectedMove),
+	};
+}
+
+void MoveSelectLayer::OnNavigateButtonPressed(const eUILayerNavigateButtons button)
+{
+	if (m_isShowingDescriptionText)
+	{
+		return;
+	}
+
+	const bool upDown = button & (UP | DOWN);
+	const bool leftRight = button & (LEFT | RIGHT);
+
+	if (upDown)
+	{
+		switch (m_selectedMove)
+		{
+		case eSelection::Move1:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move3)])
+			{
+				OnSelectedMoveChanged(eSelection::Move3);
+			}
+			break;
+		case eSelection::Move2:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move4)])
+			{
+				OnSelectedMoveChanged(eSelection::Move4);
+			}
+			break;
+		case eSelection::Move3:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move1)])
+			{
+				OnSelectedMoveChanged(eSelection::Move1);
+			}
+			break;
+		case eSelection::Move4:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move2)])
+			{
+				OnSelectedMoveChanged(eSelection::Move2);
+			}
+			break;
+		}
+	}
+	else if (leftRight)
+	{
+		switch (m_selectedMove)
+		{
+		case eSelection::Move1:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move2)])
+			{
+				OnSelectedMoveChanged(eSelection::Move2);
+			}
+			break;
+		case eSelection::Move2:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move1)])
+			{
+				OnSelectedMoveChanged(eSelection::Move1);
+			}
+			break;
+		case eSelection::Move3:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move4)])
+			{
+				OnSelectedMoveChanged(eSelection::Move4);
+			}
+			break;
+		case eSelection::Move4:
+			if (m_validMoves[static_cast<size_t>(eSelection::Move3)])
+			{
+				OnSelectedMoveChanged(eSelection::Move3);
+			}
+			break;
+		}
+	}
+}
+
+void MoveSelectLayer::OnSelectButtonPressed()
+{
+	if (m_isShowingDescriptionText)
+	{
+		UpdateDescriptionText();
+		return;
+	}
+
+	ASSERT(this->m_playerMonster != nullptr);
+
+	const MoveComponent* playerMoveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(playerMoveComponent);
+
+	m_finished = playerMoveComponent->CanUseMove(static_cast<uint8_t>(m_selectedMove));
+}
+
+void MoveSelectLayer::OnBackButtonPressed()
+{
+	if (m_isShowingDescriptionText)
+	{
+		DismissMoveDescription();
+		return;
+	}
+
+	m_finished = true;
+	m_backRequested = true;
+}
+
+void MoveSelectLayer::OnMoreInfoButtonPressed()
+{
+	if (m_isShowingDescriptionText)
+	{
+		return;
+	}
+
+	ShowMoveDescription();
+	m_isShowingDescriptionText = true;
+}
+
+void MoveSelectLayer::OnActivate(const BattleState& state, const LayerResult& prevLayerResult)
+{
+	UILayer::OnActivate(state, prevLayerResult);
+
+	m_backRequested = false;
+
+	auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
+	ASSERT(battleUI != nullptr);
+
+	auto* optionsUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::OPTIONS_PANEL));
+	ASSERT(optionsUI != nullptr);
+
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
+	ASSERT(moveUI != nullptr);
+
+	auto* textBoxText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
+	ASSERT(textBoxText != nullptr);
+
+	optionsUI->OnDeactivate();
+	textBoxText->OnDeactivate();
+	moveUI->OnActivate();
+
+	this->m_playerMonster = state.GetGameContext().m_Entities.Get<
+		PocketMonsterEntity>(state.GetPlayerMonsterEntityID());
+	ASSERT(this->m_playerMonster != nullptr);
+
+	this->m_opponentMonster = state.GetGameContext().m_Entities.Get<PocketMonsterEntity>(
+		state.GetOpponentMonsterEntityID());
+	ASSERT(this->m_opponentMonster != nullptr);
+
+	// Set up the move text
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+
+	static constexpr std::array uiComponentNames{
+		"MOVE_1_TEXT",
+		"MOVE_2_TEXT",
+		"MOVE_3_TEXT",
+		"MOVE_4_TEXT",
+	};
+
+	for (size_t i = 0; i < MOVE_COUNT; ++i)
+	{
+		const Move& move = moveComponent->GetMove(i);
+
+		bool isValid = move.IsValid();
+		m_validMoves[i] = isValid;
+
+		UiText* moveText = dynamic_cast<UiText*>(moveUI->GetChild(uiComponentNames[i]));
+		ASSERT(moveText != nullptr);
+
+		if (isValid)
+		{
+			moveText->SetText(move.GetNameStringTableID());
+		}
+		else
+		{
+			moveText->SetText(" ");
+		}
+	}
+
+	OnSelectedMoveChanged(eSelection::Move1);
+}
+
+void MoveSelectLayer::OnDeactivate()
+{
+	UILayer::OnDeactivate();
+
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
+	ASSERT(battleUI != nullptr);
+
+	auto* moveUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
+	ASSERT(moveUI != nullptr);
+
+	moveUI->OnDeactivate();
+}
+
+void MoveSelectLayer::OnSelectedMoveChanged(const eSelection newMove)
+{
+	m_selectedMove = newMove;
+
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
+	ASSERT(battleUI != nullptr);
+
+	const auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
+	ASSERT(moveSelectUI != nullptr);
+
+	// Update the arrow
+	auto* move1 = moveSelectUI->GetChild("MOVE_1_ARROW");
+	ASSERT(move1 != nullptr);
+
+	auto* move2 = moveSelectUI->GetChild("MOVE_2_ARROW");
+	ASSERT(move2 != nullptr);
+
+	auto* move3 = moveSelectUI->GetChild("MOVE_3_ARROW");
+	ASSERT(move3 != nullptr);
+
+	auto* move4 = moveSelectUI->GetChild("MOVE_4_ARROW");
+	ASSERT(move4 != nullptr);
+
+	move1->OnDeactivate();
+	move2->OnDeactivate();
+	move3->OnDeactivate();
+	move4->OnDeactivate();
+
+	switch (newMove)
+	{
+	case eSelection::Move1:
+		move1->OnActivate();
+		break;
+	case eSelection::Move2:
+		move2->OnActivate();
+		break;
+	case eSelection::Move3:
+		move3->OnActivate();
+		break;
+	case eSelection::Move4:
+		move4->OnActivate();
+		break;
+	}
+
+	// Update the PP/Type text
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+	const Move& move = moveComponent->GetMove(static_cast<uint8_t>(newMove));
+
+
+	auto* ppText = moveSelectUI->GetChild<UiText>("MOVE_PP");
+	ASSERT(ppText != nullptr);
+
+	const unsigned currentPP = move.GetPPRemaining();
+	const unsigned maxPP = move.GetMaxPP();
+	ppText->SetText("%u/%u", currentPP, maxPP);
+
+	auto* typeText = moveSelectUI->GetChild<UiText>("MOVE_TYPE");
+	ASSERT(typeText != nullptr);
+
+	// TODO: This is horrible...
+	switch (move.GetType())
+	{
+	case NORMAL:
+		typeText->SetText("NRM");
+		typeText->SetColour(0xa8a878FF);
+		break;
+	case FIRE:
+		typeText->SetText("FIR");
+		typeText->SetColour(0xf08030FF);
+		break;
+	case WATER:
+		typeText->SetText("WTR");
+		typeText->SetColour(0x6890f0FF);
+		break;
+	case ELECTRIC:
+		typeText->SetText("ELE");
+		typeText->SetColour(0xf8b010FF);
+		break;
+	case GRASS:
+		typeText->SetText("GRS");
+		typeText->SetColour(0x78c850FF);
+		break;
+	case ICE:
+		typeText->SetText("ICE");
+		typeText->SetColour(0x98d8d8FF);
+		break;
+	case FIGHTING:
+		typeText->SetText("FGT");
+		typeText->SetColour(0xe83000FF);
+		break;
+	case POISON:
+		typeText->SetText("PSN");
+		typeText->SetColour(0xa040a0FF);
+		break;
+	case GROUND:
+		typeText->SetText("GRD");
+		typeText->SetColour(0xb8a038FF);
+		break;
+	case FLYING:
+		typeText->SetText("FLY");
+		typeText->SetColour(0x507888FF);
+		break;
+	case PSYCHIC:
+		typeText->SetText("PSY");
+		typeText->SetColour(0xf85888FF);
+		break;
+	case BUG:
+		typeText->SetText("BUG");
+		typeText->SetColour(0xd8e030FF);
+		break;
+	case ROCK:
+		typeText->SetText("RCK");
+		typeText->SetColour(0x404040FF);
+		break;
+	case GHOST:
+		typeText->SetText("GHO");
+		typeText->SetColour(0x507888FF);
+		break;
+	case DRAGON:
+		typeText->SetText("DRG");
+		typeText->SetColour(0x6890f0FF);
+		break;
+	case STEEL:
+		typeText->SetText("STL");
+		typeText->SetColour(0xa8a878FF);
+		break;
+	case DARK:
+		typeText->SetText("DRK");
+		typeText->SetColour(0xa040a0FF);
+		break;
+	case FAIRY:
+		typeText->SetText("FAI");
+		typeText->SetColour(0xf85888FF);
+		break;
+	default:
+		ASSERT_MSG(false, "UNKNOWN TYPE COMBINATION %u", move.GetType());
+		break;
+	}
+}
+
+void MoveSelectLayer::ShowMoveDescription()
+{
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
+	ASSERT(battleUI != nullptr);
+
+	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
+	ASSERT(moveSelectUI != nullptr);
+	moveSelectUI->OnDeactivate();
+
+	MoveComponent* moveComponent = this->m_playerMonster->GetComponent<MoveComponent>();
+	ASSERT(moveComponent != nullptr);
+	const Move& move = moveComponent->GetMove(static_cast<uint8_t>(m_selectedMove));
+	m_currentMoveDescription = string_utils::WrapToPages(STRINGTABLE->GetString(move.GetDescriptionStringTableID()), 32, 2);
+	m_descriptionIndex = 0;
+
+	UpdateDescriptionText();
+	m_isShowingDescriptionText = true;
+}
+
+void MoveSelectLayer::UpdateDescriptionText()
+{
+	if (m_descriptionIndex >= m_currentMoveDescription.size())
+	{
+		DismissMoveDescription();
+		return;
+	}
+
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
+	ASSERT(battleUI != nullptr);
+
+	auto* moveDescriptionText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
+	ASSERT(moveDescriptionText);
+	moveDescriptionText->OnActivate();
+
+	moveDescriptionText->SetText(m_currentMoveDescription[m_descriptionIndex].c_str());
+	m_descriptionIndex++;
+}
+
+void MoveSelectLayer::DismissMoveDescription()
+{
+	const auto* battleUI = UIMANAGER.GetElement<UiPanel>(panel_names::BATTLE_PANEL);
+	ASSERT(battleUI != nullptr);
+
+	auto* moveDescriptionText = battleUI->GetChild<UiText>(text_names::BATTLE_TEXT);
+	ASSERT(moveDescriptionText);
+	moveDescriptionText->OnDeactivate();
+
+	auto* moveSelectUI = dynamic_cast<UiPanel*>(battleUI->GetChild(panel_names::MOVES_PANEL));
+	ASSERT(moveSelectUI != nullptr);
+
+	moveSelectUI->OnActivate();
+	OnSelectedMoveChanged(m_selectedMove);
+
+	m_isShowingDescriptionText = false;
+}

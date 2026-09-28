@@ -45,6 +45,7 @@ public:
 	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
 
 	sf::Vector2i GetGridPositionFromWorldPosition(const sf::Vector2f& worldSpacePosition) const;
+	sf::Vector2f GetWorldPositionFromGridPosition(const sf::Vector2i& gridPosition) const;
 
 	const TileSheet::TileDefinition* GetTileAtPosition(const sf::Vector2f& worldSpacePosition, unsigned tileFlags = TileSheet::TileDefinition::None) const;
 

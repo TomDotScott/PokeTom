@@ -86,18 +86,49 @@ void TileSheet::BuildTileDefinitions(const std::shared_ptr<TSX>& tsxParser)
 		for (const auto& tileProperties : tsxTile.m_Properties)
 		{
 			// TODO: These probably shouldn't be hardcoded!
-			if (tileProperties.m_Name == "isBarrier" && tileProperties.m_Value.m_bValue) flags |= TileDefinition::Properties::IsBarrier;
-			else if (tileProperties.m_Name == "isBreakable" && tileProperties.m_Value.m_bValue) flags |= TileDefinition::Properties::IsBreakable;
-			else if (tileProperties.m_Name == "isGrass" && tileProperties.m_Value.m_bValue) flags |= TileDefinition::Properties::IsGrass;
-			else if (tileProperties.m_Name == "isWater" && tileProperties.m_Value.m_bValue) flags |= TileDefinition::Properties::IsWater;
-			else if (tileProperties.m_Name == "isDoor" && tileProperties.m_Value.m_bValue) flags |= TileDefinition::Properties::IsDoor;
+			if (tileProperties.m_Name == "isBarrier" && tileProperties.m_Value.m_bValue)
+			{
+				flags |= TileDefinition::Properties::IsBarrier;
+			}
+			else if (tileProperties.m_Name == "isBreakable" && tileProperties.m_Value.m_bValue)
+			{
+				flags |= TileDefinition::Properties::IsBreakable;
+			}
+			else if (tileProperties.m_Name == "isGrass" && tileProperties.m_Value.m_bValue)
+			{
+				flags |= TileDefinition::Properties::IsGrass;
+			}
+			else if (tileProperties.m_Name == "isWater" && tileProperties.m_Value.m_bValue)
+			{
+				flags |= TileDefinition::Properties::IsWater;
+			}
+			else if (tileProperties.m_Name == "isDoor" && tileProperties.m_Value.m_bValue)
+			{
+				flags |= TileDefinition::Properties::IsDoor;
+			}
+		}
+
+		std::optional<std::vector<TileDefinition::AnimFrame>> tileAnimation = std::nullopt;
+		const auto& tsxAnimation = tsxTile.m_Animation;
+		if (tsxAnimation.has_value())
+		{
+			const auto& tsxFrames = tsxAnimation.value();
+
+			tileAnimation = std::vector<TileDefinition::AnimFrame>();
+			tileAnimation.value().reserve(tsxFrames.size());
+
+			for (const auto& [tileID, duration] : tsxFrames)
+			{
+				tileAnimation->emplace_back(tileID, duration);
+			}
 		}
 
 		m_tiles[tsxTile.m_ID] = {
-			tsxTile.m_ID + m_firstGID - 1,
-			tsxTile.m_ID,
-			flags,
-			m_name
+			.m_GlobalID = tsxTile.m_ID + m_firstGID - 1,
+			.m_LocalID = tsxTile.m_ID,
+			.m_Flags = flags,
+			.m_ParentTileSetName = m_name,
+			.m_Animation = tileAnimation
 		};
 	}
 }

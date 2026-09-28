@@ -2,6 +2,9 @@
 #include "../Entity.h"
 #include "../CodeGen/Resources.hpp"
 
+// TODO: Should this be a command line argument instead?
+#define ALLOW_ANIMATION_PLAYBACK 1
+
 EntityAnimationComponent::EntityAnimationComponent(
 	Entity* owner,
 	const std::string_view& animDictResourceName,
@@ -16,7 +19,9 @@ EntityAnimationComponent::EntityAnimationComponent(
 
 void EntityAnimationComponent::Update(const float deltaTime)
 {
+#if ALLOW_ANIMATION_PLAYBACK
 	m_player.Update(deltaTime);
+#endif
 }
 
 void EntityAnimationComponent::PlayAnimation(const eAnimationName animation, const bool forceRestart)

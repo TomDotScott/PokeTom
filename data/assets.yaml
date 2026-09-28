@@ -17,16 +17,32 @@ textures:
     source: sprites/ui/dialogue_box.png
   - name: BATTLE_HUD
     source: sprites/ui/battle_hud.png
+  - name: STATUS_ICONS
+    source: sprites/ui/status_icons.png
   - name: BATTLE_BACKGROUNDS
     source: sprites/ui/battle_backgrounds.png
   - name: BATTLE_SPRITE_MONSTER_403
     source: sprites/monsters/shinx.png
   - name: BATTLE_SPRITE_MONSTER_507
     source: sprites/monsters/herdier.png
+  - name: STAT_INCREASE_ARROWS
+    source: sprites/battle_animations/stat_increase.png
+  - name: STAT_DECREASE_ARROWS
+    source: sprites/battle_animations/stat_decrease.png
 
 fonts:
   - name: DEFAULT
     source: fonts/FiraCode-Regular.ttf
+  - name: TEXT_BOX
+    source: fonts/Pokemon-Classic.ttf
+
+shaders:
+  - name: HIT_FLASH
+    source: shaders/hit_flash.frag
+  - name: STAT_CHANGE
+    source: shaders/stat_change.frag
+  - name: STATUS_FLASH
+    source: shaders/status_flash.frag
 
 animations:
   - name: PLAYER_BOY

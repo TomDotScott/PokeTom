@@ -8,7 +8,7 @@
 class OverworldState : public IGameState
 {
 public:
-	OverworldState(GameContext& ctx, hash_type overworldLevel, std::optional<sf::Vector2f> playerPosition);
+	OverworldState(GameContext& ctx, hash_type overworldLevel, std::optional<sf::Vector2f> playerPosition, bool healPlayerParty);
 
 	void OnEnter() override;
 	void OnExit() override;
@@ -16,7 +16,7 @@ public:
 	void Render(sf::RenderWindow& window) const override;
 
 private:
-	GameContext& m_ctx;
+	GameContext& m_gameContext;
 	sf::FloatRect m_worldBounds;
 	sf::FloatRect m_lastCameraRect;
 	float m_cameraRebuildThreshold;
@@ -36,6 +36,7 @@ private:
 	void UpdateCamera(float deltaTime);
 	void CheckForPortals(Entity* player, const Level* currentLevel);
 	void CheckForTallGrass(Entity* player, const Level* currentLevel);
+
 	void OnLevelEntered();
 	void RespawnPlayerAtPortal(const hash_type& levelName, const hash_type& spawnPointName);
 	void RespawnPlayerInWorld(const hash_type& levelName, const sf::Vector2f& position);

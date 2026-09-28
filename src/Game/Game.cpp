@@ -1,20 +1,19 @@
 #include "Game.h"
 #include <fstream>
-#include <iostream>
 #include <set>
 #include <SFML/Graphics.hpp>
 
 #include "BattleState.h"
 #include "GameEvents.h"
 #include "OverworldState.h"
-#include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Asserts.h"
 #include "../Engine/EntityRegistry.h"
-#include "../Engine/Stringtable.h"
 #include "../Engine/Globals.h"
 #include "../Engine/GridMovementComponent.h"
 #include "../Engine/Maths.h"
+#include "../Engine/Stringtable.h"
 #include "../Engine/Timer.h"
+#include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
 Game::Game(sol::state& lua) :
@@ -25,10 +24,12 @@ Game::Game(sol::state& lua) :
 		.m_Renderer = Renderer(),
 		.m_PlayerEntityID = 0x69
 	}),
-	m_luaBindings(lua, m_context.m_World, m_context.m_Entities)
+	m_luaBindings(lua, m_context.m_World, m_context.m_Entities),
+	m_lastHospitalCheckpoint({
+		.m_LevelHash = HASH(START_LEVEL),
+		.m_SpawnPointHash = HASH("player_spawn")
+	})
 {
-	const auto x = PocketMonsterManager::Get();
-
 	// TODO: Make this a variable, loaded at startup
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
@@ -64,9 +65,6 @@ Game::Game(sol::state& lua) :
 
 	m_context.m_World.LoadLevelScripts(lua);
 
-	m_currentState = std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt);
-
-
 	game_events::OnScreenFadeTriggered.On([this]()
 	{
 		m_screenFader.StartFade(ScreenFader::FadeType::FadeOut, 1.f, 0.5f);
@@ -79,22 +77,96 @@ Game::Game(sol::state& lua) :
 
 	game_events::OnBattleEnd.On([this](const BattleEndContext& ctx)
 	{
-		RequestTransition(std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition));
+		if (ctx.m_SendPlayerToHospital)
+		{
+			// TODO: Proper transition to some dialogue saying that the player whited out and rushed back to the hospital
+			const std::shared_ptr<Level> level = m_context.m_World.GetLevel(m_lastHospitalCheckpoint.m_LevelHash);
+			sf::Vector2f spawnPoint = level->GetWorldPositionFromGridPosition(
+				level->GetSpawnPointData(m_lastHospitalCheckpoint.m_SpawnPointHash).m_GridPosition);
+			RequestTransition(
+				std::make_unique<OverworldState>(m_context, m_lastHospitalCheckpoint.m_LevelHash, spawnPoint, true));
+		}
+		else
+		{
+			RequestTransition(
+				std::make_unique<OverworldState>(m_context, ctx.m_LevelHash, ctx.m_PlayerPosition, false));
+		}
 	});
+
+	RequestTransition(std::make_unique<OverworldState>(m_context, HASH(START_LEVEL), std::nullopt, false));
+
+#if !BUILD_MASTER
+	m_mapper.Map(TRIGGER_BATTLE, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::B));
+
+	m_mapper.OnButtonPressed(TRIGGER_BATTLE, [this]()
+	{
+		static Entity* debugOpponent = nullptr;
+
+		if (debugOpponent != nullptr)
+		{
+			m_context.m_Entities.Destroy(debugOpponent->GetID());
+			debugOpponent = nullptr;
+		}
+
+		auto player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
+		debugOpponent = &m_context.m_Entities.Create();
+
+		auto& mpc = debugOpponent->AddComponent<MonsterPartyComponent>(
+			debugOpponent,
+			m_context,
+			std::vector<MonsterPartyComponent::MonsterPartyInfo>{
+				{
+					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(403),
+					.m_Level = 12
+				},
+			}
+		);
+
+		mpc.OnActivate();
+
+		game_events::OnBattleStart.Fire({
+			.m_LevelHash = m_context.m_World.GetLevelAtPosition(player->GetPosition())->GetName(),
+			.m_PlayerPosition = player->GetPosition(),
+			.m_PlayerEntityID = player->GetID(),
+			.m_OpponentEntityID = debugOpponent->GetID(),
+			.m_isTrainerBattle = false,
+		});
+
+		game_events::OnBattleEnd.Once([this](const BattleEndContext& /*ctx*/)
+		{
+			printf("DEBUG BATTLE ENDED!\n");
+
+			game_events::OnScreenFaded.Once([this]()
+			{
+				m_context.m_Entities.Destroy(debugOpponent->GetID());
+				debugOpponent = nullptr;
+			});
+		});
+	});
+#endif
 }
 
 Game::~Game() = default;
 
 void Game::Update(const float deltaTime)
 {
+#if !BUILD_MASTER
+	m_mapper.Update();
+#endif
+
 	if (m_screenFader.FadeInProgress())
 	{
 		UpdateScreenFade(deltaTime);
 	}
 	else
 	{
-		m_currentState->Update(deltaTime);
+		if (m_currentState != nullptr)
+		{
+			m_currentState->Update(deltaTime);
+		}
 	}
+
+	m_context.m_Renderer.UpdateAnimatedTiles(deltaTime);
 }
 
 void Game::Render(sf::RenderWindow& window) const
@@ -104,7 +176,10 @@ void Game::Render(sf::RenderWindow& window) const
 		static_cast<sf::Vector2f>(GRAPHIC_SETTINGS.GetScreenDetails().m_ScreenSize)
 	});
 
-	m_currentState->Render(window);
+	if (m_currentState != nullptr)
+	{
+		m_currentState->Render(window);
+	}
 
 	if (m_screenFader.FadeInProgress())
 	{
@@ -123,8 +198,6 @@ void Game::Render(sf::RenderWindow& window) const
 void Game::RequestTransition(std::unique_ptr<IGameState> next)
 {
 	m_pendingState = std::move(next);
-	m_currentState->OnExit();
-
 	game_events::OnScreenFadeTriggered.Fire();
 }
 
@@ -139,6 +212,12 @@ void Game::UpdateScreenFade(const float deltaTime)
 		{
 			if (m_pendingState)
 			{
+				if (m_currentState)
+				{
+					m_currentState->OnExit();
+				}
+
+				m_currentState.reset();
 				m_currentState = std::move(m_pendingState);
 				m_currentState->OnEnter();
 			}

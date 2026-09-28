@@ -32,6 +32,12 @@ void Timer::Update()
 {
 	const std::chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
 	m_delta = currentTime - m_timeLastUpdate;
-
 	m_timeLastUpdate = currentTime;
+
+	using namespace std::chrono_literals;
+	constexpr auto k_maxDelta = std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(16*4ms);
+	if (m_delta > k_maxDelta)
+	{
+		m_delta = k_maxDelta;
+	}
 }

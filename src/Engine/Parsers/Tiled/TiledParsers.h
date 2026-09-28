@@ -135,6 +135,12 @@ public:
 
 	struct Tile
 	{
+		struct AnimFrame
+		{
+			uint32_t m_TileID;
+			uint32_t m_durationMS;
+		};
+
 		struct Property
 		{
 			std::string m_Name;
@@ -156,6 +162,7 @@ public:
 
 		uint32_t m_ID;
 		std::vector<Property> m_Properties;
+		std::optional<std::vector<AnimFrame>> m_Animation = std::nullopt;
 	};
 
 	const std::filesystem::path& GetPath() const;

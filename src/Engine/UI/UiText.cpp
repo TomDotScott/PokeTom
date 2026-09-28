@@ -4,6 +4,7 @@
 
 #include "UiManager.h"
 #include "../Globals.h"
+#include "../Stringtable.h"
 #include "../CodeGen/Resources.hpp"
 
 UiText::UiText(UiElement* parent) :
@@ -11,9 +12,17 @@ UiText::UiText(UiElement* parent) :
 	m_text(DEFAULT_FONT),
 	m_alignment(eAlignment::Left)
 {
-	// All text drawn on top
-	// TODO: Make this more sophisticated... I need to be able to support arbitrary placement of elements in the XML otherwise we are at the mercy of std::hash!
-	SetLayer(eLayer::FOREGROUND);
+	SetLayer(UiManager::k_topLayer);
+}
+
+void UiText::SetText(hash_type stringTableID)
+{
+	SetText(STRINGTABLE->GetString(stringTableID).c_str());
+}
+
+void UiText::SetStyle(const uint32_t style)
+{
+	m_text.setStyle(style);
 }
 
 const char* UiText::GetText() const
@@ -26,6 +35,21 @@ void UiText::SetTextSize(const unsigned size)
 	m_text.setCharacterSize(size);
 }
 
+void UiText::SetColour(const sf::Color colour)
+{
+	m_text.setFillColor(colour);
+}
+
+void UiText::SetColour(const uint32_t colour)
+{
+	SetColour(sf::Color{ colour });
+}
+
+void UiText::SetColour(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a)
+{
+	SetColour(sf::Color{ r, g, b, a });
+}
+
 void UiText::SetElementPosition(const sf::Vector2f& position)
 {
 	m_absolutePosition = position;
@@ -35,17 +59,17 @@ void UiText::SetElementPosition(const sf::Vector2f& position)
 	float originX;
 	switch (m_alignment)
 	{
-		// TODO: Completely redo text alignment as the previous "solution" didn't really work!
+	// TODO: Completely redo text alignment as the previous "solution" didn't really work!
 	case eAlignment::Left:
 	default:
 		originX = textBounds.position.x;
 		break;
-		/*case eAlignment::Right:
-			originX = textBounds.position.x + textBounds.size.x;
-			break;
-		case eAlignment::Centre:
-			originX = textBounds.position.x + textBounds.size.x / 2.f;
-			break;*/
+	/*case eAlignment::Right:
+		originX = textBounds.position.x + textBounds.size.x;
+		break;
+	case eAlignment::Centre:
+		originX = textBounds.position.x + textBounds.size.x / 2.f;
+		break;*/
 	}
 
 	float originY = textBounds.position.x + textBounds.size.y / 2.f;
@@ -113,6 +137,25 @@ bool UiText::LoadFromXML(const XmlNode& node)
 		m_text.setString(stringNode->m_Content);
 	}
 
+	uint32_t fontStyle = 0;
+	if (stringNode->Attr("bold", false))
+	{
+		fontStyle |= sf::Text::Style::Bold;
+	}
+	if (stringNode->Attr("italic", false))
+	{
+		fontStyle |= sf::Text::Style::Italic;
+	}
+	if (stringNode->Attr("strikethrough", false))
+	{
+		fontStyle |= sf::Text::Style::StrikeThrough;
+	}
+	if (stringNode->Attr("underlined", false))
+	{
+		fontStyle |= sf::Text::Style::Underlined;
+	}
+	SetStyle(fontStyle);
+
 	const auto* alignmentNode = node.Child("alignment");
 	if (alignmentNode == nullptr)
 	{
@@ -158,7 +201,7 @@ bool UiText::LoadFromXML(const XmlNode& node)
 	const auto* sizeNode = node.Child("size");
 	if (sizeNode != nullptr)
 	{
-		m_text.setCharacterSize(TRANSFORMED_SCALAR(std::stol(sizeNode->m_Content)));
+		m_text.setCharacterSize(std::stol(sizeNode->m_Content));
 	}
 
 	AddDrawable(&m_text);

@@ -9,6 +9,7 @@
 #include "../Engine/IGameState.h"
 #include "../Engine/Rendering/ScreenFader.h"
 #include "../Engine/UI/UiManager.h"
+#include "../Engine/UI/UiText.h"
 
 class Game final : public IUpdateable
 {
@@ -29,6 +30,13 @@ private:
 	LuaRegistry m_luaBindings;
 	ScreenFader m_screenFader;
 
+	struct HospitalCheckpoint
+	{
+		hash_type m_LevelHash;
+		hash_type m_SpawnPointHash;
+	};
+	HospitalCheckpoint m_lastHospitalCheckpoint;
+
 #if !BUILD_MASTER
 	template<typename... Args>
 	static void DrawText(sf::RenderWindow& window, const sf::Vector2f& position, const int size, const char* fmt, Args... args)
@@ -42,6 +50,13 @@ private:
 			UIMANAGER.DrawDebugText(window);
 		}
 	}
+
+	enum eDebugInputs
+	{
+		TRIGGER_BATTLE
+	};
+
+	InputMapper m_mapper;
 #endif
 
 	void UpdateScreenFade(float deltaTime);

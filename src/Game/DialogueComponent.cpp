@@ -3,6 +3,7 @@
 #include "DialogueBox.h"
 #include "DialogueManager.h"
 #include "../Engine/Entity.h"
+#include "../Engine/StringUtils.h"
 
 DialogueComponent::DialogueComponent(Entity* owner, const hash_type dialogueID, const bool loop, const float loopTimer) :
 	m_owner(owner),
@@ -67,7 +68,7 @@ void DialogueComponent::OnPlayerInteractPressed()
 			return;
 		}
 
-		m_pages = WrapToPages(GetNextLine());
+		m_pages = string_utils::WrapToPages(GetNextLine(), DialogueBox::MAX_CHARS, DialogueBox::MAX_LINES);
 		m_pageIndex = 0;
 	}
 
@@ -91,7 +92,7 @@ void DialogueComponent::OnPlayerInteractPressed()
 		return;
 	}
 
-	m_pages = WrapToPages(GetNextLine());
+	m_pages = string_utils::WrapToPages(GetNextLine(), DialogueBox::MAX_CHARS, DialogueBox::MAX_LINES);
 	DialogueBox::SetText(m_pages[m_pageIndex].c_str());
 	++m_pageIndex;
 }
@@ -104,72 +105,4 @@ std::string DialogueComponent::GetNextLine() const
 bool DialogueComponent::HasDialogueLeft() const
 {
 	return m_dialogueIndex < DIALOGUEMANAGER->GetNumLines(m_dialogueID);
-}
-
-std::vector<std::string> DialogueComponent::WrapToPages(const std::string& text)
-{
-	// Split the string into words so that we don't split m
-	// idword (lol)
-	std::vector<std::string> words;
-	std::istringstream stream(text);
-	std::string word;
-	while (stream >> word)
-	{
-		words.emplace_back(std::move(word));
-	}
-
-	std::vector<std::string> pages;
-	std::string currentLine;
-	std::vector<std::string> currentPageLines;
-
-	auto flush = [&]()
-	{
-		if (!currentLine.empty())
-		{
-			currentPageLines.emplace_back(std::move(currentLine));
-		}
-
-		std::string page;
-		for (size_t i = 0; i < currentPageLines.size(); ++i)
-		{
-			if (i > 0)
-			{
-				page += "\n";
-			}
-
-			page += currentPageLines[i];
-		}
-
-		pages.emplace_back(std::move(page));
-		currentPageLines.clear();
-		currentLine.clear();
-	};
-
-	for (const auto& w : words)
-	{
-		const size_t len = currentLine.empty() ? w.size() : currentLine.size() + 1 + w.size();
-
-		if (!currentLine.empty() && len > DialogueBox::MAX_CHARS)
-		{
-			currentPageLines.emplace_back(std::move(currentLine));
-			currentLine.clear();
-
-			if (currentPageLines.size() >= DialogueBox::MAX_LINES)
-			{
-				flush();
-			}
-		}
-
-		if (!currentLine.empty())
-			currentLine += ' ';
-
-		currentLine += w;
-	}
-
-	if (!currentLine.empty() || !currentPageLines.empty())
-	{
-		flush();
-	}
-
-	return pages;
 }

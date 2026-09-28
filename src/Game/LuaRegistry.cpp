@@ -47,7 +47,7 @@ void LuaRegistry::RegisterUtilityAPI(sol::state& lua)
 {
 	LUA_API_BEGIN(Utility, lua)
 		LUA_FUNC(Utility, Hash,
-			[&](std::string_view string)
+			[&](const std::string_view string)
 			{
 				return HASH(string);
 			})

@@ -109,6 +109,15 @@ bool PocketMonsterManager::Load(const std::filesystem::path& path)
 			}
 		}
 
+		const auto& experienceGroup = elem["xp_group"];
+		auto xpGroup = magic_enum::enum_cast<monster_xp::eGroup>(experienceGroup.get<std::string>(),
+		                                                         magic_enum::case_insensitive);
+		ASSERT(xpGroup.has_value());
+		monster_xp::eGroup group = xpGroup.value();
+
+		const auto& experienceYield = elem["xp_yield"];
+		ASSERT(experienceYield.is_number());
+
 		const auto& stats = elem["stats"];
 		ASSERT(!stats.is_null());
 		if (stats.is_null())
@@ -135,19 +144,21 @@ bool PocketMonsterManager::Load(const std::filesystem::path& path)
 		ASSERT(speed.is_number());
 
 		monsters.emplace(id, PocketMonster(
-			id,
-			type,
-			MonsterStats(
-				hp,
-				attack,
-				defense,
-				sp_atk,
-				sp_def,
-				speed
-			),
-			previousEvolutions,
-			nextEvolutions
-		));
+			                 id,
+			                 type,
+			                 group,
+			                 experienceYield,
+			                 MonsterStats(
+				                 hp,
+				                 attack,
+				                 defense,
+				                 sp_atk,
+				                 sp_def,
+				                 speed
+			                 ),
+			                 previousEvolutions,
+			                 nextEvolutions
+		                 ));
 	}
 
 

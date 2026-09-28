@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- REMINDER HERE BECAUSE FUTURE TOM WILL FORGET!
+      - Layers are a int8 so go from -128 to 127, I am gonna use 63 and 64 for the Dialogue boxes
+      - Entities are drawn at 0 so anything on top of entities is positive, anything below is negative
+      - Believe in yourself and you can achieve anything!
+-->
 
 <ui>
   <Text>
@@ -25,14 +30,16 @@ So that I can see what dialogue will look like!!!
       <position x="145" y="45" />
       <size>15</size>
       <font>DEFAULT</font>
-      <layer>foreground</layer>
+      <layer>64</layer>
     </Text>
     <Sprite>
       <name>DIALOGUE_BOX</name>
       <position x="132" y="0" />
       <scale x="2" y="2" />
-      <texture>DIALOGUE_BOX</texture>
-      <layer>midground</layer>
+      <textures>
+        <texture textureResourceName="DIALOGUE_BOX"/>
+      </textures>
+      <layer>63</layer>
     </Sprite>
   </Panel>
 
@@ -45,17 +52,32 @@ So that I can see what dialogue will look like!!!
       <name>BACKGROUND</name>
       <position x="0" y="0" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="249" topLeftY="6" spriteWidth="240" spriteHeight="112">BATTLE_BACKGROUNDS</texture>
-      <layer>background</layer>
+      <textures>
+        <texture id="GRASS_PLAINS" topLeftX="249" topLeftY="6" width="240" height="112" textureResourceName="BATTLE_BACKGROUNDS"/>
+      </textures>
+      <layer>-128</layer>
     </Sprite>
 
     <Sprite>
       <name>TEXT_BOX</name>
       <position x="0" y="358" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="297" topLeftY="56" spriteWidth="240" spriteHeight="48">BATTLE_HUD</texture>
-      <layer>midground</layer>
+      <textures>
+        <texture topLeftX="297" topLeftY="56" width="240" height="48" textureResourceName="BATTLE_HUD"/>
+      </textures>
+      <layer>1</layer>
     </Sprite>
+
+    <Text>
+      <name>TEXT_BOX_TEXT</name>
+      <string>If I can see this text, something has gone very wrong!</string>
+      <alignment>left</alignment>
+      <colour>FFFFFFFF</colour>
+      <position x="30" y="400" />
+      <size>22</size>
+      <font>TEXT_BOX</font>
+      <layer>3</layer>
+    </Text>
 
     <Panel>
       <name>BATTLE_OPTIONS</name>
@@ -66,57 +88,311 @@ So that I can see what dialogue will look like!!!
         <name>OPTIONS</name>
         <position x="0" y="0" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
-        <texture topLeftX="146" topLeftY="4" spriteWidth="120" spriteHeight="48">BATTLE_HUD</texture>
+        <layer>2</layer>
+        <textures>
+          <texture topLeftX="146" topLeftY="4" width="120" height="48" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
         <name>FIGHT_ARROW</name>
         <position x="26" y="42" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
         <name>MONSTERS_ARROW</name>
         <position x="26" y="93" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
         <name>BAG_ARROW</name>
         <position x="205" y="42" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
 
       <Sprite>
         <name>RUN_ARROW</name>
         <position x="205" y="93" />
         <scale x="3.2" y="3.2" />
-        <layer>foreground</layer>
-        <texture topLeftX="269" topLeftY="4" spriteWidth="6" spriteHeight="10">BATTLE_HUD</texture>
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
       </Sprite>
+    </Panel>
+
+    <Panel>
+      <name>MOVE_OPTIONS</name>
+      <position x="0" y="358" />
+      <size x="384" y="154"/>
+
+      <Sprite>
+        <name>MOVE_TEXTBOX_BG</name>
+        <position x="0" y="0" />
+        <scale x="3.2" y="3.2" />
+        <textures>
+          <texture topLeftX="297" topLeftY="4" width="240" height="48" textureResourceName="BATTLE_HUD"/>
+        </textures>
+        <layer>2</layer>
+      </Sprite>
+
+      <Sprite>
+        <name>MOVE_1_ARROW</name>
+        <position x="27" y="27" />
+        <scale x="3.2" y="3.2" />
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
+      </Sprite>
+
+      <Text>
+        <name>MOVE_1_TEXT</name>
+        <string>[MOVE TEXT HERE]</string>
+        <alignment>left</alignment>
+        <colour>000000FF</colour>
+        <position x="46" y="43" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
+
+      <Sprite>
+        <name>MOVE_2_ARROW</name>
+        <position x="256" y="27" />
+        <scale x="3.2" y="3.2" />
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
+      </Sprite>
+
+      <Text>
+        <name>MOVE_2_TEXT</name>
+        <string>[MOVE TEXT HERE]</string>
+        <alignment>left</alignment>
+        <colour>000000FF</colour>
+        <position x="275" y="43" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
+
+      <Sprite>
+        <name>MOVE_3_ARROW</name>
+        <position x="27" y="95" />
+        <scale x="3.2" y="3.2" />
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
+      </Sprite>
+
+      <Text>
+        <name>MOVE_3_TEXT</name>
+        <string>[MOVE TEXT HERE]</string>
+        <alignment>left</alignment>
+        <colour>000000FF</colour>
+        <position x="46" y="111" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
+
+      <Sprite>
+        <name>MOVE_4_ARROW</name>
+        <position x="256" y="95" />
+        <scale x="3.2" y="3.2" />
+        <layer>3</layer>
+        <textures>
+          <texture topLeftX="269" topLeftY="4" width="6" height="10" textureResourceName="BATTLE_HUD"/>
+        </textures>
+      </Sprite>
+
+      <Text>
+        <name>MOVE_4_TEXT</name>
+        <string>[MOVE TEXT HERE]</string>
+        <alignment>left</alignment>
+        <colour>000000FF</colour>
+        <position x="275" y="111" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
+
+      <Text>
+        <name>MOVE_PP</name>
+        <string>69/420</string>
+        <alignment>right</alignment>
+        <colour>000000FF</colour>
+        <position x="600" y="55" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
+
+      <Text>
+        <name>MOVE_TYPE</name>
+        <string>PSYCH</string>
+        <alignment>left</alignment>
+        <colour>000000FF</colour>
+        <position x="615" y="105" />
+        <size>22</size>
+        <font>TEXT_BOX</font>
+        <layer>3</layer>
+      </Text>
     </Panel>
 
     <Sprite>
       <name>OPPONENT_HP</name>
       <position x="32" y="32" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="3" topLeftY="3" spriteWidth="100" spriteHeight="29">BATTLE_HUD</texture>
-      <layer>foreground</layer>
+      <textures>
+        <texture topLeftX="3" topLeftY="3" width="100" height="29" textureResourceName="BATTLE_HUD"/>
+      </textures>
+      <layer>16</layer>
     </Sprite>
+
+    <Sprite>
+      <name>OPPONENT_STATUS_ICON</name>
+      <position x="46" y="80" />
+      <scale x="2.75" y="2.75" />
+      <textures>
+        <texture id="Poison" topLeftX="0" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Paralysis" topLeftX="20" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Sleep" topLeftX="40" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Burn" topLeftX="0" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Freeze" topLeftX="20" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+      </textures>
+      <layer>16</layer>
+    </Sprite>
+
+    <Text>
+      <name>OPPONENT_MONSTER_NAME</name>
+      <string bold="True" italic="True">CRABOMINABLE</string>
+      <alignment>left</alignment>
+      <colour>000000FF</colour>
+      <position x="48" y="63" />
+      <size>20</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
+    <ProgressBar>
+      <name>OPPONENT_HP_BAR</name>
+      <fillorientation>horizontal</fillorientation>
+      <position x="154" y="83" />
+      <size x="156" y="16" />
+      <margin x="2" y="4"/>
+      <scale x="3.2" y="3.2" />
+      <layer>100</layer>
+      <backgroundcolour>506858FF</backgroundcolour>
+      <fillcolour>58D080FF</fillcolour>
+    </ProgressBar>
+
+    <Text>
+      <name>OPPONENT_LEVEL_TEXT</name>
+      <string>100</string>
+      <alignment>right</alignment>
+      <colour>000000FF</colour>
+      <position x="260" y="60" />
+      <size>18</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
 
     <Sprite>
       <name>PLAYER_HP</name>
       <position x="414" y="227" />
       <scale x="3.2" y="3.2" />
-      <texture topLeftX="3" topLeftY="44" spriteWidth="104" spriteHeight="37">BATTLE_HUD</texture>
-      <layer>foreground</layer>
+      <textures>
+        <texture topLeftX="3" topLeftY="44" width="104" height="37" textureResourceName="BATTLE_HUD"/>
+      </textures>
+      <layer>16</layer>
     </Sprite>
+
+    <Text>
+      <name>PLAYER_MONSTER_NAME</name>
+      <string bold="True" italic="True">CRABOMINABLE</string>
+      <alignment>left</alignment>
+      <colour>000000FF</colour>
+      <position x="459" y="255" />
+      <size>20</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
+    <ProgressBar>
+      <name>PLAYER_HP_BAR</name>
+      <fillorientation>horizontal</fillorientation>
+      <position x="564" y="278" />
+      <size x="156" y="16" />
+      <margin x="2" y="4"/>
+      <scale x="3.2" y="3.2" />
+      <layer>100</layer>
+      <backgroundcolour>506858FF</backgroundcolour>
+      <fillcolour>58D080FF</fillcolour>
+    </ProgressBar>
+
+    <Sprite>
+      <name>PLAYER_STATUS_ICON</name>
+      <position x="456" y="275" />
+      <scale x="2.75" y="2.75" />
+      <textures>
+        <texture id="Poison" topLeftX="0" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Paralysis" topLeftX="20" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Sleep" topLeftX="40" topLeftY="0" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Burn" topLeftX="0" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+        <texture id="Freeze" topLeftX="20" topLeftY="8" width="20" height="8" textureResourceName="STATUS_ICONS"/>
+      </textures>
+      <layer>16</layer>
+    </Sprite>
+
+    <Text>
+      <name>PLAYER_HP_TEXT</name>
+      <string>69/420</string>
+      <alignment>right</alignment>
+      <colour>000000FF</colour>
+      <position x="637" y="305" />
+      <size>12</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
+    <Text>
+      <name>PLAYER_LEVEL_TEXT</name>
+      <string>100</string>
+      <alignment>right</alignment>
+      <colour>000000FF</colour>
+      <position x="670" y="255" />
+      <size>18</size>
+      <font>TEXT_BOX</font>
+      <layer>100</layer>
+    </Text>
+
+    <ProgressBar>
+      <name>PLAYER_XP_BAR</name>
+      <fillorientation>horizontal</fillorientation>
+      <position x="516" y="333" />
+      <size x="205" y="6" />
+      <margin x="0" y="0"/>
+      <layer>100</layer>
+      <backgroundcolour>FFFFFF00</backgroundcolour>
+      <fillcolour>67BACCFF</fillcolour>
+    </ProgressBar>
   </Panel>
 </ui>

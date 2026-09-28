@@ -1,10 +1,13 @@
 #ifndef ENTITY_H
 #define ENTITY_H
+#include <SFML/Graphics/Shader.hpp>
+
+#include "Asserts.h"
 #include "Gameobject.h"
 #include "IUpdateable.h"
-#include "Orientation.h"
 #include "Animation/AnimationPlayer.h"
 
+using entity_id_t = uint32_t;
 
 class Entity : public GameObject, public IUpdateable
 {
@@ -55,6 +58,12 @@ public:
 		return ref;
 	}
 
+	template<typename T>
+	bool HasComponent() const
+	{
+		return GetComponent<T>() != nullptr;
+	}
+
 	void OnActivate() override;
 	void OnDeactivate() override;
 	void OnPlayerInteractPressed() override;
@@ -64,15 +73,35 @@ public:
 	sf::Vector2f GetSize();
 	const sf::Vector2f& GetSize() const;
 
-	sf::Vector2f GetScale();
-	const sf::Vector2f& GetScale() const;
+	void SetOffsetPosition(const sf::Vector2f& position);
+	sf::Vector2f GetOffsetPosition() const;
 
-	void SetScale(const sf::Vector2f& scale);
+	void SetOffsetRotation(const sf::Angle& angle);
+	sf::Angle GetOffsetRotation() const;
+
+	void SetOffsetScale(const sf::Vector2f& scale);
+	sf::Vector2f GetOffsetScale() const;
+
+	bool LoadShader(const std::string_view& shaderResourceName, sf::Shader::Type);
+	sf::Shader* GetShader(const std::string_view& shaderResourceName);
+	template<typename T>
+	void SetShaderVariable(const std::string_view& shaderResourceName, const std::string& uniformName, T value)
+	{
+		ASSERT(m_shaders.contains(shaderResourceName));
+		ASSERT(m_currentShader == shaderResourceName);
+		m_shaders.at(shaderResourceName).setUniform(uniformName, value);
+	}
+	void SetCurrentShader(const std::string_view& shaderResourceName);
+	sf::Shader* GetCurrentShader();
 
 private:
 	std::vector<std::unique_ptr<IUpdateable>> m_components;
 	sf::Vector2f m_size;
-	sf::Vector2f m_scale;
+
+	sf::Transformable m_animationOffset;
+
+	std::unordered_map<std::string_view, sf::Shader> m_shaders;
+	std::string_view m_currentShader;
 
 	void OnEntityActivate();
 	void OnEntityDeactivate();

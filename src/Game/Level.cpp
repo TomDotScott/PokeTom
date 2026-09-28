@@ -331,6 +331,16 @@ sf::Vector2i Level::GetGridPositionFromWorldPosition(const sf::Vector2f& worldSp
 	return { gx, gy };
 }
 
+sf::Vector2f Level::GetWorldPositionFromGridPosition(const sf::Vector2i& gridPosition) const
+{
+	const sf::Vector2f localPosition = sf::Vector2f{
+		gridPosition.x * static_cast<float>(GetTileWidth()),
+		gridPosition.y * static_cast<float>(GetTileHeight())
+	};
+
+	return localPosition + static_cast<sf::Vector2f>(m_worldTileOrigin);
+}
+
 const TileSheet::TileDefinition* Level::GetTileAtPosition(const sf::Vector2f& worldSpacePosition,
                                                           const unsigned tileFlags) const
 {

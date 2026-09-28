@@ -22,15 +22,39 @@ void GameObject::OnDeactivate()
 	m_isActive = false;
 }
 
+sf::Vector2f GameObject::GetPosition() const
+{
+	return m_transformable.getPosition();
+}
+
 void GameObject::SetPosition(const sf::Vector2f& position)
 {
-	m_position = position;
+	m_transformable.setPosition(position);
 }
 
 void GameObject::SetPosition(const float x, const float y)
 {
-	m_position.x = x;
-	m_position.y = y;
+	SetPosition({ x, y });
+}
+
+sf::Angle GameObject::GetRotation() const
+{
+	return m_transformable.getRotation();
+}
+
+void GameObject::SetRotation(const sf::Angle& angle)
+{
+	return m_transformable.setRotation(angle);
+}
+
+sf::Vector2f GameObject::GetScale() const
+{
+	return m_transformable.getScale();
+}
+
+void GameObject::SetScale(const sf::Vector2f& scale)
+{
+	return m_transformable.setScale(scale);
 }
 
 uint32_t GameObject::GetID() const

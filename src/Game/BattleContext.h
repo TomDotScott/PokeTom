@@ -15,10 +15,6 @@ struct BattleBeginContext
 	uint32_t m_OpponentEntityID;
 
 	bool m_isTrainerBattle;
-
-	std::vector<entity_id_t> m_PlayerMonsterEntityIDs;
-	std::vector<PocketMonster> m_opponentMonsters;
-	std::vector<uint8_t> m_opponentMonsterLevels;
 };
 
 
@@ -27,6 +23,7 @@ struct BattleEndContext
 	hash_type m_LevelHash;
 	sf::Vector2f m_PlayerPosition;
 
+	bool m_SendPlayerToHospital;
 	// TODO: Pass through any items won, money gained, stat changes, etc...
 };
 

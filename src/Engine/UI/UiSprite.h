@@ -1,8 +1,10 @@
 #ifndef UI_SPRITE_H
 #define UI_SPRITE_H
+#include <map>
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "UiElement.h"
+#include "../Hash.h"
 
 class UiSprite : public UiElement
 {
@@ -18,16 +20,26 @@ public:
 
 	bool LoadFromXML(const XmlNode& node) override;
 
+
+	// TODO: What implications does setting it to a MUCH larger texture have?
+	void SetTexture(size_t textureIndex);
+	void SetTexture(const std::string& textureID);
+
 private:
 	sf::Sprite* m_sprite;
 
-	// The scale of the texture vs the screen
-	sf::Vector2f m_screenScaleFactor;
+	struct TextureInfo
+	{
+		hash_type m_ResourceName;
+		sf::IntRect m_TextureBounds;
+	};
 
-	// The scale of the sprite from the xml file
-	sf::Vector2f m_scaleFactorFromXml;
+	std::array<std::optional<TextureInfo>, 32> m_textures;
+	std::map<std::string, size_t> m_textureNameIndexes;
 
-	bool LoadTexture(const std::string& resourceID);
+	size_t m_numAssignedTextures;
+
+	bool LoadTextureNode(const XmlNode* node);
 };
 
 #endif

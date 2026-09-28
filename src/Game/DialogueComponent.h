@@ -32,8 +32,6 @@ private:
 	// to fit properly!
 	std::vector<std::string> m_pages;
 	uint8_t m_pageIndex;
-
-	static std::vector<std::string> WrapToPages(const std::string& text);
 };
 
 #endif

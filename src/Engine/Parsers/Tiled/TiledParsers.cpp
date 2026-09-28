@@ -787,6 +787,25 @@ bool TSX::LoadFromXML(const XmlNode& node)
 			tile.m_Properties.emplace_back(prop);
 		}
 
+		// Tiles can have an optional animation
+		const auto tileAnimation = tileNode->Child("animation");
+		if (tileAnimation != nullptr)
+		{
+			const auto frames = tileAnimation->Children("frame");
+			tile.m_Animation = std::vector<Tile::AnimFrame>();
+			tile.m_Animation.value().reserve(frames.size());
+
+			for (const auto& frameNode : frames)
+			{
+				Tile::AnimFrame frame;
+				frame.m_TileID = frameNode->Attr("tileid", ~0U);
+				frame.m_durationMS = frameNode->Attr("duration", 0);
+
+				tile.m_Animation->emplace_back(frame);
+			}
+		}
+
+
 		m_tiles.emplace_back(tile);
 	}
 

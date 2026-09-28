@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.2" name="overworld" tilewidth="32" tileheight="32" tilecount="1300" columns="52">
+<tileset version="1.10" tiledversion="1.12.1" name="overworld" tilewidth="32" tileheight="32" tilecount="1300" columns="52">
  <image source="../sprites/overworld_tileset.png" width="1664" height="800"/>
  <tile id="0">
   <properties>
@@ -3285,6 +3285,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="364" duration="500"/>
+   <frame tileid="520" duration="500"/>
+   <frame tileid="676" duration="500"/>
+   <frame tileid="832" duration="500"/>
+  </animation>
  </tile>
  <tile id="365">
   <properties>
@@ -3294,6 +3300,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="365" duration="500"/>
+   <frame tileid="521" duration="500"/>
+   <frame tileid="677" duration="500"/>
+   <frame tileid="833" duration="500"/>
+  </animation>
  </tile>
  <tile id="366">
   <properties>
@@ -3303,6 +3315,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="366" duration="500"/>
+   <frame tileid="522" duration="500"/>
+   <frame tileid="678" duration="500"/>
+   <frame tileid="834" duration="500"/>
+  </animation>
  </tile>
  <tile id="367">
   <properties>
@@ -3312,6 +3330,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="367" duration="500"/>
+   <frame tileid="523" duration="500"/>
+   <frame tileid="679" duration="500"/>
+   <frame tileid="835" duration="500"/>
+  </animation>
  </tile>
  <tile id="368">
   <properties>
@@ -3321,6 +3345,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="368" duration="500"/>
+   <frame tileid="524" duration="500"/>
+   <frame tileid="680" duration="500"/>
+   <frame tileid="836" duration="500"/>
+  </animation>
  </tile>
  <tile id="369">
   <properties>
@@ -3330,6 +3360,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="369" duration="500"/>
+   <frame tileid="525" duration="500"/>
+   <frame tileid="681" duration="500"/>
+   <frame tileid="837" duration="500"/>
+  </animation>
  </tile>
  <tile id="370">
   <properties>
@@ -3753,6 +3789,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="416" duration="500"/>
+   <frame tileid="572" duration="500"/>
+   <frame tileid="728" duration="500"/>
+   <frame tileid="884" duration="500"/>
+  </animation>
  </tile>
  <tile id="417">
   <properties>
@@ -3762,6 +3804,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="true"/>
   </properties>
+  <animation>
+   <frame tileid="417" duration="500"/>
+   <frame tileid="573" duration="500"/>
+   <frame tileid="729" duration="500"/>
+   <frame tileid="885" duration="500"/>
+  </animation>
  </tile>
  <tile id="418">
   <properties>
@@ -3771,6 +3819,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="418" duration="500"/>
+   <frame tileid="574" duration="500"/>
+   <frame tileid="730" duration="500"/>
+   <frame tileid="886" duration="500"/>
+  </animation>
  </tile>
  <tile id="419">
   <properties>
@@ -3780,6 +3834,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="419" duration="500"/>
+   <frame tileid="575" duration="500"/>
+   <frame tileid="731" duration="500"/>
+   <frame tileid="887" duration="500"/>
+  </animation>
  </tile>
  <tile id="420">
   <properties>
@@ -3798,6 +3858,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="421" duration="500"/>
+   <frame tileid="577" duration="500"/>
+   <frame tileid="733" duration="500"/>
+   <frame tileid="889" duration="500"/>
+  </animation>
  </tile>
  <tile id="422">
   <properties>
@@ -4221,6 +4287,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="468" duration="500"/>
+   <frame tileid="624" duration="500"/>
+   <frame tileid="780" duration="500"/>
+   <frame tileid="936" duration="500"/>
+  </animation>
  </tile>
  <tile id="469">
   <properties>
@@ -4230,6 +4302,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="469" duration="500"/>
+   <frame tileid="625" duration="500"/>
+   <frame tileid="781" duration="500"/>
+   <frame tileid="937" duration="500"/>
+  </animation>
  </tile>
  <tile id="470">
   <properties>
@@ -4239,6 +4317,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="470" duration="500"/>
+   <frame tileid="626" duration="500"/>
+   <frame tileid="782" duration="500"/>
+   <frame tileid="938" duration="500"/>
+  </animation>
  </tile>
  <tile id="471">
   <properties>
@@ -4248,6 +4332,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="471" duration="500"/>
+   <frame tileid="627" duration="500"/>
+   <frame tileid="783" duration="500"/>
+   <frame tileid="939" duration="500"/>
+  </animation>
  </tile>
  <tile id="472">
   <properties>
@@ -4257,6 +4347,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="472" duration="500"/>
+   <frame tileid="628" duration="500"/>
+   <frame tileid="784" duration="500"/>
+   <frame tileid="940" duration="500"/>
+  </animation>
  </tile>
  <tile id="473">
   <properties>
@@ -4266,6 +4362,12 @@
    <property name="isGrass" type="bool" value="false"/>
    <property name="isWater" type="bool" value="false"/>
   </properties>
+  <animation>
+   <frame tileid="473" duration="500"/>
+   <frame tileid="629" duration="500"/>
+   <frame tileid="785" duration="500"/>
+   <frame tileid="941" duration="500"/>
+  </animation>
  </tile>
  <tile id="474">
   <properties>
