@@ -15,6 +15,8 @@ struct AnimationFrame
 	uint32_t m_DurationMS;
 	uint32_t m_SpriteWidth;
 	uint32_t m_SpriteHeight;
+	uint32_t m_OffsetX;
+	uint32_t m_OffsetY;
 	bool m_SpriteFlippedHorizontal = false;
 	bool m_SpriteFlippedVertical = false;
 };
@@ -69,6 +71,8 @@ private:
 	AnimationDictionary(std::filesystem::path filepath);
 
 	bool LoadFromXML(const XmlNode& node) override;
+
+	std::optional<Animation> LoadAnimationFromXML(const std::vector<const XmlNode*>::value_type& animation);
 };
 
 static inline std::unordered_map<hash_type, AnimationDictionary> ANIMATION_DICTIONARIES;

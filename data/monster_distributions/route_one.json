@@ -4,7 +4,7 @@
     "MaxLevel": 6,
     "Grass": [
         { "id": 403, "weight": 0.10 },
-        { "id": 507, "weight": 0.25 }
+        { "id": 506, "weight": 0.25 }
     ],
     "Water": [
         { "id": 129, "weight": 1.0 }

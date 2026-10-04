@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 
+#include "../Asserts.h"
 #include "../Globals.h"
 #include "../TextureManager.h"
 #include "../CodeGen/Resources.hpp"
@@ -62,12 +63,13 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 		return false;
 	}
 
-	std::string_view imagePath = GET_TEXTURE_PATH(imageTag->Attr("source", std::string{ "" }));
+	const std::string imagePath{ GET_TEXTURE_PATH(imageTag->Attr("source", std::string{ "" })) };
 
-	if (imagePath.empty() || !std::filesystem::exists(imagePath))
+	bool fileExists = std::filesystem::exists(imagePath);
+	ASSERT(fileExists, "AnimationDictionary::ParseAnimDict: Texture with path %s does not exist!\n", imagePath.c_str());
+	if (imagePath.empty() || !fileExists)
 	{
-		std::cerr << "AnimationDictionary::ParseAnimDict: Texture with path " << imagePath <<
-			" does not exist!\n";
+
 		return false;
 	}
 
@@ -109,54 +111,67 @@ bool AnimationDictionary::LoadFromXML(const XmlNode& node)
 
 	for (const auto& animation : animations)
 	{
-		Animation anim;
-
-		const std::string animName = animation->Attr("name", std::string{ "" });
-		if (animName.empty())
+		std::optional<Animation> anim = LoadAnimationFromXML(animation);
+		if (!anim.has_value())
 		{
 			return false;
 		}
 
-		anim.m_Name = HASH(animName);
-		anim.m_IsLooping = animation->Attr("looping", false);
-
-		const std::string anchor = animation->Attr("anchor", std::string{ "" });
-		if (!anchor.empty())
-		{
-			anim.m_SpriteAnchor = static_cast<Animation::eSpriteAnchor>(animation->Attr("anchor", 0));
-		}
-
-		const auto frameNodes = animation->Children("Frame");
-		std::vector<AnimationFrame> frames;
-		frames.reserve(frameNodes.size());
-
-		for (const auto& frameNode : frameNodes)
-		{
-			frames.emplace_back(
-				frameNode->Attr("topLeftX", 0U) - m_spriteSheetRect.position.x,
-				frameNode->Attr("topLeftY", 0U) - m_spriteSheetRect.position.y,
-				frameNode->Attr("duration", 0U),
-				frameNode->Attr("spriteWidth", 0U),
-				frameNode->Attr("spriteHeight", 0U),
-				frameNode->Attr("flippedHorizontal", false),
-				frameNode->Attr("flippedVertical", false)
-			);
-		}
-
-		anim.m_Frames = frames;
-
-		anim.m_HasOnAnimEnd = false;
-		anim.m_OnAnimEnd = HASH("INVALID_ANIMATION_NAME");
-
-		const std::string onAnimEnd = animation->Attr("onEnd", std::string{ "" });
-		if (!onAnimEnd.empty())
-		{
-			anim.m_HasOnAnimEnd = true;
-			anim.m_OnAnimEnd = HASH(onAnimEnd);
-		}
-
-		m_animationClips[anim.m_Name] = anim;
+		m_animationClips[anim.value().m_Name] = anim.value();
 	}
 
 	return true;
+}
+
+std::optional<Animation> AnimationDictionary::LoadAnimationFromXML(const std::vector<const XmlNode*>::value_type& animation)
+{
+	const std::string animName = animation->Attr("name", std::string{ "" });
+	ASSERT(!animName.empty());
+
+	if (animName.empty())
+	{
+		return std::nullopt;
+	}
+
+	Animation anim;
+	anim.m_Name = HASH(animName);
+	anim.m_IsLooping = animation->Attr("looping", false);
+
+	const std::string anchor = animation->Attr("anchor", std::string{ "" });
+	if (!anchor.empty())
+	{
+		anim.m_SpriteAnchor = static_cast<Animation::eSpriteAnchor>(animation->Attr("anchor", 0));
+	}
+
+	const auto frameNodes = animation->Children("Frame");
+	std::vector<AnimationFrame> frames;
+	frames.reserve(frameNodes.size());
+
+	for (const auto& frameNode : frameNodes)
+	{
+		frames.emplace_back(
+			frameNode->Attr("topLeftX", 0U) - m_spriteSheetRect.position.x,
+			frameNode->Attr("topLeftY", 0U) - m_spriteSheetRect.position.y,
+			frameNode->Attr("duration", 0U),
+			frameNode->Attr("spriteWidth", 0U),
+			frameNode->Attr("spriteHeight", 0U),
+			frameNode->Attr("offsetX", 0U),
+			frameNode->Attr("offsetY", 0U),
+			frameNode->Attr("flippedHorizontal", false),
+			frameNode->Attr("flippedVertical", false)
+		);
+	}
+
+	anim.m_Frames = frames;
+
+	anim.m_HasOnAnimEnd = false;
+	anim.m_OnAnimEnd = HASH("INVALID_ANIMATION_NAME");
+
+	const std::string onAnimEnd = animation->Attr("onEnd", std::string{ "" });
+	if (!onAnimEnd.empty())
+	{
+		anim.m_HasOnAnimEnd = true;
+		anim.m_OnAnimEnd = HASH(onAnimEnd);
+	}
+	return anim;
 }

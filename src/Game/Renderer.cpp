@@ -95,8 +95,7 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 	m_animTypeIndices.clear();
 	m_animatedTileTypes.clear();
 
-	const auto CombineHashes = [](const hash_type& levelName, const hash_type& layerName) -> hash_type
-	{
+	const auto CombineHashes = [](const hash_type& levelName, const hash_type& layerName) -> hash_type {
 #if BUILD_DEBUG
 		return levelName + "#" + layerName;
 #else
@@ -195,13 +194,11 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 		}
 	}
 
-	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b)
-	{
+	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b) {
 		return a.m_ZIndex < b.m_ZIndex;
 	});
 
-	std::ranges::sort(m_animatedTileTypes, [](const auto& a, const auto& b)
-	{
+	std::ranges::sort(m_animatedTileTypes, [](const auto& a, const auto& b) {
 		return a.m_ZIndex < b.m_ZIndex;
 	});
 }
@@ -281,45 +278,55 @@ void Renderer::RenderEntity(sf::RenderWindow& window, const Entity* entity) cons
 	const float w = bounds.size.x;
 	const float h = bounds.size.y;
 
-	//float ox = 0.f, oy = 0.f;
+	/*float ox = w / 2.f;
+	float oy = h;*/
+	float ox = 0.f, oy = 0.f;
 
-	//switch (animator.GetCurrentClip().m_SpriteAnchor)
-	//{
-	//case Animation::eSpriteAnchor::TOP_LEFT: ox = 0.f;
-	//	oy = 0.f;
-	//	break;
-	//case Animation::eSpriteAnchor::TOP_MIDDLE: ox = w / 2.f;
-	//	oy = 0.f;
-	//	break;
-	//case Animation::eSpriteAnchor::TOP_RIGHT: ox = w;
-	//	oy = 0.f;
-	//	break;
-	//case Animation::eSpriteAnchor::MIDDLE_LEFT: ox = 0.f;
-	//	oy = h / 2.f;
-	//	break;
-	//case Animation::eSpriteAnchor::MIDDLE_MIDDLE: ox = w / 2.f;
-	//	oy = h / 2.f;
-	//	break;
-	//case Animation::eSpriteAnchor::MIDDLE_RIGHT: ox = w;
-	//	oy = h / 2.f;
-	//	break;
-	//case Animation::eSpriteAnchor::BOTTOM_LEFT: ox = 0.f;
-	//	oy = h;
-	//	break;
-	//case Animation::eSpriteAnchor::BOTTOM_MIDDLE: ox = w / 2.f;
-	//	oy = h;
-	//	break;
-	//case Animation::eSpriteAnchor::BOTTOM_RIGHT: ox = w;
-	//	oy = h;
-	//	break;
-	//}
-
-	float ox = w / 2.f;
-	float oy = h;
+	switch (animator.GetCurrentClip().m_SpriteAnchor)
+	{
+	case Animation::eSpriteAnchor::TOP_LEFT:
+		ox = 0.f;
+		oy = 0.f;
+		break;
+	case Animation::eSpriteAnchor::TOP_MIDDLE:
+		ox = w / 2.f;
+		oy = 0.f;
+		break;
+	case Animation::eSpriteAnchor::TOP_RIGHT:
+		ox = w;
+		oy = 0.f;
+		break;
+	case Animation::eSpriteAnchor::MIDDLE_LEFT:
+		ox = 0.f;
+		oy = h / 2.f;
+		break;
+	case Animation::eSpriteAnchor::MIDDLE_MIDDLE:
+		ox = w / 2.f;
+		oy = h / 2.f;
+		break;
+	case Animation::eSpriteAnchor::MIDDLE_RIGHT:
+		ox = w;
+		oy = h / 2.f;
+		break;
+	case Animation::eSpriteAnchor::BOTTOM_LEFT:
+		ox = 0.f;
+		oy = h;
+		break;
+	case Animation::eSpriteAnchor::BOTTOM_MIDDLE:
+		ox = w / 2.f;
+		oy = h;
+		break;
+	case Animation::eSpriteAnchor::BOTTOM_RIGHT:
+		ox = w;
+		oy = h;
+		break;
+	}
 
 	sprite.setOrigin({ ox, oy });
 
-	const sf::Vector2f offsetPosition = entity->GetPosition() + entity->GetOffsetPosition();
+	const sf::Vector2f offsetPosition = entity->GetPosition() +
+		entity->GetOffsetPosition() +
+		static_cast<sf::Vector2f>(sf::Vector2u{ currentFrame.m_OffsetX, currentFrame.m_OffsetY });
 	const sf::Angle offsetRotation = entity->GetRotation() + entity->GetOffsetRotation();
 
 	sprite.setPosition(offsetPosition + sf::Vector2f{ 16, 0 });
@@ -372,8 +379,7 @@ void Renderer::RenderEntities(sf::RenderWindow& window, const EntityRegistry& en
 	}
 
 	// Sort by Y position for correct draw order
-	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool
-	{
+	std::ranges::sort(renderables, [](const Entity* a, const Entity* b) -> bool {
 		return a->GetPosition().y < b->GetPosition().y;
 	});
 

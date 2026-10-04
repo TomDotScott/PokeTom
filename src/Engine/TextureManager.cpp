@@ -21,9 +21,11 @@ TextureManager& TextureManager::Get()
 
 std::shared_ptr<sf::Image> TextureManager::LoadImage(const std::filesystem::path& path)
 {
-	if (!std::filesystem::exists(path))
+	const bool fileExists = std::filesystem::exists(path);
+	ASSERT(fileExists, "The file %s does not exist!", path.c_str());
+
+	if (!fileExists)
 	{
-		std::cerr << "The file " << path << " does not exist\n";
 		return nullptr;
 	}
 
@@ -92,9 +94,11 @@ bool TextureManager::LoadTexture(const hash_type name, const std::filesystem::pa
 		return true;
 	}
 
-	if (!std::filesystem::exists(path))
+	const bool fileExists = std::filesystem::exists(path);
+	
+	ASSERT(fileExists, "The file %ls does not exist\n", path.c_str());
+	if (!fileExists)
 	{
-		printf("The file %ls does not exist\n", path.c_str());
 		return false;
 	}
 
