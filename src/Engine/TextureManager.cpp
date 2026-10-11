@@ -21,6 +21,17 @@ TextureManager& TextureManager::Get()
 
 std::shared_ptr<sf::Image> TextureManager::LoadImage(const std::filesystem::path& path)
 {
+#if BUILD_DEBUG
+	hash_type keyval = path.generic_string();
+#else
+	hash_type keyval = HASH(path.generic_string().c_str());
+#endif
+
+	if (m_images.contains(keyval))
+	{
+		return m_images.at(keyval);
+	}
+
 	if (!std::filesystem::exists(path))
 	{
 		std::cerr << "The file " << path << " does not exist\n";
@@ -34,11 +45,17 @@ std::shared_ptr<sf::Image> TextureManager::LoadImage(const std::filesystem::path
 		return nullptr;
 	}
 
-	return std::make_shared<sf::Image>(image);
+	m_images[keyval] = std::make_shared<sf::Image>(image);
+	return m_images.at(keyval);
 }
 
 bool TextureManager::LoadTextureFromImage(hash_type name, const std::filesystem::path& path, const sf::IntRect region)
 {
+	if (m_textures.contains(name))
+	{
+		return true;
+	}
+
 	const std::shared_ptr<sf::Image> image = LoadImage(path);
 	if (image == nullptr)
 	{
@@ -50,8 +67,12 @@ bool TextureManager::LoadTextureFromImage(hash_type name, const std::filesystem:
 	return true;
 }
 
-bool TextureManager::LoadTextureFromImage(hash_type name, const std::filesystem::path& path, const sf::IntRect region, const uint32_t maskColour)
+bool TextureManager::LoadTextureFromImage(hash_type name,
+                                          const std::filesystem::path& path,
+                                          const sf::IntRect region,
+                                          const uint32_t maskColour)
 {
+
 	const std::shared_ptr<sf::Image> image = LoadImage(path);
 	if (image == nullptr)
 	{
