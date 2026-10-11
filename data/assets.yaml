@@ -11,8 +11,18 @@ textures:
     source: sprites/interiors.png
   - name: OVERWORLD_SPRITESHEET
     source: sprites/overworld_tileset.png
-  - name: OVERWORLD_MONSTERS
-    source: sprites/monsters/overworld.png
+  - name: OVERWORLD_MONSTERS_WALKING
+    source: sprites/monsters/overworld/OVERWORLD_MONSTERS_WALKING.png
+  - name: OVERWORLD_MONSTERS_WALKING_SHINY
+    source: sprites/monsters/overworld/OVERWORLD_MONSTERS_WALKING_SHINY.png
+  - name: OVERWORLD_MONSTERS_FLYING
+    source: sprites/monsters/overworld/OVERWORLD_MONSTERS_FLYING.png
+  - name: OVERWORLD_MONSTERS_FLYING_SHINY
+    source: sprites/monsters/overworld/OVERWORLD_MONSTERS_FLYING_SHINY.png
+  - name: OVERWORLD_MONSTERS_SWIMMING
+    source: sprites/monsters/overworld/OVERWORLD_MONSTERS_SWIMMING.png
+  - name: OVERWORLD_MONSTERS_SWIMMING_SHINY
+    source: sprites/monsters/overworld/OVERWORLD_MONSTERS_SWIMMING_SHINY.png
   - name: DIALOGUE_BOX
     source: sprites/ui/dialogue_box.png
   - name: BATTLE_HUD
@@ -43,11 +53,13 @@ animations:
     source: animation/male_fisherman.xml
   - name: CHILD_1
     source: animation/child_1.xml
-  - name: MONSTER_333_ANIMATIONS
-    source: animation/monster_333.xml
-  - name: MONSTER_403_ANIMATIONS
-    source: animation/monster_403.xml
   - name: MONSTER_403_BATTLE
     source: animation/battle/monster_403.xml
   - name: MONSTER_507_BATTLE
     source: animation/battle/monster_507.xml
+  - name: MONSTER_WALKING_ANIMATIONS
+    source: animation/monster_overworld_animations/MonsterOverworldAnimations_Walking.xml
+  - name: MONSTER_FLYING_ANIMATIONS
+    source: animation/monster_overworld_animations/MonsterOverworldAnimations_Flying.xml
+  - name: MONSTER_SWIMMING_ANIMATIONS
+    source: animation/monster_overworld_animations/MonsterOverworldAnimations_Swimming.xml
