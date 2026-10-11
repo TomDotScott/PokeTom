@@ -149,8 +149,6 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 					type.m_ZIndex = tile.m_ZIndex;
 					type.m_Vertices.setPrimitiveType(sf::PrimitiveType::Triangles);
 					m_animatedTileTypes.emplace_back(std::move(type));
-
-					PatchUVs(m_animatedTileTypes.back());
 				}
 
 				AnimatedTileType& type = m_animatedTileTypes[it->second];
@@ -193,6 +191,11 @@ void Renderer::BuildBatches(const std::unordered_map<hash_type, LevelRenderData>
 			batcher.BatchSprites(sprites);
 			m_layerBatchers.emplace_back(key, accumulator.m_zIndex, batcher);
 		}
+	}
+
+	for (auto& type : m_animatedTileTypes)
+	{
+		PatchUVs(type);
 	}
 
 	std::ranges::sort(m_layerBatchers, [](const LayerBatcher& a, const LayerBatcher& b)
