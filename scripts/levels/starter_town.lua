@@ -55,10 +55,25 @@ function init(self)
         return id;
     end
 
+
+    --- func desc
+    ---@param pokedexNum number
+    ---@param xPosition number
+    ---@param yPosition number
+    ---@param gridMovementConfig { isCycling: boolean } | nil
+    ---@param animationState number
+    ---@param animationName number
+    ---@param scriptName string | nil
+    self.spawnMonster = function(self, pokedexNum, xPosition, yPosition, gridMovementConfig, animationState, animationName, scriptName)
+        local id = self:spawnNPC(xPosition, yPosition, gridMovementConfig, nil, nil, scriptName)
+
+        Entity.AddMonsterOverworldAnimation(id, pokedexNum, animationState, animationName)
+    end
+
     self.onActivate = function(self)
         print("onActivate")
 
-        print("Entity IDs=".." "..self.man1.." "..self.lampPost1.." "..self.cyclist1.." "..self.fisherman1.." "..self.monster1.." "..self.monster2.." "..self.child1)
+        -- print("Entity IDs=".." "..self.man1.." "..self.lampPost1.." "..self.cyclist1.." "..self.fisherman1.." "..self.monster1.." "..self.monster2.." "..self.child1)
         self.man1 = self:spawnNPC(
             23,
             15,
@@ -140,30 +155,26 @@ function init(self)
             "move_random"
         )
 
-        self.monster1 = self:spawnNPC(
+        self.monster1 = self:spawnMonster(
+            403,
             14,
             21,
             {
                 isCycling=false
             },
-            {
-                dictName="MONSTER_403_ANIMATIONS",
-                initialAnim=AnimationName.WALK_UP
-            },
-            nil,
+            MonsterOverworldState.WALKING,
+            MonsterOverworldAnimationName.UP,
             "move_random"
         )
 
-        self.monster2 = self:spawnNPC(
+        self.monster2 = self:spawnMonster(
+            333,
             35,
             11,
             nil,
-            {
-                dictName="MONSTER_333_ANIMATIONS",
-                initialAnim=AnimationName.WALK_DOWN
-            },
-            nil,
-            nil
+            MonsterOverworldState.WALKING,
+            MonsterOverworldAnimationName.DOWN,
+            "move_random"
         )
     end
 

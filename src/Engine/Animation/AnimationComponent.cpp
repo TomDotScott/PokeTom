@@ -1,4 +1,7 @@
 #include "AnimationComponent.h"
+
+#include <memory>
+
 #include "../Entity.h"
 #include "../CodeGen/Resources.hpp"
 
@@ -7,11 +10,21 @@ EntityAnimationComponent::EntityAnimationComponent(
 	const std::string_view& animDictResourceName,
 	const eAnimationName initialAnimation
 ) :
+	m_player{ AnimationDictionary::Create(GET_ANIMATION_PATH(animDictResourceName)) },
 	m_owningEntity(owner),
-	m_animationName{ initialAnimation },
-	m_player{ AnimationDictionary::Create(GET_ANIMATION_PATH(animDictResourceName)) }
+	m_animationName{ initialAnimation }
 {
-	m_player.PlayAnimation(GetAnimationName(m_animationName), true);
+	m_player.PlayAnimation(EntityAnimationComponent::GetAnimationName(m_animationName), true);
+}
+
+EntityAnimationComponent::EntityAnimationComponent(
+	Entity* owner,
+	const std::shared_ptr<AnimationDictionary>& animationDict
+) :
+	m_player{ animationDict },
+	m_owningEntity(owner),
+	m_animationName(WALK_UP)
+{
 }
 
 void EntityAnimationComponent::Update(const float deltaTime)

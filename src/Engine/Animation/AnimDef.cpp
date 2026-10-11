@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 
+#include "../Asserts.h"
 #include "../Globals.h"
 #include "../TextureManager.h"
 #include "../CodeGen/Resources.hpp"
@@ -23,26 +24,25 @@ bool AnimationDictionary::HasClip(const hash_type& name) const
 	return m_animationClips.contains(name);
 }
 
-bool AnimationDictionary::Init()
+std::shared_ptr<AnimationDictionary> AnimationDictionary::Create(const std::filesystem::path& path)
 {
 	XmlDocument doc;
-	doc.Load(m_filepath);
-
+	doc.Load(path);
 	const auto& root = doc.Root().Child("AnimDict");
-
-	if (!LoadFromXML(*root))
-	{
-		return false;
-	}
-
-	// TODO: Should these have a lifetime?
-	ANIMATION_DICTIONARIES[m_name] = *this;
-	return true;
+	return Create(*root);
 }
 
-AnimationDictionary::AnimationDictionary(std::filesystem::path filepath) :
-	m_filepath(std::move(filepath))
+std::shared_ptr<AnimationDictionary> AnimationDictionary::Create(const XmlNode& root)
 {
+	auto dict = std::make_shared<AnimationDictionary>();
+	
+	if (!dict->LoadFromXML(root))
+	{
+		ASSERT(false);
+		return nullptr;
+	}
+
+	return dict;
 }
 
 bool AnimationDictionary::LoadFromXML(const XmlNode& node)

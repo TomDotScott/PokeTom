@@ -13,6 +13,7 @@
 #include "../Engine/Maths.h"
 #include "../Engine/Stringtable.h"
 #include "../Engine/Timer.h"
+#include "Monsters/MonsterOverworldAnimationRegistry.h"
 #include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
@@ -33,6 +34,8 @@ Game::Game(sol::state& lua) :
 	// TODO: Make this a variable, loaded at startup
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
+
+	MonsterOverworldAnimationRegistry::Get();
 
 	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>(sf::Vector2f(0.f, 0.f)).GetID();
 

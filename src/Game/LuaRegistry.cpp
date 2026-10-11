@@ -16,6 +16,7 @@
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Scripting/LuaBindingMacros.h"
 #include "../Engine/Scripting/ScriptComponent.h"
+#include "Monsters/MonsterOverworldAnimationComponent.h"
 
 struct SimpleVector {
 	float x;
@@ -41,6 +42,7 @@ LuaRegistry::LuaRegistry(sol::state& lua, WorldDefinition& world, EntityRegistry
 	RegisterDialogueAPI(lua);
 	RegisterDirections(lua);
 	RegisterAnimationNames(lua);
+	RegisterMonsterOverworldAnimationNames(lua);
 }
 
 void LuaRegistry::RegisterUtilityAPI(sol::state& lua)
@@ -216,8 +218,18 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 
 				const auto initialAnimName = static_cast<EntityAnimationComponent::eAnimationName>(initialAnimation);
 
-				// TODO: Fix these magic numbers!
 				e->AddComponent<EntityAnimationComponent>(e, animationPath, initialAnimName);
+			})
+
+		LUA_FUNC(Entity, AddMonsterOverworldAnimation,
+			[&entities](const entity_id_t id, const uint32_t monsterID, const int monsterAnimationState, const int initialAnimation)
+			{
+				Entity* e = entities.Get<Entity>(id);
+
+				const auto monsterAnimationStateName = static_cast<eMonsterOverworldState>(monsterAnimationState);
+				const auto initialAnimName = static_cast<MonsterOverworldAnimationComponent::eAnimationName>(initialAnimation);
+
+				e->AddComponent<MonsterOverworldAnimationComponent>(e, monsterID, monsterAnimationStateName, initialAnimName);
 			})
 
 		// TODO: Make this a script name or ID instead of a filepath
@@ -395,5 +407,21 @@ void LuaRegistry::RegisterAnimationNames(sol::state& lua)
 		LUA_CONST(AnimationName, BATTLE_BACK, static_cast<int>(EntityAnimationComponent::BATTLE_BACK))
 		LUA_CONST(AnimationName, BATTLE_FRONT, static_cast<int>(EntityAnimationComponent::BATTLE_FRONT))
 
+	LUA_API_END()
+}
+
+void LuaRegistry::RegisterMonsterOverworldAnimationNames(sol::state& lua)
+{
+	LUA_API_BEGIN(MonsterOverworldState, lua)
+		LUA_CONST(MonsterOverworldState, WALKING, static_cast<int>(eMonsterOverworldState::Walking))
+		LUA_CONST(MonsterOverworldState, FLYING, static_cast<int>(eMonsterOverworldState::Flying))
+		LUA_CONST(MonsterOverworldState, SWIMMING, static_cast<int>(eMonsterOverworldState::Swimming))
+	LUA_API_END()
+
+	LUA_API_BEGIN(MonsterOverworldAnimationName, lua)
+		LUA_CONST(MonsterOverworldAnimationName, UP, static_cast<int>(MonsterOverworldAnimationComponent::eAnimationName::UP))
+		LUA_CONST(MonsterOverworldAnimationName, DOWN, static_cast<int>(MonsterOverworldAnimationComponent::eAnimationName::DOWN))
+		LUA_CONST(MonsterOverworldAnimationName, LEFT, static_cast<int>(MonsterOverworldAnimationComponent::eAnimationName::LEFT))
+		LUA_CONST(MonsterOverworldAnimationName, RIGHT, static_cast<int>(MonsterOverworldAnimationComponent::eAnimationName::RIGHT))
 	LUA_API_END()
 }
