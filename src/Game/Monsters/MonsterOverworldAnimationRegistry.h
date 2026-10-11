@@ -14,6 +14,8 @@ enum class eMonsterOverworldState
 	Swimming
 };
 
+using overworld_animation_t = std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>>;
+
 class MonsterOverworldAnimationRegistry final : public Factory<MonsterOverworldAnimationRegistry>
 {
 public:
@@ -26,11 +28,11 @@ protected:
 	bool Init() override;
 
 private:
-	std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>> m_walkAnimations;
-	std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>> m_flyAnimations;
-	std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>> m_swimAnimations;
+	overworld_animation_t m_walkAnimations;
+	overworld_animation_t m_flyAnimations;
+	overworld_animation_t m_swimAnimations;
 
-	std::optional<std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>>> LoadAnimationsFromXML(eMonsterOverworldState);
+	std::optional<overworld_animation_t> LoadAnimationsFromXML(eMonsterOverworldState);
 };
 
 #endif // MONSTEROVERWORLDANIMATIONREGISTRY_H

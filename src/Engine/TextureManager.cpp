@@ -45,7 +45,7 @@ std::shared_ptr<sf::Image> TextureManager::LoadImage(const std::filesystem::path
 		return nullptr;
 	}
 
-	m_images[keyval] = std::make_shared<sf::Image>(image);
+	m_images[keyval] = std::make_shared<sf::Image>(std::move(image));
 	return m_images.at(keyval);
 }
 
@@ -68,9 +68,9 @@ bool TextureManager::LoadTextureFromImage(hash_type name, const std::filesystem:
 }
 
 bool TextureManager::LoadTextureFromImage(hash_type name,
-                                          const std::filesystem::path& path,
-                                          const sf::IntRect region,
-                                          const uint32_t maskColour)
+	const std::filesystem::path& path,
+	const sf::IntRect region,
+	const uint32_t maskColour)
 {
 
 	const std::shared_ptr<sf::Image> image = LoadImage(path);
@@ -79,7 +79,10 @@ bool TextureManager::LoadTextureFromImage(hash_type name,
 		return false;
 	}
 
-	image->createMaskFromColor(sf::Color{ maskColour });
+	if (maskColour & 0xFFFFFFFF)
+	{
+		image->createMaskFromColor(sf::Color{ maskColour });
+	}
 
 	m_textures[name] = sf::Texture(*image, false, region);
 	RegisterPath(path, name);

@@ -90,9 +90,7 @@ bool MonsterOverworldAnimationRegistry::Init()
 	return true;
 }
 
-std::optional<std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>>>
-MonsterOverworldAnimationRegistry::LoadAnimationsFromXML(
-	const eMonsterOverworldState state)
+std::optional<overworld_animation_t> MonsterOverworldAnimationRegistry::LoadAnimationsFromXML(const eMonsterOverworldState state)
 {
 	std::string_view animDictHash;
 	switch (state)
@@ -108,7 +106,7 @@ MonsterOverworldAnimationRegistry::LoadAnimationsFromXML(
 		break;
 	}
 
-	std::unordered_map<hash_type, std::shared_ptr<AnimationDictionary>> animDicts;
+	overworld_animation_t animDicts;
 
 	XmlDocument doc;
 	doc.Load(GET_ANIMATION_PATH(animDictHash));
