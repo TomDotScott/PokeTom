@@ -66,8 +66,8 @@ function init(self)
     ---@param scriptName string | nil
     self.spawnMonster = function(self, pokedexNum, xPosition, yPosition, gridMovementConfig, animationState, animationName, scriptName)
         local id = self:spawnNPC(xPosition, yPosition, gridMovementConfig, nil, nil, scriptName)
-
         Entity.AddMonsterOverworldAnimation(id, pokedexNum, animationState, animationName)
+        return id
     end
 
     self.onActivate = function(self)
