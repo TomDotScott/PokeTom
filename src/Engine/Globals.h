@@ -54,8 +54,6 @@ private:
 	std::default_random_engine m_randomEngine;
 };
 
-constexpr float PI = 3.141592f;
-
 struct Vector2HashFunction
 {
 	size_t operator()(const sf::Vector2f& vec) const
@@ -65,6 +63,11 @@ struct Vector2HashFunction
 		return xHash ^ yHash;
 	}
 };
+
+// TODO: This should probably live elsewhere
+constexpr static float GRID_SIZE = 32.f;
+constexpr static float ENTITY_WALK_SPEED = 3.f;
+constexpr static float ENTITY_RUN_SPEED = 6.f;
 
 extern bool OnlyWhitespace(const char* chr);
 

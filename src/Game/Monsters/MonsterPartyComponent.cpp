@@ -4,9 +4,8 @@
 #include "../../Engine/Asserts.h"
 
 
-MonsterPartyComponent::MonsterPartyComponent(Entity* owner, GameContext& gameCtx,
-                                             const std::vector<MonsterPartyInfo>& monsters) :
-	m_gameContext(gameCtx),
+MonsterPartyComponent::MonsterPartyComponent(Entity* owner, EntityRegistry& entities, const std::vector<MonsterPartyInfo>& monsters) :
+	m_entities(entities),
 	m_activeMonsterIdx(0),
 	m_partyMonsters(monsters),
 	m_partyEntities()
@@ -27,7 +26,7 @@ void MonsterPartyComponent::OnActivate()
 	{
 		auto& [monsterInfo, monsterLevel] = m_partyMonsters[i];
 
-		auto& entity = m_gameContext.m_Entities.Create<PocketMonsterEntity>(
+		auto& entity = m_entities.Create<PocketMonsterEntity>(
 			monsterInfo.GetID(),
 			monsterLevel,
 			EntityAnimationComponent::eAnimationName::BATTLE_BACK
@@ -59,7 +58,7 @@ void MonsterPartyComponent::OnDeactivate()
 			continue;
 		}
 
-		m_gameContext.m_Entities.Destroy(entity->GetID());
+		m_entities.Destroy(entity->GetID());
 
 		entity = nullptr;
 	}

@@ -198,12 +198,11 @@ void LuaRegistry::RegisterEntityAPI(sol::state& lua, WorldDefinition& world, Ent
 			[&](const entity_id_t id, const bool isCycling)
 			{
 				Entity* e = entities.Get<Entity>(id);
-				// TODO: Fix these magic numbers!
-				auto& c = e->AddComponent<GridMovementComponent>(e, 32.f, 3.f, 6.f);
+				auto& c = e->AddComponent<GridMovementComponent>(e, GRID_SIZE, ENTITY_WALK_SPEED, ENTITY_RUN_SPEED);
 
 				c.SetWorldPosition(e->GetPosition());
 
-				c.SetCanMoveCallback([&](Entity* ent, const eDirection dir)
+				c.SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
 					{
 						return world.CanMoveTo(ent, entities, dir);
 					});

@@ -26,6 +26,11 @@ GridMovementComponent::GridMovementComponent(
 {
 }
 
+void GridMovementComponent::Move(const eOrientation orientation)
+{
+	return Move(GetDirectionFromOrientation(orientation));
+}
+
 void GridMovementComponent::Move(const eDirection direction)
 {
 	if (m_isMoving)
@@ -160,6 +165,11 @@ void GridMovementComponent::Update(const float deltaTime)
 
 	m_worldPos = m_startPos + (m_endPos - m_startPos) * m_progress;
 	UpdateMovementAnimations();
+}
+
+const sf::Vector2f& GridMovementComponent::GetStartPosition() const
+{
+	return m_startPos;
 }
 
 const sf::Vector2f& GridMovementComponent::GetWorldPosition() const

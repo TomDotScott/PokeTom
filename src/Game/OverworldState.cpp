@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "FollowEntityComponent.h"
 #include "GameEvents.h"
 #include "../Engine/Asserts.h"
 #include "../Engine/GridMovementComponent.h"
@@ -9,7 +10,6 @@
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/UI/UiManager.h"
 #include "Monsters/MonsterPartyComponent.h"
-#include "Monsters/PocketMonsterEntity.h"
 #include "Monsters/PocketMonsterManager.h"
 
 OverworldState::OverworldState(
@@ -30,25 +30,7 @@ OverworldState::OverworldState(
 
 	ASSERT(playerEntity != nullptr);
 
-	if (!playerEntity->HasComponent<MonsterPartyComponent>())
-	{
-		auto& mpc = playerEntity->AddComponent<MonsterPartyComponent>(
-			playerEntity,
-			m_gameContext,
-			std::vector<MonsterPartyComponent::MonsterPartyInfo>{
-				{
-					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(403),
-					.m_Level = 10
-				},
-				{
-					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(507),
-					.m_Level = 12
-				}
-			}
-		);
-
-		mpc.OnActivate();
-	}
+	ASSERT(playerEntity->HasComponent<MonsterPartyComponent>());
 
 	const std::shared_ptr<Level> startLevel = m_gameContext.m_World.GetLevel(overworldLevel);
 	m_cameraRebuildThreshold = 10.f * static_cast<float>(startLevel->GetTileWidth());
@@ -290,7 +272,7 @@ void OverworldState::CheckForTallGrass(Entity* player, const Level* currentLevel
 		auto& monsterEntity = m_gameContext.m_Entities.Create();
 		auto& monsterMPC = monsterEntity.AddComponent<MonsterPartyComponent>(
 			&monsterEntity,
-			m_gameContext,
+			m_gameContext.m_Entities,
 			std::vector<MonsterPartyComponent::MonsterPartyInfo>{{
 					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(monster),
 					.m_Level = 5
