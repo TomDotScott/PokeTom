@@ -95,6 +95,69 @@ void Player::Move()
 	movement->SetSprinting(m_mapper.IsButtonDown(SPRINT));
 }
 
+#define SPAWN_ALL_MONSTER_ENTITIES 0
+
+#if SPAWN_ALL_MONSTER_ENTITIES
+void Player::SpawnFollowerEntity()
+{
+	entity_id_t previousEntityID = ~0U;
+	for (size_t i = 1; i <= PocketMonsterManager::Get()->GetTotalMonsters(); ++i)
+	{
+		if (i == 29 || i == 32)
+		{
+			continue;
+		}
+
+		Entity& newEntity = m_entities.Create();
+
+		// const MonsterPartyComponent* partyComp = GetComponent<MonsterPartyComponent>();
+		// const PocketMonsterEntity* firstMonster = partyComp->GetActiveMonster();
+
+		newEntity.AddComponent<MonsterOverworldAnimationComponent>(&newEntity,
+			i,
+			eMonsterOverworldState::Walking,
+			MonsterOverworldAnimationComponent::eAnimationName::DOWN
+		);
+		newEntity.AddComponent<EntityFollowComponent>(&newEntity, m_entities, previousEntityID == ~0U ? GetID() : previousEntityID);
+
+		// Set the position of the entity to behind the player
+		const GridMovementComponent* myGMC = previousEntityID == ~0U ? GetComponent<GridMovementComponent>() : m_entities.Get(previousEntityID)->GetComponent<GridMovementComponent>();
+		const eDirection myPreviousDirection = myGMC->GetPreviousDirection();
+		eDirection spawnDirection = eDirection::North;
+		switch (myPreviousDirection)
+		{
+		case eDirection::None:
+			spawnDirection = eDirection::North;
+			break;
+		case eDirection::North:
+			spawnDirection = eDirection::South;
+			break;
+		case eDirection::South:
+			spawnDirection = eDirection::North;
+			break;
+		case eDirection::East:
+			spawnDirection = eDirection::West;
+			break;
+		case eDirection::West:
+			spawnDirection = eDirection::East;
+			break;
+		}
+		const sf::Vector2f myPreviousPos = myGMC->GetNextPosition(spawnDirection);
+
+		GridMovementComponent* followGMC = newEntity.GetComponent<GridMovementComponent>();
+
+		followGMC->SetCanMoveCallback([&](const Entity* ent, const eDirection dir) {
+			return true;
+		});
+
+		followGMC->SetWorldPosition(myPreviousPos);
+
+		newEntity.OnActivate();
+
+		previousEntityID = newEntity.GetID();
+	}
+}
+#else
 void Player::SpawnFollowerEntity()
 {
 	ASSERT(m_followerEntityID == ~0U);
@@ -147,6 +210,7 @@ void Player::SpawnFollowerEntity()
 
 	followEntity.OnActivate();
 }
+#endif
 
 void Player::RemoveFollowerEntity()
 {

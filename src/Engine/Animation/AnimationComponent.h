@@ -43,6 +43,7 @@ public:
 	void Update(float deltaTime) override;
 
 	void PlayAnimation(eAnimationName animation, bool forceRestart);
+	void PlayAnimation(hash_type animationName, bool forceRestart);
 
 	const AnimationPlayer& GetAnimator() const;
 

@@ -20,12 +20,7 @@ public:
 	void OnPlayerInteractPressed() override;
 	~MonsterOverworldAnimationComponent() override = default;
 
-	static eAnimationName GetIdleAnimation(eMonsterOverworldState state, eOrientation orientation);
-	static eAnimationName GetSprintAnimation(eMonsterOverworldState state, eOrientation orientation);
-	static eAnimationName GetWalkAnimation(eMonsterOverworldState state, eOrientation orientation);
-	static eAnimationName GetCycleAnimation(eMonsterOverworldState state, eOrientation orientation);
-
-private:
+// private:
 	static hash_type GetAnimationName(eMonsterOverworldState state, eAnimationName name);
 };
 

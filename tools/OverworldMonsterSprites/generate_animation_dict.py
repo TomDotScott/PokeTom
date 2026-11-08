@@ -119,7 +119,7 @@ def forme_tag(label):
     return f"forme{label}_" if label.isdigit() else f"{label.lower()}_"
 
 
-def build_group(entry, atlas, mask, indent):
+def build_image(entry, atlas, mask, indent):
     pad = " " * indent
     ox, oy, w, h = entry["x"], entry["y"], entry["width"], entry["height"]
     lines = [
@@ -132,7 +132,7 @@ def build_group(entry, atlas, mask, indent):
         f'{pad}    maskColour="{mask}"',
         f"{pad}/>",
     ]
-    return lines, ox, oy, w // GRID, h // GRID
+    return lines
 
 
 def build_anim(name, ox, oy, row, fw, fh, duration, indent):
@@ -206,6 +206,10 @@ def main():
         out = ['<?xml version="1.0" encoding="UTF-8"?>', "<MonsterOverworldAnimations>"]
         dicts = formes = 0
         for number in sorted(data):
+            if number > 650:
+                # Only up to gen5 (for now!)
+                continue
+
             labels = [lb for lb in sorted(data[number], key=forme_sort_key) if state in data[number][lb]]
             if not labels:
                 continue
@@ -213,13 +217,24 @@ def main():
             dex_name = dex_names[number - 1].replace("-", " ").title()
             out.append(f'    <AnimDict version="0.1" name="monster_{number:03d}_overworld_{state}_animations">')
             out.append(f"        <!-- {dex_name} {state} animations -->")
+
+            included_img_tag = False
+
             for label in labels:
                 if label:
                     formes += 1
                 tag = forme_tag(label)
-                group, ox, oy, fw, fh = build_group(data[number][label][state], atlas, args.mask, 8)
-                out.append("")
-                out.extend(group)
+
+                ox = data[number][label][state]["x"]
+                oy = data[number][label][state]["y"]
+                fw = data[number][label][state]["width"] // GRID
+                fh = data[number][label][state]["height"] // GRID
+
+                if not included_img_tag:
+                    group = build_image(data[number][label][state], atlas, args.mask, 8)
+                    out.append("")
+                    out.extend(group)
+
                 for direction, row in DIRECTION_ROWS:
                     out.append("")
                     out.extend(build_anim(f"{tag}{sp}_{direction}", ox, oy, row, fw, fh, args.duration, 8))

@@ -26,7 +26,9 @@ private:
 	GridMovementComponent* m_ownerGMC;
 
 	std::deque<sf::Vector2f> m_trail;
+	sf::Vector2f m_lastRecordedPosition;
 	bool m_targetWasMoving;
+	bool m_initialized = false;
 };
 
 #endif // FOLLOWENTITYCOMPONENT_H

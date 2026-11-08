@@ -124,7 +124,7 @@ const std::vector<TileRenderData>& Level::GetRenderData() const
 	return m_cachedRenderData;
 }
 
-std::vector<TileLayerData> Level::GetLayers() const
+const std::vector<TileLayerData>& Level::GetLayers() const
 {
 	return m_mapData->m_Layers;
 }

@@ -38,6 +38,11 @@ void EntityAnimationComponent::PlayAnimation(const eAnimationName animation, con
 	m_player.PlayAnimation(GetAnimationName(m_animationName), forceRestart);
 }
 
+void EntityAnimationComponent::PlayAnimation(hash_type animationName, bool forceRestart)
+{
+	m_player.PlayAnimation(animationName, forceRestart);
+}
+
 const AnimationPlayer& EntityAnimationComponent::GetAnimator() const
 {
 	return m_player;

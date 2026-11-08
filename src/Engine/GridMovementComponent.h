@@ -25,6 +25,8 @@ public:
 
 	void Move(eOrientation orientation);
 	void Move(eDirection direction);
+
+	bool CanMove() const;
 	bool CanMove(eDirection direction) const;
 
 	void SetDirection(eOrientation orientation);
