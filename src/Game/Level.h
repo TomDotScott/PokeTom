@@ -29,7 +29,7 @@ public:
 	const hash_type& GetName() const;
 
 	const std::vector<TileRenderData>& GetRenderData() const;
-	std::vector<TileLayerData> GetLayers() const;
+	const std::vector<TileLayerData>& GetLayers() const;
 
 	uint32_t GetNumColumns() const;
 	uint32_t GetNumRows() const;
@@ -40,7 +40,7 @@ public:
 	int GetEntityZIndex() const;
 
 	bool IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const;
-	bool CanMoveTo(const sf::Vector2f& worldSpacePosition) const;
+	bool IsPositionWalkable(const sf::Vector2f& worldSpacePosition) const;
 
 	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
 

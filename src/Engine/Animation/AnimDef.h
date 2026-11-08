@@ -44,33 +44,26 @@ struct Animation
 	eSpriteAnchor m_SpriteAnchor = MIDDLE_MIDDLE;
 };
 
-class AnimationDictionary : public Factory<AnimationDictionary>, public ISerialisable
+class AnimationDictionary : public ISerialisable
 {
 public:
-	friend class Factory<AnimationDictionary>;
+	AnimationDictionary() = default;
 
 	const Animation& GetClip(const hash_type& name) const;
-
-	// TODO: Get rid of this - I think we need a wrapper for the map below...
-	AnimationDictionary() = default;
 
 	const hash_type& GetName() const;
 	bool HasClip(const hash_type& name) const;
 
-protected:
-	bool Init() override;
+	static std::shared_ptr<AnimationDictionary> Create(const std::filesystem::path& path);
+	static std::shared_ptr<AnimationDictionary> Create(const XmlNode& root);
 
 private:
 	hash_type m_name;
-	std::filesystem::path m_filepath;
 	sf::IntRect m_spriteSheetRect;
 	std::unordered_map<hash_type, Animation> m_animationClips;
 
-	AnimationDictionary(std::filesystem::path filepath);
 
 	bool LoadFromXML(const XmlNode& node) override;
 };
-
-static inline std::unordered_map<hash_type, AnimationDictionary> ANIMATION_DICTIONARIES;
 
 #endif

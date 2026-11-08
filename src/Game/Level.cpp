@@ -124,7 +124,7 @@ const std::vector<TileRenderData>& Level::GetRenderData() const
 	return m_cachedRenderData;
 }
 
-std::vector<TileLayerData> Level::GetLayers() const
+const std::vector<TileLayerData>& Level::GetLayers() const
 {
 	return m_mapData->m_Layers;
 }
@@ -164,7 +164,7 @@ bool Level::IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) cons
 		&& gridPos.y < static_cast<int>(GetNumRows());
 }
 
-bool Level::CanMoveTo(const sf::Vector2f& worldSpacePosition) const
+bool Level::IsPositionWalkable(const sf::Vector2f& worldSpacePosition) const
 {
 	if (!IsWorldSpacePointOnGrid(worldSpacePosition))
 	{

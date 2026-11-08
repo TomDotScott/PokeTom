@@ -15,6 +15,8 @@ public:
 
 	const PocketMonster& GetMonsterDetails(uint32_t monsterID) const;
 
+	size_t GetTotalMonsters() const;
+
 protected:
 	bool Init() override;
 

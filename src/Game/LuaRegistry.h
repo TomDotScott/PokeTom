@@ -20,6 +20,7 @@ private:
 	void RegisterDialogueAPI(sol::state& lua);
 	void RegisterDirections(sol::state& lua);
 	void RegisterAnimationNames(sol::state& lua);
+	void RegisterMonsterOverworldAnimationNames(sol::state& lua);
 };
 
 #endif

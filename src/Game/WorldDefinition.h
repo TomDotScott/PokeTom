@@ -47,6 +47,7 @@ public:
 	const Level::AdjacentLevels& GetAdjacentLevels(const hash_type& levelName) const;
 
 	bool CanMoveTo(const Entity* entity, EntityRegistry& entities, eDirection direction) const;
+	bool CanMoveTo(const Entity* entity, EntityRegistry& entities, const sf::Vector2f& worldPosition) const;
 	void SortLevels();
 	bool LoadFromXML(const XmlNode& node) override;
 

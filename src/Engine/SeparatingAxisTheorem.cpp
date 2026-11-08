@@ -6,13 +6,15 @@
 #include <limits>
 #include <unordered_set>
 
+#include "Maths.h"
+
 
 CollisionPolygon::CollisionPolygon(const float radius, const uint8_t numVertices, const sf::Color color) :
 	m_velocity{},
 	m_angularVelocity{},
 	m_color{ color }
 {
-	for (float theta = 0.0f; theta < 2.0f * PI - 0.01f; theta += GetVertexRotationAmountRadians(numVertices))
+	for (float theta = 0.0f; theta < 2.0f * maths::PI - 0.01f; theta += GetVertexRotationAmountRadians(numVertices))
 	{
 		const sf::Vertex v{ radius * sf::Vector2f{ std::cosf(theta), -std::sinf(theta) }, m_color };
 		m_vertices.append(v);
@@ -22,14 +24,14 @@ CollisionPolygon::CollisionPolygon(const float radius, const uint8_t numVertices
 
 float CollisionPolygon::GetVertexRotationAmountRadians(const uint8_t numVertices)
 {
-	return 2.0f * PI / static_cast<float>(numVertices);
+	return 2.0f * maths::PI / static_cast<float>(numVertices);
 }
 
 void CollisionPolygon::Reset(const float radius, const uint8_t numVertices)
 {
 	m_vertices.clear();
 	m_vertices.resize(0);
-	for (float theta = 0.0f; theta < 2.0f * PI - 0.01f; theta += GetVertexRotationAmountRadians(numVertices))
+	for (float theta = 0.0f; theta < 2.0f * maths::PI - 0.01f; theta += GetVertexRotationAmountRadians(numVertices))
 	{
 		m_vertices.append({ radius * sf::Vector2f{ std::cosf(theta), -std::sinf(theta) }, m_color });
 	}

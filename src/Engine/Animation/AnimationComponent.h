@@ -32,15 +32,18 @@ public:
 		CYCLE_LEFT = 1 << 14,
 		CYCLE_RIGHT = 1 << 15,
 
+		// TODO: Get these out of the engine side... Walk, Run and Cycle might be okay to live in the engine, but these are pure pokemon stuff
 		BATTLE_BACK = 1 << 30,
 		BATTLE_FRONT = 1 << 31
 	};
 
 	EntityAnimationComponent(Entity* owner, const std::string_view& animDictResourceName, eAnimationName initialAnimation);
+	EntityAnimationComponent(Entity* owner, const std::shared_ptr<AnimationDictionary>& animationDict);
 
 	void Update(float deltaTime) override;
 
 	void PlayAnimation(eAnimationName animation, bool forceRestart);
+	void PlayAnimation(hash_type animationName, bool forceRestart);
 
 	const AnimationPlayer& GetAnimator() const;
 
@@ -49,10 +52,12 @@ public:
 	static eAnimationName GetWalkAnimation(eOrientation orientation);
 	static eAnimationName GetCycleAnimation(eOrientation orientation);
 
+protected:
+	AnimationPlayer m_player;
+
 private:
 	Entity* m_owningEntity;
 	eAnimationName m_animationName;
-	AnimationPlayer m_player;
 
 	static hash_type GetAnimationName(eAnimationName state);
 };

@@ -55,7 +55,7 @@ Move::Outcome Move::Use(Entity& attacker, Entity& defender)
 	PocketMonsterEntity* defenderMonster = dynamic_cast<PocketMonsterEntity*>(&defender);
 	ASSERT(defenderMonster != nullptr);
 
-	const monster_type attkType = m_type;
+	const monster_type attkType = attackerMonster->GetType();
 	const monster_type defType = defenderMonster->GetType();
 
 	// TODO: Calculate this properly - for now, just do RNG based on the numbers!
