@@ -9,6 +9,7 @@
 #include "../Engine/Entity.h"
 #include "../Engine/EntityRegistry.h"
 #include "../Engine/Parsers/XML/XmlDocument.h"
+#include "../Engine/GridMovementComponent.h"
 
 constexpr static const char* OVERWORLD_ROOT_LEVEL = "starter_town";
 
@@ -145,7 +146,18 @@ bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, 
 	}
 
 	const auto& currentLevel = GetLevelAtPosition(newPosition);
-	return currentLevel != nullptr && currentLevel->CanMoveTo(newPosition);
+	return currentLevel != nullptr && currentLevel->IsPositionWalkable(newPosition);
+}
+
+bool WorldDefinition::CanMoveTo(const Entity* entity, EntityRegistry& entities, const sf::Vector2f& worldSpacePosition) const
+{
+	if (entity == nullptr)
+	{
+		return false;
+	}
+
+	const auto& currentLevel = GetLevelAtPosition(worldSpacePosition);
+	return currentLevel != nullptr && currentLevel->IsPositionWalkable(worldSpacePosition);
 }
 
 void WorldDefinition::SortLevels()

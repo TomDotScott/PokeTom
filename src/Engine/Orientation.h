@@ -2,6 +2,8 @@
 #define ORIENTATION_H
 #include <cstdint>
 #include <string>
+#include <SFML/System/Vector2.hpp>
+
 
 enum class eOrientation : uint8_t
 {
@@ -10,6 +12,16 @@ enum class eOrientation : uint8_t
 	Left = 1 << 2,
 	Right = 1 << 3
 };
+
+inline eOrientation GetOrientationFromVector(const sf::Vector2f& v)
+{
+	if (abs(v.x) > abs(v.y))
+	{
+		return v.x > 0 ? eOrientation::Right : eOrientation::Left;
+	}
+
+	return v.y < 0 ? eOrientation::Up : eOrientation::Down;
+}
 
 inline const char* OrientationToString(const eOrientation e)
 {

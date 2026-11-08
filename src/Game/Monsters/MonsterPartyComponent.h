@@ -4,7 +4,7 @@
 #include "PocketMonsterEntity.h"
 #include "../../Engine/IUpdateable.h"
 
-struct GameContext;
+class EntityRegistry;
 
 class MonsterPartyComponent : public IUpdateable
 {
@@ -17,7 +17,7 @@ public:
 		unsigned m_Level;
 	};
 
-	MonsterPartyComponent(Entity* owner, GameContext& gameCtx, const std::vector<MonsterPartyInfo>& monsters);
+	MonsterPartyComponent(Entity* owner, EntityRegistry& gameCtx, const std::vector<MonsterPartyInfo>& monsters);
 
 	void Update(float deltaTime) override;
 
@@ -36,7 +36,7 @@ public:
 
 private:
 	// TODO: Need to come up with a nice way of passing this around
-	GameContext& m_gameContext;
+	EntityRegistry& m_entities;
 
 	uint8_t m_activeMonsterIdx;
 

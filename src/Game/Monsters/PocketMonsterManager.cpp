@@ -28,6 +28,11 @@ const PocketMonster& PocketMonsterManager::GetMonsterDetails(const uint32_t mons
 	return m_monsterDetails.at(monsterID);
 }
 
+size_t PocketMonsterManager::GetTotalMonsters() const
+{
+	return m_monsterDetails.size();
+}
+
 bool PocketMonsterManager::Init()
 {
 	return Load("pokedex.json");

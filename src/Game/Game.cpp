@@ -13,6 +13,7 @@
 #include "../Engine/Maths.h"
 #include "../Engine/Stringtable.h"
 #include "../Engine/Timer.h"
+#include "Monsters/MonsterOverworldAnimationRegistry.h"
 #include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
@@ -34,7 +35,9 @@ Game::Game(sol::state& lua) :
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("PLAYER_NAME"), "Tom");
 	StringTable::Get()->AddCustomString(HASH("CHARACTER"), HASH("RIVAL_NAME"), "Ben");
 
-	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>(sf::Vector2f(0.f, 0.f)).GetID();
+	MonsterOverworldAnimationRegistry::Get();
+
+	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>(m_context.m_Entities, m_context.m_World, sf::Vector2f(0.f, 0.f)).GetID();
 
 	Player* player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
 	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
@@ -113,7 +116,7 @@ Game::Game(sol::state& lua) :
 
 		auto& mpc = debugOpponent->AddComponent<MonsterPartyComponent>(
 			debugOpponent,
-			m_context,
+			m_context.m_Entities,
 			std::vector<MonsterPartyComponent::MonsterPartyInfo>{
 				{
 					.m_Monster = PocketMonsterManager::Get()->GetMonsterDetails(403),

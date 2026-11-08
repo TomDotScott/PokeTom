@@ -14,7 +14,10 @@ class Entity : public GameObject, public IUpdateable
 public:
 	Entity();
 	Entity(const sf::Vector2f& position, const sf::Vector2f& size);
-
+	Entity(const Entity&) = delete;
+	Entity& operator=(const Entity&) = delete;
+	Entity(Entity&&) noexcept = default;
+	Entity& operator=(Entity&&) noexcept = default;
 	~Entity() override;
 
 	void Update(float deltaTime) override;

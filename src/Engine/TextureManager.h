@@ -30,6 +30,7 @@ public:
 private:
 	// Key = Texture ID, Value = Texture
 	std::unordered_map<hash_type, sf::Texture> m_textures;
+	std::unordered_map<hash_type, std::shared_ptr<sf::Image>> m_images;
 
 	// Key = Texture Path, Value = Texture ID
 	std::unordered_map<std::string, hash_type > m_registeredPaths;

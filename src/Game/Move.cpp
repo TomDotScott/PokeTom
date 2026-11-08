@@ -49,6 +49,7 @@ Move::Outcome Move::Use(PocketMonsterEntity& attacker, PocketMonsterEntity& defe
 {
 	ASSERT(m_valid);
 
+	const monster_type attkType = m_type;
 	const monster_type defType = defender.GetType();
 
 	// TODO: Calculate this properly - for now, just do RNG based on the numbers!

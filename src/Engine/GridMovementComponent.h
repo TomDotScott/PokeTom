@@ -23,7 +23,10 @@ class GridMovementComponent : public IUpdateable
 public:
 	GridMovementComponent(Entity* owner, float tileSize, float walkTilesPerSecond, float sprintTilesPerSecond);
 
+	void Move(eOrientation orientation);
 	void Move(eDirection direction);
+
+	bool CanMove() const;
 	bool CanMove(eDirection direction) const;
 
 	void SetDirection(eOrientation orientation);
@@ -40,6 +43,7 @@ public:
 
 	void Update(float deltaTime) override;
 
+	const sf::Vector2f& GetStartPosition() const;
 	const sf::Vector2f& GetWorldPosition() const;
 	void SetWorldPosition(const sf::Vector2f& pos);
 

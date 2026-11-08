@@ -55,6 +55,8 @@ namespace maths
 
 		return val;
 	}
+
+	constexpr float PI = 3.141592f;
 } // namespace maths
 
 #endif

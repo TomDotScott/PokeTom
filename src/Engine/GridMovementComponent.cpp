@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Asserts.h"
+#include "../Game/Monsters/MonsterOverworldAnimationComponent.h"
 #include "Animation/AnimationComponent.h"
 
 GridMovementComponent::GridMovementComponent(
@@ -26,6 +27,11 @@ GridMovementComponent::GridMovementComponent(
 {
 }
 
+void GridMovementComponent::Move(const eOrientation orientation)
+{
+	return Move(GetDirectionFromOrientation(orientation));
+}
+
 void GridMovementComponent::Move(const eDirection direction)
 {
 	if (m_isMoving)
@@ -39,6 +45,11 @@ void GridMovementComponent::Move(const eDirection direction)
 	{
 		StartMove(GetNextPosition(m_currentDirection));
 	}
+}
+
+bool GridMovementComponent::CanMove() const
+{
+	return CanMove(eDirection::North) || CanMove(eDirection::South) || CanMove(eDirection::East) || CanMove(eDirection::South);
 }
 
 bool GridMovementComponent::CanMove(const eDirection direction) const
@@ -162,6 +173,11 @@ void GridMovementComponent::Update(const float deltaTime)
 	UpdateMovementAnimations();
 }
 
+const sf::Vector2f& GridMovementComponent::GetStartPosition() const
+{
+	return m_startPos;
+}
+
 const sf::Vector2f& GridMovementComponent::GetWorldPosition() const
 {
 	return m_worldPos;
@@ -233,12 +249,38 @@ void GridMovementComponent::StartMove(const sf::Vector2f& dir)
 
 void GridMovementComponent::UpdateMovementAnimations() const
 {
-	EntityAnimationComponent* animationComponent = m_owningEntity->GetComponent<EntityAnimationComponent>();
+	EntityAnimationComponent* animationComponent = m_owningEntity->GetComponent<MonsterOverworldAnimationComponent>();
+	if (animationComponent != nullptr)
+	{
+		const eOrientation orientation = GetCurrentOrientation();
+		MonsterOverworldAnimationComponent::eAnimationName name = MonsterOverworldAnimationComponent::DOWN;
+
+		if (orientation == eOrientation::Up)
+		{
+			name = MonsterOverworldAnimationComponent::UP;
+		}
+		else if (orientation == eOrientation::Down)
+		{
+			name = MonsterOverworldAnimationComponent::DOWN;
+		}
+		else if (orientation == eOrientation::Left)
+		{
+			name = MonsterOverworldAnimationComponent::LEFT;
+		}
+		else
+		{
+			name = MonsterOverworldAnimationComponent::RIGHT;
+		}
+
+		animationComponent->PlayAnimation(
+			MonsterOverworldAnimationComponent::GetAnimationName(eMonsterOverworldState::Walking, name), false);
+	}
+
+	animationComponent = m_owningEntity->GetComponent<EntityAnimationComponent>();
 	if (animationComponent == nullptr)
 	{
 		return;
 	}
-
 	const eOrientation orientation = GetCurrentOrientation();
 	if (IsCycling())
 	{
@@ -247,12 +289,12 @@ void GridMovementComponent::UpdateMovementAnimations() const
 	else if (WasMoving())
 	{
 		animationComponent->PlayAnimation(IsSprinting()
-			? EntityAnimationComponent::GetSprintAnimation(orientation)
-			: EntityAnimationComponent::GetWalkAnimation(orientation), false);
+			                                  ? EntityAnimationComponent::GetSprintAnimation(orientation)
+			                                  : EntityAnimationComponent::GetWalkAnimation(orientation), false);
 	}
 	else
 	{
 		animationComponent->PlayAnimation(EntityAnimationComponent::GetIdleAnimation(orientation), false);
 	}
+	return;
 }
-
