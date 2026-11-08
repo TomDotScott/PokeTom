@@ -3,19 +3,20 @@
 #include "../Engine/Asserts.h"
 #include "../Engine/EntityRegistry.h"
 #include "../Engine/GridMovementComponent.h"
+#include "../Engine/Entity.h"
+#include "PathfindComponent.h"
+
 
 EntityFollowComponent::EntityFollowComponent(Entity* owner, EntityRegistry& entities, const entity_id_t targetEntity) :
 	m_owner(owner),
 	m_targetEntityID(targetEntity),
 	m_entityRegistry(entities),
-	m_targetWasMoving(false)
+	m_pathfind(nullptr),
+	m_behindTile(),
+	m_hasBehindTile(false)
 {
-	if (!m_owner->GetComponent<GridMovementComponent>())
-	{
-		m_owner->AddComponent<GridMovementComponent>(owner, GRID_SIZE, ENTITY_WALK_SPEED, ENTITY_WALK_SPEED);
-	}
-
-	m_ownerGMC = m_owner->GetComponent<GridMovementComponent>();
+	ASSERT(m_owner->HasComponent<PathfindComponent>());
+	m_pathfind = m_owner->GetComponent<PathfindComponent>();
 }
 
 void EntityFollowComponent::Update(const float deltaTime)
@@ -26,46 +27,24 @@ void EntityFollowComponent::Update(const float deltaTime)
 		return;
 	}
 
-	ASSERT(m_ownerGMC);
+	GridMovementComponent* myGMC = m_owner->GetComponent<GridMovementComponent>();
+	ASSERT(myGMC);
 
 	const GridMovementComponent* targetGMC = target->GetComponent<GridMovementComponent>();
 	ASSERT(targetGMC);
 
-	m_ownerGMC->SetSprinting(true);
+	myGMC->SetSprinting(targetGMC->IsSprinting());
 
-	if (targetGMC->JustCompletedMovement())
+	// The tile the target just left is, by definition, behind it
+	if (targetGMC->IsMoving() || targetGMC->JustCompletedMovement())
 	{
-		m_trail.push_back(targetGMC->GetStartPosition());
+		const sf::Vector2f s = targetGMC->GetStartPosition();
+		m_behindTile = { static_cast<int>(std::floor(s.x / GRID_SIZE)), static_cast<int>(std::floor(s.y / GRID_SIZE)) };
+		m_hasBehindTile = true;
 	}
 
-	if (targetGMC->IsMoving())
+	if (m_hasBehindTile)
 	{
-		m_trail.push_back(targetGMC->GetStartPosition());
-	}
-
-	if (!m_trail.empty())
-	{
-		const sf::Vector2f targetTilePos = m_trail.front();
-		const sf::Vector2f currentPos = m_ownerGMC->GetWorldPosition();
-
-		if (targetTilePos == currentPos)
-		{
-			m_trail.pop_front();
-			return;
-		}
-
-
-		if (m_ownerGMC->CanMove())
-		{
-			const sf::Vector2f d = targetTilePos - currentPos;
-			const eOrientation orientation = GetOrientationFromVector(d);
-			const eDirection direction = GetDirectionFromOrientation(orientation);
-
-			if (m_ownerGMC->CanMove(direction))
-			{
-				m_ownerGMC->Move(orientation);
-				m_trail.pop_front();
-			}
-		}
+		m_pathfind->SetTarget(m_behindTile);
 	}
 }

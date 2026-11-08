@@ -40,7 +40,7 @@ public:
 	int GetEntityZIndex() const;
 
 	bool IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) const;
-	bool CanMoveTo(const sf::Vector2f& worldSpacePosition) const;
+	bool IsPositionWalkable(const sf::Vector2f& worldSpacePosition) const;
 
 	const PortalTrigger* GetPortalAtPosition(sf::Vector2f worldSpacePosition) const;
 

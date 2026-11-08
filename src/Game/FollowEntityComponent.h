@@ -1,14 +1,12 @@
 #ifndef FOLLOWENTITYCOMPONENT_H
 #define FOLLOWENTITYCOMPONENT_H
 
-#include <deque>
-
-#include "../Engine/IUpdateable.h"
+#include <SFML/System/Vector2.hpp>
 #include "../Engine/Entity.h"
-
+#include "../Engine/IUpdateable.h"
+#include "PathfindComponent.h"
 
 class EntityRegistry;
-class GridMovementComponent;
 
 class EntityFollowComponent : public IUpdateable
 {
@@ -23,12 +21,10 @@ private:
 	// TODO: Is this a good idea? MonsterPartyComponent does something similar - is it worth just making GameContext globally accessible?
 	EntityRegistry& m_entityRegistry;
 
-	GridMovementComponent* m_ownerGMC;
+	PathfindComponent* m_pathfind;
 
-	std::deque<sf::Vector2f> m_trail;
-	sf::Vector2f m_lastRecordedPosition;
-	bool m_targetWasMoving;
-	bool m_initialized = false;
+	sf::Vector2i m_behindTile;
+	bool m_hasBehindTile;
 };
 
 #endif // FOLLOWENTITYCOMPONENT_H

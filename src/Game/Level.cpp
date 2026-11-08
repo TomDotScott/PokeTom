@@ -164,7 +164,7 @@ bool Level::IsWorldSpacePointOnGrid(const sf::Vector2f& worldSpacePosition) cons
 		&& gridPos.y < static_cast<int>(GetNumRows());
 }
 
-bool Level::CanMoveTo(const sf::Vector2f& worldSpacePosition) const
+bool Level::IsPositionWalkable(const sf::Vector2f& worldSpacePosition) const
 {
 	if (!IsWorldSpacePointOnGrid(worldSpacePosition))
 	{

@@ -37,7 +37,7 @@ Game::Game(sol::state& lua) :
 
 	MonsterOverworldAnimationRegistry::Get();
 
-	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>(m_context.m_Entities, sf::Vector2f(0.f, 0.f)).GetID();
+	m_context.m_PlayerEntityID = m_context.m_Entities.Create<Player>(m_context.m_Entities, m_context.m_World, sf::Vector2f(0.f, 0.f)).GetID();
 
 	Player* player = m_context.m_Entities.Get<Player>(m_context.m_PlayerEntityID);
 	player->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)

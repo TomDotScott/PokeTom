@@ -8,17 +8,19 @@
 #include "../Engine/Globals.h"
 #include "../Engine/Animation/AnimationComponent.h"
 #include "../Engine/Input/Keyboard.h"
+#include "WorldDefinition.h"
 #include "Monsters/MonsterOverworldAnimationComponent.h"
 #include "Monsters/MonsterPartyComponent.h"
 #include "Monsters/PocketMonsterManager.h"
 
 
-Player::Player(EntityRegistry& entities, const sf::Vector2f& position) :
+Player::Player(EntityRegistry& entities, WorldDefinition& world, const sf::Vector2f& position) :
 	Entity(position, { 1.f, 1.f }),
 	m_followerEntityID(~0U),
-	m_entities(entities)
+	m_entities(entities),
+	m_world(world)
 {
-	AddComponent<GridMovementComponent>(this, 32.f, 3.f, 6.5f);
+	AddComponent<GridMovementComponent>(this, GRID_SIZE, ENTITY_WALK_SPEED, 6.5f /* Slightly faster than the default */);
 	AddComponent<EntityAnimationComponent>(this, "PLAYER_BOY", EntityAnimationComponent::eAnimationName::IDLE_DOWN);
 	m_mapper.Map(UP, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::W));
 	m_mapper.Map(DOWN, eInputType::Keyboard, static_cast<int>(sf::Keyboard::Key::S));
@@ -170,11 +172,23 @@ void Player::SpawnFollowerEntity()
 	const PocketMonsterEntity* firstMonster = partyComp->GetActiveMonster();
 
 	followEntity.AddComponent<MonsterOverworldAnimationComponent>(&followEntity,
-	                                                              firstMonster->GetMonsterID(),
-	                                                              eMonsterOverworldState::Walking,
-	                                                              MonsterOverworldAnimationComponent::eAnimationName::DOWN
+		firstMonster->GetMonsterID(),
+		eMonsterOverworldState::Walking,
+		MonsterOverworldAnimationComponent::eAnimationName::DOWN
+	);
+	followEntity.AddComponent<PathfindComponent>(
+		&followEntity,
+		[this, &followEntity](const sf::Vector2i& v) -> bool
+		{
+			return m_world.CanMoveTo(&followEntity, m_entities, static_cast<sf::Vector2f>(v) * GRID_SIZE);
+		}
 	);
 	followEntity.AddComponent<EntityFollowComponent>(&followEntity, m_entities, GetID());
+	followEntity.GetComponent<GridMovementComponent>()->SetCanMoveCallback(
+		[this](const Entity* ent, const eDirection dir)
+		{
+			return m_world.CanMoveTo(ent, m_entities, dir);
+		});
 
 	// Set the position of the entity to behind the player
 	const GridMovementComponent* myGMC = GetComponent<GridMovementComponent>();
@@ -199,14 +213,7 @@ void Player::SpawnFollowerEntity()
 	}
 	const sf::Vector2f myPreviousPos = myGMC->GetNextPosition(spawnDirection);
 
-	GridMovementComponent* followGMC = followEntity.GetComponent<GridMovementComponent>();
-
-	followGMC->SetCanMoveCallback([&](const Entity* ent, const eDirection dir)
-		{
-			return true;
-		});
-
-	followGMC->SetWorldPosition(myPreviousPos);
+	followEntity.GetComponent<GridMovementComponent>()->SetWorldPosition(myPreviousPos);
 
 	followEntity.OnActivate();
 }
